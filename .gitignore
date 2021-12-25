@@ -1,0 +1,6 @@
+# Editor files
+.idea
+# Output dir
+out
+# Binaries dir
+bin
