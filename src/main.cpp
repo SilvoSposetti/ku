@@ -1,4 +1,5 @@
 #include "Ku.h"
+#include <iostream>
 
 int main() {
     Ku::run();

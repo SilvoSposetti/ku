@@ -1,7 +1,9 @@
 #include "Ku.h"
-#include <iostream>
+#include <memory>
+#include "sudoku/Sudoku.h"
+#include "utilities/Utilities.h"
 
 void Ku::run() {
-    std::cout << "Hello, Ku" << std::endl;
-    std::cout << OUT_DIR << std::endl;
+    const ConstraintType constraints = ConstraintType::SUDOKU_BOX | ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_ROW;
+    std::unique_ptr<Sudoku> sudoku = std::make_unique<Sudoku>(50, SetterType::RANDOM, constraints);
 }
