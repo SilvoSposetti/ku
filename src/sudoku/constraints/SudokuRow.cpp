@@ -15,3 +15,17 @@ std::string SudokuRow::getDescription() {
 std::string SudokuRow::getSvgGroup() {
     return "";
 }
+
+bool SudokuRow::validatePlacement(const Sudo digit, const int8_t rowIndex, const int8_t columnIndex, const std::vector<std::vector<Sudo>> board) {
+    // If the digit is already present in the column, then the placement is not valid
+    for (const auto& columnIndex: INDICES) {
+        if (board[rowIndex][columnIndex] == digit) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool SudokuRow::satisfy(std::vector<std::vector<Sudo>> board) {
+    return false;
+}

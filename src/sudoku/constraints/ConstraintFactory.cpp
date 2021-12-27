@@ -18,4 +18,6 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
         case ConstraintType::KINGS_MOVE:
             break;
     }
+
+    return std::make_unique<SudokuBox>();
 }

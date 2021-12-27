@@ -5,17 +5,14 @@
 
 class Board {
 public:
-    Board();
+    Board(const std::vector<std::vector<Sudo>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask);
 
-    void printField();
-    void printSolution();
-    void printGiven();
-    void printAll();
+    void printGivenPattern() const;
 
-private:
-    void printRow(const std::vector<Sudo>& row);
+    void print() const;
 
-    std::vector<std::vector<Sudo>> solution;
-    std::vector<std::vector<Sudo>> given;
     std::vector<std::vector<Sudo>> field;
+    const std::vector<std::vector<Sudo>> solution;
+    const std::vector<std::vector<bool>> givenMask;
+
 };

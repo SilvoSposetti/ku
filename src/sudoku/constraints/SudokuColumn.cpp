@@ -15,3 +15,31 @@ std::string SudokuColumn::getDescription() {
 std::string SudokuColumn::getSvgGroup() {
     return std::string();
 }
+
+bool SudokuColumn::validatePlacement(const Sudo digit, const int8_t rowIndex, const int8_t columnIndex, const std::vector<std::vector<Sudo>> board) {
+    // If the digit is already present in the given row, then the placement is not valid
+    for (const auto& index: INDICES) {
+        if (board[index][columnIndex] == digit) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool SudokuColumn::satisfy(std::vector<std::vector<Sudo>> board) {
+    // The board satisfies the constraint if all columns do not contain duplicate digits
+    for (const auto& columnIndex: INDICES) {
+        for (const auto& digit: SUDO_DIGITS) {
+            int8_t count = 0;
+            for (const auto& rowIndex: INDICES) {
+                if (board[rowIndex][columnIndex] == digit) {
+                    count++;
+                }
+            }
+            if (count != 1) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
