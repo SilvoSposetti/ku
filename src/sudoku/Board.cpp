@@ -1,5 +1,4 @@
 #include "Board.h"
-#include "../utilities/Logger.h"
 
 Board::Board(const std::vector<std::vector<Sudo>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask) :
         solution(inSolution),

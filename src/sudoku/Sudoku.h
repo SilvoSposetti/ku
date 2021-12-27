@@ -5,7 +5,7 @@
 
 class Sudoku {
 public:
-    Sudoku(const int8_t totalDigits, const SetterType setterType, const ConstraintType constraintTypes);
+    Sudoku(const std::string& name, const int8_t totalDigits, const SymmetryType setterType, const ConstraintType constraintTypes);
 
 private:
     int8_t digitsAmount;

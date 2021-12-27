@@ -21,6 +21,10 @@ enum class Sudo : int8_t {
 
 constexpr int8_t MAX_DIGIT = 9;
 constexpr int8_t MIN_DIGIT = 1;
+constexpr int8_t TOTAL_DIGITS = 81;
+constexpr int8_t MAX_INDEX = 8;
+constexpr int8_t MID_INDEX = 4;
+constexpr int8_t MIN_INDEX = 0;
 const std::vector<int8_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 const std::vector<Sudo> SUDO_DIGITS = {Sudo::A, Sudo::B, Sudo::C, Sudo::D, Sudo::E, Sudo::F, Sudo::G, Sudo::H, Sudo::I};
 
@@ -59,11 +63,19 @@ static std::vector<std::vector<bool>> emptyGivenMask() {
     return newMask;
 }
 
-enum class SetterType {
-    RANDOM = 0
+enum class SymmetryType {
+    RANDOM,
+    ONE_DIAGONAL_MIRROR,
+    ONE_DIAGONAL_ROTATION,
+    TWO_DIAGONALS_MIRROR,
+    TWO_DIAGONALS_ROTATION,
+    ONE_AXIS_MIRROR,
+    ONE_AXIS_ROTATION,
+    TWO_AXES_MIRROR,
+    TWO_AXES_ROTATION
 };
 
-static inline int8_t randomUniform(const int8_t min = 0, const int8_t max = 8) {
+static inline int8_t randomUniform(const int8_t min = MIN_INDEX, const int8_t max = MAX_INDEX) {
     std::random_device randomDevice;
     std::mt19937 generator(randomDevice());
     std::uniform_int_distribution<int8_t> uniformIntDistribution(min, max);
