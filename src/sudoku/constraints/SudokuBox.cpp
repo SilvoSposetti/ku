@@ -61,7 +61,7 @@ std::vector<std::vector<std::pair<int8_t, int8_t>>> SudokuBox::getBoxIndices() {
             std::vector<std::pair<int8_t, int8_t>> singleBoxIndexPairs;
             for (int8_t i = 0; i < 3; i++) {
                 for (int8_t j = 0; j < 3; j++) {
-                    singleBoxIndexPairs.emplace_back(std::make_pair(boxIndexRow * 3 + i, boxIndexColumn * 3 + i));
+                    singleBoxIndexPairs.emplace_back(std::make_pair(boxIndexRow * 3 + i, boxIndexColumn * 3 + j));
                 }
             }
             allBoxIndexPairs.emplace_back(singleBoxIndexPairs);
