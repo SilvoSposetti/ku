@@ -1,16 +1,18 @@
 #include "Setter.h"
 
-#include "Validator.h"
+#include "solver/Solver.h"
 
 std::unique_ptr<Board> Setter::generate(const int8_t totalDigits,
                                         const SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
-    std::vector<std::vector<Sudo>> randomBoard = Setter::createRandomBoard(constraints);
+    // Create a new board
+    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::BruteForce);
+//    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::DLX);
 
+    // Create given mask
     std::vector<std::vector<bool>> givenMask;
-    if (symmetryType == SymmetryType::RANDOM) givenMask = randomMask(totalDigits);
-    else if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR) givenMask = diagonalMirrorMask(totalDigits);
+    if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR) givenMask = diagonalMirrorMask(totalDigits);
     else if (symmetryType == SymmetryType::ONE_DIAGONAL_ROTATION) givenMask = diagonalRotationMask(totalDigits);
 //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_MIRROR) givenMask = randomMask(totalDigits);
 //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_ROTATION) givenMask = randomMask(totalDigits);
@@ -22,6 +24,7 @@ std::unique_ptr<Board> Setter::generate(const int8_t totalDigits,
 //    givenMask = diagonalMirrorMask(totalDigits);
 //    givenMask = diagonalRotationMask(totalDigits);
 
+    // TODO: Check given mask according to SymmetryType
     checkGivenMask(givenMask, totalDigits);
 
     std::unique_ptr<Board> newBoard = std::make_unique<Board>(randomBoard, givenMask);
@@ -29,57 +32,6 @@ std::unique_ptr<Board> Setter::generate(const int8_t totalDigits,
     return newBoard;
 }
 
-std::vector<std::vector<Sudo>> Setter::createRandomBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-    std::vector<std::vector<Sudo>> newBoard = emptyField();
-    if (Setter::createRandomRecursive(0, 0, newBoard, constraints)) {
-        return newBoard;
-    } else {
-        static_assert(true, "Was not able to generate a new board with the given constraints");
-    }
-    return emptyField();
-}
-
-bool Setter::createRandomRecursive(int8_t rowIndex,
-                                   int8_t columnIndex,
-                                   std::vector<std::vector<Sudo>>& board,
-                                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-
-    // Reached end of the board, so found solution must be valid
-    if (rowIndex > 8) {
-        return true;
-    }
-    // Try out all possible digits in random order
-    std::vector<Sudo> randomDigits = randomShuffle(SUDO_DIGITS);
-    for (const auto& digit: randomDigits) {
-        // Check if the current digit can be placed here without breaking any constraint
-        if (Validator::validateMove(rowIndex, columnIndex, digit, board, constraints)) {
-            // Store digit's place
-            const int8_t k = rowIndex;
-            const int8_t l = columnIndex;
-            board[k][l] = digit; // Try and set the current digit in the board
-            // Go forward in the grid
-            columnIndex++;
-            if (columnIndex > 8) {
-                rowIndex++;
-                columnIndex = 0;
-            }
-            // If the recursive call returns true, a valid solution was found
-            if (Setter::createRandomRecursive(rowIndex, columnIndex, board, constraints)) {
-                return true;
-            }
-            // Otherwise, the digit just placed leads to conflict
-            board[k][l] = Sudo::NONE;
-            // Thus, go back one digit in the board
-            columnIndex--;
-            if (columnIndex < 0) {
-                rowIndex--;
-                columnIndex = 8;
-            }
-        }
-    }
-
-    return false;
-}
 
 void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, const int8_t totalDigits) {
     int8_t counter = 0;
@@ -89,12 +41,12 @@ void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, const in
         }
     }
     if (counter != totalDigits) {
-        static_assert(true, "Mask does not contain the correct amount of digits");
+        std::cout << "ERROR: Mask does not contain the correct amount of digits" << std::endl;
     }
 }
 
 std::vector<std::vector<bool>> Setter::randomMask(const int8_t totalDigits) {
-    std::vector<std::vector<bool>> mask = emptyGivenMask();
+    std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digits = 81;
     while (digits != totalDigits) {
         const int8_t i = randomUniform();
@@ -116,10 +68,12 @@ inline bool Setter::isOnCenter(const int8_t rowIndex, const int8_t columnIndex) 
 }
 
 std::vector<std::vector<bool>> Setter::diagonalMirrorMask(const int8_t totalDigits) {
-    std::vector<std::vector<bool>> mask = emptyGivenMask();
+    std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digitsToRemove = TOTAL_DIGITS - totalDigits;
-    int8_t diagonalDigitsRemaining = 9; // Removed as single digit first, then removed in pairs
-    int8_t otherDigitsRemaining = 72; // Removed in pairs for symmetry
+    // "Diagonal" digits are removed once at the beginning, then in pairs
+    int8_t diagonalDigitsRemaining = 9;
+    // "Other" ("Non-Diagonal") are always removed in pairs for symmetry
+    int8_t otherDigitsRemaining = 72;
 
     if (digitsToRemove % 2 != 0) {
         const int8_t randomIndex = randomUniform();
@@ -130,7 +84,7 @@ std::vector<std::vector<bool>> Setter::diagonalMirrorMask(const int8_t totalDigi
 
     while (digitsToRemove > 0) {
         // Randomly decide if two digits need to be removed either from the diagonal or from the other ones
-        const int8_t random = randomUniform(static_cast<uint8_t>(2), diagonalDigitsRemaining + otherDigitsRemaining);
+        const int8_t random = randomUniform(2, diagonalDigitsRemaining + otherDigitsRemaining);
         if (random < diagonalDigitsRemaining) {
             // Remove two digits from the diagonal
             const int8_t index1 = randomUniform();
@@ -165,7 +119,7 @@ std::vector<std::vector<bool>> Setter::diagonalMirrorMask(const int8_t totalDigi
 }
 
 std::vector<std::vector<bool>> Setter::diagonalRotationMask(const int8_t totalDigits) {
-    std::vector<std::vector<bool>> mask = emptyGivenMask();
+    std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digitsToRemove = TOTAL_DIGITS - totalDigits;
 
     // If amount of total digits to remove is not even: need to remove the center

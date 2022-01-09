@@ -17,7 +17,8 @@ std::string SudokuBox::getSvgGroup() {
     return "";
 }
 
-bool SudokuBox::validatePlacement(const Sudo digit, const int8_t rowIndex, const int8_t columnIndex, const std::vector<std::vector<Sudo>> board) {
+bool SudokuBox::validatePlacement(const Sudo digit, const int8_t rowIndex, const int8_t columnIndex,
+                                  const std::vector<std::vector<Sudo>> board) {
     // Validate a hypothetical placement by checking if the digit already exists in the box relevant for the given coordinates
     const int8_t boxIndex = getBoxIndex(rowIndex, columnIndex);
     std::vector<std::pair<int8_t, int8_t>> boxIndexPairs = getBoxIndices()[boxIndex];

@@ -33,7 +33,8 @@ private:
 
     /**
      * Creates all [row][column] index pairs for the cells of every box
-     * @return A vector of vectors of index pairs. Outer vector references each box, inner vector contains all index pairs for that box
+     * @return A vector of vectors of index pairs. Outer vector references each box, inner vector contains all index
+     * pairs for that box
      */
     static std::vector<std::vector<std::pair<int8_t, int8_t>>> getBoxIndices();
 

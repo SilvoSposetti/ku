@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "../../utilities/Utilities.h"
 
 class AbstractConstraint {

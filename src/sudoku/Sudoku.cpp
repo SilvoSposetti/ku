@@ -2,7 +2,10 @@
 #include "Setter.h"
 #include "constraints/ConstraintFactory.h"
 
-Sudoku::Sudoku(const std::string& name, const int8_t totalDigits, const SymmetryType setterType, const ConstraintType constraintTypes) {
+Sudoku::Sudoku(const std::string& name,
+               const int8_t totalDigits,
+               const SymmetryType setterType,
+               const ConstraintType constraintTypes) {
     digitsAmount = clamp(totalDigits, 17, 81);
 
     for (int8_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
@@ -14,7 +17,8 @@ Sudoku::Sudoku(const std::string& name, const int8_t totalDigits, const Symmetry
     }
 
     board = Setter::generate(digitsAmount, setterType, constraints);
-    std::cout << name << " [-" << std::to_string(81 - totalDigits) << "]                   MaskType: " << std::to_string(static_cast<int>(setterType)) << std::endl;
+    std::cout << name << " [-" << std::to_string(81 - totalDigits) << "]                   MaskType: "
+              << std::to_string(static_cast<int>(setterType)) << std::endl;
     board->print();
 //    board->printGivenPattern();
     std::cout << std::endl;

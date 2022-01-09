@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <random>
 #include <chrono>
 #include <atomic>
@@ -47,17 +48,26 @@ inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
 
 static std::vector<std::vector<Sudo>> emptyField() {
     std::vector<std::vector<Sudo>> newField;
-    for (int8_t i = 0; i < MAX_DIGIT; i++) {
-        std::vector<Sudo> row(MAX_DIGIT, Sudo::NONE);
+    for (int8_t i = 0; i <= MAX_INDEX; i++) {
+        std::vector<Sudo> row(MAX_INDEX + 1, Sudo::NONE);
         newField.emplace_back(row);
     }
     return newField;
 }
 
+static std::vector<std::vector<bool>> fullGivenMask() {
+    std::vector<std::vector<bool>> newMask;
+    for (int8_t i = 0; i <= MAX_INDEX; i++) {
+        std::vector<bool> row(MAX_INDEX + 1, true);
+        newMask.emplace_back(row);
+    }
+    return newMask;
+}
+
 static std::vector<std::vector<bool>> emptyGivenMask() {
     std::vector<std::vector<bool>> newMask;
-    for (int8_t i = 0; i < MAX_DIGIT; i++) {
-        std::vector<bool> row(MAX_DIGIT, true);
+    for (int8_t i = 0; i <= MAX_INDEX; i++) {
+        std::vector<bool> row(MAX_INDEX + 1, false);
         newMask.emplace_back(row);
     }
     return newMask;
