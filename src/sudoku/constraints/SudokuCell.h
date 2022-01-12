@@ -2,9 +2,9 @@
 
 #include "AbstractConstraint.h"
 
-class SudokuBox : public AbstractConstraint {
+class SudokuCell : public AbstractConstraint {
 public:
-    SudokuBox() = default;
+    SudokuCell() = default;
 
     virtual ConstraintType getType() const override;
 
@@ -28,23 +28,4 @@ public:
                                   const int32_t columnId,
                                   const Sudo possibleDigit,
                                   const Sudo actualDigit) const override;
-
-private:
-
-    /**
-     * Computes the "box" index of a cell, given its rowIndex and columnIndex in the grid
-     * @param rowIndex A cell's row index in the grid
-     * @param columnIndex A cell's column index in the grid
-     * @return The "box" index for that cell
-     */
-    static int8_t getBoxIndex(const int8_t rowIndex, const int8_t columnIndex);
-
-    /**
-     * Creates all [row][column] index pairs for the cells of every box
-     * @return A vector of vectors of index pairs. Outer vector references each box, inner vector contains all index
-     * pairs for that box
-     */
-    static std::vector<std::vector<std::pair<int8_t, int8_t>>> getBoxIndices();
-
 };
-

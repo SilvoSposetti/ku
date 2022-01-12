@@ -8,11 +8,16 @@ Sudoku::Sudoku(const std::string& name,
                const ConstraintType constraintTypes) {
     digitsAmount = clamp(totalDigits, 17, 81);
 
+    // SUDOKU_CELL constraint is always present
+    constraints.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));
+
     for (int8_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
         const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
         if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
             const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
-            constraints.emplace_back(ConstraintFactory::makeConstraint(singleConstraint));
+            if (singleConstraint != ConstraintType::SUDOKU_CELL){
+                constraints.emplace_back(ConstraintFactory::makeConstraint(singleConstraint));
+            }
         }
     }
 
