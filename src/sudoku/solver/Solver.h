@@ -2,6 +2,7 @@
 
 #include "../../utilities/Utilities.h"
 #include "../constraints/AbstractConstraint.h"
+#include "Node.h"
 
 enum class SolverType {
     BruteForce, // Standard naive brute-force approach
@@ -22,10 +23,17 @@ private:
                                           const std::vector<std::vector<bool>>& givenMask,
                                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
-    static bool randomDLX(int8_t rowIndex,
-                          int8_t columnIndex,
-                          std::vector<std::vector<Sudo>>& board,
+    static bool randomDLX(std::vector<std::vector<Sudo>>& board,
                           const std::vector<std::vector<bool>>& givenMask,
                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-};
 
+    static std::shared_ptr<Node> createDancingLinksMatrix(const std::vector<std::vector<bool>>& matrix,
+                                                          const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
+    static void printDancingLinksMatrix(const std::shared_ptr<Node>& root,
+                                        const int32_t rowsAmount,
+                                        const int32_t columnsAmount,
+                                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                        const std::vector<std::vector<Sudo>>& board,
+                                        const std::vector<std::vector<bool>>& givenMask);
+};

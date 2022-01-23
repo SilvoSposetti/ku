@@ -15,13 +15,14 @@ file(GLOB_RECURSE HEADER_FILES "src/*.h")
 include_directories(HEADER_FILES)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-message(STATUS "Source Files: ${SOURCE_FILES}")
-message(STATUS "Header Files: ${HEADER_FILES}")
+# Uncomment to print all source and header files
+# message(STATUS "Source Files: ${SOURCE_FILES}")
+# message(STATUS "Header Files: ${HEADER_FILES}")
 
 
 # Pass defines to the source code:
 set(OUT_DIR "${PROJECT_SOURCE_DIR}/out")
 add_definitions(-DOUT_DIR=\"${OUT_DIR}\")
 message(STATUS "Defines:")
-message(STATUS " | OUT_DIR: ${OUT_DIR}")
+message(STATUS "   OUT_DIR: ${OUT_DIR}")
 

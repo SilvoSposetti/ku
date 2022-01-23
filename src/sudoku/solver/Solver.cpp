@@ -1,17 +1,25 @@
 #include "Solver.h"
 #include "../Validator.h"
-#include "../../utilities/Utilities.h"
+#include "Node.h"
+#include <cstdint>
 
 std::vector<std::vector<Sudo>>
 Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, const SolverType solverType) {
     std::vector<std::vector<Sudo>> newBoard = emptyField();
     std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
+//    newBoard[0][0] = Sudo::C;
+//    givenMask[0][0] = true;
+//    newBoard[0][2] = Sudo::F;
+//    givenMask[0][2] = true;
+//    newBoard[8][5] = Sudo::H;
+//    givenMask[8][5] = true;
+
     bool created = false;
     if (solverType == SolverType::BruteForce) {
         created = Solver::randomBruteForceRecursive(0, 0, newBoard, givenMask, constraints);
     } else if (solverType == SolverType::DLX) {
-        created = Solver::randomDLX(0, 0, newBoard, givenMask, constraints);
+        created = Solver::randomDLX(newBoard, givenMask, constraints);
     }
 
     if (!created) {
@@ -76,60 +84,218 @@ bool Solver::randomBruteForceRecursive(int8_t rowIndex,
 }
 
 
-bool Solver::randomDLX(int8_t rowIndex, int8_t columnIndex, std::vector<std::vector<Sudo>>& board,
+bool Solver::randomDLX(std::vector<std::vector<Sudo>>& board,
                        const std::vector<std::vector<bool>>& givenMask,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
     // Create matrix
-    constexpr int32_t totalRows = 9 * 9 * 9; //729 (81 cells, 9 possible digits for each cell)
+    const int32_t totalRows = 9 * 9 * 9; // =729 (81 cells, 9 possible digits for each cell)
+    int32_t totalColumns = 0;
+    for (const auto& constraint: constraints) {
+        totalColumns += constraint->getDLXConstraintColumnsAmount();
+    }
 
     std::vector<std::vector<bool>> M;
-    // Default "Single digit in each cell constraint"
-    std::cout << "M:                    |";
+
+    // Go through all board cells via their row and column indices
+    for (int8_t boardRow = 0; boardRow <= MAX_INDEX; boardRow++) {
+        for (int8_t boardColumn = 0; boardColumn <= MAX_INDEX; boardColumn++) {
+            Sudo actualDigit = Sudo::NONE;
+            if(givenMask[boardRow][boardColumn]) {
+                actualDigit = board[boardRow][boardColumn];
+            }
+            // Go through all possible digits that could go in the cell
+            for (const auto& possibleDigit: SUDO_DIGITS) {
+                // Avoid rows where the cell and its possible digits don't create a "1" in the matrix, since the digit
+                // is already given
+                if (actualDigit == Sudo::NONE || actualDigit == possibleDigit) {
+                    std::vector<bool> row;
+                    for (const auto& constraint: constraints) {
+                        // Let the constraint determine how many columns it needs for DLX, which will be returned to it indexed from 0
+                        int32_t totalConstraintColumns = constraint->getDLXConstraintColumnsAmount();
+                        for (int32_t columnId = 0; columnId < totalConstraintColumns; columnId++) {
+                            // Retrieve whether the constraint prescribes a "1" for this row (cell & possibleDigit) and column(constraint) of the matrix
+                            const bool value = constraint->getDLXConstraint(boardRow,
+                                                                            boardColumn,
+                                                                            columnId,
+                                                                            possibleDigit,
+                                                                            board[boardRow][boardColumn]);
+                            row.emplace_back(value);
+                        }
+                    }
+                    M.emplace_back(row);
+                }
+            }
+        }
+    }
+    // Create doubly-linked list of matrix M
+    std::shared_ptr<Node> root = createDancingLinksMatrix(M, constraints);
+    printDancingLinksMatrix(root, totalRows, totalColumns, constraints, board, givenMask);
+
+    return false;
+}
+
+std::shared_ptr<Node> Solver::createDancingLinksMatrix(const std::vector<std::vector<bool>>& matrix,
+                                                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+    const int32_t totalRows = static_cast<int32_t>(matrix.size());
+    const int32_t totalColumns = static_cast<int32_t>(matrix[0].size());
+
+    std::shared_ptr<Node> root = std::make_shared<Node>("root");
+    root->header = root;
+    std::shared_ptr<Node> currentColumnHeader = root;
+
+    // First create all column headers
+    for (const auto& constraint: constraints) {
+        for (int32_t columnId = 0; columnId < constraint->getDLXConstraintColumnsAmount(); columnId++) {
+            const std::string columnName = constraint->getName() + "[colID: " + std::to_string(columnId) + "]";
+            std::shared_ptr<Node> newHeader = std::make_shared<Node>(columnName);
+            currentColumnHeader->right = newHeader;
+            newHeader->left = currentColumnHeader;
+            newHeader->header = newHeader; // Assign the header of a column to itself
+            currentColumnHeader = newHeader;
+        }
+    }
+    // Make column headers circular
+    currentColumnHeader->right = root;
+    root->left = currentColumnHeader;
+
+    // Go through the entire matrix row-by-row
+    for (int32_t rowIndex = 0; rowIndex < totalRows; rowIndex++) {
+        currentColumnHeader = root->right;
+        // Last one created for the current row, new nodes are placed on its right
+        std::shared_ptr<Node> lastCreatedRowNode;
+        // First one created for the current row, to which the last one must be connected
+        std::shared_ptr<Node> firstRowNode;
+
+        // Go through all columns
+        for (int32_t columnIndex = 0; columnIndex < totalColumns; columnIndex++) {
+            if (matrix[rowIndex][columnIndex]) {
+                // Go down the column, starting from the column header
+                std::shared_ptr<Node> lastColumnNode = currentColumnHeader;
+                while (lastColumnNode->down) {
+                    lastColumnNode = lastColumnNode->down;
+                }
+                // End of column reached, create new node
+                std::shared_ptr<Node> newNode = std::make_shared<Node>(rowIndex, columnIndex);
+                // If it's the first one of the current row, store a reference to it
+                if (!firstRowNode) {
+                    firstRowNode = newNode;
+                }
+                // Set links and increment column header's counter
+                lastColumnNode->down = newNode;
+                newNode->up = lastColumnNode;
+                newNode->header = currentColumnHeader;
+                newNode->left = lastCreatedRowNode;
+                if (lastCreatedRowNode) {
+                    lastCreatedRowNode->right = newNode;
+                }
+                currentColumnHeader->size++;
+                // Store the last created row node
+                lastCreatedRowNode = newNode;
+            }
+            // Advance to next column
+            currentColumnHeader = currentColumnHeader->right;
+        }
+
+        if (lastCreatedRowNode) {
+            // Make row circular
+            lastCreatedRowNode->right = firstRowNode;
+            firstRowNode->left = lastCreatedRowNode;
+        }
+    }
+
+    // Columns need to be circular
+    currentColumnHeader = root->right;
+    while (currentColumnHeader != root) {
+        // Go down the column until columnEnd points to the last column's node
+        std::shared_ptr<Node> columnEnd = currentColumnHeader;
+        while (columnEnd->down) {
+            columnEnd = columnEnd->down;
+        }
+        // Make the column circular
+        columnEnd->down = currentColumnHeader;
+        currentColumnHeader->up = columnEnd;
+        // Advance to next column
+        currentColumnHeader = currentColumnHeader->right;
+    }
+    return root;
+}
+
+
+void Solver::printDancingLinksMatrix(const std::shared_ptr<Node>& root,
+                                     const int32_t rowsAmount,
+                                     const int32_t columnsAmount,
+                                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                     const std::vector<std::vector<Sudo>>& board,
+                                     const std::vector<std::vector<bool>>& givenMask) {
+    // Print matrix header
+    std::cout << "                        |";
     for (const auto& constraint: constraints) {
         std::string str = " " + constraint->getName();
-        while (str.size() < constraint->getDLXConstraintColumnsAmount() + 2) {
+        while (str.size() < constraint->getDLXConstraintColumnsAmount() - 1) {
             str += " ";
         }
         std::cout << str << "|";
     }
-
-//    board[0][0] = Sudo::C;
-//    board[0][2] = Sudo::F;
-//    board[8][5] = Sudo::H;
     std::cout << std::endl;
-    for (int8_t boardRow = 0; boardRow <= MAX_INDEX; boardRow++) {
-        for (int8_t boardColumn = 0; boardColumn <= MAX_INDEX; boardColumn++) {
-            for (const auto& possibleDigit: SUDO_DIGITS) {
+
+    for (int32_t rowIndex = 0; rowIndex < rowsAmount; rowIndex++) {
+        // Print information about the row
+        const int32_t boardRow = rowIndex / TOTAL_DIGITS ;
+        const int32_t boardColumn = (rowIndex / MAX_DIGIT) % MAX_DIGIT;
+        const Sudo possibleDigit = static_cast<Sudo>((rowIndex % MAX_DIGIT) + 1);
+
+        const std::string boardRowString = std::to_string(boardRow);
+        const std::string boardColumnString = std::to_string(boardColumn);
+        const std::string possibleDigitString = std::to_string(static_cast<int8_t>(possibleDigit));
+
+        // if(givenMask[boardRow][boardColumn] && board[boardRow][boardColumn] != possibleDigit) {
+        if(false) {
                 std::cout << "Cell [" << std::to_string(boardRow) << ", " << std::to_string(boardColumn)
-                          << "] Digit: "
-                          << std::to_string(static_cast<int8_t>(possibleDigit)) << "  | ";
-                std::vector<bool> row;
-                // TODO: maybe all rows in which actualDigit is not None and actualDigit != possibleDigit can be avoided
-                for (const auto& constraint: constraints) {
-                    int32_t totalConstraintColumns = constraint->getDLXConstraintColumnsAmount();
-                    for (int32_t columnId = 0; columnId < totalConstraintColumns; columnId++) {
-                        const bool value = constraint->getDLXConstraint(boardRow,
-                                                                        boardColumn,
-                                                                        columnId,
-                                                                        possibleDigit,
-                                                                        board[boardRow][boardColumn]);
-                        std::cout << (value ? "■" : "□");
-                        row.emplace_back(value);
+                << "] Digit: " << possibleDigitString << " ignored";
+        }
+        else{
+            
+            std::cout << "Cell [" << boardRowString << ", " << boardColumnString
+                        << "] Digit: " << possibleDigitString << " | ";
+
+            std::shared_ptr<Node> currentColumn = root->right;
+            while (currentColumn != root) {
+                bool found = false;
+                std::shared_ptr<Node> currentNode = currentColumn->down;
+
+                while (currentNode != currentColumn) {
+                    if (currentNode->matrixRow == rowIndex) {
+                        found = true;
+
+                    } else if (currentNode->matrixRow > rowIndex) {
+                        break;
                     }
-                    std::cout << " | ";
+                    currentNode = currentNode->down;
                 }
-                std::cout << std::endl;
-                M.emplace_back(row);
+                if (found) {
+                    std::cout << "■";
+                } else {
+                    std::cout << " ";
+                }
+                // Advance to next column
+                currentColumn = currentColumn->right;
             }
         }
+
+        std::cout << std::endl;
     }
-    std::cout << "M(" << M.size() << "x" << M[0].size() << ")" << std::endl;
-    std::cout << M.size() << " = 81(cells) * 9(possible digits for each cell)" << std::endl;
-    std::cout << M[0].size() << " = " << constraints.size() << "(constraints) * 81(columns per constraint)"
-              << std::endl;
-
-
+    // Print additional info:
+    std::cout << "Matrix: (" << rowsAmount << " rows, " << columnsAmount << " columns)" << std::endl;
+    std::cout << rowsAmount << " rows due to " << (9 * 9 * 9 - rowsAmount) / 8
+              << " given digits. (Max: 729 rows with no digit given, each given removes 8 rows)" << std::endl;
+    std::cout << columnsAmount << " columns due to " << constraints.size()
+              << " constraints, namely ";
+    for (int32_t i = 0; i < constraints.size(); i++) {
+        std::cout << constraints[i]->getName() << ": " << constraints[i]->getDLXConstraintColumnsAmount();
+        if (i != constraints.size() - 1) {
+            std::cout << ", ";
+        }
+    }
     std::cout << std::endl;
-    std::cout << std::endl;
-    return false;
 }
+

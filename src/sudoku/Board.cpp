@@ -33,7 +33,7 @@ void Board::print() const {
 
     for (const auto& i: INDICES) {
         if (i == 0) {
-            std::cout << normalColor << "┏━━━━━━━━━━━┯━━━━━━━━━━━┯━━━━━━━━━━━┓" << std::endl;
+            std::cout << normalColor << "┏━━━━━━━┯━━━━━━━┯━━━━━━━┓" << std::endl;
         }
         for (const auto& j: INDICES) {
             if (j == 0) {
@@ -48,13 +48,13 @@ void Board::print() const {
 
             if (j < 8) {
                 if (j % 3 == 2) std::cout << normalColor << " │ ";
-                else std::cout << normalColor << "   ";
+                else std::cout << normalColor << " ";
             }
             if (j == 8) std::cout << normalColor + std::string(" ┃");
         }
         std::cout << normalColor << std::endl;
-        if (i % 3 == 2 && i < 8) std::cout << normalColor << "┠───────────┼───────────┼───────────┨" << std::endl;
-        if (i == 8) std::cout << normalColor << "┗━━━━━━━━━━━┷━━━━━━━━━━━┷━━━━━━━━━━━┛" << normalColor << std::endl;
+        if (i % 3 == 2 && i < 8) std::cout << normalColor << "┠───────┼───────┼───────┨" << std::endl;
+        if (i == 8) std::cout << normalColor << "┗━━━━━━━┷━━━━━━━┷━━━━━━━┛" << normalColor << std::endl;
     }
 }
 
