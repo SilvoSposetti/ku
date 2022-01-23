@@ -30,7 +30,8 @@ const std::vector<int8_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 const std::vector<Sudo> SUDO_DIGITS = {Sudo::A, Sudo::B, Sudo::C, Sudo::D, Sudo::E, Sudo::F, Sudo::G, Sudo::H, Sudo::I};
 
 enum class ConstraintType : uint64_t {
-    SUDOKU_CELL = 1 << 0, // Always activate, don't need to specify it
+    NONE = 0,
+    SUDOKU_CELL = 1 << 0, // Activated by default when creating new Sudoku, do not need to specify it
     SUDOKU_ROW = 1 << 1,
     SUDOKU_COLUMN = 1 << 2,
     SUDOKU_BOX = 1 << 3,
