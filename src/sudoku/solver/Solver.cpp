@@ -2,24 +2,81 @@
 #include "../Validator.h"
 #include "Node.h"
 #include <cstdint>
+#include <memory>
 
 std::vector<std::vector<Sudo>>
-Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, const SolverType solverType) {
+Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, SolverType solverType) {
     std::vector<std::vector<Sudo>> newBoard = emptyField();
     std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
-//    newBoard[0][0] = Sudo::C;
-//    givenMask[0][0] = true;
-//    newBoard[0][2] = Sudo::F;
-//    givenMask[0][2] = true;
-//    newBoard[8][5] = Sudo::H;
-//    givenMask[8][5] = true;
+
+    newBoard[0][1] = Sudo::G;
+    givenMask[0][1] = true;
+    newBoard[0][3] = Sudo::D;
+    givenMask[0][3] = true;
+    newBoard[1][0] = Sudo::C;
+    givenMask[1][0] = true;
+    newBoard[1][1] = Sudo::F;
+    givenMask[1][1] = true;
+    newBoard[1][2] = Sudo::E;
+    givenMask[1][2] = true;
+    newBoard[1][5] = Sudo::A;
+    givenMask[1][5] = true;
+    newBoard[2][0] = Sudo::H;
+    givenMask[2][0] = true;
+    newBoard[2][3] = Sudo::F;
+    givenMask[2][3] = true;
+    newBoard[2][5] = Sudo::G;
+    givenMask[2][5] = true;
+    newBoard[2][7] = Sudo::I;
+    givenMask[2][7] = true;
+    newBoard[3][0] = Sudo::I;
+    givenMask[3][0] = true;
+    newBoard[3][5] = Sudo::B;
+    givenMask[3][5] = true;
+    newBoard[3][6] = Sudo::D;
+    givenMask[3][6] = true;
+    newBoard[4][0] = Sudo::F;
+    givenMask[4][0] = true;
+    newBoard[4][3] = Sudo::E;
+    givenMask[4][3] = true;
+    newBoard[4][5] = Sudo::I;
+    givenMask[4][5] = true;
+    newBoard[4][8] = Sudo::H;
+    givenMask[4][8] = true;
+    newBoard[5][2] = Sudo::H;
+    givenMask[5][2] = true;
+    newBoard[5][3] = Sudo::A;
+    givenMask[5][3] = true;
+    newBoard[5][8] = Sudo::I;
+    givenMask[5][8] = true;
+    newBoard[6][1] = Sudo::C;
+    givenMask[6][1] = true;
+    newBoard[6][3] = Sudo::B;
+    givenMask[6][3] = true;
+    newBoard[6][5] = Sudo::H;
+    givenMask[6][5] = true;
+    newBoard[6][8] = Sudo::G;
+    givenMask[6][8] = true;
+    newBoard[7][3] = Sudo::G;
+    givenMask[7][3] = true;
+    newBoard[7][6] = Sudo::H;
+    givenMask[7][6] = true;
+    newBoard[7][7] = Sudo::C;
+    givenMask[7][7] = true;
+    newBoard[7][8] = Sudo::D;
+    givenMask[7][8] = true;
+    newBoard[8][5] = Sudo::C;
+    givenMask[8][5] = true;
+    newBoard[8][7] = Sudo::A;
+    givenMask[8][7] = true;
+
 
     bool created = false;
     if (solverType == SolverType::BruteForce) {
         created = Solver::randomBruteForceRecursive(0, 0, newBoard, givenMask, constraints);
     } else if (solverType == SolverType::DLX) {
-        created = Solver::randomDLX(newBoard, givenMask, constraints);
+        created = Solver::randomDlx(newBoard, givenMask, constraints);
     }
 
     if (!created) {
@@ -84,7 +141,7 @@ bool Solver::randomBruteForceRecursive(int8_t rowIndex,
 }
 
 
-bool Solver::randomDLX(std::vector<std::vector<Sudo>>& board,
+bool Solver::randomDlx(std::vector<std::vector<Sudo>>& board,
                        const std::vector<std::vector<bool>>& givenMask,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
     // Create matrix
@@ -133,8 +190,33 @@ bool Solver::randomDLX(std::vector<std::vector<Sudo>>& board,
         }
     }
     // Create doubly-linked list according to matrix M
-    std::shared_ptr<Node> root = createDancingLinksMatrix(M, constraints);
-    printDancingLinksMatrix(root, constraints, board, givenMask);
+    const std::shared_ptr<Node> root = createDancingLinksMatrix(M, constraints);
+    // printDancingLinksMatrix(root, constraints, board, givenMask);
+
+    // Find possible solutions
+    std::vector<std::vector<std::shared_ptr<Node>>> solutions = searchDlx(root);
+
+    if (solutions.size() == 1) {
+        std::cout << "Unique solution!" << std::endl;
+        for(const auto& node: solutions.at(0)) {
+            std::cout << std::to_string(node->matrixRow) << " | ";
+        }
+        std::cout << std::endl;
+    }
+    else{
+        std::cout << "Found at least " << solutions.size() << " solutions: "<< std::endl;
+        int32_t counter = 0;
+        for(const auto& solution: solutions) {
+            std::cout << counter << ": ";
+            for(const auto& node: solution) {
+                std::cout << std::to_string(node->matrixRow) << " | ";
+            }
+            std::cout << std::endl;
+        }
+    }
+    
+    
+
 
     return false;
 }
@@ -175,7 +257,7 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const std::vector<std::ve
         for (int32_t columnIndex = 0; columnIndex < totalColumns; columnIndex++) {
             const int32_t matrixRowId = matrix[rowIndex][columnIndex];
             if (matrixRowId >= 0) {
-                // Go down the column, starting from the column header
+                // Go to the last existing node of the column, starting from the column header
                 std::shared_ptr<Node> lastColumnNode = currentColumnHeader;
                 while (lastColumnNode->down) {
                     lastColumnNode = lastColumnNode->down;
@@ -226,6 +308,158 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const std::vector<std::ve
     return root;
 }
 
+
+std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::shared_ptr<Node>& root) {
+    int32_t maxSolutions = 2;
+    std::vector<std::vector<std::shared_ptr<Node>>> solutions;
+    std::vector<std::shared_ptr<Node>> solutionHolder;
+
+    searchDlxRecursive(root, 0, maxSolutions, solutionHolder, solutions);
+    return solutions;
+}
+
+void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
+                                int32_t depth,
+                                int32_t& solutionsLeftToSearchFor,
+                                std::vector<std::shared_ptr<Node>> solutionHolder,
+                                std::vector<std::vector<std::shared_ptr<Node>>>& solutions) {
+
+    if (root->right == root) {
+        // Ran out of columns => solved the exact cover problem
+
+        solutions.emplace_back(solutionHolder);
+        solutionsLeftToSearchFor--;
+        return;
+    }
+    
+    // Pick a column to cover
+    std::shared_ptr<Node> currentColum = root->right;
+    // std::shared_ptr<Node> currentColum = chooseSmallestColumn(root);
+    // std::shared_ptr<Node> currentColum = chooseRandomColumn(root);
+
+    coverDlxColumn(currentColum);
+
+    std::shared_ptr<Node> node = currentColum->down;
+    // Go through all nodes of this colum and cover their siblings' columns
+
+    // Stop if we reach loop back to the current column's header, or if enough solutions have been found
+    while (node != currentColum && solutionsLeftToSearchFor > 0) {
+        // Cover all siblings of this column's node one by one
+        // This is emplaced at the element with index 'depth'
+        solutionHolder.push_back(node);
+        std::shared_ptr<Node> siblingNode = node->right;
+
+        // Cover all siblings of 'node' from left to right
+        while (siblingNode != node) {
+            coverDlxColumn(siblingNode->header);
+            siblingNode = siblingNode->right;
+        }
+
+        // Recursive call
+        searchDlxRecursive(root, depth + 1, solutionsLeftToSearchFor, solutionHolder, solutions);        
+
+        // A solution wasn't found, pop the node from the solution
+        node = solutionHolder.at(depth);
+        solutionHolder.pop_back();
+        currentColum = node->header;
+
+        // Uncover the node's siblings in the opposite order, from right to left
+        siblingNode = node->left;
+        while (siblingNode != node) {
+            uncoverDlxColumn(siblingNode->header);
+            siblingNode =  siblingNode->left;
+        }
+
+        // Proceed down to next node of this column
+        node = node->down;
+
+    }
+    uncoverDlxColumn(currentColum);
+
+}
+
+void Solver::coverDlxColumn(std::shared_ptr<Node>& column) {
+    // Important: Even thought the column header is unlinked from the matrix,
+    // note that here column->left and column->right are not modified 
+    column->right->left = column->left;
+    column->left->right = column->right;
+
+    std::shared_ptr<Node> node = column->down;
+    while (node != column) {
+        std::shared_ptr<Node> siblingNode = node->right;
+        while (siblingNode != node){
+            // Important: Even though the sibling nodes are unlinked from the matrix,
+            // note that here siblingNode->up and siblingNode->down are not modified
+            siblingNode->down->up = siblingNode->up;
+            siblingNode->up->down = siblingNode->down;
+
+            // Just unlinked a node from a colum => reduce  column size
+            siblingNode->header->size--;
+
+            // Proceed to next sibling (left to right)
+            siblingNode = siblingNode->right;
+        }
+        // Proceed to next node down the coumn
+        node = node->down;
+    }
+}
+
+void Solver::uncoverDlxColumn(std::shared_ptr<Node>& column) {
+    // Uncovering is done in reverse to covering
+    std::shared_ptr<Node> node = column->up;
+    while (node != column) {
+        std::shared_ptr<Node> siblingNode = node->left;
+        while (siblingNode != node) {
+            // The sibling nodes' pointers were unmodified while covering,
+            // insert the sibling node back into the list using the "Dancing Links" operation
+            siblingNode->down->up = siblingNode;
+            siblingNode->up->down = siblingNode;
+
+            // Just re-inserted the node in the column => increase column size
+            siblingNode->header->size++;
+
+            // Proceed to next sibling (right to left)
+            siblingNode = siblingNode->left;
+        }
+        // Proceed to the next node up the column
+        node = node->up;
+    }
+    // The column header's pointers were unmodified while covering it,
+    // insert the column header back into the list using the "Dancing Links" operation
+    column->right->left = column;
+    column->left->right = column;
+}
+
+
+std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& root) {
+    std::shared_ptr<Node> currentColumn = root->right;
+    std::shared_ptr<Node> smallestColumn = root->right;
+    while (currentColumn != root){
+        if (currentColumn->size < currentColumn->size){
+            smallestColumn = currentColumn;
+        }
+        currentColumn = currentColumn->right;
+    }
+    return smallestColumn;
+}
+
+std::shared_ptr<Node> Solver::chooseRandomColumn(const std::shared_ptr<Node>& root) {
+    std::shared_ptr<Node> currentColumn = root;
+    int32_t columnsAmount = 0;
+    while (currentColumn->right != root){
+        columnsAmount++;
+        currentColumn = currentColumn->right;
+    }
+    const int32_t randomColumn = randomUniform(0, columnsAmount);
+    currentColumn = root->right;
+    std::cout << randomColumn << std::endl;
+    int32_t counter = 0;
+    while (counter < randomColumn) {
+        currentColumn =  currentColumn->right;
+        counter++;
+    }
+    return currentColumn;
+}
 
 void Solver::printDancingLinksMatrix(const std::shared_ptr<Node>& root,
                                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,

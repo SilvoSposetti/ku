@@ -22,7 +22,8 @@ Sudoku::Sudoku(const std::string& name,
     }
 
     board = Setter::generate(digitsAmount, setterType, constraints);
-    std::cout << name << " [-" << std::to_string(81 - totalDigits) << "]                   MaskType: "
+    
+    std::cout << name << " [-" << std::to_string(81 - totalDigits) << "]       MaskType: "
               << std::to_string(static_cast<int>(setterType)) << std::endl;
     board->print();
 //    board->printGivenPattern();

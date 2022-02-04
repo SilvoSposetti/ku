@@ -2,8 +2,8 @@
 
 #include "solver/Solver.h"
 
-std::unique_ptr<Board> Setter::generate(const int8_t totalDigits,
-                                        const SymmetryType symmetryType,
+std::unique_ptr<Board> Setter::generate(int8_t totalDigits,
+                                        SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
     // Create a new board
@@ -33,7 +33,7 @@ std::unique_ptr<Board> Setter::generate(const int8_t totalDigits,
 }
 
 
-void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, const int8_t totalDigits) {
+void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, int8_t totalDigits) {
     int8_t counter = 0;
     for (int8_t i = MIN_INDEX; i <= MAX_INDEX; i++) {
         for (int8_t j = MIN_INDEX; j <= MAX_INDEX; j++) {
@@ -45,7 +45,7 @@ void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, const in
     }
 }
 
-std::vector<std::vector<bool>> Setter::randomMask(const int8_t totalDigits) {
+std::vector<std::vector<bool>> Setter::randomMask(int8_t totalDigits) {
     std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digits = 81;
     while (digits != totalDigits) {
@@ -59,15 +59,15 @@ std::vector<std::vector<bool>> Setter::randomMask(const int8_t totalDigits) {
     return mask;
 }
 
-inline bool Setter::isOnMainDiagonal(const int8_t rowIndex, int8_t columnIndex) {
+inline bool Setter::isOnMainDiagonal(int8_t rowIndex, int8_t columnIndex) {
     return rowIndex == columnIndex;
 }
 
-inline bool Setter::isOnCenter(const int8_t rowIndex, const int8_t columnIndex) {
+inline bool Setter::isOnCenter(int8_t rowIndex, int8_t columnIndex) {
     return rowIndex == MID_INDEX && columnIndex == MID_INDEX;
 }
 
-std::vector<std::vector<bool>> Setter::diagonalMirrorMask(const int8_t totalDigits) {
+std::vector<std::vector<bool>> Setter::diagonalMirrorMask(int8_t totalDigits) {
     std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digitsToRemove = TOTAL_DIGITS - totalDigits;
     // "Diagonal" digits are removed once at the beginning, then in pairs
@@ -118,7 +118,7 @@ std::vector<std::vector<bool>> Setter::diagonalMirrorMask(const int8_t totalDigi
     return mask;
 }
 
-std::vector<std::vector<bool>> Setter::diagonalRotationMask(const int8_t totalDigits) {
+std::vector<std::vector<bool>> Setter::diagonalRotationMask(int8_t totalDigits) {
     std::vector<std::vector<bool>> mask = fullGivenMask();
     int8_t digitsToRemove = TOTAL_DIGITS - totalDigits;
 
