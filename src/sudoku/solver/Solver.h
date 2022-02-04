@@ -6,7 +6,7 @@
 #include <cstdint>
 
 enum class SolverType {
-    BruteForce, // Standard naive brute-force approach
+    Naive, // Standard naive brute-force approach
     DLX // Transforms the sudoku instance into an exact cover instance and solves it with Algorithm X using Dancing Links
 };
 
@@ -36,7 +36,7 @@ private:
     static void searchDlxRecursive(const std::shared_ptr<Node>& root,
                                    int32_t depth,
                                    int32_t& solutionsLeftToSearchFor,
-                                   std::vector<std::shared_ptr<Node>> solutionHolder,
+                                   std::vector<std::shared_ptr<Node>>& solutionHolder,
                                    std::vector<std::vector<std::shared_ptr<Node>>>& solutions);
 
     static void coverDlxColumn(std::shared_ptr<Node>& column);

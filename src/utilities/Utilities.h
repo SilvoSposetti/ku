@@ -6,6 +6,7 @@
 #include <random>
 #include <chrono>
 #include <atomic>
+#include <algorithm>
 
 enum class Sudo : int8_t {
     NONE = 0,

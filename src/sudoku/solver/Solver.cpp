@@ -9,71 +9,60 @@ Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& cons
     std::vector<std::vector<Sudo>> newBoard = emptyField();
     std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
-
+// ┏━━━━━━━┯━━━━━━━┯━━━━━━━┓
+// ┃ 0 7 0 │ 4 0 0 │ 0 0 0 ┃
+// ┃ 3 6 5 │ 0 0 1 │ 0 0 0 ┃
+// ┃ 8 0 0 │ 6 0 7 │ 0 9 0 ┃
+// ┠───────┼───────┼───────┨
+// ┃ 9 0 0 │ 0 0 2 │ 4 0 0 ┃
+// ┃ 6 0 0 │ 5 0 9 │ 0 0 8 ┃
+// ┃ 0 0 8 │ 1 0 0 │ 0 0 9 ┃
+// ┠───────┼───────┼───────┨
+// ┃ 0 3 0 │ 2 0 8 │ 0 0 7 ┃
+// ┃ 0 0 0 │ 7 0 0 │ 8 3 4 ┃
+// ┃ 0 0 0 │ 0 0 3 │ 0 1 0 ┃
+// ┗━━━━━━━┷━━━━━━━┷━━━━━━━┛
     newBoard[0][1] = Sudo::G;
-    givenMask[0][1] = true;
     newBoard[0][3] = Sudo::D;
-    givenMask[0][3] = true;
     newBoard[1][0] = Sudo::C;
-    givenMask[1][0] = true;
     newBoard[1][1] = Sudo::F;
-    givenMask[1][1] = true;
     newBoard[1][2] = Sudo::E;
-    givenMask[1][2] = true;
     newBoard[1][5] = Sudo::A;
-    givenMask[1][5] = true;
     newBoard[2][0] = Sudo::H;
-    givenMask[2][0] = true;
     newBoard[2][3] = Sudo::F;
-    givenMask[2][3] = true;
     newBoard[2][5] = Sudo::G;
-    givenMask[2][5] = true;
     newBoard[2][7] = Sudo::I;
-    givenMask[2][7] = true;
     newBoard[3][0] = Sudo::I;
-    givenMask[3][0] = true;
     newBoard[3][5] = Sudo::B;
-    givenMask[3][5] = true;
     newBoard[3][6] = Sudo::D;
-    givenMask[3][6] = true;
     newBoard[4][0] = Sudo::F;
-    givenMask[4][0] = true;
     newBoard[4][3] = Sudo::E;
-    givenMask[4][3] = true;
     newBoard[4][5] = Sudo::I;
-    givenMask[4][5] = true;
     newBoard[4][8] = Sudo::H;
-    givenMask[4][8] = true;
     newBoard[5][2] = Sudo::H;
-    givenMask[5][2] = true;
     newBoard[5][3] = Sudo::A;
-    givenMask[5][3] = true;
     newBoard[5][8] = Sudo::I;
-    givenMask[5][8] = true;
     newBoard[6][1] = Sudo::C;
-    givenMask[6][1] = true;
     newBoard[6][3] = Sudo::B;
-    givenMask[6][3] = true;
     newBoard[6][5] = Sudo::H;
-    givenMask[6][5] = true;
     newBoard[6][8] = Sudo::G;
-    givenMask[6][8] = true;
     newBoard[7][3] = Sudo::G;
-    givenMask[7][3] = true;
     newBoard[7][6] = Sudo::H;
-    givenMask[7][6] = true;
     newBoard[7][7] = Sudo::C;
-    givenMask[7][7] = true;
     newBoard[7][8] = Sudo::D;
-    givenMask[7][8] = true;
     newBoard[8][5] = Sudo::C;
-    givenMask[8][5] = true;
     newBoard[8][7] = Sudo::A;
-    givenMask[8][7] = true;
 
+    for (const auto& i: INDICES) {
+        for (const auto& j: INDICES) {
+            if (newBoard[i][j] != Sudo::NONE){
+                givenMask[i][j] = true;
+            }            
+        }
+    }
 
     bool created = false;
-    if (solverType == SolverType::BruteForce) {
+    if (solverType == SolverType::Naive) {
         created = Solver::randomBruteForceRecursive(0, 0, newBoard, givenMask, constraints);
     } else if (solverType == SolverType::DLX) {
         created = Solver::randomDlx(newBoard, givenMask, constraints);
@@ -144,6 +133,9 @@ bool Solver::randomBruteForceRecursive(int8_t rowIndex,
 bool Solver::randomDlx(std::vector<std::vector<Sudo>>& board,
                        const std::vector<std::vector<bool>>& givenMask,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+
+    // Reduce problem: Sudoku->DLX
+    
     // Create matrix
     const int32_t totalRows = 9 * 9 * 9; // =729 (81 cells, 9 possible digits for each cell)
     int32_t totalColumns = 0;
@@ -154,8 +146,8 @@ bool Solver::randomDlx(std::vector<std::vector<Sudo>>& board,
     std::vector<std::vector<int32_t>> M; // stores the cell ID if a node exists in a certain position, otherwise -1
 
     // Go through all board cells via their row and column indices
-    for (int8_t boardRow = 0; boardRow <= MAX_INDEX; boardRow++) {
-        for (int8_t boardColumn = 0; boardColumn <= MAX_INDEX; boardColumn++) {
+    for (const auto& boardRow : INDICES) {
+        for (const auto& boardColumn : INDICES) {
             Sudo actualDigit = Sudo::NONE;
             if(givenMask[boardRow][boardColumn]) {
                 actualDigit = board[boardRow][boardColumn];
@@ -198,26 +190,31 @@ bool Solver::randomDlx(std::vector<std::vector<Sudo>>& board,
 
     if (solutions.size() == 1) {
         std::cout << "Unique solution!" << std::endl;
-        for(const auto& node: solutions.at(0)) {
-            std::cout << std::to_string(node->matrixRow) << " | ";
-        }
-        std::cout << std::endl;
-    }
-    else{
+    } else {
         std::cout << "Found at least " << solutions.size() << " solutions: "<< std::endl;
-        int32_t counter = 0;
-        for(const auto& solution: solutions) {
-            std::cout << counter << ": ";
-            for(const auto& node: solution) {
-                std::cout << std::to_string(node->matrixRow) << " | ";
+    }
+    // printDancingLinksMatrix(root, constraints, board, givenMask);
+    
+    // Reduce solution: DLX->Sudoku
+    if (!solutions.empty()) {
+        // Use first solution out of all those that are found
+        const std::vector<std::shared_ptr<Node>> pickedSolution = solutions[0];
+        // This solution should have 81 nodes, one for each cell
+        if (pickedSolution.size() == TOTAL_DIGITS) {
+            // Transform found solution to the sudoku board
+            for(const auto& node : pickedSolution) { // Pick the first solution
+                // The node itself stores its original DLX-matrix location (row & column)
+                const int32_t matrixRow = node->matrixRow;
+                // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
+                // but the process here is reversed
+                const int32_t boardRow = matrixRow / TOTAL_DIGITS ;
+                const int32_t boardColumn = (matrixRow / MAX_DIGIT) % MAX_DIGIT;
+                const Sudo actualDigit = static_cast<Sudo>((matrixRow % MAX_DIGIT) + 1);
+                board[boardRow][boardColumn] = actualDigit;
             }
-            std::cout << std::endl;
+            return true;
         }
     }
-    
-    
-
-
     return false;
 }
 
@@ -310,9 +307,13 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const std::vector<std::ve
 
 
 std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::shared_ptr<Node>& root) {
-    int32_t maxSolutions = 2;
-    std::vector<std::vector<std::shared_ptr<Node>>> solutions;
+    // The solution holder is modified by the search, everytime it reaches 81 elements a different solution
+    // is found by the algorithm
     std::vector<std::shared_ptr<Node>> solutionHolder;
+    // The solutions are going to contain all different 81-sized solutions found
+    std::vector<std::vector<std::shared_ptr<Node>>> solutions;
+    // Stop after this amount of solutions is found
+    int32_t maxSolutions = 2;
 
     searchDlxRecursive(root, 0, maxSolutions, solutionHolder, solutions);
     return solutions;
@@ -321,7 +322,7 @@ std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::sha
 void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
                                 int32_t depth,
                                 int32_t& solutionsLeftToSearchFor,
-                                std::vector<std::shared_ptr<Node>> solutionHolder,
+                                std::vector<std::shared_ptr<Node>>& solutionHolder,
                                 std::vector<std::vector<std::shared_ptr<Node>>>& solutions) {
 
     if (root->right == root) {
@@ -333,8 +334,8 @@ void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
     }
     
     // Pick a column to cover
-    std::shared_ptr<Node> currentColum = root->right;
-    // std::shared_ptr<Node> currentColum = chooseSmallestColumn(root);
+    // std::shared_ptr<Node> currentColum = root->right;
+    std::shared_ptr<Node> currentColum = chooseSmallestColumn(root);
     // std::shared_ptr<Node> currentColum = chooseRandomColumn(root);
 
     coverDlxColumn(currentColum);
@@ -467,7 +468,7 @@ void Solver::printDancingLinksMatrix(const std::shared_ptr<Node>& root,
                                      const std::vector<std::vector<bool>>& givenMask) {
     
     // The amount of rows depends on the amount of givens, each given removes 8 rows
-    const int32_t maximumRows = 9 * 9 * 9;
+    constexpr int32_t maximumRows = 9 * 9 * 9;
     int32_t actualRows = maximumRows;
     int32_t givenDigits = 0;
     for (const auto& givenRow : givenMask) {

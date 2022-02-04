@@ -7,7 +7,7 @@ std::unique_ptr<Board> Setter::generate(int8_t totalDigits,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
     // Create a new board
-//    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::BruteForce);
+//    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::Naive);
     std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::DLX);
 
     // Create given mask
