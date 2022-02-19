@@ -1,14 +1,15 @@
 #include "Setter.h"
-
 #include "solver/Solver.h"
 
 std::unique_ptr<Board> Setter::generate(int8_t totalDigits,
                                         SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-
+                                        
+    // Timer timer;
     // Create a new board
-//    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::Naive);
+    // std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::Naive);
     std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::DLX);
+    // timer.printElapsed("Creating Random Board");
 
     // Create given mask
     std::vector<std::vector<bool>> givenMask;

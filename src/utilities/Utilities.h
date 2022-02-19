@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -88,10 +90,11 @@ enum class SymmetryType {
     TWO_AXES_ROTATION
 };
 
-static inline int8_t randomUniform(const int8_t min = MIN_INDEX, const int8_t max = MAX_INDEX) {
+static inline int32_t randomUniform(const int32_t min = MIN_INDEX, const int32_t max = MAX_INDEX) {
+    // max and min are both inclusive
     std::random_device randomDevice;
     std::mt19937 generator(randomDevice());
-    std::uniform_int_distribution<int8_t> uniformIntDistribution(min, max);
+    std::uniform_int_distribution<int32_t> uniformIntDistribution(min, max);
     return uniformIntDistribution(generator);
 }
 
@@ -102,6 +105,37 @@ static inline std::vector<T> randomShuffle(const std::vector<T>& input) {
     return vector;
 }
 
-static inline int8_t clamp(const int8_t value, const int8_t min, const int8_t max) {
+static inline int32_t clamp(const int32_t value, const int32_t min, const int32_t max) {
     return std::max(std::min(value, max), min);
 }
+
+class Timer
+{
+public:
+    Timer() : startTime(highResolutionClock::now()) {}
+    void reset() {
+        startTime = highResolutionClock::now();
+        }
+    double elapsed() const {
+        return std::chrono::duration_cast<seconds>(highResolutionClock::now() - startTime).count();
+        }
+    std::string elapsedReadable() const {
+        const double seconds = elapsed();
+        const double minutes = std::floor(seconds / 60.0);
+        std::string minutesString = std::to_string(static_cast<int32_t>(minutes));
+        minutesString = minutesString.size() == 1 ? "0" + minutesString : minutesString;
+        const std::string secondsString = std::to_string(seconds);
+
+        return minutesString + ":" + secondsString;
+    }
+
+    void printElapsed(const std::string& message) const {
+        const std::string elapsedString = elapsedReadable();
+        std::cout << message << " [ " << elapsedString << " ]" << std::endl;
+    }
+
+private:
+    typedef std::chrono::high_resolution_clock highResolutionClock;
+    typedef std::chrono::duration<double, std::ratio<1> > seconds;
+    std::chrono::time_point<highResolutionClock> startTime;
+};

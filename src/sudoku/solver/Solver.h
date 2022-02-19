@@ -18,15 +18,19 @@ public:
 
 private:
 
-    static bool randomBruteForceRecursive(int8_t rowIndex,
-                                          int8_t columnIndex,
-                                          std::vector<std::vector<Sudo>>& board,
-                                          const std::vector<std::vector<bool>>& givenMask,
-                                          const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+    static bool naive(std::vector<std::vector<Sudo>>& board,
+                      const std::vector<std::vector<bool>>& givenMask,
+                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
-    static bool randomDlx(std::vector<std::vector<Sudo>>& board,
-                          const std::vector<std::vector<bool>>& givenMask,
-                          const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+    static bool naiveRecursive(int8_t rowIndex,
+                               int8_t columnIndex,
+                               std::vector<std::vector<Sudo>>& board,
+                               const std::vector<std::vector<bool>>& givenMask,
+                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
+    static bool dlx(std::vector<std::vector<Sudo>>& board,
+                    const std::vector<std::vector<bool>>& givenMask,
+                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
     static std::shared_ptr<Node> createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix,
                                                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);

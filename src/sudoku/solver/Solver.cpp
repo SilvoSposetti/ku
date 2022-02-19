@@ -1,71 +1,17 @@
 #include "Solver.h"
 #include "../Validator.h"
-#include "Node.h"
 #include <cstdint>
-#include <memory>
 
 std::vector<std::vector<Sudo>>
 Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, SolverType solverType) {
     std::vector<std::vector<Sudo>> newBoard = emptyField();
     std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
-// ┏━━━━━━━┯━━━━━━━┯━━━━━━━┓
-// ┃ 0 7 0 │ 4 0 0 │ 0 0 0 ┃
-// ┃ 3 6 5 │ 0 0 1 │ 0 0 0 ┃
-// ┃ 8 0 0 │ 6 0 7 │ 0 9 0 ┃
-// ┠───────┼───────┼───────┨
-// ┃ 9 0 0 │ 0 0 2 │ 4 0 0 ┃
-// ┃ 6 0 0 │ 5 0 9 │ 0 0 8 ┃
-// ┃ 0 0 8 │ 1 0 0 │ 0 0 9 ┃
-// ┠───────┼───────┼───────┨
-// ┃ 0 3 0 │ 2 0 8 │ 0 0 7 ┃
-// ┃ 0 0 0 │ 7 0 0 │ 8 3 4 ┃
-// ┃ 0 0 0 │ 0 0 3 │ 0 1 0 ┃
-// ┗━━━━━━━┷━━━━━━━┷━━━━━━━┛
-    newBoard[0][1] = Sudo::G;
-    newBoard[0][3] = Sudo::D;
-    newBoard[1][0] = Sudo::C;
-    newBoard[1][1] = Sudo::F;
-    newBoard[1][2] = Sudo::E;
-    newBoard[1][5] = Sudo::A;
-    newBoard[2][0] = Sudo::H;
-    newBoard[2][3] = Sudo::F;
-    newBoard[2][5] = Sudo::G;
-    newBoard[2][7] = Sudo::I;
-    newBoard[3][0] = Sudo::I;
-    newBoard[3][5] = Sudo::B;
-    newBoard[3][6] = Sudo::D;
-    newBoard[4][0] = Sudo::F;
-    newBoard[4][3] = Sudo::E;
-    newBoard[4][5] = Sudo::I;
-    newBoard[4][8] = Sudo::H;
-    newBoard[5][2] = Sudo::H;
-    newBoard[5][3] = Sudo::A;
-    newBoard[5][8] = Sudo::I;
-    newBoard[6][1] = Sudo::C;
-    newBoard[6][3] = Sudo::B;
-    newBoard[6][5] = Sudo::H;
-    newBoard[6][8] = Sudo::G;
-    newBoard[7][3] = Sudo::G;
-    newBoard[7][6] = Sudo::H;
-    newBoard[7][7] = Sudo::C;
-    newBoard[7][8] = Sudo::D;
-    newBoard[8][5] = Sudo::C;
-    newBoard[8][7] = Sudo::A;
-
-    for (const auto& i: INDICES) {
-        for (const auto& j: INDICES) {
-            if (newBoard[i][j] != Sudo::NONE){
-                givenMask[i][j] = true;
-            }            
-        }
-    }
-
     bool created = false;
     if (solverType == SolverType::Naive) {
-        created = Solver::randomBruteForceRecursive(0, 0, newBoard, givenMask, constraints);
+        created = Solver::naive(newBoard, givenMask, constraints);
     } else if (solverType == SolverType::DLX) {
-        created = Solver::randomDlx(newBoard, givenMask, constraints);
+        created = Solver::dlx(newBoard, givenMask, constraints);
     }
 
     if (!created) {
@@ -77,11 +23,18 @@ Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& cons
     return newBoard;
 }
 
-bool Solver::randomBruteForceRecursive(int8_t rowIndex,
-                                       int8_t columnIndex,
-                                       std::vector<std::vector<Sudo>>& board,
-                                       const std::vector<std::vector<bool>>& givenMask,
-                                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+bool Solver::naive(std::vector<std::vector<Sudo>>& board,
+                   const std::vector<std::vector<bool>>& givenMask,
+                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+                       int32_t counter = 0;
+    return naiveRecursive(0, 0, board, givenMask, constraints);
+}
+
+bool Solver::naiveRecursive(int8_t rowIndex,
+                            int8_t columnIndex,
+                            std::vector<std::vector<Sudo>>& board,
+                            const std::vector<std::vector<bool>>& givenMask,
+                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
     // Reached end of the board, so found solution must be valid
     if (rowIndex > 8) {
         return true;
@@ -104,7 +57,7 @@ bool Solver::randomBruteForceRecursive(int8_t rowIndex,
                     columnIndex = 0;
                 }
                 // If the recursive call returns true, a valid solution was found
-                if (Solver::randomBruteForceRecursive(rowIndex, columnIndex, board, givenMask, constraints)) {
+                if (Solver::naiveRecursive(rowIndex, columnIndex, board, givenMask, constraints)) {
                     return true;
                 }
                 // Otherwise, the digit just placed leads to a conflict
@@ -124,16 +77,15 @@ bool Solver::randomBruteForceRecursive(int8_t rowIndex,
             rowIndex++;
             columnIndex = 0;
         }
-        return Solver::randomBruteForceRecursive(rowIndex, columnIndex, board, givenMask, constraints);
+        return Solver::naiveRecursive(rowIndex, columnIndex, board, givenMask, constraints);
     }
     return false;
 }
 
 
-bool Solver::randomDlx(std::vector<std::vector<Sudo>>& board,
-                       const std::vector<std::vector<bool>>& givenMask,
-                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-
+bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
+                 const std::vector<std::vector<bool>>& givenMask,
+                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
     // Reduce problem: Sudoku->DLX
     
     // Create matrix
@@ -327,12 +279,10 @@ void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
 
     if (root->right == root) {
         // Ran out of columns => solved the exact cover problem
-
         solutions.emplace_back(solutionHolder);
         solutionsLeftToSearchFor--;
         return;
     }
-    
     // Pick a column to cover
     // std::shared_ptr<Node> currentColum = root->right;
     std::shared_ptr<Node> currentColum = chooseSmallestColumn(root);
@@ -436,7 +386,7 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
     std::shared_ptr<Node> currentColumn = root->right;
     std::shared_ptr<Node> smallestColumn = root->right;
     while (currentColumn != root){
-        if (currentColumn->size < currentColumn->size){
+        if (currentColumn->size < smallestColumn->size){
             smallestColumn = currentColumn;
         }
         currentColumn = currentColumn->right;
@@ -445,18 +395,18 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
 }
 
 std::shared_ptr<Node> Solver::chooseRandomColumn(const std::shared_ptr<Node>& root) {
-    std::shared_ptr<Node> currentColumn = root;
+    std::shared_ptr<Node> currentColumn = root->right;
     int32_t columnsAmount = 0;
-    while (currentColumn->right != root){
+    while (currentColumn != root){
         columnsAmount++;
         currentColumn = currentColumn->right;
     }
-    const int32_t randomColumn = randomUniform(0, columnsAmount);
-    currentColumn = root->right;
-    std::cout << randomColumn << std::endl;
+    const int32_t randomColumn = randomUniform(1, columnsAmount);
+
+    currentColumn = root;
     int32_t counter = 0;
     while (counter < randomColumn) {
-        currentColumn =  currentColumn->right;
+        currentColumn = currentColumn->right;
         counter++;
     }
     return currentColumn;

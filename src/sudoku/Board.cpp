@@ -20,7 +20,7 @@ void Board::printGivenPattern() const {
     for (const auto& row: givenMask) {
         for (const auto& element: row) {
             const std::string str = element ? "■" : " ";
-            std::cout << str << "  ";
+            std::cout << str << " ";
         }
         std::cout << std::endl;
     }
