@@ -10,7 +10,7 @@
 #include <atomic>
 #include <algorithm>
 
-enum class Sudo : int8_t {
+enum class Sudo : int32_t {
     NONE = 0,
     A = 1,
     B = 2,
@@ -23,13 +23,14 @@ enum class Sudo : int8_t {
     I = 9
 };
 
-constexpr int8_t MAX_DIGIT = 9;
-constexpr int8_t MIN_DIGIT = 1;
-constexpr int8_t TOTAL_DIGITS = 81;
-constexpr int8_t MAX_INDEX = 8;
-constexpr int8_t MID_INDEX = 4;
-constexpr int8_t MIN_INDEX = 0;
-const std::vector<int8_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+constexpr int32_t MAX_DIGIT = 9;
+constexpr int32_t MIN_DIGIT = 1;
+constexpr int32_t TOTAL_DIGITS = 81; 
+constexpr int32_t MAX_CELL_INDEX = 80; 
+constexpr int32_t MAX_INDEX = 8;
+constexpr int32_t MID_INDEX = 4;
+constexpr int32_t MIN_INDEX = 0;
+const std::vector<int32_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 const std::vector<Sudo> SUDO_DIGITS = {Sudo::A, Sudo::B, Sudo::C, Sudo::D, Sudo::E, Sudo::F, Sudo::G, Sudo::H, Sudo::I};
 
 enum class ConstraintType : uint64_t {
@@ -78,6 +79,14 @@ static std::vector<std::vector<bool>> emptyGivenMask() {
     return newMask;
 }
 
+static inline int32_t getCellId(int32_t rowIndex, int32_t columnIndex) {
+    return rowIndex * MAX_DIGIT + columnIndex;
+}
+
+static inline std::pair<int32_t, int32_t> getIndices(int32_t cellId) {
+    return std::make_pair(cellId / MAX_DIGIT, cellId % MAX_DIGIT);
+}
+
 enum class SymmetryType {
     RANDOM,
     ONE_DIAGONAL_MIRROR,
@@ -87,7 +96,8 @@ enum class SymmetryType {
     ONE_AXIS_MIRROR,
     ONE_AXIS_ROTATION,
     TWO_AXES_MIRROR,
-    TWO_AXES_ROTATION
+    TWO_AXES_ROTATION,
+    AMOUNT
 };
 
 static inline int32_t randomUniform(const int32_t min = MIN_INDEX, const int32_t max = MAX_INDEX) {

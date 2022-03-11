@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "../utilities/Utilities.h"
 #include "constraints/AbstractConstraint.h"
+#include <cstdint>
 
 class Setter {
 public:
@@ -13,7 +14,7 @@ public:
                                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
 private:
-    static void checkGivenMask(const std::vector<std::vector<bool>>& mask, int8_t totalDigits);
+
 
     static inline bool isOnMainDiagonal(int8_t rowIndex,
                                         int8_t columnIndex);

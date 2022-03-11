@@ -3,24 +3,38 @@
 #include <cstdint>
 
 std::vector<std::vector<Sudo>>
-Solver::createBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, SolverType solverType) {
-    std::vector<std::vector<Sudo>> newBoard = emptyField();
+Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+    
+    std::vector<std::vector<Sudo>> newField = emptyField();
     std::vector<std::vector<bool>> givenMask = emptyGivenMask();
-
-    bool created = false;
-    if (solverType == SolverType::Naive) {
-        created = Solver::naive(newBoard, givenMask, constraints);
-    } else if (solverType == SolverType::DLX) {
-        created = Solver::dlx(newBoard, givenMask, constraints);
-    }
+    
+    // Naive solver is faster to create a filled, random board
+    bool created = Solver::naive(newField, givenMask, constraints);
 
     if (!created) {
         std::cout << "ERROR: Was not able to generate a new board with the given constraints" << std::endl;
     }
-    if (!Validator::checkSolution(newBoard, constraints)) {
+    if (!Validator::checkSolution(newField, constraints)) {
         std::cout << "ERROR: Solution created does not satisfy all constraints" << std::endl;
     }
-    return newBoard;
+    return newField;
+}
+
+bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
+                      const std::vector<std::vector<bool>>& givenMask,
+                      const std::vector<std::unique_ptr<AbstractConstraint>> &constraints) {
+    
+    // Create board to use for solving
+    std::vector<std::vector<Sudo>> board = solution;
+    for(int i = 0; i < MAX_INDEX; i++){
+        for(int j = 0; j < MAX_INDEX; j++){
+            if(!givenMask[i][j]){
+                board[i][j] = Sudo::NONE;
+            }
+        }
+    }
+    // Run DLX
+    return Solver::dlx(board, givenMask, constraints, true);
 }
 
 bool Solver::naive(std::vector<std::vector<Sudo>>& board,
@@ -85,7 +99,8 @@ bool Solver::naiveRecursive(int8_t rowIndex,
 
 bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
                  const std::vector<std::vector<bool>>& givenMask,
-                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                 bool checkForUniqueness) {
     // Reduce problem: Sudoku->DLX
     
     // Create matrix
@@ -138,17 +153,18 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
     // printDancingLinksMatrix(root, constraints, board, givenMask);
 
     // Find possible solutions
-    std::vector<std::vector<std::shared_ptr<Node>>> solutions = searchDlx(root);
-
-    if (solutions.size() == 1) {
-        std::cout << "Unique solution!" << std::endl;
-    } else {
-        std::cout << "Found at least " << solutions.size() << " solutions: "<< std::endl;
+    std::vector<std::vector<std::shared_ptr<Node>>> solutions = searchDlx(root, checkForUniqueness);
+ 
+    // No need to reduce the solution back to a valid board when simply checking for uniqueness
+    if(checkForUniqueness){
+        if(solutions.size() == 1){
+            return true;
+        }
+        return false;
     }
-    // printDancingLinksMatrix(root, constraints, board, givenMask);
-    
+
     // Reduce solution: DLX->Sudoku
-    if (!solutions.empty()) {
+    if (!solutions.empty()) {        
         // Use first solution out of all those that are found
         const std::vector<std::shared_ptr<Node>> pickedSolution = solutions[0];
         // This solution should have 81 nodes, one for each cell
@@ -258,14 +274,15 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const std::vector<std::ve
 }
 
 
-std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::shared_ptr<Node>& root) {
+std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::shared_ptr<Node>& root,
+                                                                  bool checkForUniqueness) {
     // The solution holder is modified by the search, everytime it reaches 81 elements a different solution
     // is found by the algorithm
     std::vector<std::shared_ptr<Node>> solutionHolder;
     // The solutions are going to contain all different 81-sized solutions found
     std::vector<std::vector<std::shared_ptr<Node>>> solutions;
     // Stop after this amount of solutions is found
-    int32_t maxSolutions = 2;
+    int32_t maxSolutions = checkForUniqueness ? 2 : 1;
 
     searchDlxRecursive(root, 0, maxSolutions, solutionHolder, solutions);
     return solutions;

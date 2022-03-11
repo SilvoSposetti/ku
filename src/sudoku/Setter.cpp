@@ -1,50 +1,50 @@
 #include "Setter.h"
 #include "solver/Solver.h"
+#include <cstdint>
+#include <memory>
 
 std::unique_ptr<Board> Setter::generate(int8_t totalDigits,
                                         SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-                                        
-    // Timer timer;
-    // Create a new board
-    // std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::Naive);
-    std::vector<std::vector<Sudo>> randomBoard = Solver::createBoard(constraints, SolverType::DLX);
-    // timer.printElapsed("Creating Random Board");
 
-    // Create given mask
+
+    // Create new random solution once
+    const std::vector<std::vector<Sudo>> randomSolution = Solver::createNewBoard(constraints);
+
+    // Try out multiple given masks until one makes the Sudoku unique
+    constexpr int totalTries = 100;
+    int32_t counter = 0;
     std::vector<std::vector<bool>> givenMask;
-    if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR) givenMask = diagonalMirrorMask(totalDigits);
-    else if (symmetryType == SymmetryType::ONE_DIAGONAL_ROTATION) givenMask = diagonalRotationMask(totalDigits);
-//    else if (symmetryType == SymmetryType::TWO_DIAGONALS_MIRROR) givenMask = randomMask(totalDigits);
-//    else if (symmetryType == SymmetryType::TWO_DIAGONALS_ROTATION) givenMask = randomMask(totalDigits);
-//    else if (symmetryType == SymmetryType::ONE_AXIS_MIRROR) givenMask = randomMask(totalDigits);
-//    else if (symmetryType == SymmetryType::ONE_AXIS_ROTATION) givenMask = randomMask(totalDigits);
-//    else if (symmetryType == SymmetryType::TWO_AXES_MIRROR) givenMask = randomMask(totalDigits);
-//    else if (symmetryType == SymmetryType::TWO_AXES_ROTATION) givenMask = randomMask(totalDigits);
-    else givenMask = randomMask(totalDigits);
-//    givenMask = diagonalMirrorMask(totalDigits);
-//    givenMask = diagonalRotationMask(totalDigits);
 
-    // TODO: Check given mask according to SymmetryType
-    checkGivenMask(givenMask, totalDigits);
+    while (counter < totalTries){
+        counter++;
+        
+        // Create given mask
+        if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR) givenMask = diagonalMirrorMask(totalDigits);
+        else if (symmetryType == SymmetryType::ONE_DIAGONAL_ROTATION) givenMask = diagonalRotationMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_MIRROR) givenMask = randomMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_ROTATION) givenMask = randomMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::ONE_AXIS_MIRROR) givenMask = randomMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::ONE_AXIS_ROTATION) givenMask = randomMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::TWO_AXES_MIRROR) givenMask = randomMask(totalDigits);
+    //    else if (symmetryType == SymmetryType::TWO_AXES_ROTATION) givenMask = randomMask(totalDigits);
+        else givenMask = randomMask(totalDigits);
 
-    std::unique_ptr<Board> newBoard = std::make_unique<Board>(randomBoard, givenMask);
-
-    return newBoard;
-}
-
-
-void Setter::checkGivenMask(const std::vector<std::vector<bool>>& mask, int8_t totalDigits) {
-    int8_t counter = 0;
-    for (int8_t i = MIN_INDEX; i <= MAX_INDEX; i++) {
-        for (int8_t j = MIN_INDEX; j <= MAX_INDEX; j++) {
-            if (mask[i][j]) counter++;
+        if(Solver::isUnique(randomSolution, givenMask, constraints)) {
+            if(counter == 1) std::cout << "Created board on first try" << std::endl;
+            else{
+            std::cout << "Created board after " << counter << " tries" << std::endl;
+            }
+            return std::make_unique<Board>(randomSolution, givenMask);;
         }
     }
-    if (counter != totalDigits) {
-        std::cout << "ERROR: Mask does not contain the correct amount of digits" << std::endl;
-    }
+    std::cout << "Unable to create board after " << counter << " tries" << std::endl;
+    return std::make_unique<Board>(emptyField(), emptyGivenMask());
+
+
 }
+
+
 
 std::vector<std::vector<bool>> Setter::randomMask(int8_t totalDigits) {
     std::vector<std::vector<bool>> mask = fullGivenMask();

@@ -10,7 +10,8 @@ public:
     void printGivenPattern() const;
 
     void print() const;
-
+    
+private:
     std::vector<std::vector<Sudo>> field;
     const std::vector<std::vector<Sudo>> solution;
     const std::vector<std::vector<bool>> givenMask;

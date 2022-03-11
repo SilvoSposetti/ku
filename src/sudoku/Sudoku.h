@@ -2,17 +2,21 @@
 
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
+#include <cstdint>
 #include <memory>
 
 class Sudoku {
 public:
     Sudoku(const std::string& name,
-           const int8_t totalDigits,
-           const SymmetryType setterType,
-           const ConstraintType constraintTypes);
+           int32_t totalDigits,
+           ConstraintType constraintTypes,
+           SymmetryType symmetryType);
 
 private:
-    int8_t digitsAmount;
+    static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);
+
+private:
+    int32_t digitsAmount;
     std::unique_ptr<Board> board;
     std::vector<std::unique_ptr<AbstractConstraint>> constraints;
 };
