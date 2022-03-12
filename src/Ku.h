@@ -2,5 +2,5 @@
 
 class Ku {
 public:
-    static void run();
+  static void run();
 };

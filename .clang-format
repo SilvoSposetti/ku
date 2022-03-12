@@ -1,0 +1,14 @@
+---
+BasedOnStyle: LLVM
+AlignTrailingComments: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+BreakConstructorInitializers: BeforeComma
+ColumnLimit: '120'
+IncludeBlocks: Regroup
+Language: Cpp
+PointerAlignment: Left
+
+
+...
