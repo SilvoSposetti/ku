@@ -13,7 +13,23 @@ std::string SudokuBox::getDescription() const {
 }
 
 std::string SudokuBox::getSvgGroup() const {
-  return "";
+  constexpr double oneThird = 1.0 / 3.0;
+  constexpr double twoThirds = 2.0 / 3.0;
+
+  std::string result;
+  result += SvgUtilities::rect(0, 0, oneThird, oneThird);
+  result += SvgUtilities::rect(oneThird, 0, oneThird, oneThird);
+  result += SvgUtilities::rect(twoThirds, 0, oneThird, oneThird);
+
+  result += SvgUtilities::rect(0, oneThird, oneThird, oneThird);
+  result += SvgUtilities::rect(oneThird, oneThird, oneThird, oneThird);
+  result += SvgUtilities::rect(twoThirds, oneThird, oneThird, oneThird);
+
+  result += SvgUtilities::rect(0, 0, twoThirds, oneThird);
+  result += SvgUtilities::rect(oneThird, twoThirds, oneThird, oneThird);
+  result += SvgUtilities::rect(twoThirds, twoThirds, oneThird, oneThird);
+
+  return SvgUtilities::createGroup(getName(), result, noFillMediumStroke);
 }
 
 bool SudokuBox::validatePlacement(const Sudo digit,

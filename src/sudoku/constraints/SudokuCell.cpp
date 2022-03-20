@@ -9,11 +9,12 @@ std::string SudokuCell::getName() const {
 }
 
 std::string SudokuCell::getDescription() const {
-  return "Each cell can only contain one integer";
+  return "Each cell can only contain one integer between 1 and 9.";
 }
 
 std::string SudokuCell::getSvgGroup() const {
-  return "";
+  const std::string rect = SvgUtilities::rect(0, 0, 1, 1);
+  return SvgUtilities::createGroup(getName(), rect, noFillThickStroke);
 }
 
 bool SudokuCell::validatePlacement(const Sudo digit,

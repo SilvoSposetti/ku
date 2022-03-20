@@ -15,6 +15,14 @@ Board::Board(const std::vector<std::vector<Sudo>>& inSolution, const std::vector
   }
 }
 
+const std::vector<std::vector<Sudo>>& Board::getSolution() const {
+  return solution;
+}
+
+const std::vector<std::vector<bool>>& Board::getGivenMask() const {
+  return givenMask;
+}
+
 void Board::printGivenPattern() const {
   for (const auto& row : givenMask) {
     for (const auto& element : row) {

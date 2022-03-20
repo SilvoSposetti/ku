@@ -13,7 +13,13 @@ std::string SudokuColumn::getDescription() const {
 }
 
 std::string SudokuColumn::getSvgGroup() const {
-  return "";
+  std::string verticalLines;
+  const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
+  for (int i = 0; i < MAX_DIGIT; i++) {
+    const double xPosition = cellSize * i;
+    verticalLines += SvgUtilities::line(xPosition, 0, xPosition, 1);
+  }
+  return SvgUtilities::createGroup(getName(), verticalLines, noFillThinStroke);
 }
 
 bool SudokuColumn::validatePlacement(const Sudo digit,
