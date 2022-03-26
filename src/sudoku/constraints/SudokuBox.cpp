@@ -33,9 +33,9 @@ std::string SudokuBox::getSvgGroup() const {
 }
 
 bool SudokuBox::validatePlacement(Sudo digit,
-                                 int32_t rowIndex,
-                                 int32_t columnIndex,
-                                 const std::vector<std::vector<Sudo>>& board) const {
+                                  int32_t rowIndex,
+                                  int32_t columnIndex,
+                                  const std::vector<std::vector<Sudo>>& board) const {
   // Validate a hypothetical placement by checking if the digit already exists in the box relevant for the given
   // coordinates
   const int32_t boxIndex = getBoxIndex(rowIndex, columnIndex);
@@ -94,8 +94,9 @@ int32_t SudokuBox::getDLXConstraintColumnsAmount() const {
 
 bool SudokuBox::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
-  const int32_t matrixRow = columnId / MAX_DIGIT;
-  const int32_t matrixColumn = columnId % MAX_DIGIT;
+  // columnId encodes the (possible box, possible digit) pair
+  const int32_t possibleBox = columnId / MAX_DIGIT;
+  const Sudo possibleDigit = static_cast<Sudo>(columnId % MAX_DIGIT + 1);
 
-  return matrixRow == getBoxIndex(i, j) && matrixColumn == static_cast<int32_t>(digit) - 1;
+  return possibleBox == getBoxIndex(i, j) && possibleDigit == digit;
 }

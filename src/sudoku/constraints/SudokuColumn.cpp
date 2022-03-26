@@ -59,9 +59,9 @@ int32_t SudokuColumn::getDLXConstraintColumnsAmount() const {
 
 bool SudokuColumn::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
-  // columnId encodes the location of a digit on the board
-  const int32_t matrixRow = columnId / MAX_DIGIT;
-  const int32_t matrixColumn = columnId % MAX_DIGIT;
+  // columnId encodes the (possible column, possible digit) pair
+  const int32_t possibleColumn = columnId / MAX_DIGIT;
+  const Sudo possibleDigit = static_cast<Sudo>(columnId % MAX_DIGIT + 1);
 
-  return matrixRow == j && matrixColumn == static_cast<int32_t>(digit) - 1;
+  return possibleColumn == j && possibleDigit == digit;
 }

@@ -52,7 +52,7 @@ static std::vector<std::vector<bool>> fullGivenMask() {
 }
 
 static std::vector<std::vector<bool>> emptyGivenMask() {
-    std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
+  std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
   return newMask;
 }
 

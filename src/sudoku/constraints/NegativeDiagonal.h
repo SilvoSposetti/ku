@@ -2,9 +2,9 @@
 
 #include "AbstractConstraint.h"
 
-class PositiveDiagonal : public AbstractConstraint {
+class NegativeDiagonal : public AbstractConstraint {
 public:
-  PositiveDiagonal() = default;
+  NegativeDiagonal() = default;
 
   virtual ConstraintType getType() const override;
 
@@ -27,14 +27,14 @@ public:
 
 private:
   /**
-   * Generates all index pairs that identify the cells of the positive diagonal
-   * @return The set of index pairs of the positive diagonal
+   * Generates all index pairs that identify the cells of the negative diagonal
+   * @return The set of index pairs of the negative diagonal
    */
-  static std::vector<std::pair<int32_t, int32_t>> getAllPositiveDiagonalIndices();
+  static std::vector<std::pair<int32_t, int32_t>> getAllNegativeDiagonalIndices();
 
   /**
-   * Generates all index pairs that identify the cells of the positive diagonal
-   * @return The set of index pairs of the positive diagonal
+   * Generates all index pairs that identify the cells of the negative diagonal
+   * @return The set of index pairs of the negative diagonal
    */
-  static bool isOnPositiveDiagonal(int32_t i, int32_t j);
+  static bool isOnNegativeDiagonal(int32_t i, int32_t j);
 };

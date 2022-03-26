@@ -8,7 +8,8 @@ std::string SvgUtilities::getSvgHeader() {
 
   // ViewBox
   header += toString(-boardMargin) + " " + toString(-boardMargin) + " " + toString(totalBoardSize + dlxMatrixWidth) +
-            " " + toString(totalBoardSize + infoHeight) + "\">\n";
+            // " " + toString(totalBoardSize + infoHeight) + "\" font-family=\"monospace\" >\n";
+            " " + toString(totalBoardSize + infoHeight) + "\" font-family=\"Open Sans\" >\n";
 
   return header;
 }
@@ -60,9 +61,9 @@ std::string SvgUtilities::text(double x, double y, const std::string& text, cons
 
 std::string SvgUtilities::titleAndDescription(const std::string& sudokuName,
                                               const std::vector<std::string>& constraintDescriptions) {
-  const int titleFontSize = boardSize / 30;
-  const int descriptionFontSize = boardSize / 40;
-  const int lineSeparation = boardSize / 20;
+  const int titleFontSize = boardSize / 40;
+  const int descriptionFontSize = boardSize / 50;
+  const int lineSeparation = boardSize / 35;
 
   const double baseY = boardSize + boardMargin + titleFontSize;
 
@@ -122,8 +123,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   const double originY = 0;
   const int32_t textSize = boardSize / 100;
   const int32_t textDistance = dlxCellSize * 5;
-  const double constraintSeparation = dlxCellSize * 10;
-
+  const double constraintSeparation = dlxCellSize * 5;
   const int32_t rows = matrix.size();
 
   std::string result;

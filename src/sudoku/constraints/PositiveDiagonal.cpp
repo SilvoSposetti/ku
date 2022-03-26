@@ -22,7 +22,7 @@ bool PositiveDiagonal::validatePlacement(Sudo digit,
                                          int32_t rowIndex,
                                          int32_t columnIndex,
                                          const std::vector<std::vector<Sudo>>& board) const {
-  // Accept if the placement is not on the main diagonal
+  // Accept if the placement is not on the positive diagonal
   if (!isOnPositiveDiagonal(rowIndex, columnIndex)) {
     return true;
   }
@@ -58,12 +58,9 @@ int32_t PositiveDiagonal::getDLXConstraintColumnsAmount() const {
 
 bool PositiveDiagonal::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
-  // Do not consider digits that are not on the positive diagonal
-  // if (!) {
-  //   return false;
-  // }
-  // columnId maps to a location on the main diagonal, from top right to bottom left
-  return isOnPositiveDiagonal(i, j) && columnId == static_cast<int32_t>(digit) - 1;
+  // columnId maps to a possible digit on the negative diagonal
+  const Sudo possibleDigit = static_cast<Sudo>(columnId + 1);
+  return isOnPositiveDiagonal(i, j) && possibleDigit == digit;
 }
 
 std::vector<std::pair<int32_t, int32_t>> PositiveDiagonal::getAllPositiveDiagonalIndices() {
@@ -75,6 +72,5 @@ std::vector<std::pair<int32_t, int32_t>> PositiveDiagonal::getAllPositiveDiagona
 }
 
 bool PositiveDiagonal::isOnPositiveDiagonal(int32_t i, int32_t j) {
-  // return i - j == 0; // TODO: this is the NEGATIVE DIAGONAL
-  return i + j == MAX_INDEX; // this is the NEGATIVE DIAGONAL
+  return i + j == MAX_INDEX;
 }
