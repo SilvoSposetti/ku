@@ -29,17 +29,17 @@ std::string SudokuBox::getSvgGroup() const {
   result += SvgUtilities::rect(oneThird, twoThirds, oneThird, oneThird);
   result += SvgUtilities::rect(twoThirds, twoThirds, oneThird, oneThird);
 
-  return SvgUtilities::createGroup(getName(), result, noFillMediumStroke);
+  return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(mediumLine));
 }
 
 bool SudokuBox::validatePlacement(const Sudo digit,
-                                  const int8_t rowIndex,
-                                  const int8_t columnIndex,
+                                  const int32_t rowIndex,
+                                  const int32_t columnIndex,
                                   const std::vector<std::vector<Sudo>> board) const {
   // Validate a hypothetical placement by checking if the digit already exists in the box relevant for the given
   // coordinates
-  const int8_t boxIndex = getBoxIndex(rowIndex, columnIndex);
-  std::vector<std::pair<int8_t, int8_t>> boxIndexPairs = getBoxIndices()[boxIndex];
+  const int32_t boxIndex = getBoxIndex(rowIndex, columnIndex);
+  std::vector<std::pair<int32_t, int32_t>> boxIndexPairs = getBoxIndices()[boxIndex];
   for (const auto& pair : boxIndexPairs) {
     if (board[pair.first][pair.second] == digit) {
       return false;
@@ -50,10 +50,10 @@ bool SudokuBox::validatePlacement(const Sudo digit,
 
 bool SudokuBox::satisfy(std::vector<std::vector<Sudo>> board) const {
   // The board satisfies the constraint if all boxes do not contain duplicate digits
-  std::vector<std::vector<std::pair<int8_t, int8_t>>> boxesIndices = getBoxIndices();
+  std::vector<std::vector<std::pair<int32_t, int32_t>>> boxesIndices = getBoxIndices();
   for (const auto& d : SUDO_DIGITS) {
     for (const auto& boxIndexPairs : boxesIndices) {
-      int8_t count = 0;
+      int32_t count = 0;
       for (const auto& pair : boxIndexPairs) {
         if (board[pair.first][pair.second] == d) {
           count++;
@@ -67,18 +67,18 @@ bool SudokuBox::satisfy(std::vector<std::vector<Sudo>> board) const {
   return true;
 }
 
-int8_t SudokuBox::getBoxIndex(const int8_t rowIndex, const int8_t columnIndex) {
+int32_t SudokuBox::getBoxIndex(const int32_t rowIndex, const int32_t columnIndex) {
   // Use integer division to floor results
-  return static_cast<int8_t>(columnIndex / 3 + 3 * (rowIndex / 3));
+  return static_cast<int32_t>(columnIndex / 3 + 3 * (rowIndex / 3));
 }
 
-std::vector<std::vector<std::pair<int8_t, int8_t>>> SudokuBox::getBoxIndices() {
-  std::vector<std::vector<std::pair<int8_t, int8_t>>> allBoxIndexPairs;
-  for (int8_t boxIndexRow = 0; boxIndexRow < 3; boxIndexRow++) {
-    for (int8_t boxIndexColumn = 0; boxIndexColumn < 3; boxIndexColumn++) {
-      std::vector<std::pair<int8_t, int8_t>> singleBoxIndexPairs;
-      for (int8_t i = 0; i < 3; i++) {
-        for (int8_t j = 0; j < 3; j++) {
+std::vector<std::vector<std::pair<int32_t, int32_t>>> SudokuBox::getBoxIndices() {
+  std::vector<std::vector<std::pair<int32_t, int32_t>>> allBoxIndexPairs;
+  for (int32_t boxIndexRow = 0; boxIndexRow < 3; boxIndexRow++) {
+    for (int32_t boxIndexColumn = 0; boxIndexColumn < 3; boxIndexColumn++) {
+      std::vector<std::pair<int32_t, int32_t>> singleBoxIndexPairs;
+      for (int32_t i = 0; i < 3; i++) {
+        for (int32_t j = 0; j < 3; j++) {
           singleBoxIndexPairs.emplace_back(std::make_pair(boxIndexRow * 3 + i, boxIndexColumn * 3 + j));
         }
       }
@@ -92,14 +92,14 @@ int32_t SudokuBox::getDLXConstraintColumnsAmount() const {
   return 9 * 9; // 9(boxes), 9(possible digits in each box)
 }
 
-bool SudokuBox::getDLXConstraint(const int8_t boardRow,
-                                 const int8_t boardColumn,
+bool SudokuBox::getDLXConstraint(const int32_t boardRow,
+                                 const int32_t boardColumn,
                                  const int32_t columnId,
                                  const Sudo possibleDigit,
                                  const Sudo actualDigit) const {
 
-  const int32_t matrixRow = columnId / (MAX_INDEX + 1);
-  const int32_t matrixColumn = columnId % (MAX_INDEX + 1);
+  const int32_t matrixRow = columnId / MAX_DIGIT;
+  const int32_t matrixColumn = columnId % MAX_DIGIT;
 
   if (actualDigit == Sudo::NONE) {
     return matrixRow == getBoxIndex(boardRow, boardColumn) && matrixColumn == static_cast<int32_t>(possibleDigit) - 1;

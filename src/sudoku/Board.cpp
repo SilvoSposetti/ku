@@ -1,19 +1,9 @@
 #include "Board.h"
+#include <cstdint>
 
 Board::Board(const std::vector<std::vector<Sudo>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask)
     : solution(inSolution)
-    , givenMask(inGivenMask) {
-
-  // Copy solution to the field, then remove the non-given digits from it
-  field = std::vector<std::vector<Sudo>>(solution);
-  for (int8_t i = 0; i < MAX_DIGIT; i++) {
-    for (int8_t j = 0; j < MAX_DIGIT; j++) {
-      if (!givenMask[i][j]) {
-        field[i][j] = Sudo::NONE;
-      }
-    }
-  }
-}
+    , givenMask(inGivenMask) {}
 
 const std::vector<std::vector<Sudo>>& Board::getSolution() const {
   return solution;
@@ -21,6 +11,18 @@ const std::vector<std::vector<Sudo>>& Board::getSolution() const {
 
 const std::vector<std::vector<bool>>& Board::getGivenMask() const {
   return givenMask;
+}
+
+std::vector<std::vector<Sudo>> Board::getField() const {
+  std::vector<std::vector<Sudo>> field = solution;
+  for (const auto& i : INDICES) {
+    for (const auto& j : INDICES) {
+      if (!givenMask[i][j]) {
+        field[i][j] = Sudo::NONE;
+      }
+    }
+  }
+  return field;
 }
 
 void Board::printGivenPattern() const {
@@ -38,6 +40,7 @@ void Board::print() const {
   const char normalColor[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
   const char solvedColor[] = {0x1b, '[', '0', ';', '3', '7', 'm', 0};
 
+  std::vector<std::vector<Sudo>> field = getField();
   for (const auto& i : INDICES) {
     if (i == 0) {
       std::cout << normalColor << "┏━━━━━━━┯━━━━━━━┯━━━━━━━┓" << std::endl;
@@ -49,9 +52,9 @@ void Board::print() const {
 
       std::string c;
       if (givenMask[i][j])
-        c = normalColor + std::to_string(static_cast<int8_t>(solution[i][j]));
+        c = normalColor + std::to_string(static_cast<int32_t>(solution[i][j]));
       else if (field[i][j] != Sudo::NONE)
-        c = solvedColor + std::to_string(static_cast<int8_t>(field[i][j]));
+        c = solvedColor + std::to_string(static_cast<int32_t>(field[i][j]));
       else
         c = solvedColor + std::string("◌");
       std::cout << c;

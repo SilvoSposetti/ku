@@ -18,19 +18,22 @@ public:
                        const std::vector<std::vector<bool>>& givenMask,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
+  static std::vector<std::vector<int32_t>>
+  getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
 private:
   static bool naive(std::vector<std::vector<Sudo>>& board,
                     const std::vector<std::vector<bool>>& givenMask,
                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
-  static bool naiveRecursive(int8_t rowIndex,
-                             int8_t columnIndex,
+  static bool naiveRecursive(int32_t rowIndex,
+                             int32_t columnIndex,
                              std::vector<std::vector<Sudo>>& board,
                              const std::vector<std::vector<bool>>& givenMask,
                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   static bool dlx(std::vector<std::vector<Sudo>>& board,
-                  const std::vector<std::vector<bool>>& givenMask,
                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                   bool checkForUniqueness);
 
@@ -52,11 +55,4 @@ private:
   static void uncoverDlxColumn(std::shared_ptr<Node>& column);
 
   static std::shared_ptr<Node> chooseSmallestColumn(const std::shared_ptr<Node>& root);
-
-  static std::shared_ptr<Node> chooseRandomColumn(const std::shared_ptr<Node>& root);
-
-  static void printDancingLinksMatrix(const std::shared_ptr<Node>& root,
-                                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                      const std::vector<std::vector<Sudo>>& board,
-                                      const std::vector<std::vector<bool>>& givenMask);
 };

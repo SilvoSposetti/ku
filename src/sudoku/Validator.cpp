@@ -14,8 +14,8 @@ bool Validator::checkSolution(const std::vector<std::vector<Sudo>>& board,
   return Validator::isBoardValid(board, constraints);
 }
 
-bool Validator::validateMove(const int8_t rowIndex,
-                             const int8_t columnIndex,
+bool Validator::validateMove(const int32_t rowIndex,
+                             const int32_t columnIndex,
                              const Sudo digit,
                              const std::vector<std::vector<Sudo>>& field,
                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {

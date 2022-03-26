@@ -19,12 +19,12 @@ std::string SudokuRow::getSvgGroup() const {
     const double yPosition = cellSize * i;
     horizontalLines += SvgUtilities::line(0, yPosition, 1, yPosition);
   }
-  return SvgUtilities::createGroup(getName(), horizontalLines, noFillThinStroke);
+  return SvgUtilities::createGroup(getName(), horizontalLines, SvgUtilities::getNoFillStroke(thinLine));
 }
 
 bool SudokuRow::validatePlacement(const Sudo digit,
-                                  const int8_t rowIndex,
-                                  const int8_t columnIndex,
+                                  const int32_t rowIndex,
+                                  const int32_t columnIndex,
                                   const std::vector<std::vector<Sudo>> board) const {
   // If the digit is already present in the column, then the placement is not valid
   for (const auto& index : INDICES) {
@@ -39,7 +39,7 @@ bool SudokuRow::satisfy(std::vector<std::vector<Sudo>> board) const {
   // The board satisfies the constraint if all rows do not contain duplicate digits
   for (const auto& rowIndex : INDICES) {
     for (const auto& digit : SUDO_DIGITS) {
-      int8_t count = 0;
+      int32_t count = 0;
       for (const auto& columnIndex : INDICES) {
         if (board[rowIndex][columnIndex] == digit) {
           count++;
@@ -57,14 +57,14 @@ int32_t SudokuRow::getDLXConstraintColumnsAmount() const {
   return 9 * 9; // 9(rows) * 9(possible digits in each row)
 }
 
-bool SudokuRow::getDLXConstraint(const int8_t boardRow,
-                                 const int8_t boardColumn,
+bool SudokuRow::getDLXConstraint(const int32_t boardRow,
+                                 const int32_t boardColumn,
                                  const int32_t columnId,
                                  const Sudo possibleDigit,
                                  const Sudo actualDigit) const {
 
-  const int32_t matrixRow = columnId / (MAX_INDEX + 1);
-  const int32_t matrixColumn = columnId % (MAX_INDEX + 1);
+  const int32_t matrixRow = columnId / MAX_DIGIT;
+  const int32_t matrixColumn = columnId % MAX_DIGIT;
 
   if (actualDigit == Sudo::NONE) {
     return matrixRow == boardRow && matrixColumn == static_cast<int32_t>(possibleDigit) - 1;

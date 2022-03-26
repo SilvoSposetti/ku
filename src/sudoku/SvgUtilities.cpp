@@ -7,14 +7,20 @@ std::string SvgUtilities::getSvgHeader() {
   std::string header = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"";
 
   // ViewBox
-  header += toString(-boardMargin) + " " + toString(-boardMargin) + " " + toString(totalBoardSize + infoWidth) + " " +
-            toString(totalBoardSize) + "\">\n";
+  header += toString(-boardMargin) + " " + toString(-boardMargin) + " " + toString(totalBoardSize + dlxMatrixWidth) +
+            " " + toString(totalBoardSize + infoHeight) + "\">\n";
 
   return header;
 }
 std::string SvgUtilities::getSvgFooter() {
   return "</svg>\n";
   ;
+}
+
+std::string SvgUtilities::background() {
+  return "<rect x=\"" + toString(-boardMargin) + "\" y=\"" + toString(-boardMargin) + "\" width=\"" +
+         toString(totalBoardSize + dlxMatrixWidth) + "\" height=\"" + toString(totalBoardSize + infoHeight) + "\"" +
+         lightRectStyle + "/>\n";
 }
 
 std::string SvgUtilities::createGroup(const std::string& name, const std::string& group, const std::string& style) {
@@ -52,22 +58,129 @@ std::string SvgUtilities::text(double x, double y, const std::string& text, cons
   return "<text x=\"" + toString(x) + "\" y=\"" + toString(y) + "\"" + style + ">" + text + "</text>\n";
 }
 
-std::string SvgUtilities::sudokuTitle(const std::string& name) {
-  return text(boardSize + boardMargin, 0, name, getFontSize(titleFontSize));
+std::string SvgUtilities::titleAndDescription(const std::string& sudokuName,
+                                              const std::vector<std::string>& constraintDescriptions) {
+  const int titleFontSize = boardSize / 30;
+  const int descriptionFontSize = boardSize / 40;
+  const int lineSeparation = boardSize / 20;
+
+  const double baseY = boardSize + boardMargin + titleFontSize;
+
+  // Title
+  std::string title = text(0, baseY, sudokuName, getFontSize(titleFontSize));
+  title = createGroup("Title", title, getFontSize(titleFontSize));
+
+  // Description
+  int32_t line = 0;
+  std::string description;
+  for (const auto& constraint : constraintDescriptions) {
+    description += text(0, baseY + (line + 1) * lineSeparation, constraint);
+    line++;
+  }
+  description = createGroup("Description", description, getFontSize(descriptionFontSize));
+  return title + description;
 }
 
-std::string SvgUtilities::sudokuDescription(int32_t line, const std::string& description) {
-  return text(boardSize + boardMargin, 70 + line * 50, description, getFontSize(descriptionFontSize));
+std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo>>& solution,
+                                      const std::vector<std::vector<bool>>& givenMask) {
+  const int givenDigitFontSize = boardSize / 13;
+  const std::string givenDigitTextStyle =
+      " text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"" + std::to_string(givenDigitFontSize) + "\"";
+
+  std::string givenDigits;
+  for (const auto& i : INDICES) {
+    for (const auto& j : INDICES) {
+      if (givenMask[i][j]) {
+        const double cellCenterX = (j + 0.5) * cellSize;
+        const double cellCenterY = (i + 0.5) * cellSize;
+        const std::string digitString = std::to_string(static_cast<int32_t>(solution[i][j]));
+        givenDigits += text(cellCenterX, cellCenterY, digitString);
+      }
+    }
+  }
+  return createGroup("Given-Digits", givenDigits, givenDigitTextStyle);
 }
 
-std::string SvgUtilities::givenDigit(int32_t cellIndexI, int32_t cellIndexJ, Sudo digit) {
-  const std::string digitString = std::to_string(static_cast<int32_t>(digit));
+std::string SvgUtilities::givenPattern(int32_t cellIndexI, int32_t cellIndexJ, bool isGiven) {
+  const double x = boardSize + boardMargin + givenPatternCellSize * cellIndexJ;
+  const double y = boardSize + boardMargin - givenPatternCellSize * ((MAX_DIGIT + 2) - cellIndexI);
+  const std::string style = isGiven ? darkRectStyle : lightRectStyle;
+  return paperUnitsRect(x, y, givenPatternCellSize, givenPatternCellSize, style);
+}
 
-  const double cellCenterX = (cellIndexJ + 0.5) * cellSize;
-  const double cellCenterY = (cellIndexI + 0.5) * cellSize;
-  return text(cellCenterX, cellCenterY, digitString);
-  // "<text x=\"" + toString(cellCenterX) + "\" y=\"" + toString(cellCenterY) + "\"" + centeredText +
-  //  " font-size=\"" + std::to_string(givenDigitFontSize) + "\">" + digitString + "</text>\n";
+std::string SvgUtilities::givenPatternBorder() {
+  const double x = boardSize + boardMargin;
+  const double y = boardSize + boardMargin - givenPatternCellSize * ((MAX_DIGIT + 2));
+  const double size = givenPatternCellSize * MAX_DIGIT;
+  return paperUnitsRect(x, y, size, size, getNoFillStroke(thinLine));
+}
+
+std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& matrix,
+                                    const std::vector<std::pair<std::string, int32_t>>& constraintTexts) {
+  const double dlxCellSize = boardSize / (9. * 9. * 9.);
+  const double originX = boardSize + boardMargin;
+  const double originY = 0;
+  const int32_t textSize = boardSize / 100;
+  const int32_t textDistance = dlxCellSize * 5;
+  const double constraintSeparation = dlxCellSize * 10;
+
+  const int32_t rows = matrix.size();
+
+  std::string result;
+  // Keep track of which columns have already been considered
+  int32_t columnsCounter = 0;
+  int32_t constraintCounter = 0;
+  for (const auto& constraint : constraintTexts) {
+    const double constraintOriginX = originX + columnsCounter * dlxCellSize + constraintCounter * constraintSeparation;
+    const std::string name = constraint.first;
+    const int32_t constraintColumns = constraint.second;
+
+    // Name
+    double textPositionX = constraintOriginX + (constraintColumns * 0.5) * dlxCellSize;
+    double textPositionY = originY - textDistance;
+    std::string constraintText =
+        text(textPositionX, textPositionY, name, getRotatedTextStyle(textPositionX, textPositionY, textSize));
+    constraintText = createGroup("DLX-" + name + "-Name", constraintText);
+
+    // Background
+    std::string constraintBackground =
+        paperUnitsRect(constraintOriginX, originY, dlxCellSize * constraintColumns, dlxCellSize * rows, whiteRectStyle);
+    constraintBackground = createGroup("DLX-" + name + "-Background", constraintBackground);
+
+    // Cells
+    const int32_t startColumn = columnsCounter;
+    const int32_t endColumn = columnsCounter + constraintColumns;
+    std::string constraintCells;
+    for (int32_t i = 0; i < rows; i++) {
+      for (int32_t j = startColumn; j < endColumn; j++) {
+        const int32_t value = matrix[i][j];
+        if (value >= 0) {
+          const double posX = originX + constraintCounter * constraintSeparation + j * dlxCellSize;
+          const double posY = originY + i * dlxCellSize;
+          constraintCells += paperUnitsRect(posX, posY, dlxCellSize, dlxCellSize);
+        }
+      }
+    }
+    constraintCells = createGroup("DLX-" + name + "-Cells", constraintCells, darkRectStyle);
+
+    result += constraintText + constraintBackground + constraintCells;
+
+    columnsCounter += constraintColumns;
+    constraintCounter++;
+  }
+
+  // Horizontal lines
+  double lineThickness = boardSize / 10000.0;
+  std::string lines;
+  double startX = originX;
+  double endX = originX + columnsCounter * dlxCellSize + (constraintCounter - 1) * constraintSeparation;
+  for (int32_t i = 1; i < rows; i++) {
+    const double y = originY + dlxCellSize * i;
+    lines += paperUnitsLine(startX, y, endX, y);
+  }
+  result += createGroup("DLX-Lines", lines, getNoFillStroke(lineThickness));
+
+  return result;
 }
 
 std::string SvgUtilities::toString(double input) {
@@ -79,4 +192,23 @@ std::string SvgUtilities::toString(double input) {
 
 std::string SvgUtilities::getFontSize(int fontSize) {
   return " font-size=\"" + std::to_string(fontSize) + "\"";
+}
+
+std::string SvgUtilities::paperUnitsRect(double x, double y, double width, double height, const std::string& style) {
+  return "<rect x=\"" + toString(x) + "\" y=\"" + toString(y) + "\" width=\"" + toString(width) + "\" height=\"" +
+         toString(height) + "\"" + style + "/>\n";
+}
+
+std::string SvgUtilities::paperUnitsLine(double x1, double y1, double x2, double y2, const std::string& style) {
+  return "<line x1=\"" + toString(x1) + "\" y1=\"" + toString(y1) + "\" x2=\"" + toString(x2) + "\" y2=\"" +
+         toString(y2) + "\"" + style + "/>\n";
+}
+
+std::string SvgUtilities::getRotatedTextStyle(double x, double y, int32_t fontSize) {
+  return getFontSize(fontSize) + " text-anchor=\"start\" dominant-baseline=\"central\" transform=\"rotate(-90, " +
+         toString(x) + ", " + toString(y) + ")\"";
+}
+
+std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
+  return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\"";
 }

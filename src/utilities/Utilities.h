@@ -15,8 +15,7 @@ enum class Sudo : int32_t { NONE = 0, A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, 
 
 constexpr int32_t MAX_DIGIT = 9;
 constexpr int32_t MIN_DIGIT = 1;
-constexpr int32_t TOTAL_DIGITS = 81;
-constexpr int32_t MAX_CELL_INDEX = 80;
+constexpr int32_t TOTAL_DIGITS = MAX_DIGIT * MAX_DIGIT;
 constexpr int32_t MAX_INDEX = 8;
 constexpr int32_t MID_INDEX = 4;
 constexpr int32_t MIN_INDEX = 0;
@@ -43,29 +42,17 @@ inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
 }
 
 static std::vector<std::vector<Sudo>> emptyField() {
-  std::vector<std::vector<Sudo>> newField;
-  for (int8_t i = 0; i <= MAX_INDEX; i++) {
-    std::vector<Sudo> row(MAX_INDEX + 1, Sudo::NONE);
-    newField.emplace_back(row);
-  }
+  std::vector<std::vector<Sudo>> newField(MAX_DIGIT, std::vector<Sudo>(MAX_DIGIT, Sudo::NONE));
   return newField;
 }
 
 static std::vector<std::vector<bool>> fullGivenMask() {
-  std::vector<std::vector<bool>> newMask;
-  for (int8_t i = 0; i <= MAX_INDEX; i++) {
-    std::vector<bool> row(MAX_INDEX + 1, true);
-    newMask.emplace_back(row);
-  }
+  std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, true));
   return newMask;
 }
 
 static std::vector<std::vector<bool>> emptyGivenMask() {
-  std::vector<std::vector<bool>> newMask;
-  for (int8_t i = 0; i <= MAX_INDEX; i++) {
-    std::vector<bool> row(MAX_INDEX + 1, false);
-    newMask.emplace_back(row);
-  }
+    std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
   return newMask;
 }
 
@@ -90,7 +77,7 @@ enum class SymmetryType {
   AMOUNT
 };
 
-static inline int32_t randomUniform(const int32_t min = MIN_INDEX, const int32_t max = MAX_INDEX) {
+static inline int32_t randomUniform(const int32_t min, const int32_t max) {
   // max and min are both inclusive
   std::random_device randomDevice;
   std::mt19937 generator(randomDevice());

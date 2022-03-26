@@ -14,9 +14,9 @@ public:
   
   const std::vector<std::vector<bool>>& getGivenMask() const;
 
+  std::vector<std::vector<Sudo>> getField() const;
 
 private:
-  std::vector<std::vector<Sudo>> field;
   const std::vector<std::vector<Sudo>> solution;
   const std::vector<std::vector<bool>> givenMask;
 };

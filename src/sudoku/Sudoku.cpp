@@ -3,6 +3,7 @@
 #include "Setter.h"
 #include "SvgUtilities.h"
 #include "constraints/ConstraintFactory.h"
+#include "solver/Solver.h"
 
 #include <cstdint>
 
@@ -26,6 +27,7 @@ Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType cons
   board->print();
   // board->printGivenPattern();
   std::cout << std::endl;
+  exportToSvg();
 }
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
@@ -34,7 +36,7 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
   // SUDOKU_CELL constraint is always present
   constraintList.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));
 
-  for (int8_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
+  for (int32_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
     const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
     if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
       const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
@@ -57,27 +59,19 @@ void Sudoku::exportToSvg() {
   std::string outputFilePath = outputPath + "/" + name + ".svg";
   std::ofstream outfile(outputFilePath);
 
-  std::vector<std::pair<std::string, std::string>> constraintDescriptions;
-  for (const auto& constraint : constraints) {
-    constraintDescriptions.emplace_back(constraint->getName(), constraint->getDescription());
-  }
   // Get SVG string
   std::string svgContent;
   svgContent += SvgUtilities::getSvgHeader();
 
-  // Sudoku name
-  svgContent += SvgUtilities::createGroup("Title", SvgUtilities::sudokuTitle(name));
+  // Background
+  svgContent += SvgUtilities::background();
 
-  // Constraint names and descriptions:
-  int32_t line = 0;
-  std::string descriptionGroup;
+  // Title and description
+  std::vector<std::string> constraintDescriptions;
   for (const auto& constraint : constraints) {
-    const std::string constraintText = constraint->getName() + " | " + constraint->getDescription();
-    descriptionGroup += SvgUtilities::sudokuDescription(line, constraintText);
-    line++;
+    constraintDescriptions.emplace_back(constraint->getName() + " | " + constraint->getDescription());
   }
-  svgContent +=
-      SvgUtilities::createGroup("Description", descriptionGroup, SvgUtilities::getFontSize(descriptionFontSize));
+  svgContent += SvgUtilities::titleAndDescription(name, constraintDescriptions);
 
   // Constraints visual elements
   for (const auto& constraint : constraints) {
@@ -85,22 +79,19 @@ void Sudoku::exportToSvg() {
   }
 
   // Given digits
-  std::string givenDigitsGroup;
-  const std::vector<std::vector<Sudo>> solution = board->getSolution();
-  const std::vector<std::vector<bool>> givenMask = board->getGivenMask();
-  for (const auto& i : INDICES) {
-    for (const auto& j : INDICES) {
-      if (givenMask[i][j]) {
-        givenDigitsGroup += SvgUtilities::givenDigit(i, j, solution[i][j]);
-      }
-    }
-  }
-  svgContent += SvgUtilities::createGroup("Given-Digits", givenDigitsGroup, givenDigitTextStyle);
+  svgContent += SvgUtilities::givenDigits(board->getSolution(), board->getGivenMask());
 
-  // TODO: Given pattern
-  // TODO: DLX Matrix
+  // DLX Matrix
+
+  std::vector<std::pair<std::string, int32_t>> constraintTexts;
+  for (const auto& constraint : constraints) {
+    constraintTexts.emplace_back(std::make_pair(constraint->getName(), constraint->getDLXConstraintColumnsAmount()));
+  }
+  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintTexts);
+
   // TODO: (Temporary) Remaining digits
 
+  // Footer
   svgContent += SvgUtilities::getSvgFooter();
 
   // Stram it to file, then save and close
