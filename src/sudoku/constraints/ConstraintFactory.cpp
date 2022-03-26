@@ -1,5 +1,6 @@
 #include "ConstraintFactory.h"
 
+#include "PositiveDiagonal.h"
 #include "SudokuBox.h"
 #include "SudokuCell.h"
 #include "SudokuColumn.h"
@@ -15,9 +16,9 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
     return std::make_unique<SudokuRow>();
   case ConstraintType::SUDOKU_COLUMN:
     return std::make_unique<SudokuColumn>();
-  case ConstraintType::MAIN_DIAGONAL:
-    break;
-  case ConstraintType::ANTI_DIAGONAL:
+  case ConstraintType::POSITIVE_DIAGONAL:
+    return std::make_unique<PositiveDiagonal>();
+  case ConstraintType::NEGATIVE_DIAGONAL:
     break;
   case ConstraintType::KINGS_MOVE:
     break;

@@ -41,7 +41,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
     }
   }
   std::cout << "Unable to create board after " << counter << " tries" << std::endl;
-  return std::make_unique<Board>(emptyField(), emptyGivenMask());
+  return std::make_unique<Board>(randomSolution, emptyGivenMask());
 }
 
 std::vector<std::vector<bool>> Setter::randomMask(int32_t totalDigits) {

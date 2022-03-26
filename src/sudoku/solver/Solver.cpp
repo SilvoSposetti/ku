@@ -75,7 +75,7 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
         if (actualDigit == Sudo::NONE || actualDigit == possibleDigit) {
           for (const auto& constraint : constraints) {
             for (int32_t columnId = 0; columnId < constraint->getDLXConstraintColumnsAmount(); ++columnId) {
-              if (constraint->getDLXConstraint(boardI, boardJ, columnId, possibleDigit, actualDigit)) {
+              if (constraint->getDLXConstraint(possibleDigit, boardI, boardJ, columnId)) {
                 // Store matrix cell ID:
                 matrix[matrixRowCounter][matrixColumnCounter] =
                     boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1);

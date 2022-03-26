@@ -2,9 +2,9 @@
 
 #include "AbstractConstraint.h"
 
-class SudokuRow : public AbstractConstraint {
+class PositiveDiagonal : public AbstractConstraint {
 public:
-  SudokuRow() = default;
+  PositiveDiagonal() = default;
 
   virtual ConstraintType getType() const override;
 
@@ -24,4 +24,17 @@ public:
   virtual int32_t getDLXConstraintColumnsAmount() const override;
 
   virtual bool getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const override;
+
+private:
+  /**
+   * Generates all index pairs that identify the cells of the positive diagonal
+   * @return The set of index pairs of the positive
+   */
+  static std::vector<std::pair<int32_t, int32_t>> getAllPositiveDiagonalIndices();
+
+  /**
+   * Generates all index pairs that identify the cells of the positive diagonal
+   * @return The set of index pairs of the positive
+   */
+  static bool isOnPositiveDiagonal(int32_t i, int32_t j);
 };

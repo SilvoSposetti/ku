@@ -17,15 +17,15 @@ std::string SudokuCell::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), rect, SvgUtilities::getNoFillStroke(thickLine));
 }
 
-bool SudokuCell::validatePlacement(const Sudo digit,
-                                   const int32_t rowIndex,
-                                   const int32_t columnIndex,
-                                   const std::vector<std::vector<Sudo>> board) const {
+bool SudokuCell::validatePlacement(Sudo digit,
+                                   int32_t rowIndex,
+                                   int32_t columnIndex,
+                                   const std::vector<std::vector<Sudo>>& board) const {
   // This is already enforced by the data structure used
   return true;
 }
 
-bool SudokuCell::satisfy(std::vector<std::vector<Sudo>> board) const {
+bool SudokuCell::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
@@ -33,17 +33,11 @@ int32_t SudokuCell::getDLXConstraintColumnsAmount() const {
   return 9 * 9; // 9 * 9 = 81 single places in which a digit could go
 }
 
-bool SudokuCell::getDLXConstraint(const int32_t boardRow,
-                                  const int32_t boardColumn,
-                                  const int32_t columnId,
-                                  const Sudo possibleDigit,
-                                  const Sudo actualDigit) const {
+bool SudokuCell::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
+  // columnId encodes the location of a digit on the board
   const int32_t matrixRow = columnId / MAX_DIGIT;
   const int32_t matrixColumn = columnId % MAX_DIGIT;
 
-  if (actualDigit == Sudo::NONE) {
-    return matrixRow == boardRow && matrixColumn == boardColumn;
-  }
-  return actualDigit == possibleDigit && matrixRow == boardRow && matrixColumn == boardColumn;
+  return matrixRow == i && matrixColumn == j;
 }

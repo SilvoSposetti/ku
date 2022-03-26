@@ -28,8 +28,8 @@ enum class ConstraintType : uint64_t {
   SUDOKU_ROW = 1 << 1,
   SUDOKU_COLUMN = 1 << 2,
   SUDOKU_BOX = 1 << 3,
-  MAIN_DIAGONAL = 1 << 4,
-  ANTI_DIAGONAL = 1 << 5,
+  POSITIVE_DIAGONAL = 1 << 4,
+  NEGATIVE_DIAGONAL = 1 << 5,
   KINGS_MOVE = 1 << 6,
 };
 

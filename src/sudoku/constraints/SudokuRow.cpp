@@ -22,10 +22,10 @@ std::string SudokuRow::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), horizontalLines, SvgUtilities::getNoFillStroke(thinLine));
 }
 
-bool SudokuRow::validatePlacement(const Sudo digit,
-                                  const int32_t rowIndex,
-                                  const int32_t columnIndex,
-                                  const std::vector<std::vector<Sudo>> board) const {
+bool SudokuRow::validatePlacement(Sudo digit,
+                                  int32_t rowIndex,
+                                  int32_t columnIndex,
+                                  const std::vector<std::vector<Sudo>>& board) const {
   // If the digit is already present in the column, then the placement is not valid
   for (const auto& index : INDICES) {
     if (board[rowIndex][index] == digit) {
@@ -35,7 +35,7 @@ bool SudokuRow::validatePlacement(const Sudo digit,
   return true;
 }
 
-bool SudokuRow::satisfy(std::vector<std::vector<Sudo>> board) const {
+bool SudokuRow::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   // The board satisfies the constraint if all rows do not contain duplicate digits
   for (const auto& rowIndex : INDICES) {
     for (const auto& digit : SUDO_DIGITS) {
@@ -57,18 +57,10 @@ int32_t SudokuRow::getDLXConstraintColumnsAmount() const {
   return 9 * 9; // 9(rows) * 9(possible digits in each row)
 }
 
-bool SudokuRow::getDLXConstraint(const int32_t boardRow,
-                                 const int32_t boardColumn,
-                                 const int32_t columnId,
-                                 const Sudo possibleDigit,
-                                 const Sudo actualDigit) const {
-
+bool SudokuRow::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+  // columnId encodes the location of a digit on the board
   const int32_t matrixRow = columnId / MAX_DIGIT;
   const int32_t matrixColumn = columnId % MAX_DIGIT;
 
-  if (actualDigit == Sudo::NONE) {
-    return matrixRow == boardRow && matrixColumn == static_cast<int32_t>(possibleDigit) - 1;
-  }
-  return actualDigit == possibleDigit && matrixRow == boardRow &&
-         matrixColumn == static_cast<int32_t>(possibleDigit) - 1;
+  return matrixRow == i && matrixColumn == static_cast<int32_t>(digit) - 1;
 }
