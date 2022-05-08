@@ -95,6 +95,28 @@ static inline int32_t clamp(const int32_t value, const int32_t min, const int32_
   return std::max(std::min(value, max), min);
 }
 
+static inline int32_t packId(int32_t x, int32_t y, int32_t xAmount, int32_t yAmount) {
+  return x * yAmount + y;
+}
+
+static inline int32_t packId(int32_t x, int32_t y, int32_t z, int32_t xAmount, int32_t yAmount, int32_t zAmount) {
+  return x * (yAmount * zAmount) + y * (zAmount) + z;
+}
+
+static inline std::pair<int32_t, int32_t> unpackId(int32_t packedId, int32_t xAmount, int32_t yAmount) {
+  const int32_t first = packedId / yAmount; // 0 <= x < xAmount
+  const int32_t second = packedId % yAmount; // 0 <= y < yAmount
+  return std::make_pair(first, second);
+}
+
+static inline std::tuple<int32_t, int32_t, int32_t>
+unpackId(int32_t packedId, int32_t xAmount, int32_t yAmount, int32_t zAmount) {
+  const int32_t first = packedId / (yAmount * zAmount); // 0 <= x < xAmount
+  const int32_t second = (packedId % (yAmount * zAmount)) / zAmount; //  0 <= y < yAmount
+  const int32_t third = packedId % zAmount; //  0 <= z < zAmount
+  return std::make_tuple(first, second, third);
+}
+
 class Timer {
 public:
   Timer()

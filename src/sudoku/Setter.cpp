@@ -15,7 +15,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   std::vector<std::vector<bool>> givenMask;
 
   while (counter < totalTries) {
-    counter++;
+    ++counter;
 
     // Create given mask
     if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR)

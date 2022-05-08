@@ -5,8 +5,6 @@
 #include "constraints/ConstraintFactory.h"
 #include "solver/Solver.h"
 
-#include <cstdint>
-
 Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType constraintTypes, SymmetryType symmetryType)
     : name(name) {
 
@@ -84,10 +82,12 @@ void Sudoku::exportToSvg() {
   // DLX Matrix
 
   std::vector<std::pair<std::string, int32_t>> constraintTexts;
+  int32_t columnsAmount = 0;
   for (const auto& constraint : constraints) {
     constraintTexts.emplace_back(std::make_pair(constraint->getName(), constraint->getDLXConstraintColumnsAmount()));
+    columnsAmount += constraint->getDLXConstraintColumnsAmount();
   }
-  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintTexts);
+  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintTexts, columnsAmount);
 
   // TODO: (Temporary) Remaining digits
 
