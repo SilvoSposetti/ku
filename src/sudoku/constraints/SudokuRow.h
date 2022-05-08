@@ -14,11 +14,6 @@ public:
 
   virtual std::string getSvgGroup() const override;
 
-  virtual bool validatePlacement(Sudo digit,
-                                 int32_t rowIndex,
-                                 int32_t columnIndex,
-                                 const std::vector<std::vector<Sudo>>& board) const override;
-
   virtual bool satisfy(const std::vector<std::vector<Sudo>>& board) const override;
 
   virtual int32_t getDLXConstraintColumnsAmount() const override;

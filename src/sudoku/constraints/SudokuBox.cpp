@@ -32,22 +32,6 @@ std::string SudokuBox::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(mediumLine));
 }
 
-bool SudokuBox::validatePlacement(Sudo digit,
-                                  int32_t rowIndex,
-                                  int32_t columnIndex,
-                                  const std::vector<std::vector<Sudo>>& board) const {
-  // Validate a hypothetical placement by checking if the digit already exists in the box relevant for the given
-  // coordinates
-  const int32_t boxIndex = getBoxIndex(rowIndex, columnIndex);
-  std::vector<std::pair<int32_t, int32_t>> boxIndexPairs = getBoxIndices()[boxIndex];
-  for (const auto& pair : boxIndexPairs) {
-    if (board[pair.first][pair.second] == digit) {
-      return false;
-    }
-  }
-  return true;
-}
-
 bool SudokuBox::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   // The board satisfies the constraint if all boxes do not contain duplicate digits
   std::vector<std::vector<std::pair<int32_t, int32_t>>> boxesIndices = getBoxIndices();
@@ -67,7 +51,7 @@ bool SudokuBox::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
-int32_t SudokuBox::getBoxIndex(const int32_t rowIndex, const int32_t columnIndex) {
+int32_t SudokuBox::getBoxId(const int32_t rowIndex, const int32_t columnIndex) {
   // Use integer division to floor results
   return static_cast<int32_t>(columnIndex / 3 + 3 * (rowIndex / 3));
 }
@@ -93,10 +77,10 @@ int32_t SudokuBox::getDLXConstraintColumnsAmount() const {
 }
 
 bool SudokuBox::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+  // columnId encodes the (box id, possible digit) pair
+  const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const int32_t boxId = unpacked.first;
+  const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
 
-  // columnId encodes the (possible box, possible digit) pair
-  const int32_t possibleBox = columnId / MAX_DIGIT;
-  const Sudo possibleDigit = static_cast<Sudo>(columnId % MAX_DIGIT + 1);
-
-  return possibleBox == getBoxIndex(i, j) && possibleDigit == digit;
+  return boxId == getBoxId(i, j) && possibleDigit == digit;
 }

@@ -15,11 +15,6 @@ public:
 
   virtual std::string getSvgGroup() const = 0;
 
-  virtual bool validatePlacement(Sudo digit,
-                                 int32_t rowIndex,
-                                 int32_t columnIndex,
-                                 const std::vector<std::vector<Sudo>>& board) const = 0;
-
   virtual bool satisfy(const std::vector<std::vector<Sudo>>& board) const = 0;
 
   virtual int32_t getDLXConstraintColumnsAmount() const = 0;

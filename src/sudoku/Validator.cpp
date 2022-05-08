@@ -14,19 +14,6 @@ bool Validator::checkSolution(const std::vector<std::vector<Sudo>>& board,
   return Validator::isBoardValid(board, constraints);
 }
 
-bool Validator::validateMove(const int32_t rowIndex,
-                             const int32_t columnIndex,
-                             const Sudo digit,
-                             const std::vector<std::vector<Sudo>>& field,
-                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  for (const auto& constraint : constraints) {
-    if (!constraint->validatePlacement(digit, rowIndex, columnIndex, field)) {
-      return false;
-    }
-  }
-  return true;
-}
-
 bool Validator::isBoardValid(const std::vector<std::vector<Sudo>>& board,
                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   for (const auto& constraint : constraints) {

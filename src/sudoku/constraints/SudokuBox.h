@@ -14,11 +14,6 @@ public:
 
   virtual std::string getSvgGroup() const override;
 
-  virtual bool validatePlacement(Sudo digit,
-                                 int32_t rowIndex,
-                                 int32_t columnIndex,
-                                 const std::vector<std::vector<Sudo>>& board) const override;
-
   virtual bool satisfy(const std::vector<std::vector<Sudo>>& board) const override;
 
   virtual int32_t getDLXConstraintColumnsAmount() const override;
@@ -32,7 +27,7 @@ private:
    * @param columnIndex A cell's column index in the grid
    * @return The "box" index for that cell
    */
-  static int32_t getBoxIndex(const int32_t rowIndex, const int32_t columnIndex);
+  static int32_t getBoxId(const int32_t rowIndex, const int32_t columnIndex);
 
   /**
    * Creates all [row][column] index pairs for the cells of every box

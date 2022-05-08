@@ -22,19 +22,6 @@ std::string SudokuColumn::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), verticalLines, SvgUtilities::getNoFillStroke(thinLine));
 }
 
-bool SudokuColumn::validatePlacement(Sudo digit,
-                                     int32_t rowIndex,
-                                     int32_t columnIndex,
-                                     const std::vector<std::vector<Sudo>>& board) const {
-  // If the digit is already present in the given row, then the placement is not valid
-  for (const auto& index : INDICES) {
-    if (board[index][columnIndex] == digit) {
-      return false;
-    }
-  }
-  return true;
-}
-
 bool SudokuColumn::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   // The board satisfies the constraint if all columns do not contain duplicate digits
   for (const auto& columnIndex : INDICES) {
@@ -59,9 +46,10 @@ int32_t SudokuColumn::getDLXConstraintColumnsAmount() const {
 
 bool SudokuColumn::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
-  // columnId encodes the (possible column, possible digit) pair
-  const int32_t possibleColumn = columnId / MAX_DIGIT;
-  const Sudo possibleDigit = static_cast<Sudo>(columnId % MAX_DIGIT + 1);
+  // columnId encodes the (column, possible digit) pair
+  const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const int32_t column = unpacked.first;
+  const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
 
-  return possibleColumn == j && possibleDigit == digit;
+  return column == j && possibleDigit == digit;
 }

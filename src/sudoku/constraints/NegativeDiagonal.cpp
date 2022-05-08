@@ -18,23 +18,6 @@ std::string NegativeDiagonal::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
 }
 
-bool NegativeDiagonal::validatePlacement(Sudo digit,
-                                         int32_t rowIndex,
-                                         int32_t columnIndex,
-                                         const std::vector<std::vector<Sudo>>& board) const {
-  // Accept if the placement is not on the negative diagonal
-  if (!isOnNegativeDiagonal(rowIndex, columnIndex)) {
-    return true;
-  }
-  // Check if the digit exists already in the negative diagonal
-  for (const auto& indexPair : getAllNegativeDiagonalIndices()) {
-    if (board[indexPair.first][indexPair.second] == digit) {
-      return false;
-    }
-  }
-  return true;
-}
-
 bool NegativeDiagonal::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   // The board satisfies the constraint if the negative diagonal does not contain duplicate digits
   const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllNegativeDiagonalIndices();
@@ -58,7 +41,7 @@ int32_t NegativeDiagonal::getDLXConstraintColumnsAmount() const {
 
 bool NegativeDiagonal::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
-  // columnId maps to a possible digit on the positive diagonal
+  // columnId maps directly to a cell on the positive diagonal
   const Sudo possibleDigit = static_cast<Sudo>(columnId + 1);
   return isOnNegativeDiagonal(i, j) && possibleDigit == digit;
 }

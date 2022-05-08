@@ -2,21 +2,17 @@
 
 #include "../Validator.h"
 
-#include <cstdint>
-
 std::vector<std::vector<Sudo>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
   std::vector<std::vector<Sudo>> newField = emptyField();
   std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
-  // Naive solver is faster to create a filled, random board
-  bool created = Solver::naive(newField, givenMask, constraints);
+  const bool created = Solver::dlx(newField, constraints, false, true);
 
   if (!created) {
     std::cout << "ERROR: Was not able to generate a new board with the given constraints" << std::endl;
-  }
-  if (!Validator::checkSolution(newField, constraints)) {
+  } else if (!Validator::checkSolution(newField, constraints)) {
     std::cout << "ERROR: Solution created does not satisfy all constraints" << std::endl;
   }
   return newField;
@@ -41,7 +37,8 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
 
 std::vector<std::vector<int32_t>>
 Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
-                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                     bool randomize) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
@@ -51,7 +48,7 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
       }
     }
   }
-  // 729 => (81 cells, 9 possible digits for each cell)
+  // 729 rows => (81 cells, 9 possible digits for each cell)
   constexpr int32_t maximumRows = 9 * 9 * 9;
   // Each given reduces the amount of rows by (MAX_DIGIT - 1)
   const int32_t totalRows = maximumRows - (MAX_DIGIT - 1) * givenAmount;
@@ -64,12 +61,15 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   // Initialize matrix with correct size
   std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
 
+  // Randomize the sequence of digits that is passed when constructing the matrix or not
+  const std::vector<Sudo> digitsSequence = randomize ? randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
+
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
   for (const auto& boardI : INDICES) { // Go through all sudoku rows
     for (const auto& boardJ : INDICES) { // Go through all sudoku column
       const Sudo actualDigit = board[boardI][boardJ];
-      for (const auto& possibleDigit : SUDO_DIGITS) { // Go through all possible digits for this cell
+      for (const auto& possibleDigit : digitsSequence) { // Go through all possible digits for this cell
         // Avoid rows where the cell and its possible digits don't create a "1" in the matrix, since the digit
         // is already given
         if (actualDigit == Sudo::NONE || actualDigit == possibleDigit) {
@@ -88,74 +88,15 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
       }
     }
   }
-
   return matrix;
-}
-
-bool Solver::naive(std::vector<std::vector<Sudo>>& board,
-                   const std::vector<std::vector<bool>>& givenMask,
-                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  int32_t counter = 0;
-  return naiveRecursive(0, 0, board, givenMask, constraints);
-}
-
-bool Solver::naiveRecursive(int32_t rowIndex,
-                            int32_t columnIndex,
-                            std::vector<std::vector<Sudo>>& board,
-                            const std::vector<std::vector<bool>>& givenMask,
-                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  // Reached end of the board, so found solution must be valid
-  if (rowIndex > 8) {
-    return true;
-  }
-  // Current digit can be modified if it's not part of the given mask
-  if (!givenMask[rowIndex][columnIndex]) {
-    // Try out all possible digits in random order
-    std::vector<Sudo> randomDigits = randomShuffle(SUDO_DIGITS);
-    for (const auto& digit : randomDigits) {
-      // Check if the current digit can be placed here without breaking any constraint
-      if (Validator::validateMove(rowIndex, columnIndex, digit, board, constraints)) {
-        // Store digit's place
-        const int32_t k = rowIndex;
-        const int32_t l = columnIndex;
-        board[k][l] = digit; // Try and set the current digit in the board
-        // Go forward in the grid
-        columnIndex++;
-        if (columnIndex > 8) {
-          rowIndex++;
-          columnIndex = 0;
-        }
-        // If the recursive call returns true, a valid solution was found
-        if (Solver::naiveRecursive(rowIndex, columnIndex, board, givenMask, constraints)) {
-          return true;
-        }
-        // Otherwise, the digit just placed leads to a conflict
-        board[k][l] = Sudo::NONE;
-        // Thus, go back one digit in the board
-        columnIndex--;
-        if (columnIndex < 0) {
-          rowIndex--;
-          columnIndex = 8;
-        }
-      }
-    }
-  } else {
-    // The digit cannot be modified, go to the next one
-    columnIndex++;
-    if (columnIndex > 8) {
-      rowIndex++;
-      columnIndex = 0;
-    }
-    return Solver::naiveRecursive(rowIndex, columnIndex, board, givenMask, constraints);
-  }
-  return false;
 }
 
 bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                 bool checkForUniqueness) {
+                 bool checkForUniqueness,
+                 bool randomize) {
   // Reduce problem: Sudoku->DLX
-  std::vector<std::vector<int32_t>> M = getDlxMatrix(board, constraints);
+  std::vector<std::vector<int32_t>> M = getDlxMatrix(board, constraints, randomize);
 
   // Create doubly-linked list according to matrix M
   const std::shared_ptr<Node> root = createDancingLinksMatrix(M, constraints);
@@ -302,24 +243,23 @@ void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
                                 std::vector<std::shared_ptr<Node>>& solutionHolder,
                                 std::vector<std::vector<std::shared_ptr<Node>>>& solutions) {
 
-  if (root->right == root) {
+  if (root->right == root && solutionsLeftToSearchFor > 0) {
     // Ran out of columns => solved the exact cover problem
     solutions.emplace_back(solutionHolder);
-    solutionsLeftToSearchFor--;
+    --solutionsLeftToSearchFor;
     return;
   }
+
   // Pick a column to cover
-  // std::shared_ptr<Node> currentColum = root->right;
-  std::shared_ptr<Node> currentColum = chooseSmallestColumn(root);
-  // std::shared_ptr<Node> currentColum = chooseRandomColumn(root);
+  std::shared_ptr<Node> currentColumn = chooseSmallestColumn(root);
 
-  coverDlxColumn(currentColum);
+  coverDlxColumn(currentColumn);
 
-  std::shared_ptr<Node> node = currentColum->down;
+  std::shared_ptr<Node> node = currentColumn->down;
   // Go through all nodes of this colum and cover their siblings' columns
 
   // Stop if we reach loop back to the current column's header, or if enough solutions have been found
-  while (node != currentColum && solutionsLeftToSearchFor > 0) {
+  while (node != currentColumn && solutionsLeftToSearchFor > 0) {
     // Cover all siblings of this column's node one by one
     // This is emplaced at the element with index 'depth'
     solutionHolder.push_back(node);
@@ -337,7 +277,7 @@ void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
     // A solution wasn't found, pop the node from the solution
     node = solutionHolder[depth];
     solutionHolder.pop_back();
-    currentColum = node->header;
+    currentColumn = node->header;
 
     // Uncover the node's siblings in the opposite order, from right to left
     siblingNode = node->left;
@@ -349,7 +289,7 @@ void Solver::searchDlxRecursive(const std::shared_ptr<Node>& root,
     // Proceed down to next node of this column
     node = node->down;
   }
-  uncoverDlxColumn(currentColum);
+  uncoverDlxColumn(currentColumn);
 }
 
 void Solver::coverDlxColumn(std::shared_ptr<Node>& column) {

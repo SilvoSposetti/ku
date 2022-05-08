@@ -4,11 +4,6 @@
 #include "../constraints/AbstractConstraint.h"
 #include "Node.h"
 
-enum class SolverType {
-  Naive, // Standard naive brute-force approach
-  DLX // Transforms the sudoku instance into an exact cover instance and solves it with Algorithm X using Dancing Links
-};
-
 class Solver {
 public:
   static std::vector<std::vector<Sudo>>
@@ -20,22 +15,14 @@ public:
 
   static std::vector<std::vector<int32_t>>
   getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
-               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+               bool randomize = false);
 
 private:
-  static bool naive(std::vector<std::vector<Sudo>>& board,
-                    const std::vector<std::vector<bool>>& givenMask,
-                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-
-  static bool naiveRecursive(int32_t rowIndex,
-                             int32_t columnIndex,
-                             std::vector<std::vector<Sudo>>& board,
-                             const std::vector<std::vector<bool>>& givenMask,
-                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-
   static bool dlx(std::vector<std::vector<Sudo>>& board,
                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                  bool checkForUniqueness);
+                  bool checkForUniqueness,
+                  bool randomize = false);
 
   static std::shared_ptr<Node>
   createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix,
