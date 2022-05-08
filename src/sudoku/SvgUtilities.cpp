@@ -1,6 +1,5 @@
 #include "SvgUtilities.h"
 
-#include <cstdint>
 #include <iomanip>
 
 std::string SvgUtilities::getSvgHeader() {
@@ -99,7 +98,25 @@ std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo>>& solu
       }
     }
   }
-  return createGroup("Given-Digits", givenDigits, givenDigitTextStyle);
+  givenDigits = createGroup("Given-Digits", givenDigits, givenDigitTextStyle);
+
+  // Add also non-given digits
+  const int nonGivenDigitFontSize = boardSize / 50;
+  const std::string nonGivenDigitTextStyle = " text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"" +
+                                             std::to_string(nonGivenDigitFontSize) + "\"";
+  std::string nonGivenDigits;
+  for (const auto& i : INDICES) {
+    for (const auto& j : INDICES) {
+      if (!givenMask[i][j]) {
+        const double cellCenterX = (j + 0.5) * cellSize;
+        const double cellCenterY = (i + 0.5) * cellSize;
+        const std::string digitString = std::to_string(static_cast<int32_t>(solution[i][j]));
+        nonGivenDigits += text(cellCenterX, cellCenterY, digitString);
+      }
+    }
+  }
+  nonGivenDigits = createGroup("Non-Given-Digits", nonGivenDigits, nonGivenDigitTextStyle);
+  return givenDigits + nonGivenDigits;
 }
 
 std::string SvgUtilities::givenPattern(int32_t cellIndexI, int32_t cellIndexJ, bool isGiven) {
@@ -117,13 +134,14 @@ std::string SvgUtilities::givenPatternBorder() {
 }
 
 std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& matrix,
-                                    const std::vector<std::pair<std::string, int32_t>>& constraintTexts) {
+                                    const std::vector<std::pair<std::string, int32_t>>& constraintTexts,
+                                    int32_t columnsAmount) {
   const double dlxCellSize = boardSize / (9. * 9. * 9.);
   const double originX = boardSize + boardMargin;
   const double originY = 0;
   const int32_t textSize = boardSize / 100;
   const int32_t textDistance = dlxCellSize * 5;
-  const double constraintSeparation = dlxCellSize * 5;
+  const double constraintSeparation = dlxCellSize * 9;
   const int32_t rows = matrix.size();
 
   std::string result;
@@ -170,15 +188,29 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   }
 
   // Horizontal lines
-  double lineThickness = boardSize / 10000.0;
-  std::string lines;
+  double lineThickness = boardSize / 5000.0;
+  std::string horizondalLines;
   double startX = originX;
   double endX = originX + columnsCounter * dlxCellSize + (constraintCounter - 1) * constraintSeparation;
-  for (int32_t i = 1; i < rows; i++) {
-    const double y = originY + dlxCellSize * i;
-    lines += paperUnitsLine(startX, y, endX, y);
+  for (int32_t i = 0; i <= rows; i++) {
+    if (i % 9 == 0) {
+      const double y = originY + dlxCellSize * i;
+      horizondalLines += paperUnitsLine(startX, y, endX, y);
+    }
   }
-  result += createGroup("DLX-Lines", lines, getNoFillStroke(lineThickness));
+  result += createGroup("DLX-Horizontal-Lines", horizondalLines, getNoFillStroke(lineThickness));
+
+  // Vertical lines
+  std::string verticalLines;
+  double startY = originY;
+  double endY = originY + rows * dlxCellSize;
+  for (int32_t i = 0; i <= columnsAmount + (constraintCounter - 2) * constraintSeparation; i++) {
+    if (i % 9 == 0) {
+      const double x = originX + dlxCellSize * i;
+      verticalLines += paperUnitsLine(x, startY, x, endY);
+    }
+  }
+  result += createGroup("DLX-Vertical-Lines", verticalLines, getNoFillStroke(lineThickness));
 
   return result;
 }

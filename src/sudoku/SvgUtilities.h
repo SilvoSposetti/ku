@@ -8,7 +8,7 @@ const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(MAX_DIGIT);
 const double boardMargin = cellSize * 1.5;
 const double totalBoardSize = boardSize + 2 * boardMargin;
-const double dlxMatrixWidth = 0.7 * boardSize;
+const double dlxMatrixWidth = 1.7 * boardSize;
 const double infoHeight = 0.4 * boardSize;
 
 const int givenPatternCellSize = boardSize / 50;
@@ -59,13 +59,14 @@ public:
   static std::string getFontSize(int fontSize);
 
   static std::string dlxMatrix(const std::vector<std::vector<int32_t>>& dlxMatrix,
-                               const std::vector<std::pair<std::string, int32_t>>& constraintTexts);
+                               const std::vector<std::pair<std::string, int32_t>>& constraintTexts,
+                               int32_t columnsAmount);
 
   static std::string getNoFillStroke(double strokeWidth);
 
 private:
   static std::string paperUnitsRect(double x, double y, double width, double height, const std::string& style = "");
-  
+
   static std::string paperUnitsLine(double x1, double y1, double x2, double y2, const std::string& style = "");
 
   static std::string toString(double input);
