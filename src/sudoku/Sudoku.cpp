@@ -25,7 +25,8 @@ Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType cons
   board->print();
   // board->printGivenPattern();
   std::cout << std::endl;
-  exportToSvg();
+  exportSudokuToSvg();
+  exportDlxMatrixToSvg();
 }
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
@@ -47,7 +48,7 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
   return constraintList;
 }
 
-void Sudoku::exportToSvg() {
+void Sudoku::exportSudokuToSvg() {
   std::string outputPath;
 #ifndef OUT_DIR
 #else
@@ -79,17 +80,35 @@ void Sudoku::exportToSvg() {
   // Given digits
   svgContent += SvgUtilities::givenDigits(board->getSolution(), board->getGivenMask());
 
+  // Footer
+  svgContent += SvgUtilities::getSvgFooter();
+
+  // Stram it to file, then save and close
+  outfile << svgContent;
+  outfile.close();
+}
+
+void Sudoku::exportDlxMatrixToSvg() {
+  std::string outputPath;
+#ifndef OUT_DIR
+#else
+  outputPath = OUT_DIR;
+#endif
+
+  std::string outputFilePath = outputPath + "/" + name + "_DLX.svg";
+  std::ofstream outfile(outputFilePath);
+
+  std::string svgContent;
+
   // DLX Matrix
 
-  std::vector<std::pair<std::string, int32_t>> constraintTexts;
-  int32_t columnsAmount = 0;
+  std::vector<std::pair<std::string, int32_t>> constraintNamesAndColumns;
   for (const auto& constraint : constraints) {
-    constraintTexts.emplace_back(std::make_pair(constraint->getName(), constraint->getDLXConstraintColumnsAmount()));
-    columnsAmount += constraint->getDLXConstraintColumnsAmount();
+    constraintNamesAndColumns.emplace_back(std::make_pair(constraint->getName(), constraint->getDLXConstraintColumnsAmount()));
   }
-  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintTexts, columnsAmount);
 
-  // TODO: (Temporary) Remaining digits
+  svgContent +=
+      SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintNamesAndColumns);
 
   // Footer
   svgContent += SvgUtilities::getSvgFooter();

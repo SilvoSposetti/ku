@@ -6,9 +6,8 @@ std::string SvgUtilities::getSvgHeader() {
   std::string header = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"";
 
   // ViewBox
-  header += toString(-boardMargin) + " " + toString(-boardMargin) + " " + toString(totalBoardSize + dlxMatrixWidth) +
-            // " " + toString(totalBoardSize + infoHeight) + "\" font-family=\"monospace\" >\n";
-            " " + toString(totalBoardSize + infoHeight) + "\" font-family=\"Open Sans\" >\n";
+  header += toString(-boardMargin) + " " + toString(-boardMargin) + " " + toString(totalBoardSize) + " " +
+            toString(totalBoardSize + infoHeight) + "\" font-family=\"Open Sans\" >\n";
 
   return header;
 }
@@ -19,8 +18,8 @@ std::string SvgUtilities::getSvgFooter() {
 
 std::string SvgUtilities::background() {
   return "<rect x=\"" + toString(-boardMargin) + "\" y=\"" + toString(-boardMargin) + "\" width=\"" +
-         toString(totalBoardSize + dlxMatrixWidth) + "\" height=\"" + toString(totalBoardSize + infoHeight) + "\"" +
-         lightRectStyle + "/>\n";
+         toString(totalBoardSize) + "\" height=\"" + toString(totalBoardSize + infoHeight) + "\"" + lightRectStyle +
+         "/>\n";
 }
 
 std::string SvgUtilities::createGroup(const std::string& name, const std::string& group, const std::string& style) {
@@ -134,42 +133,60 @@ std::string SvgUtilities::givenPatternBorder() {
 }
 
 std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& matrix,
-                                    const std::vector<std::pair<std::string, int32_t>>& constraintTexts,
-                                    int32_t columnsAmount) {
-  const double dlxCellSize = boardSize / (9. * 9. * 9.);
-  const double originX = boardSize + boardMargin;
+                                    const std::vector<std::pair<std::string, int32_t>>& constraintNamesAndColumns) {
+
+  int32_t columnsAmount = 0;
+  for (const auto& columnNameAndAmount : constraintNamesAndColumns) {
+    columnsAmount += columnNameAndAmount.second;
+  }
+  const int32_t rowsAmount = matrix.size();
+
+  const double originX = 0;
   const double originY = 0;
+
+  const int32_t constraintSeparationAmount = std::max(0.0, static_cast<double>(constraintNamesAndColumns.size() - 1));
+  const double constraintSeparationCellMultiplier = 9.0;
+
+  const double verticalCellSize = boardSize / rowsAmount;
+  const double horizontalCellSize =
+      boardSize / (columnsAmount + constraintSeparationAmount * constraintSeparationCellMultiplier);
+  const double dlxCellSize = std::min(verticalCellSize, horizontalCellSize);
+
   const int32_t textSize = boardSize / 100;
   const int32_t textDistance = dlxCellSize * 5;
-  const double constraintSeparation = dlxCellSize * 9;
-  const int32_t rows = matrix.size();
+  const double constraintSeparation = dlxCellSize * constraintSeparationCellMultiplier;
 
-  std::string result;
+  const double namesBuffer = boardSize * 0.15;
+  const double actualHeight = dlxCellSize * rowsAmount + namesBuffer;
+  const double actualWidth = dlxCellSize * columnsAmount + constraintSeparation * constraintSeparationAmount;
+
   // Keep track of which columns have already been considered
   int32_t columnsCounter = 0;
   int32_t constraintCounter = 0;
-  for (const auto& constraint : constraintTexts) {
+
+  std::string names;
+  std::string backgrounds;
+  std::string cells;
+  for (const auto& columnNameAndAmount : constraintNamesAndColumns) {
     const double constraintOriginX = originX + columnsCounter * dlxCellSize + constraintCounter * constraintSeparation;
-    const std::string name = constraint.first;
-    const int32_t constraintColumns = constraint.second;
+    const std::string name = columnNameAndAmount.first;
+    const int32_t constraintColumns = columnNameAndAmount.second;
 
     // Name
     double textPositionX = constraintOriginX + (constraintColumns * 0.5) * dlxCellSize;
-    double textPositionY = originY - textDistance;
+    double textPositionY = originY + rowsAmount * dlxCellSize + textDistance;
     std::string constraintText =
         text(textPositionX, textPositionY, name, getRotatedTextStyle(textPositionX, textPositionY, textSize));
-    constraintText = createGroup("DLX-" + name + "-Name", constraintText);
 
     // Background
-    std::string constraintBackground =
-        paperUnitsRect(constraintOriginX, originY, dlxCellSize * constraintColumns, dlxCellSize * rows, whiteRectStyle);
-    constraintBackground = createGroup("DLX-" + name + "-Background", constraintBackground);
+    std::string constraintBackground = paperUnitsRect(
+        constraintOriginX, originY, dlxCellSize * constraintColumns, dlxCellSize * rowsAmount, whiteRectStyle);
 
     // Cells
     const int32_t startColumn = columnsCounter;
     const int32_t endColumn = columnsCounter + constraintColumns;
     std::string constraintCells;
-    for (int32_t i = 0; i < rows; i++) {
+    for (int32_t i = 0; i < rowsAmount; i++) {
       for (int32_t j = startColumn; j < endColumn; j++) {
         const int32_t value = matrix[i][j];
         if (value >= 0) {
@@ -181,38 +198,54 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
     }
     constraintCells = createGroup("DLX-" + name + "-Cells", constraintCells, darkRectStyle);
 
-    result += constraintText + constraintBackground + constraintCells;
-
+    names += constraintText;
+    backgrounds += constraintBackground;
+    cells += constraintCells;
     columnsCounter += constraintColumns;
     constraintCounter++;
   }
+  names = createGroup("DLX-Names", names);
+  backgrounds = createGroup("DLX-Backgrounds", backgrounds, whiteRectStyle);
+  cells = createGroup("DLX-Cells", cells, darkRectStyle);
 
   // Horizontal lines
   double lineThickness = boardSize / 5000.0;
-  std::string horizondalLines;
+  std::string horizontalLines;
   double startX = originX;
-  double endX = originX + columnsCounter * dlxCellSize + (constraintCounter - 1) * constraintSeparation;
-  for (int32_t i = 0; i <= rows; i++) {
-    if (i % 9 == 0) {
+  double endX = actualWidth;
+  int32_t currentColumn = 0;
+
+  for (int32_t i = 0; i < rowsAmount; i++) {
+    if (matrix[i][currentColumn] >= 0) {
       const double y = originY + dlxCellSize * i;
-      horizondalLines += paperUnitsLine(startX, y, endX, y);
+      horizontalLines += paperUnitsLine(startX, y, endX, y);
+      currentColumn++;
     }
   }
-  result += createGroup("DLX-Horizontal-Lines", horizondalLines, getNoFillStroke(lineThickness));
+  horizontalLines += paperUnitsLine(startX, dlxCellSize * rowsAmount, endX, dlxCellSize * rowsAmount);
+  horizontalLines = createGroup("DLX-Horizontal-Lines", horizontalLines, getNoFillStroke(lineThickness));
 
   // Vertical lines
   std::string verticalLines;
   double startY = originY;
-  double endY = originY + rows * dlxCellSize;
+  double endY = originY + rowsAmount * dlxCellSize;
   for (int32_t i = 0; i <= columnsAmount + (constraintCounter - 2) * constraintSeparation; i++) {
     if (i % 9 == 0) {
       const double x = originX + dlxCellSize * i;
       verticalLines += paperUnitsLine(x, startY, x, endY);
     }
   }
-  result += createGroup("DLX-Vertical-Lines", verticalLines, getNoFillStroke(lineThickness));
+  verticalLines = createGroup("DLX-Vertical-Lines", verticalLines, getNoFillStroke(lineThickness));
 
-  return result;
+  // Header
+  const std::string header = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"" + toString(0) + " " + toString(0) +
+                             " " + toString(actualWidth) + " " + toString(actualHeight) + "\" >\n";
+
+  const std::string background = paperUnitsRect(0, 0, actualWidth, actualHeight, lightRectStyle);
+  // Footer
+  const std::string footer = getSvgFooter();
+
+  return header + background + names + backgrounds + cells + horizontalLines + verticalLines + footer;
 }
 
 std::string SvgUtilities::toString(double input) {
@@ -237,7 +270,7 @@ std::string SvgUtilities::paperUnitsLine(double x1, double y1, double x2, double
 }
 
 std::string SvgUtilities::getRotatedTextStyle(double x, double y, int32_t fontSize) {
-  return getFontSize(fontSize) + " text-anchor=\"start\" dominant-baseline=\"central\" transform=\"rotate(-90, " +
+  return getFontSize(fontSize) + " text-anchor=\"start\" dominant-baseline=\"central\" transform=\"rotate(90, " +
          toString(x) + ", " + toString(y) + ")\"";
 }
 

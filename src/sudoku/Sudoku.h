@@ -7,7 +7,8 @@ class Sudoku {
 public:
   Sudoku(const std::string& name, int32_t totalDigits, ConstraintType constraintTypes, SymmetryType symmetryType);
 
-  void exportToSvg();
+  void exportSudokuToSvg();
+  void exportDlxMatrixToSvg();
 
 private:
   static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);

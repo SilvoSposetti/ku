@@ -89,14 +89,12 @@ std::vector<int32_t> KingsMove::getNeighboringBoxIds(int32_t rowIndex, int32_t c
   const std::vector<int32_t> neighboringIndices = {-1, 0, 1};
   for (const auto& i : neighboringIndices) {
     for (const auto& j : neighboringIndices) {
-      // if (i != 0 || j != 0) {
       const int32_t row = rowIndex + i;
       const int32_t column = columnIndex + j;
       // Only emplace_back indices that are valid
       if (MIN_INDEX <= row && row <= MAX_INDEX && MIN_INDEX <= column && column <= MAX_INDEX) {
         result.emplace_back(packId(row, column, MAX_DIGIT, MAX_DIGIT));
       }
-      // }
     }
   }
   return result;
