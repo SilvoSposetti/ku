@@ -145,7 +145,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   const double originY = 0;
 
   const int32_t constraintSeparationAmount = std::max(0.0, static_cast<double>(constraintNamesAndColumns.size() - 1));
-  const double constraintSeparationCellMultiplier = 9.0;
+  const double constraintSeparationCellMultiplier = static_cast<double>(MAX_DIGIT);
 
   const double verticalCellSize = boardSize / rowsAmount;
   const double horizontalCellSize =
@@ -216,7 +216,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   int32_t currentColumn = 0;
 
   for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix[i][currentColumn] >= 0) {
+    if (matrix[i][currentColumn] >= 0 && currentColumn < columnsAmount) {
       const double y = originY + dlxCellSize * i;
       horizontalLines += paperUnitsLine(startX, y, endX, y);
       currentColumn++;
@@ -229,8 +229,8 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   std::string verticalLines;
   double startY = originY;
   double endY = originY + rowsAmount * dlxCellSize;
-  for (int32_t i = 0; i <= columnsAmount + (constraintCounter - 2) * constraintSeparation; i++) {
-    if (i % 9 == 0) {
+  for (int32_t i = 0; i <= columnsAmount + constraintSeparationAmount * constraintSeparation; i++) {
+    if (i % MAX_DIGIT == 0) {
       const double x = originX + dlxCellSize * i;
       verticalLines += paperUnitsLine(x, startY, x, endY);
     }
