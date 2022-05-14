@@ -62,6 +62,8 @@ public:
 
   static std::string getNoFillStroke(double strokeWidth);
 
+  static std::string plus(double x, double y, double size);
+
 private:
   static std::string paperUnitsRect(double x, double y, double width, double height, const std::string& style = "");
 

@@ -29,7 +29,8 @@ enum class ConstraintType : uint64_t {
   SUDOKU_BOX = 1 << 3,
   POSITIVE_DIAGONAL = 1 << 4,
   NEGATIVE_DIAGONAL = 1 << 5,
-  KINGS_MOVE = 1 << 6,
+  EVEN_POSITIVE_DIAGONAL = 1 << 6,
+  KINGS_MOVE = 1 << 7,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

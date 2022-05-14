@@ -8,8 +8,9 @@ void Ku::run() {
   constraints = constraints | ConstraintType::SUDOKU_ROW;
   constraints = constraints | ConstraintType::SUDOKU_COLUMN;
   constraints = constraints | ConstraintType::SUDOKU_BOX;
-  constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
-  constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
+  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
+  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
+  constraints = constraints | ConstraintType::EVEN_POSITIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::KINGS_MOVE;
 
   for (int32_t i = 0; i < 1; ++i) {
