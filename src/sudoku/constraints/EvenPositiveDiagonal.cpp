@@ -13,13 +13,8 @@ std::string EvenPositiveDiagonal::getDescription() const {
 }
 
 std::string EvenPositiveDiagonal::getSvgGroup() const {
-  std::string pluses;
-  const int32_t steps = 90;
-  for (int32_t i = 1; i < steps; i++) {
-    const double step = static_cast<double>(i) / static_cast<double>(steps);
-    pluses += SvgUtilities::plus(step, 1 - step, .005);
-  }
-  return SvgUtilities::createGroup(getName(), pluses, SvgUtilities::getNoFillStroke(thinLine));
+  const std::string line = SvgUtilities::line(0, 1, 1, 0);
+  return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
 }
 
 bool EvenPositiveDiagonal::satisfy(const std::vector<std::vector<Sudo>>& board) const {
