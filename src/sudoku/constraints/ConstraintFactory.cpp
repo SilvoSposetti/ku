@@ -1,10 +1,12 @@
 #include "ConstraintFactory.h"
 
-#include "PositiveDiagonalEven.h"
 #include "KingsMove.h"
 #include "NegativeDiagonal.h"
-#include "PositiveDiagonalOdd.h"
+#include "NegativeDiagonalEven.h"
+#include "NegativeDiagonalOdd.h"
 #include "PositiveDiagonal.h"
+#include "PositiveDiagonalEven.h"
+#include "PositiveDiagonalOdd.h"
 #include "SudokuBox.h"
 #include "SudokuCell.h"
 #include "SudokuColumn.h"
@@ -28,6 +30,10 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
     return std::make_unique<PositiveDiagonalOdd>();
   case ConstraintType::NEGATIVE_DIAGONAL:
     return std::make_unique<NegativeDiagonal>();
+  case ConstraintType::NEGATIVE_DIAGONAL_EVEN:
+    return std::make_unique<NegativeDiagonalEven>();
+  case ConstraintType::NEGATIVE_DIAGONAL_ODD:
+    return std::make_unique<NegativeDiagonalOdd>();
   case ConstraintType::KINGS_MOVE:
     return std::make_unique<KingsMove>();
   default:

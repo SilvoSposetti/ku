@@ -6,12 +6,14 @@
 void Ku::run() {
   ConstraintType constraints = ConstraintType::NONE;
   constraints = constraints | ConstraintType::SUDOKU_ROW;
-  // constraints = constraints | ConstraintType::SUDOKU_COLUMN;
-  // constraints = constraints | ConstraintType::SUDOKU_BOX;
+  constraints = constraints | ConstraintType::SUDOKU_COLUMN;
+  constraints = constraints | ConstraintType::SUDOKU_BOX;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_EVEN;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
+  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_EVEN;
+  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::KINGS_MOVE;
 
   for (int32_t i = 0; i < 1; ++i) {

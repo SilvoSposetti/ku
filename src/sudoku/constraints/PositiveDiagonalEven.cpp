@@ -29,7 +29,7 @@ bool PositiveDiagonalEven::satisfy(const std::vector<std::vector<Sudo>>& board) 
 }
 
 int32_t PositiveDiagonalEven::getDlxConstraintColumnsAmount() const {
-  return MAX_DIGIT; // There are 9 cells in the main diagonal
+  return MAX_DIGIT; // There are 9 cells in the positive diagonal
 }
 
 bool PositiveDiagonalEven::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {

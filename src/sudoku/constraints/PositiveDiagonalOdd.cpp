@@ -18,7 +18,7 @@ std::string PositiveDiagonalOdd::getSvgGroup() const {
 }
 
 bool PositiveDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) const {
-  // The board satisfies the constraint if the positive diagonal contains only even digits
+  // The board satisfies the constraint if the positive diagonal contains only odd digits
   const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllPositiveDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
     if (static_cast<int>(board[pair.first][pair.second]) % 2 == 0) {
@@ -29,7 +29,7 @@ bool PositiveDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) c
 }
 
 int32_t PositiveDiagonalOdd::getDlxConstraintColumnsAmount() const {
-  return MAX_DIGIT; // There are 9 cells in the main diagonal
+  return MAX_DIGIT; // There are 9 cells in the positive diagonal
 }
 
 bool PositiveDiagonalOdd::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
