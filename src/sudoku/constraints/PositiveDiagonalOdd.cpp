@@ -39,15 +39,3 @@ bool PositiveDiagonalOdd::getDlxConstraint(Sudo digit, int32_t i, int32_t j, con
   const bool isOddDigit = (static_cast<int>(digit)) % 2 != 0;
   return i == row && j == column && isOddDigit;
 }
-
-std::vector<std::pair<int32_t, int32_t>> PositiveDiagonalOdd::getAllPositiveDiagonalIndices() {
-  std::vector<std::pair<int32_t, int32_t>> result;
-  for (const int32_t& i : INDICES) {
-    result.emplace_back(std::make_pair(i, MAX_INDEX - i));
-  }
-  return result;
-}
-
-bool PositiveDiagonalOdd::isOnPositiveDiagonal(int32_t i, int32_t j) {
-  return i + j == MAX_INDEX;
-}
