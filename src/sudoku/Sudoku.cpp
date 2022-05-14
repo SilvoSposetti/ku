@@ -101,10 +101,10 @@ void Sudoku::exportDlxMatrixToSvg() {
   std::string svgContent;
 
   // DLX Matrix
-
   std::vector<std::pair<std::string, int32_t>> constraintNamesAndColumns;
   for (const auto& constraint : constraints) {
-    constraintNamesAndColumns.emplace_back(std::make_pair(constraint->getName(), constraint->getDLXConstraintColumnsAmount()));
+    constraintNamesAndColumns.emplace_back(
+        std::make_pair(constraint->getName(), constraint->getDlxConstraintColumnsAmount()));
   }
 
   svgContent +=

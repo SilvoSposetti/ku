@@ -21,11 +21,11 @@ bool SudokuCell::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
-int32_t SudokuCell::getDLXConstraintColumnsAmount() const {
-  return 9 * 9; // 9 * 9 = 81 single places in which a digit could go
+int32_t SudokuCell::getDlxConstraintColumnsAmount() const {
+  return TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
 }
 
-bool SudokuCell::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuCell::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
   // columnId encodes the location (row, column) pair of a digit on the board
   const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);

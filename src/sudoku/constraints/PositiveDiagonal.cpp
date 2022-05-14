@@ -35,11 +35,11 @@ bool PositiveDiagonal::satisfy(const std::vector<std::vector<Sudo>>& board) cons
   return true;
 }
 
-int32_t PositiveDiagonal::getDLXConstraintColumnsAmount() const {
+int32_t PositiveDiagonal::getDlxConstraintColumnsAmount() const {
   return MAX_DIGIT;
 }
 
-bool PositiveDiagonal::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool PositiveDiagonal::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
   // columnId maps directly to a cell on the negative diagonal
   const Sudo possibleDigit = static_cast<Sudo>(columnId + 1);

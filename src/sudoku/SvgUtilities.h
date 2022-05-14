@@ -1,7 +1,6 @@
 #pragma once
 #include "../utilities/Utilities.h"
 
-#include <cstdint>
 #include <memory>
 
 const double boardSize = 1000;

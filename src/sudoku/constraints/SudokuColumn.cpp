@@ -40,11 +40,11 @@ bool SudokuColumn::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
-int32_t SudokuColumn::getDLXConstraintColumnsAmount() const {
-  return 9 * 9; // 9(columns) * 9(possible digits in each column)
+int32_t SudokuColumn::getDlxConstraintColumnsAmount() const {
+  return MAX_DIGIT * MAX_DIGIT; // 9(columns) * 9(possible digits in each column)
 }
 
-bool SudokuColumn::getDLXConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuColumn::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
   // columnId encodes the (column, possible digit) pair
   const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);

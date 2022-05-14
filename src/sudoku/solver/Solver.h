@@ -37,9 +37,11 @@ private:
                                  std::vector<std::shared_ptr<Node>>& solutionHolder,
                                  std::vector<std::vector<std::shared_ptr<Node>>>& solutions);
 
-  static void coverDlxColumn(std::shared_ptr<Node>& column);
+  static void cover(std::shared_ptr<Node>& columnHeader);
 
-  static void uncoverDlxColumn(std::shared_ptr<Node>& column);
+  static void uncover(std::shared_ptr<Node>& columnHeader);
 
   static std::shared_ptr<Node> chooseSmallestColumn(const std::shared_ptr<Node>& root);
+
+  static bool isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix);
 };
