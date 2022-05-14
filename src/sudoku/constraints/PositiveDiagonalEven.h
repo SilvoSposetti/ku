@@ -2,9 +2,9 @@
 
 #include "AbstractConstraint.h"
 
-class OddPositiveDiagonal : public AbstractConstraint {
+class PositiveDiagonalEven : public AbstractConstraint {
 public:
-  OddPositiveDiagonal() = default;
+  PositiveDiagonalEven() = default;
 
   virtual ConstraintType getType() const override;
 

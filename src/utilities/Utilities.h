@@ -28,12 +28,12 @@ enum class ConstraintType : uint64_t {
   SUDOKU_COLUMN = 1 << 2,
   SUDOKU_BOX = 1 << 3,
   POSITIVE_DIAGONAL = 1 << 4,
-  NEGATIVE_DIAGONAL = 1 << 5,
-  EVEN_POSITIVE_DIAGONAL = 1 << 6,
-  ODD_POSITIVE_DIAGONAL = 1 << 7,
-  ODD_NEGATIVE_DIAGONAL = 1 << 8,
-  EVEN_NEGATIVE_DIAGONAL = 1 << 9,
-  KINGS_MOVE = 1 << 8,
+  POSITIVE_DIAGONAL_EVEN = 1 << 5,
+  POSITIVE_DIAGONAL_ODD = 1 << 6,
+  NEGATIVE_DIAGONAL = 1 << 7,
+  NEGATIVE_DIAGONAL_EVEN = 1 << 8,
+  NEGATIVE_DIAGONAL_ODD = 1 << 9,
+  KINGS_MOVE = 1 << 10,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

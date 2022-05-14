@@ -1,23 +1,23 @@
-#include "OddPositiveDiagonal.h"
+#include "PositiveDiagonalOdd.h"
 
-ConstraintType OddPositiveDiagonal::getType() const {
-  return ConstraintType::ODD_POSITIVE_DIAGONAL;
+ConstraintType PositiveDiagonalOdd::getType() const {
+  return ConstraintType::POSITIVE_DIAGONAL_ODD;
 }
 
-std::string OddPositiveDiagonal::getName() const {
-  return "Odd-Positive-Diagonal";
+std::string PositiveDiagonalOdd::getName() const {
+  return "Positive-Diagonal-Odd";
 }
 
-std::string OddPositiveDiagonal::getDescription() const {
+std::string PositiveDiagonalOdd::getDescription() const {
   return "The positive diagonal contains only odd digits.";
 }
 
-std::string OddPositiveDiagonal::getSvgGroup() const {
+std::string PositiveDiagonalOdd::getSvgGroup() const {
   const std::string line = SvgUtilities::line(0, 1, 1, 0);
   return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
 }
 
-bool OddPositiveDiagonal::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool PositiveDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   // The board satisfies the constraint if the positive diagonal contains only even digits
   const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllPositiveDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
@@ -28,11 +28,11 @@ bool OddPositiveDiagonal::satisfy(const std::vector<std::vector<Sudo>>& board) c
   return true;
 }
 
-int32_t OddPositiveDiagonal::getDlxConstraintColumnsAmount() const {
+int32_t PositiveDiagonalOdd::getDlxConstraintColumnsAmount() const {
   return MAX_DIGIT; // There are 9 cells in the main diagonal
 }
 
-bool OddPositiveDiagonal::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool PositiveDiagonalOdd::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
   // columnId maps to a cell in the diagonal
   const int32_t row = columnId;
   const int32_t column = MAX_INDEX - columnId;
@@ -40,7 +40,7 @@ bool OddPositiveDiagonal::getDlxConstraint(Sudo digit, int32_t i, int32_t j, con
   return i == row && j == column && isOddDigit;
 }
 
-std::vector<std::pair<int32_t, int32_t>> OddPositiveDiagonal::getAllPositiveDiagonalIndices() {
+std::vector<std::pair<int32_t, int32_t>> PositiveDiagonalOdd::getAllPositiveDiagonalIndices() {
   std::vector<std::pair<int32_t, int32_t>> result;
   for (const int32_t& i : INDICES) {
     result.emplace_back(std::make_pair(i, MAX_INDEX - i));
@@ -48,6 +48,6 @@ std::vector<std::pair<int32_t, int32_t>> OddPositiveDiagonal::getAllPositiveDiag
   return result;
 }
 
-bool OddPositiveDiagonal::isOnPositiveDiagonal(int32_t i, int32_t j) {
+bool PositiveDiagonalOdd::isOnPositiveDiagonal(int32_t i, int32_t j) {
   return i + j == MAX_INDEX;
 }

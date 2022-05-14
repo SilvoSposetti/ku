@@ -9,9 +9,9 @@ void Ku::run() {
   constraints = constraints | ConstraintType::SUDOKU_COLUMN;
   constraints = constraints | ConstraintType::SUDOKU_BOX;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
+  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_EVEN;
+  constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
-  // constraints = constraints | ConstraintType::EVEN_POSITIVE_DIAGONAL;
-  constraints = constraints | ConstraintType::ODD_POSITIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::KINGS_MOVE;
 
   for (int32_t i = 0; i < 1; ++i) {
