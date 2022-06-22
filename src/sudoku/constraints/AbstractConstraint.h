@@ -9,6 +9,8 @@ public:
 
   virtual ConstraintType getType() const = 0;
 
+  virtual bool hasOptionalConstraints() const = 0;
+
   virtual std::string getName() const = 0;
 
   virtual std::string getDescription() const = 0;

@@ -12,6 +12,8 @@ public:
 
   virtual std::string getDescription() const override;
 
+  virtual bool hasOptionalConstraints() const override;
+
   virtual std::string getSvgGroup() const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo>>& board) const override;
@@ -30,4 +32,9 @@ private:
   static std::vector<std::pair<int32_t, int32_t>> getNeighbors(int32_t rowIndex, int32_t columnIndex);
 
   static std::vector<int32_t> getNeighboringBoxIds(int32_t rowIndex, int32_t columnIndex);
+
+  static std::vector<std::pair<int32_t, int32_t>> getElementNeighbors(int32_t rowIndex, int32_t columnIndex);
+  static std::vector<std::pair<std::pair<int32_t, int32_t>,std::pair<int32_t, int32_t>>> getElementNeighborPairs(int32_t rowIndex, int32_t columnIndex);
+
+  static std::vector<std::pair<int32_t, int32_t>> getElementNeighborsDynamic(int32_t rowIndex, int32_t columnIndex);
 };

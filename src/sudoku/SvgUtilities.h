@@ -58,7 +58,7 @@ public:
   static std::string getFontSize(int fontSize);
 
   static std::string dlxMatrix(const std::vector<std::vector<int32_t>>& dlxMatrix,
-                               const std::vector<std::pair<std::string, int32_t>>& constraintNamesAndColumns);
+                               const std::vector<std::tuple<std::string, int32_t, int32_t>>& constraintsInfo);
 
   static std::string getNoFillStroke(double strokeWidth);
 

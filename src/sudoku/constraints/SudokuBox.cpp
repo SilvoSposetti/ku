@@ -12,6 +12,10 @@ std::string SudokuBox::getDescription() const {
   return "3x3 boxes contain all the digits from 1 to 9 exactly once.";
 }
 
+bool SudokuBox::hasOptionalConstraints() const {
+  return false;
+}
+
 std::string SudokuBox::getSvgGroup() const {
   constexpr double oneThird = 1.0 / 3.0;
   constexpr double twoThirds = 2.0 / 3.0;

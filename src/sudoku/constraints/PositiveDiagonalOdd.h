@@ -12,6 +12,8 @@ public:
 
   virtual std::string getDescription() const override;
 
+  virtual bool hasOptionalConstraints() const override;
+
   virtual std::string getSvgGroup() const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo>>& board) const override;

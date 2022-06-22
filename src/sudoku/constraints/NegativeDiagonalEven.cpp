@@ -12,6 +12,10 @@ std::string NegativeDiagonalEven::getDescription() const {
   return "The negative diagonal contains only even digits.";
 }
 
+bool NegativeDiagonalEven::hasOptionalConstraints() const {
+  return false;
+}
+
 std::string NegativeDiagonalEven::getSvgGroup() const {
   const std::string line = SvgUtilities::line(0, 0, 1, 1);
   return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));

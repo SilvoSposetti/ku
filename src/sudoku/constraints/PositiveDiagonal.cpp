@@ -13,6 +13,10 @@ std::string PositiveDiagonal::getDescription() const {
          std::to_string(MAX_DIGIT) + " exactly once.";
 }
 
+bool PositiveDiagonal::hasOptionalConstraints() const {
+  return false;
+}
+
 std::string PositiveDiagonal::getSvgGroup() const {
   const std::string line = SvgUtilities::line(0, 1, 1, 0);
   return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));

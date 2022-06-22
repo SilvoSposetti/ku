@@ -52,6 +52,14 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   constexpr int32_t maximumRows = 9 * 9 * 9;
   // Each given reduces the amount of rows by (MAX_DIGIT - 1)
   const int32_t totalRows = maximumRows - (MAX_DIGIT - 1) * givenAmount;
+  // Some constraint might have columns that can be selected optionally, thus add the correct amount of rows to
+  // accomodate that
+  int32_t optionalRows = 0;
+  for (const auto& constraint : constraints) {
+    if (constraint->hasOptionalConstraints()) {
+      optionalRows += constraint->getDlxConstraintColumnsAmount();
+    }
+  }
 
   int32_t totalColumns = 0;
   for (const auto& constraint : constraints) {
@@ -59,11 +67,12 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   }
 
   // Initialize matrix with correct size
-  std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
+  std::vector<std::vector<int32_t>> matrix(totalRows + optionalRows, std::vector<int32_t>(totalColumns, -1));
 
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo> digitsSequence = randomize ? randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
 
+  // Regular rows
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
   for (const auto& boardI : INDICES) { // Go through all sudoku rows
@@ -76,7 +85,7 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
           for (const auto& constraint : constraints) {
             for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
               if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
-                // Store matrix cell ID:
+                // Store matrix cell ID
                 matrix[matrixRowCounter][matrixColumnCounter] =
                     boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1);
               }
@@ -88,6 +97,70 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
       }
     }
   }
+
+  // Optional rows
+  int32_t optionalColumnsDoneCounter = 0;
+  for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
+    int32_t globalColumnId = 0;
+    int32_t columnAccumulator = 0;
+    for (const auto& constraint : constraints) {
+      bool added = false;
+      if (!constraint->hasOptionalConstraints()) {
+        globalColumnId += constraint->getDlxConstraintColumnsAmount();
+      } else {
+        for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+          if (!added && optionalColumnsDoneCounter == columnAccumulator) {
+            matrix[i][globalColumnId] = 0;
+            added = true;
+            optionalColumnsDoneCounter++;
+          }
+          globalColumnId++;
+          columnAccumulator++;
+        }
+      }
+    }
+  }
+
+  // int32_t optionalColumnsDoneCounter = 0;
+  // for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
+  //   int32_t globalColumnId = 0;
+  //   bool added = false;
+  //   for (const auto& constraint : constraints) {
+  //     if (!constraint->hasOptionalConstraints()) {
+  //       optionalColumnsDoneCounter += constraint->getDlxConstraintColumnsAmount();
+  //       globalColumnId+= optionalColumnsDoneCounter;
+  //     }
+  //     else{
+
+  //     }
+  //     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+  //       if (constraint->hasOptionalConstraints() && !added && columnId == optionalColumnsDoneCounter) {
+  //         matrix[i][globalColumnId] = 0;
+  //         added = true;
+  //         optionalColumnsDoneCounter++;
+  //       }
+  //       globalColumnId++;
+  //     }
+  //   }
+  // }
+
+  // for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
+  //   int32_t optionalColumnId = 0;
+  //   for (const auto& constraint : constraints) {
+  //     int32_t optionalColumnCounter = 0;
+  //     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+  //       if (constraint->hasOptionalConstraints()) {
+  //         if(i == optionalColumnCounter - constraint->getDlxConstraintColumnsAmount()){
+  //           matrix[i][optionalColumnId] = 0;
+  //         }
+  //       }
+  //       optionalColumnCounter++;
+  //       optionalColumnId = (optionalColumnId + 1) % totalColumns;
+  //     }
+  //   optionalColumnCounter += constraint
+  //   }
+  // }
+
   return matrix;
 }
 

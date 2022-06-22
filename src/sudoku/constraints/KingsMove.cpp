@@ -1,6 +1,5 @@
 #include "KingsMove.h"
 
-#include <cstdint>
 #include <functional>
 
 ConstraintType KingsMove::getType() const {
@@ -13,6 +12,10 @@ std::string KingsMove::getName() const {
 
 std::string KingsMove::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself.";
+}
+
+bool KingsMove::hasOptionalConstraints() const {
+  return true;
 }
 
 std::string KingsMove::getSvgGroup() const {
@@ -44,101 +47,73 @@ bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
 }
 
 int32_t KingsMove::getDlxConstraintColumnsAmount() const {
-  // TODO: 1
-  // int32_t amount = TOTAL_DIGITS; // There are as many boxes-centers as there are cells
-  // return amount * MAX_DIGIT; // 9 possible digits for each box-center
 
-  // TODO: 2 (densest boxes)
-  int32_t amount = (MAX_DIGIT - 2) * (MAX_DIGIT - 2); // There are as many boxes-centers as there are cells
-  return amount * MAX_DIGIT; // 9 possible digits for each box-center
+  // // TODO: 6 MOST PROMISING
+  int32_t amount = 8 * 8; // 64 4x4 base elements [center, down, right, down-right]
+  // amount += 8; // horizontal lines that the base elements don't cover
+  // amount += 8; // vertical lines that the base elements don't cover
+  return amount * MAX_DIGIT;
 
-  // TODO: 3 (denser boxes)
-  // int32_t amount = 4 * 4; //
-  // return amount * MAX_DIGIT; // 9 possible digits for each box-center
-
-  // // TODO: 4
-  // int32_t amount = 8 * 9; // horizontal dashes
-  // // amount+= 8 * 9; // vertical dashes
-  // // amount+= 8 * 8; // negative diagonal dashes
-  // // amount+= 8 * 8; // positive diagonal dashes
-  // return amount * MAX_DIGIT; // positive diagonal dashes
-
-  // // TODO: 5 (extending already-present boxes with dashes)
-  // int32_t amount = 2 * 9; // horizontal dashes
-  // // amount += 2 * 9; // vertical dashes
-  // // amount += 2 * 8; // positve diagonal dashes vertically
-  // // amount += 2 * 8; // negative diagonal dashes vertically
+  // // TODO: 10
+  // int32_t amount = 8 * 8;
   // return amount * MAX_DIGIT;
 }
 
 bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  // TODO: 1
-  // // columnId encodes the (cell id, possible digit) pair
-  // const auto& unpacked = unpackId(columnId, TOTAL_DIGITS, MAX_DIGIT);
-  // const int32_t cellId = unpacked.first;
-  // const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
 
-  // for (const int32_t neighboringBoxId : getNeighboringBoxIds(i, j)) {
-  //   if (neighboringBoxId == cellId) {
-  //     return possibleDigit == digit;
-  //   }
-  // }
-  // return false;
+  // // TODO: 6 MOST PROMISING
+  const int32_t firstGroupMaxColumnId = 8 * 8 * MAX_DIGIT;
+  const int32_t secondGroupMaxColumnId = 8 * MAX_DIGIT;
+  const int32_t thirdGroupMaxColumnId = 8 * MAX_DIGIT;
+  // columnId encodes the elementId or the horizontal/vertical id, possible digit pair
+  int32_t id = columnId;
+  if (id < firstGroupMaxColumnId) {
+    const auto [row, column, digitIndex] = unpackId(id, 8, 8, MAX_DIGIT);
+    const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+    const bool isSame = possibleDigit == digit;
 
-  // TODO: 2 (densest boxes)
-  // columnId encodes the (rowId [0-7], columnId [0-7], possible digit) tuple
-  const auto& unpacked = unpackId(columnId, MAX_DIGIT - 2, MAX_DIGIT - 2, MAX_DIGIT);
-
-  const int32_t cellId = packId(std::get<0>(unpacked) + 1, std::get<1>(unpacked) + 1, MAX_DIGIT, MAX_DIGIT);
-
-  for (const int32_t neighboringBoxId : getNeighboringBoxIds(i, j)) {
-    if (neighboringBoxId == cellId) {
-      return static_cast<Sudo>(std::get<2>(unpacked) + 1) == digit;
+    for (const auto& [x, y] : getElementNeighbors(row, column)) {
+      if (i == x && j == y) {
+        return isSame;
+      }
     }
+    return false;
   }
-  return false;
-
-  // TODO: 3 (denser boxes)
-  // columnId encodes the (rowId {1,3,5,7}, columnId {1,3,5,7}, possible digit) tuple
-  // const auto& unpacked = unpackId(columnId, 4, 4, MAX_DIGIT);
-
-  // const int32_t cellId = packId(std::get<0>(unpacked) * 2 + 1, std::get<1>(unpacked) * 2 + 1, MAX_DIGIT, MAX_DIGIT);
-  // for (const int32_t neighboringBoxId : getNeighboringBoxIds(i, j)) {
-  //   if (neighboringBoxId == cellId) {
-  //     return static_cast<Sudo>(std::get<2>(unpacked) + 1) == digit;
+  // id -= firstGroupMaxColumnId;
+  // if (id < secondGroupMaxColumnId) {
+  //   const auto [row, digitIndex] = unpackId(id, 8, MAX_DIGIT);
+  //   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+  //   const bool isSame = possibleDigit == digit;
+  //   if ((row == i || row + 1 == i) && j == MAX_INDEX) {
+  //     return isSame;
   //   }
+  //   return false;
+  // }
+  // id -= secondGroupMaxColumnId;
+  // if (id < thirdGroupMaxColumnId) {
+  //   const auto [column, digitIndex] = unpackId(id, 8, MAX_DIGIT);
+  //   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+  //   const bool isSame = possibleDigit == digit;
+  //   if ((column == j || column + 1 == j) && i == MAX_INDEX) {
+  //     return isSame;
+  //   }
+  //   return false;
   // }
   // return false;
 
-  // TODO: 4
-  // columnId encodes the dashId, possible digit pair
-  // const auto& [dashId, digitIndex] = unpackId(columnId, 8 * 9, MAX_DIGIT);
+  // // TODO: 10 (correct?) pair of pairs
+  // // columnId encodes the (rowId [0-7], columnId [0-7], possible digit) tuple
+  // const auto [row, column, digitIndex] = unpackId(columnId, 8, 8, 9);
   // const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   // const bool isSame = possibleDigit == digit;
 
-  // if (dashId < 8 * 9) {
-  //   const auto& [row, column] = unpackId(dashId, 9, 8);
-  //   return isSame && ((i == row && j == column) || (i == row && j == column + 1));
-  // }
-  // return false;
-
-  // // TODO: 5 (extending already-present boxes with dashes)
-  // // columnId encodes the dashId, possible digit pair
-  // const auto& [dashId, digitIndex] = unpackId(columnId, 2 * 9, MAX_DIGIT);
-  // const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
-  // const bool isSame = possibleDigit == digit;
-
-  // if (dashId < 9) { // first column of horizontal lines
-  //   const int32_t row = dashId;
-  //   constexpr int32_t column = 2;
-  //   // const auto& [row, column] = unpackId(dashId, 9, 8);
-  //   return isSame && i == row && ((j == column) || (j == column + 1));
-  // }
-  // if (dashId < 2 * 9) {
-  //   const int32_t row = dashId - 9;
-  //   constexpr int32_t column = 5;
-  //   // const auto& [row, column] = unpackId(dashId, 9, 8);
-  //   return isSame && i == row && ((j == column) || (j == column + 1));
+  // for (const auto [firstPair, secondPair] : getElementNeighborPairs(row, column)) {
+  //   if (firstPair.first <= MAX_INDEX && firstPair.second <= MAX_INDEX && secondPair.first <= MAX_INDEX &&
+  //       secondPair.second <= MAX_INDEX) {
+  //     if ((firstPair.first == i && firstPair.second == j) || (secondPair.first == i && secondPair.second == j)) {
+  //       return isSame;
+  //     }
+  //   }
   // }
   // return false;
 }
@@ -184,5 +159,51 @@ std::vector<int32_t> KingsMove::getNeighboringBoxIds(int32_t rowIndex, int32_t c
       // result.emplace_back(packId(x, y, MAX_DIGIT, MAX_DIGIT));
     }
   }
+  return result;
+}
+
+std::vector<std::pair<int32_t, int32_t>> KingsMove::getElementNeighbors(int32_t rowIndex, int32_t columnIndex) {
+  return {{rowIndex, columnIndex},
+          {rowIndex, columnIndex + 1},
+          {rowIndex + 1, columnIndex},
+          {rowIndex + 1, columnIndex + 1}};
+}
+
+std::vector<std::pair<int32_t, int32_t>> KingsMove::getElementNeighborsDynamic(int32_t rowIndex, int32_t columnIndex) {
+
+  const std::vector<std::pair<int32_t, int32_t>> allIndices = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+
+  std::vector<std::pair<int32_t, int32_t>> result;
+
+  for (const auto& indices : allIndices) {
+    const int32_t row = rowIndex + indices.first;
+    const int32_t column = columnIndex + indices.second;
+
+    if (MIN_INDEX <= row && row <= MAX_INDEX && MIN_INDEX <= column && column <= MAX_INDEX) {
+      result.emplace_back(std::make_pair(row, column));
+    }
+  }
+  return result;
+}
+
+std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
+KingsMove::getElementNeighborPairs(int32_t rowIndex, int32_t columnIndex) {
+
+  const std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> allIndices = {
+      {{0, 0}, {0, 1}},
+      {{0, 0}, {1, 0}},
+      {{0, 1}, {1, 0}},
+      {{0, 0}, {1, 1}},
+  };
+  std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> result = allIndices;
+  for (auto& pairOfPairs : result) {
+    // auto& firstPair = pairOfPairs.first;
+    // auto& secondPair = pairOfPairs.second;
+    pairOfPairs.first.first += rowIndex;
+    pairOfPairs.first.second += columnIndex;
+    pairOfPairs.second.first += rowIndex;
+    pairOfPairs.second.second += columnIndex;
+  }
+
   return result;
 }
