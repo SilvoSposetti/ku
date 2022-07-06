@@ -12,10 +12,6 @@ std::string SudokuRow::getDescription() const {
   return "9x1 rows contain all the digits from 1 to 9 exactly once.";
 }
 
-bool SudokuRow::hasOptionalConstraints() const {
-  return false;
-}
-
 std::string SudokuRow::getSvgGroup() const {
   std::string horizontalLines;
   const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);

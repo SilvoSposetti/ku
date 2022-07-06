@@ -12,10 +12,6 @@ std::string SudokuCell::getDescription() const {
   return "Each cell can only contain one integer between 1 and 9.";
 }
 
-bool SudokuCell::hasOptionalConstraints() const {
-  return false;
-}
-
 std::string SudokuCell::getSvgGroup() const {
   const std::string rect = SvgUtilities::rect(0, 0, 1, 1);
   return SvgUtilities::createGroup(getName(), rect, SvgUtilities::getNoFillStroke(thickLine));

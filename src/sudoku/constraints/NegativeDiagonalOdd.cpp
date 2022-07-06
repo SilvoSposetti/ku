@@ -12,9 +12,6 @@ std::string NegativeDiagonalOdd::getDescription() const {
   return "The negative diagonal contains only odd digits.";
 }
 
-bool NegativeDiagonalOdd::hasOptionalConstraints() const {
-  return false;
-}
 
 std::string NegativeDiagonalOdd::getSvgGroup() const {
   const std::string line = SvgUtilities::line(0, 0, 1, 1);
