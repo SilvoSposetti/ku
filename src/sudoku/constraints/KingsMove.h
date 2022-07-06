@@ -4,7 +4,7 @@
 
 class KingsMove : public AbstractConstraint {
 public:
-  KingsMove() = default;
+  KingsMove();
 
   virtual ConstraintType getType() const override;
 
@@ -31,10 +31,8 @@ private:
    */
   static std::vector<std::pair<int32_t, int32_t>> getNeighbors(int32_t rowIndex, int32_t columnIndex);
 
-  static std::vector<int32_t> getNeighboringBoxIds(int32_t rowIndex, int32_t columnIndex);
+  void createDashMap();
 
-  static std::vector<std::pair<int32_t, int32_t>> getElementNeighbors(int32_t rowIndex, int32_t columnIndex);
-  static std::vector<std::pair<std::pair<int32_t, int32_t>,std::pair<int32_t, int32_t>>> getElementNeighborPairs(int32_t rowIndex, int32_t columnIndex);
-
-  static std::vector<std::pair<int32_t, int32_t>> getElementNeighborsDynamic(int32_t rowIndex, int32_t columnIndex);
+private:
+  std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashVector;
 };
