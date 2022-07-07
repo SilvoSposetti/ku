@@ -21,16 +21,14 @@ public:
   virtual bool getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const override;
 
 private:
-  /**
-   * Computes the "box" index of a cell, given its rowIndex and columnIndex in the grid
+  /** Computes the "box" index of a cell, given its rowIndex and columnIndex in the grid
    * @param rowIndex A cell's row index in the grid
    * @param columnIndex A cell's column index in the grid
    * @return The "box" index for that cell
    */
   static int32_t getBoxId(const int32_t rowIndex, const int32_t columnIndex);
 
-  /**
-   * Creates all [row][column] index pairs for the cells of every box
+  /** Creates all [row][column] index pairs for the cells of every box
    * @return A vector of vectors of index pairs. Outer vector references each box, inner vector contains all index
    * pairs for that box
    */

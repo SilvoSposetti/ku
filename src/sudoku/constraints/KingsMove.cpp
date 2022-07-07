@@ -1,11 +1,9 @@
 #include "KingsMove.h"
 
-#include "AbstractConstraint.h"
-
 #include <set>
 
 KingsMove::KingsMove() {
-  createDashMap();
+  createDashVector();
 }
 
 ConstraintType KingsMove::getType() const {
@@ -18,11 +16,6 @@ std::string KingsMove::getName() const {
 
 std::string KingsMove::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself.";
-}
-
-bool KingsMove::isColumnSecondary(int32_t columnId) const {
-  // All columns are secondary
-  return true;
 }
 
 std::string KingsMove::getSvgGroup() const {
@@ -56,6 +49,11 @@ bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
 int32_t KingsMove::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
   return amount * MAX_DIGIT;
+}
+
+bool KingsMove::isColumnPrimary(int32_t columnId) const {
+  // All columns are secondary
+  return false;
 }
 
 bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
@@ -92,7 +90,7 @@ std::vector<std::pair<int32_t, int32_t>> KingsMove::getNeighbors(int32_t rowInde
   return result;
 }
 
-void KingsMove::createDashMap() {
+void KingsMove::createDashVector() {
   const std::vector<std::pair<int32_t, int32_t>> neighbors = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
 
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;

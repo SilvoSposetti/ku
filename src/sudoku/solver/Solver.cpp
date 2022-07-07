@@ -156,7 +156,7 @@ Solver::createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix
     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); columnId++) {
       const std::string columnName = constraint->getName() + "[colID: " + std::to_string(columnId) + "]";
       std::shared_ptr<Node> newHeader = std::make_shared<Node>(columnName);
-      newHeader->isPrimary = !constraint->isColumnSecondary(columnId);
+      newHeader->isPrimary = constraint->isColumnPrimary(columnId);
       currentColumnHeader->right = newHeader;
       newHeader->left = currentColumnHeader;
       newHeader->header = newHeader; // Assign the header of a column to itself
@@ -392,11 +392,11 @@ bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
   const int32_t columnAmount = matrix[0].size();
 
   // Vector contains whether all columns are secondary (in orcer)
-  std::vector<bool> areColumnsSecondary(columnAmount, false);
+  std::vector<bool> areColumnsPrimary(columnAmount, false);
   int32_t counter = 0;
   for (const auto& constraint : constraints) {
     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-      areColumnsSecondary[counter] = constraint->isColumnSecondary(columnId);
+      areColumnsPrimary[counter] = constraint->isColumnPrimary(columnId);
       ++counter;
     }
   }
@@ -405,7 +405,7 @@ bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
   for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
     bool allNegative = true;
     for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
-      if (areColumnsSecondary[columnIndex]) {
+      if (!areColumnsPrimary[columnIndex]) {
         allNegative = false;
       }
       if (matrix[rowIndex][columnIndex] >= 0) {
