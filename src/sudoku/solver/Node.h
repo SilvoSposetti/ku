@@ -12,6 +12,7 @@ public:
       : matrixRow(row)
       , matrixColumn(column){};
 
+  bool isPrimary = true;
   int32_t size = 0;
   std::string name;
   int32_t matrixRow = -1;

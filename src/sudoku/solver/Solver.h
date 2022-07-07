@@ -43,5 +43,5 @@ private:
 
   static std::shared_ptr<Node> chooseSmallestColumn(const std::shared_ptr<Node>& root);
 
-  static bool isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix);
+  static bool isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix, const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 };

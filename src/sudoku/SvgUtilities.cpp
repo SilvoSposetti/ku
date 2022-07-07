@@ -133,13 +133,12 @@ std::string SvgUtilities::givenPatternBorder() {
 }
 
 std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& matrix,
-                                    const std::vector<std::tuple<std::string, int32_t, int32_t>>& constraintsInfo) {
+                                    const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo) {
 
   int32_t columnsAmount = 0;
   int32_t optionalRowsAmount = 0;
   for (const auto& constraintInfo : constraintsInfo) {
-    columnsAmount += std::get<1>(constraintInfo);
-    optionalRowsAmount += std::get<2>(constraintInfo);
+    columnsAmount += constraintInfo.second.size();
   }
   const int32_t rowsAmount = matrix.size();
 
@@ -171,8 +170,8 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   std::string cells;
   for (const auto& constraintInfo : constraintsInfo) {
     const double constraintOriginX = originX + columnsCounter * dlxCellSize + constraintCounter * constraintSeparation;
-    const std::string name = std::get<0>(constraintInfo);
-    const int32_t constraintColumns = std::get<1>(constraintInfo);
+    const std::string name = constraintInfo.first;
+    const int32_t constraintColumns = constraintInfo.second.size();
 
     // Name
     double textPositionX = constraintOriginX + (constraintColumns * 0.5) * dlxCellSize;
@@ -211,16 +210,14 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   cells = createGroup("DLX-Cells", cells, darkRectStyle);
 
   // Horizontal lines
-  const int32_t regularRowsAmount = rowsAmount -  optionalRowsAmount;
   double lineThickness = boardSize / 5000.0;
   std::string horizontalLines;
   double startX = originX;
   double endX = actualWidth;
   int32_t currentColumn = 0;
 
-
   for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix[i][currentColumn] >= 0 && currentColumn < columnsAmount || i == regularRowsAmount) {
+    if (matrix[i][currentColumn] >= 0 && currentColumn < columnsAmount) {
       const double y = originY + dlxCellSize * i;
       horizontalLines += paperUnitsLine(startX, y, endX, y);
       currentColumn++;

@@ -101,16 +101,16 @@ void Sudoku::exportDlxMatrixToSvg() {
   std::string svgContent;
 
   // DLX Matrix
-  std::vector<std::tuple<std::string, int32_t, int32_t>> constraintsInfo;
+  std::vector<std::pair<std::string, std::vector<bool>>> constraintsInfo;
   for (const auto& constraint : constraints) {
-    int32_t optionalRowsAmount =
-        constraint->hasOptionalConstraints() ? constraint->getDlxConstraintColumnsAmount() : 0;
-    constraintsInfo.emplace_back(
-        std::make_tuple(constraint->getName(), constraint->getDlxConstraintColumnsAmount(), optionalRowsAmount));
+    std::vector<bool> areColumnSecondary(constraint->getDlxConstraintColumnsAmount(), false);
+    for (int32_t columnId = 0; columnId < areColumnSecondary.size(); ++columnId) {
+      areColumnSecondary[columnId] = constraint->isColumnSecondary(columnId);
+    }
+    constraintsInfo.emplace_back(std::make_pair(constraint->getName(), areColumnSecondary));
   }
 
-  svgContent +=
-      SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintsInfo);
+  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintsInfo);
 
   // Stream it to file, then save and close
   outfile << svgContent;

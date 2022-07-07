@@ -6,7 +6,6 @@
 
 KingsMove::KingsMove() {
   createDashMap();
-  std::cout << dashVector.size() << std::endl;
 }
 
 ConstraintType KingsMove::getType() const {
@@ -21,7 +20,8 @@ std::string KingsMove::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself.";
 }
 
-bool KingsMove::hasOptionalConstraints() const {
+bool KingsMove::isColumnSecondary(int32_t columnId) const {
+  // All columns are secondary
   return true;
 }
 

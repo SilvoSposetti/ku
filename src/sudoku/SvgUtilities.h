@@ -1,8 +1,6 @@
 #pragma once
 #include "../utilities/Utilities.h"
 
-#include <memory>
-
 const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(MAX_DIGIT);
 const double boardMargin = cellSize * 1.5;
@@ -58,7 +56,7 @@ public:
   static std::string getFontSize(int fontSize);
 
   static std::string dlxMatrix(const std::vector<std::vector<int32_t>>& dlxMatrix,
-                               const std::vector<std::tuple<std::string, int32_t, int32_t>>& constraintsInfo);
+                               const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo);
 
   static std::string getNoFillStroke(double strokeWidth);
 

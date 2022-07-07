@@ -9,7 +9,7 @@ public:
 
   virtual ConstraintType getType() const = 0;
 
-  virtual bool hasOptionalConstraints() const {
+  virtual bool isColumnSecondary(int32_t columnId) const {
     return false;
   };
 

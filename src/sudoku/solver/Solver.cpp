@@ -52,14 +52,6 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   constexpr int32_t maximumRows = 9 * 9 * 9;
   // Each given reduces the amount of rows by (MAX_DIGIT - 1)
   const int32_t totalRows = maximumRows - (MAX_DIGIT - 1) * givenAmount;
-  // Some constraint might have columns that can be selected optionally, thus add the correct amount of rows to
-  // accomodate that
-  int32_t optionalRows = 0;
-  for (const auto& constraint : constraints) {
-    if (constraint->hasOptionalConstraints()) {
-      optionalRows += constraint->getDlxConstraintColumnsAmount();
-    }
-  }
 
   int32_t totalColumns = 0;
   for (const auto& constraint : constraints) {
@@ -67,12 +59,11 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   }
 
   // Initialize matrix with correct size
-  std::vector<std::vector<int32_t>> matrix(totalRows + optionalRows, std::vector<int32_t>(totalColumns, -1));
+  std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
 
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo> digitsSequence = randomize ? randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
 
-  // Regular rows
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
   for (const auto& boardI : INDICES) { // Go through all sudoku rows
@@ -98,69 +89,6 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
     }
   }
 
-  // Optional rows
-  int32_t optionalColumnsDoneCounter = 0;
-  for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
-    int32_t globalColumnId = 0;
-    int32_t columnAccumulator = 0;
-    for (const auto& constraint : constraints) {
-      bool added = false;
-      if (!constraint->hasOptionalConstraints()) {
-        globalColumnId += constraint->getDlxConstraintColumnsAmount();
-      } else {
-        for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-          if (!added && optionalColumnsDoneCounter == columnAccumulator) {
-            matrix[i][globalColumnId] = 0;
-            added = true;
-            optionalColumnsDoneCounter++;
-          }
-          globalColumnId++;
-          columnAccumulator++;
-        }
-      }
-    }
-  }
-
-  // int32_t optionalColumnsDoneCounter = 0;
-  // for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
-  //   int32_t globalColumnId = 0;
-  //   bool added = false;
-  //   for (const auto& constraint : constraints) {
-  //     if (!constraint->hasOptionalConstraints()) {
-  //       optionalColumnsDoneCounter += constraint->getDlxConstraintColumnsAmount();
-  //       globalColumnId+= optionalColumnsDoneCounter;
-  //     }
-  //     else{
-
-  //     }
-  //     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-  //       if (constraint->hasOptionalConstraints() && !added && columnId == optionalColumnsDoneCounter) {
-  //         matrix[i][globalColumnId] = 0;
-  //         added = true;
-  //         optionalColumnsDoneCounter++;
-  //       }
-  //       globalColumnId++;
-  //     }
-  //   }
-  // }
-
-  // for (int32_t i = totalRows; i < optionalRows + totalRows; ++i) {
-  //   int32_t optionalColumnId = 0;
-  //   for (const auto& constraint : constraints) {
-  //     int32_t optionalColumnCounter = 0;
-  //     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-  //       if (constraint->hasOptionalConstraints()) {
-  //         if(i == optionalColumnCounter - constraint->getDlxConstraintColumnsAmount()){
-  //           matrix[i][optionalColumnId] = 0;
-  //         }
-  //       }
-  //       optionalColumnCounter++;
-  //       optionalColumnId = (optionalColumnId + 1) % totalColumns;
-  //     }
-  //   optionalColumnCounter += constraint
-  //   }
-  // }
-
   return matrix;
 }
 
@@ -172,7 +100,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
   std::vector<std::vector<int32_t>> matrix = getDlxMatrix(board, constraints, randomize);
 
   // Check that the matrix is valid
-  if (!isMatrixSolvable(matrix)) {
+  if (!isMatrixSolvable(matrix, constraints)) {
     return false;
   }
 
@@ -228,6 +156,7 @@ Solver::createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix
     for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); columnId++) {
       const std::string columnName = constraint->getName() + "[colID: " + std::to_string(columnId) + "]";
       std::shared_ptr<Node> newHeader = std::make_shared<Node>(columnName);
+      newHeader->isPrimary = !constraint->isColumnSecondary(columnId);
       currentColumnHeader->right = newHeader;
       newHeader->left = currentColumnHeader;
       newHeader->header = newHeader; // Assign the header of a column to itself
@@ -298,6 +227,28 @@ Solver::createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix
     // Advance to next column
     currentColumnHeader = currentColumnHeader->right;
   }
+
+  // Handle primary and secondary columns
+  currentColumnHeader = root->right;
+  std::shared_ptr<Node> lastPrimaryColumn = root;
+  // Go through all column headers
+  while (currentColumnHeader != root) {
+    const std::shared_ptr<Node> nextColumnHeader = currentColumnHeader->right;
+    if (!nextColumnHeader->isPrimary) {
+      // This is a secondary column, set its left and right pointers to itself
+      currentColumnHeader->right = currentColumnHeader;
+      currentColumnHeader->left = currentColumnHeader;
+    } else {
+      // Make the primary columns be circular remembering which one is the last one to skip regions where there are
+      // secondary columns
+      lastPrimaryColumn->right = currentColumnHeader;
+      currentColumnHeader->left = lastPrimaryColumn;
+      lastPrimaryColumn = currentColumnHeader;
+    }
+
+    currentColumnHeader = nextColumnHeader;
+  }
+
   return root;
 }
 
@@ -434,21 +385,38 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
   return smallestColumn;
 }
 
-bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix) {
+bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
+                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+
   const int32_t rowAmount = matrix.size();
   const int32_t columnAmount = matrix[0].size();
+
+  // Vector contains whether all columns are secondary (in orcer)
+  std::vector<bool> areColumnsSecondary(columnAmount, false);
+  int32_t counter = 0;
+  for (const auto& constraint : constraints) {
+    for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+      areColumnsSecondary[counter] = constraint->isColumnSecondary(columnId);
+      ++counter;
+    }
+  }
+
+  // Matrix is not solvable if the primary columns all contain at least 1 element
   for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
     bool allNegative = true;
     for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
+      if (areColumnsSecondary[columnIndex]) {
+        allNegative = false;
+      }
       if (matrix[rowIndex][columnIndex] >= 0) {
         allNegative = false;
       }
     }
     if (allNegative) {
-      std::cout << "Cannot solve matrix, one of the columns contains all zeros!" << std::endl;
+      std::cout << "Cannot solve matrix, one of the primary columns contains all zeros! (the one at index "
+                << columnIndex << ")" << std::endl;
       return false;
     }
   }
-
   return true;
 }

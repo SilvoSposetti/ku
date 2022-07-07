@@ -12,7 +12,7 @@ public:
 
   virtual std::string getDescription() const override;
 
-  virtual bool hasOptionalConstraints() const override;
+  virtual bool isColumnSecondary(int32_t columnId) const override;
 
   virtual std::string getSvgGroup() const override;
 
