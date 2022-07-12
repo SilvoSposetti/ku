@@ -18,6 +18,7 @@ const std::string white = "rgb(255,255,255)";
 const double thickLine = 7;
 const double mediumLine = 4;
 const double thinLine = 2;
+const double thinnestLine = 1;
 
 const std::string centeredTextStyle = " text-anchor=\"middle\" dominant-baseline=\"central\"";
 
@@ -59,6 +60,8 @@ public:
                                const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo);
 
   static std::string getNoFillStroke(double strokeWidth);
+
+  static std::string getNoFillDashedStroke(double strokeWidth);
 
   static std::string plus(double x, double y, double size);
 

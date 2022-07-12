@@ -1,33 +1,35 @@
-#include "KingsMove.h"
+#include "KingsMoveTorus.h"
 
 #include <set>
 
-KingsMove::KingsMove() {
+KingsMoveTorus::KingsMoveTorus() {
   createDashVector();
 }
 
-ConstraintType KingsMove::getType() const {
+ConstraintType KingsMoveTorus::getType() const {
   return ConstraintType::KINGS_MOVE;
 }
 
-std::string KingsMove::getName() const {
-  return "Kings-Move";
+std::string KingsMoveTorus::getName() const {
+  return "Kings-Move-Torus";
 }
 
-std::string KingsMove::getDescription() const {
-  return "The same digit cannot appear at a king's move away from itself.";
+std::string KingsMoveTorus::getDescription() const {
+  return "The same digit cannot appear at a king's move away from itself. This restriction also wraps around the edges "
+         "of the board.";
 }
 
-std::string KingsMove::getSvgGroup() const {
+std::string KingsMoveTorus::getSvgGroup() const {
   std::string lines;
   const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
   const double halfCellSize = cellSize * 0.5;
   const double dashLength = .25 * cellSize;
   const double distanceFromCenterAxis = -.125 * cellSize;
 
-  std::vector<int32_t> reducedIndices = std::vector<int32_t>(INDICES.begin() + 1, INDICES.end());
+  std::vector<int32_t> enlargedIndices = INDICES;
+  enlargedIndices.emplace_back(MAX_INDEX + 1);
   // Horizontal dashes:
-  for (const int& i : reducedIndices) {
+  for (const int& i : enlargedIndices) {
     for (const int& j : INDICES) {
       const double startX = cellSize * i + distanceFromCenterAxis;
       const double startY = cellSize * j + halfCellSize;
@@ -38,7 +40,7 @@ std::string KingsMove::getSvgGroup() const {
   }
   // Vertical dashes:
   for (const int& i : INDICES) {
-    for (const int& j : reducedIndices) {
+    for (const int& j : enlargedIndices) {
       const double startX = cellSize * i + halfCellSize;
       const double startY = cellSize * j + distanceFromCenterAxis;
       const double endX = startX;
@@ -47,8 +49,8 @@ std::string KingsMove::getSvgGroup() const {
     }
   }
   // Negative diagonal dashes:
-  for (const int& i : reducedIndices) {
-    for (const int& j : reducedIndices) {
+  for (const int& i : enlargedIndices) {
+    for (const int& j : enlargedIndices) {
       const double startX = cellSize * i + distanceFromCenterAxis;
       const double startY = cellSize * j + distanceFromCenterAxis;
       const double endX = startX + dashLength;
@@ -57,8 +59,8 @@ std::string KingsMove::getSvgGroup() const {
     }
   }
   // Negative diagonal dashes:
-  for (const int& i : reducedIndices) {
-    for (const int& j : reducedIndices) {
+  for (const int& i : enlargedIndices) {
+    for (const int& j : enlargedIndices) {
       const double startX = cellSize * i - distanceFromCenterAxis;
       const double startY = cellSize * j + distanceFromCenterAxis;
       const double endX = startX - dashLength;
@@ -69,14 +71,14 @@ std::string KingsMove::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool KingsMoveTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   for (const int& i : INDICES) {
     for (const int& j : INDICES) {
-      const std::vector<std::pair<int32_t, int32_t>> neighbors = getNeighbors(i, j);
+      const std::vector<std::pair<int32_t, int32_t>> neighbors = getNeighborsTorus(i, j);
       const Sudo currentDigit = board[i][j];
       for (const std::pair<int, int>& indexPair : neighbors) {
         if (board[indexPair.first][indexPair.second] == currentDigit) {
-          std::cout << "King's Move Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
+          std::cout << "King's Move Torus Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
                     << indexPair.second << std::endl;
           return false;
         }
@@ -86,17 +88,17 @@ bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
-int32_t KingsMove::getDlxConstraintColumnsAmount() const {
+int32_t KingsMoveTorus::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
   return amount * MAX_DIGIT;
 }
 
-bool KingsMove::isColumnPrimary(int32_t columnId) const {
+bool KingsMoveTorus::isColumnPrimary(int32_t columnId) const {
   // All columns are secondary
   return false;
 }
 
-bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
+bool KingsMoveTorus::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [dashId, digitIndex] = unpackId(columnId, dashVector.size(), MAX_DIGIT);
   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
@@ -109,7 +111,7 @@ bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t colum
   return false;
 }
 
-std::vector<std::pair<int32_t, int32_t>> KingsMove::getNeighbors(int32_t rowIndex, int32_t columnIndex) {
+std::vector<std::pair<int32_t, int32_t>> KingsMoveTorus::getNeighborsTorus(int32_t rowIndex, int32_t columnIndex) {
   std::vector<std::pair<int32_t, int32_t>> result;
 
   // Go through the 3x3 neighbors
@@ -117,20 +119,18 @@ std::vector<std::pair<int32_t, int32_t>> KingsMove::getNeighbors(int32_t rowInde
   for (const int& i : neighboringIndices) {
     for (const int& j : neighboringIndices) {
       // Ignore the cell in the center
-      if (i != 0 || j != 0) {
-        int32_t row = rowIndex + i;
-        int32_t column = columnIndex + j;
+      if (i != 0 && j != 0) {
+        int32_t row = (rowIndex + i + MAX_DIGIT) % MAX_DIGIT;
+        int32_t column = (columnIndex + j + MAX_DIGIT) % MAX_DIGIT;
         // Clamp in order to retrieve only valid neighbor indices
-        if (MIN_INDEX <= row && row <= MAX_INDEX && MIN_INDEX <= column && column <= MAX_INDEX) {
-          result.emplace_back(std::make_pair(row, column));
-        }
+        result.emplace_back(std::make_pair(row, column));
       }
     }
   }
   return result;
 }
 
-void KingsMove::createDashVector() {
+void KingsMoveTorus::createDashVector() {
   const std::vector<std::pair<int32_t, int32_t>> neighbors = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
 
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;
@@ -138,16 +138,14 @@ void KingsMove::createDashVector() {
   for (int32_t i = 0; i <= MAX_INDEX; ++i) {
     for (int32_t j = 0; j <= MAX_INDEX; ++j) {
       for (const auto& neighbor : neighbors) {
-        int32_t boardIndexI = i + neighbor.first;
-        int32_t boardIndexJ = j + neighbor.second;
-        if (0 <= boardIndexI && boardIndexI <= MAX_INDEX && 0 <= boardIndexJ && boardIndexJ <= MAX_INDEX) {
-          const std::pair<int32_t, int32_t> firstPair = std::make_pair(i, j);
-          const std::pair<int32_t, int32_t> secondPair = std::make_pair(boardIndexI, boardIndexJ);
-          const auto element = std::make_pair(firstPair, secondPair);
-          if (set.find(element) == set.end()) {
-            set.insert(element);
-            dashVector.emplace_back(element);
-          }
+        int32_t boardIndexI = (i + neighbor.first + MAX_DIGIT) % MAX_DIGIT;
+        int32_t boardIndexJ = (j + neighbor.second + MAX_DIGIT) % MAX_DIGIT;
+        const std::pair<int32_t, int32_t> firstPair = std::make_pair(i, j);
+        const std::pair<int32_t, int32_t> secondPair = std::make_pair(boardIndexI, boardIndexJ);
+        const auto element = std::make_pair(firstPair, secondPair);
+        if (set.find(element) == set.end()) {
+          set.insert(element);
+          dashVector.emplace_back(element);
         }
       }
     }

@@ -34,6 +34,7 @@ enum class ConstraintType : uint64_t {
   NEGATIVE_DIAGONAL_EVEN = 1 << 8,
   NEGATIVE_DIAGONAL_ODD = 1 << 9,
   KINGS_MOVE = 1 << 10,
+  KINGS_MOVE_TORUS = 1 << 11,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

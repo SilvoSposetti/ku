@@ -278,6 +278,9 @@ std::string SvgUtilities::getRotatedTextStyle(double x, double y, int32_t fontSi
 std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\"";
 }
+std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth) {
+  return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\" + stroke-dasharray=\"7 7\"";
+}
 
 std::string SvgUtilities::plus(double x, double y, double size) {
 
