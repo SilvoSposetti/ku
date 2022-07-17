@@ -14,12 +14,12 @@ void Ku::run() {
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_EVEN;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
-  // constraints = constraints | ConstraintType::KINGS_MOVE;
-  constraints = constraints | ConstraintType::KINGS_MOVE_TORUS;
+  constraints = constraints | ConstraintType::KINGS_MOVE;
+  // constraints = constraints | ConstraintType::KINGS_MOVE_TORUS;
 
   for (int32_t i = 0; i < 1; ++i) {
     const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
     std::unique_ptr<Sudoku> sudoku =
-        std::make_unique<Sudoku>("Sudoku" + std::to_string(i + 1), 81, constraints, symmetryType);
+        std::make_unique<Sudoku>("Sudoku" + std::to_string(i + 1), 30, constraints, symmetryType);
   }
 }

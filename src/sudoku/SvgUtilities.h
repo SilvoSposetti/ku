@@ -12,6 +12,7 @@ const int givenPatternCellSize = boardSize / 50;
 
 const std::string black = "rgb(0,0,0)";
 const std::string darkGrey = "rgb(20,20,20)";
+const std::string middleGrey = "rgb(130,130,130)";
 const std::string lightGrey = "rgb(230,230,230)";
 const std::string white = "rgb(255,255,255)";
 
@@ -24,6 +25,7 @@ const std::string centeredTextStyle = " text-anchor=\"middle\" dominant-baseline
 
 const std::string lightRectStyle = " style=\"fill:" + lightGrey + ";\"";
 const std::string darkRectStyle = " style=\"fill:" + darkGrey + ";\"";
+const std::string middleGreyRectStyle = " style=\"fill:" + middleGrey + ";\"";
 const std::string whiteRectStyle = " style=\"fill:" + white + ";\"";
 
 class SvgUtilities {

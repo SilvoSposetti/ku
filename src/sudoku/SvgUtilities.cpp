@@ -154,7 +154,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   const double dlxCellSize = std::min(verticalCellSize, horizontalCellSize);
 
   const int32_t textSize = boardSize / 100;
-  const int32_t textDistance = dlxCellSize * 5;
+  const int32_t textDistance = dlxCellSize * MAX_DIGIT * 2;
   const double constraintSeparation = dlxCellSize * constraintSeparationCellMultiplier;
 
   const double namesBuffer = boardSize * 0.15;
@@ -167,6 +167,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
 
   std::string names;
   std::string backgrounds;
+  std::string optionalConstraintsBackgrounds;
   std::string cells;
   for (const auto& constraintInfo : constraintsInfo) {
     const double constraintOriginX = originX + columnsCounter * dlxCellSize + constraintCounter * constraintSeparation;
@@ -182,6 +183,30 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
     // Background
     std::string constraintBackground = paperUnitsRect(
         constraintOriginX, originY, dlxCellSize * constraintColumns, dlxCellSize * rowsAmount, whiteRectStyle);
+
+    // Optional constraints
+    int32_t optionalColumnsCounter = 0;
+    std::string optionalConstraintsBackground;
+    double boardHeight = dlxCellSize * rowsAmount;
+
+    if (std::all_of(constraintInfo.second.begin(), constraintInfo.second.end(), [](bool v) { return !v; })) {
+      // All columns are optional for this constraint. Do one big rectangle for this constraint
+      optionalConstraintsBackground +=
+          paperUnitsRect(constraintOriginX, boardHeight, constraintColumns * dlxCellSize, textDistance);
+    } else {
+      // Some columns are optionals, some are not. Do multiple small rectangle to show which ones
+      for (const auto& isColumnPrimary : constraintInfo.second) {
+        if (!isColumnPrimary) {
+          double leftX = (columnsCounter + optionalColumnsCounter + constraintCounter * MAX_DIGIT) * dlxCellSize;
+          double rightX = dlxCellSize;
+          optionalConstraintsBackground += paperUnitsRect(leftX, boardHeight, rightX, textDistance);
+        }
+        optionalColumnsCounter++;
+      }
+    }
+
+    optionalConstraintsBackground =
+        createGroup("DLX-" + name + "-Optional-Constraints", optionalConstraintsBackground, middleGreyRectStyle);
 
     // Cells
     const int32_t startColumn = columnsCounter;
@@ -201,16 +226,20 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
 
     names += constraintText;
     backgrounds += constraintBackground;
+    optionalConstraintsBackgrounds += optionalConstraintsBackground;
     cells += constraintCells;
     columnsCounter += constraintColumns;
     constraintCounter++;
   }
   names = createGroup("DLX-Names", names);
   backgrounds = createGroup("DLX-Backgrounds", backgrounds, whiteRectStyle);
+  optionalConstraintsBackgrounds =
+      createGroup("DLX-OptionalConstraintsBackgrounds", optionalConstraintsBackgrounds, whiteRectStyle);
   cells = createGroup("DLX-Cells", cells, darkRectStyle);
 
+  // Grid
+  double lineThickness = dlxCellSize / 5.0;
   // Horizontal lines
-  double lineThickness = boardSize / 5000.0;
   std::string horizontalLines;
   double startX = originX;
   double endX = actualWidth;
@@ -228,9 +257,10 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
 
   // Vertical lines
   std::string verticalLines;
+  int32_t verticalLinesAmount = boardSize / dlxCellSize;
   double startY = originY;
   double endY = originY + rowsAmount * dlxCellSize;
-  for (int32_t i = 0; i <= columnsAmount + constraintSeparationAmount * constraintSeparation; i++) {
+  for (int32_t i = 0; i <= verticalLinesAmount; i++) {
     if (i % MAX_DIGIT == 0) {
       const double x = originX + dlxCellSize * i;
       verticalLines += paperUnitsLine(x, startY, x, endY);
@@ -246,7 +276,8 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   // Footer
   const std::string footer = getSvgFooter();
 
-  return header + background + names + backgrounds + cells + horizontalLines + verticalLines + footer;
+  return header + background + names + backgrounds + optionalConstraintsBackgrounds + cells + horizontalLines +
+         verticalLines + footer;
 }
 
 std::string SvgUtilities::toString(double input) {
@@ -279,7 +310,8 @@ std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\"";
 }
 std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth) {
-  return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\" + stroke-dasharray=\"7 7\"";
+  return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey +
+         "\" + stroke-dasharray=\"7 7\"";
 }
 
 std::string SvgUtilities::plus(double x, double y, double size) {

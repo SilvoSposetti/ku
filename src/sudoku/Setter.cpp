@@ -10,7 +10,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   const std::vector<std::vector<Sudo>> randomSolution = Solver::createNewBoard(constraints);
 
   // Try out multiple given masks until one makes the Sudoku unique
-  constexpr int32_t totalTries = 5;
+  constexpr int32_t totalTries = 100;
   int32_t counter = 0;
   std::vector<std::vector<bool>> givenMask;
 
