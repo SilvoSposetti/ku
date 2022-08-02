@@ -13,8 +13,8 @@ std::string PositiveDiagonalEven::getDescription() const {
 }
 
 std::string PositiveDiagonalEven::getSvgGroup() const {
-  const std::string line = SvgUtilities::line(0, 1, 1, 0);
-  return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
+  const std::string squigglyLine = SvgUtilities::squigglyLine(0, 1, 1, 0);
+  return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
 bool PositiveDiagonalEven::satisfy(const std::vector<std::vector<Sudo>>& board) const {

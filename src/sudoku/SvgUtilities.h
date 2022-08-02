@@ -42,6 +42,8 @@ public:
 
   static std::string line(double x1, double y1, double x2, double y2, const std::string& style = "");
 
+  static std::string polyLine(const std::vector<std::pair<double, double>>& points, const std::string& style = "");
+
   static std::string text(double x, double y, const std::string& text, const std::string& style = "");
 
   static std::string titleAndDescription(const std::string& sudokuName,
@@ -67,6 +69,10 @@ public:
 
   static std::string plus(double x, double y, double size);
 
+  static std::string zigZagLine(double x1, double y1, double x2, double y2, double size = 0.005);
+
+  static std::string squigglyLine(double x1, double y1, double x2, double y2, double size = 0.005);
+
 private:
   static std::string paperUnitsRect(double x, double y, double width, double height, const std::string& style = "");
 
@@ -75,4 +81,6 @@ private:
   static std::string toString(double input);
 
   static std::string getRotatedTextStyle(double x, double y, int32_t fontSize);
+
+  static std::string getPointString(std::pair<double, double> point);
 };

@@ -14,7 +14,7 @@ void Ku::run() {
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_EVEN;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
-  constraints = constraints | ConstraintType::KINGS_MOVE;
+  // constraints = constraints | ConstraintType::KINGS_MOVE;
   // constraints = constraints | ConstraintType::KINGS_MOVE_TORUS;
 
   for (int32_t i = 0; i < 1; ++i) {

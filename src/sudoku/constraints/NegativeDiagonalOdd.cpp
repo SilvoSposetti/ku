@@ -14,8 +14,8 @@ std::string NegativeDiagonalOdd::getDescription() const {
 
 
 std::string NegativeDiagonalOdd::getSvgGroup() const {
-  const std::string line = SvgUtilities::line(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
+  const std::string zigZagLine = SvgUtilities::zigZagLine(0, 0, 1, 1);
+  return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
 bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) const {

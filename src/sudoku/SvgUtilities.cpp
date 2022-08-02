@@ -42,6 +42,17 @@ std::string SvgUtilities::line(double x1, double y1, double x2, double y2, const
   return "<line x1=\"" + toString(xPosition1) + "\" y1=\"" + toString(yPosition1) + "\" x2=\"" + toString(xPosition2) +
          "\" y2=\"" + toString(yPosition2) + "\"" + style + "/>\n";
 }
+std::string SvgUtilities::polyLine(const std::vector<std::pair<double, double>>& points, const std::string& style) {
+  std::string pointsList;
+  for (const auto& point : points) {
+
+    pointsList += toString(point.first * boardSize) + "," + toString(point.second * boardSize);
+    if (&point != &points.back()) {
+      pointsList += " ";
+    }
+  }
+  return "<polyline points=\"" + pointsList + "\"" + style + "/>\n";
+}
 
 std::string SvgUtilities::rect(double x, double y, double width, double height, const std::string& style) {
   const double xPosition = x * boardSize;
@@ -317,4 +328,66 @@ std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth) {
 std::string SvgUtilities::plus(double x, double y, double size) {
 
   return line(x - size, y, x + size, y) + line(x, y - size, x, y + size);
+}
+
+std::string SvgUtilities::zigZagLine(double x1, double y1, double x2, double y2, double size) {
+  double length = std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
+  int32_t segmentsAmount = static_cast<int>(std::floor(length / size));
+
+  double lineDirectionX = (x2 - x1) / length;
+  double lineDirectionY = (y2 - y1) / length;
+  double perpendicularDirectionX = lineDirectionY;
+  double perpendicularDirectionY = -lineDirectionX;
+
+  segmentsAmount = std::max(segmentsAmount, 1); // At least one segment
+  double actualSize = length / static_cast<double>(segmentsAmount);
+
+  std::vector<std::pair<double, double>> points(segmentsAmount + 1);
+  for (int32_t i = 0; i <= segmentsAmount; ++i) {
+    const int32_t parity = i % 2 == 0 ? 1 : -1;
+    const double offset = parity * actualSize * 0.5;
+    const double pointX = x1 + i * actualSize * lineDirectionX + offset * perpendicularDirectionX;
+    const double pointY = y1 + i * actualSize * lineDirectionY + offset * perpendicularDirectionY;
+    points[i] = {pointX, pointY};
+  }
+  return polyLine(points);
+}
+
+std::string SvgUtilities::squigglyLine(double x1, double y1, double x2, double y2, double size) {
+  double length = std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
+  int32_t segmentsAmount = static_cast<int>(std::floor(length / size));
+  segmentsAmount = std::max(segmentsAmount, 1); // At least one segment
+  double actualSize = length / static_cast<double>(segmentsAmount);
+  const double controlOffsetLength = actualSize / 2;
+
+  double lineDirectionX = (x2 - x1) / length;
+  double lineDirectionY = (y2 - y1) / length;
+  double perpendicularDirectionX = lineDirectionY;
+  double perpendicularDirectionY = -lineDirectionX;
+
+  // Create squiggly line given set of vertices
+  const double controlOffsetX = controlOffsetLength * lineDirectionX;
+  const double controlOffsetY = controlOffsetLength * lineDirectionY;
+
+  double side = 1;
+
+  std::string squiggly = "<path d=\"M " + getPointString({x1, y1});
+  for (int i = 1; i < segmentsAmount; i++) {
+    const double offset = side * actualSize * 0.5;
+    const double pointX = x1 + i * actualSize * lineDirectionX + offset * perpendicularDirectionX;
+    const double pointY = y1 + i * actualSize * lineDirectionY + offset * perpendicularDirectionY;
+
+    const double controlX = pointX - controlOffsetX;
+    const double controlY = pointY - controlOffsetY;
+
+    squiggly += " S" + getPointString({controlX * boardSize, controlY * boardSize}) + " " +
+                getPointString({pointX * boardSize, pointY * boardSize});
+    side = -side;
+  }
+  squiggly += "\">";
+  return squiggly;
+}
+
+std::string SvgUtilities::getPointString(std::pair<double, double> point) {
+  return toString(point.first) + "," + toString(point.second);
 }

@@ -13,8 +13,8 @@ std::string NegativeDiagonalEven::getDescription() const {
 }
 
 std::string NegativeDiagonalEven::getSvgGroup() const {
-  const std::string line = SvgUtilities::line(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
+  const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
+  return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
 bool NegativeDiagonalEven::satisfy(const std::vector<std::vector<Sudo>>& board) const {
