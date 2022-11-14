@@ -1,25 +1,25 @@
-#include "KingsMoveTorus.h"
+#include "AntiKingTorus.h"
 
 #include <set>
 
-KingsMoveTorus::KingsMoveTorus() {
+AntiKingTorus::AntiKingTorus() {
   createDashVector();
 }
 
-ConstraintType KingsMoveTorus::getType() const {
-  return ConstraintType::KINGS_MOVE;
+ConstraintType AntiKingTorus::getType() const {
+  return ConstraintType::ANTI_KING;
 }
 
-std::string KingsMoveTorus::getName() const {
-  return "Kings-Move-Torus";
+std::string AntiKingTorus::getName() const {
+  return "Anti-King-Torus";
 }
 
-std::string KingsMoveTorus::getDescription() const {
+std::string AntiKingTorus::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself. This restriction also wraps around the edges "
          "of the board.";
 }
 
-std::string KingsMoveTorus::getSvgGroup() const {
+std::string AntiKingTorus::getSvgGroup() const {
   std::string lines;
   const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
   const double halfCellSize = cellSize * 0.5;
@@ -71,7 +71,7 @@ std::string KingsMoveTorus::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool KingsMoveTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   for (const int& i : INDICES) {
     for (const int& j : INDICES) {
       const std::vector<std::pair<int32_t, int32_t>> neighbors = getNeighborsTorus(i, j);
@@ -88,17 +88,17 @@ bool KingsMoveTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const 
   return true;
 }
 
-int32_t KingsMoveTorus::getDlxConstraintColumnsAmount() const {
+int32_t AntiKingTorus::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
   return amount * MAX_DIGIT;
 }
 
-bool KingsMoveTorus::isColumnPrimary(int32_t columnId) const {
+bool AntiKingTorus::isColumnPrimary(int32_t columnId) const {
   // All columns are secondary
   return false;
 }
 
-bool KingsMoveTorus::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
+bool AntiKingTorus::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [dashId, digitIndex] = unpackId(columnId, dashVector.size(), MAX_DIGIT);
   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
@@ -111,7 +111,7 @@ bool KingsMoveTorus::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t 
   return false;
 }
 
-std::vector<std::pair<int32_t, int32_t>> KingsMoveTorus::getNeighborsTorus(int32_t rowIndex, int32_t columnIndex) {
+std::vector<std::pair<int32_t, int32_t>> AntiKingTorus::getNeighborsTorus(int32_t rowIndex, int32_t columnIndex) {
   std::vector<std::pair<int32_t, int32_t>> result;
 
   // Go through the 3x3 neighbors
@@ -130,7 +130,7 @@ std::vector<std::pair<int32_t, int32_t>> KingsMoveTorus::getNeighborsTorus(int32
   return result;
 }
 
-void KingsMoveTorus::createDashVector() {
+void AntiKingTorus::createDashVector() {
   const std::vector<std::pair<int32_t, int32_t>> neighbors = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
 
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;

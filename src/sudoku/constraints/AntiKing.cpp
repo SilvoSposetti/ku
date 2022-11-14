@@ -1,24 +1,24 @@
-#include "KingsMove.h"
+#include "AntiKing.h"
 
 #include <set>
 
-KingsMove::KingsMove() {
+AntiKing::AntiKing() {
   createDashVector();
 }
 
-ConstraintType KingsMove::getType() const {
-  return ConstraintType::KINGS_MOVE;
+ConstraintType AntiKing::getType() const {
+  return ConstraintType::ANTI_KING;
 }
 
-std::string KingsMove::getName() const {
-  return "Kings-Move";
+std::string AntiKing::getName() const {
+  return "Anti-King";
 }
 
-std::string KingsMove::getDescription() const {
+std::string AntiKing::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself.";
 }
 
-std::string KingsMove::getSvgGroup() const {
+std::string AntiKing::getSvgGroup() const {
   std::string lines;
   const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
   const double halfCellSize = cellSize * 0.5;
@@ -69,7 +69,7 @@ std::string KingsMove::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool AntiKing::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   for (const int& i : INDICES) {
     for (const int& j : INDICES) {
       const std::vector<std::pair<int32_t, int32_t>> neighbors = getNeighbors(i, j);
@@ -86,17 +86,17 @@ bool KingsMove::satisfy(const std::vector<std::vector<Sudo>>& board) const {
   return true;
 }
 
-int32_t KingsMove::getDlxConstraintColumnsAmount() const {
+int32_t AntiKing::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
   return amount * MAX_DIGIT;
 }
 
-bool KingsMove::isColumnPrimary(int32_t columnId) const {
+bool AntiKing::isColumnPrimary(int32_t columnId) const {
   // All columns are secondary
   return false;
 }
 
-bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
+bool AntiKing::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [dashId, digitIndex] = unpackId(columnId, dashVector.size(), MAX_DIGIT);
   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
@@ -109,7 +109,7 @@ bool KingsMove::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t colum
   return false;
 }
 
-std::vector<std::pair<int32_t, int32_t>> KingsMove::getNeighbors(int32_t rowIndex, int32_t columnIndex) {
+std::vector<std::pair<int32_t, int32_t>> AntiKing::getNeighbors(int32_t rowIndex, int32_t columnIndex) {
   std::vector<std::pair<int32_t, int32_t>> result;
 
   // Go through the 3x3 neighbors
@@ -130,7 +130,7 @@ std::vector<std::pair<int32_t, int32_t>> KingsMove::getNeighbors(int32_t rowInde
   return result;
 }
 
-void KingsMove::createDashVector() {
+void AntiKing::createDashVector() {
   const std::vector<std::pair<int32_t, int32_t>> neighbors = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
 
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;

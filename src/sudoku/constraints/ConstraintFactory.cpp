@@ -1,7 +1,7 @@
 #include "ConstraintFactory.h"
 
-#include "KingsMove.h"
-#include "KingsMoveTorus.h"
+#include "AntiKing.h"
+#include "AntiKingTorus.h"
 #include "NegativeDiagonal.h"
 #include "NegativeDiagonalEven.h"
 #include "NegativeDiagonalOdd.h"
@@ -35,10 +35,10 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
     return std::make_unique<NegativeDiagonalEven>();
   case ConstraintType::NEGATIVE_DIAGONAL_ODD:
     return std::make_unique<NegativeDiagonalOdd>();
-  case ConstraintType::KINGS_MOVE:
-    return std::make_unique<KingsMove>();
-  case ConstraintType::KINGS_MOVE_TORUS:
-    return std::make_unique<KingsMoveTorus>();
+  case ConstraintType::ANTI_KING:
+    return std::make_unique<AntiKing>();
+  case ConstraintType::ANTI_KING_TORUS:
+    return std::make_unique<AntiKingTorus>();
   default:
     return std::make_unique<SudokuCell>();
   }
