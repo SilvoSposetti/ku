@@ -7,7 +7,7 @@ AntiKingTorus::AntiKingTorus() {
 }
 
 ConstraintType AntiKingTorus::getType() const {
-  return ConstraintType::ANTI_KING;
+  return ConstraintType::ANTI_KING_TORUS;
 }
 
 std::string AntiKingTorus::getName() const {
@@ -78,7 +78,7 @@ bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
       const Sudo currentDigit = board[i][j];
       for (const std::pair<int, int>& indexPair : neighbors) {
         if (board[indexPair.first][indexPair.second] == currentDigit) {
-          std::cout << "King's Move Torus Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
+          std::cout << getName() << " Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
                     << indexPair.second << std::endl;
           return false;
         }

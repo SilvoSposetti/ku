@@ -76,7 +76,7 @@ bool AntiKing::satisfy(const std::vector<std::vector<Sudo>>& board) const {
       const Sudo currentDigit = board[i][j];
       for (const std::pair<int, int>& indexPair : neighbors) {
         if (board[indexPair.first][indexPair.second] == currentDigit) {
-          std::cout << "King's Move Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
+          std::cout << getName() << " Clashing cells: " << i << "," << j << "\t" << indexPair.first << ","
                     << indexPair.second << std::endl;
           return false;
         }

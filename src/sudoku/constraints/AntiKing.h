@@ -30,13 +30,13 @@ private:
    */
   static std::vector<std::pair<int32_t, int32_t>> getNeighbors(int32_t rowIndex, int32_t columnIndex);
 
-  /** Enumerates all possible dashes for the King's move constraint
+  /** Enumerates all possible dashes for the Anti-King's move constraint
    * and stores them in the dashVector
    */
   void createDashVector();
 
 private:
-  /** Contains all possible dashes (point pairs) for the King's move constraint
+  /** Contains all possible dashes (point pairs) for the Anti-King's constraint
    */
   std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashVector;
 };
