@@ -20,6 +20,6 @@ void Ku::run() {
   for (int32_t i = 0; i < 1; ++i) {
     const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
     std::unique_ptr<Sudoku> sudoku =
-        std::make_unique<Sudoku>("Sudoku" + std::to_string(i + 1), 30, constraints, symmetryType);
+        std::make_unique<Sudoku>("Sudoku " + std::to_string(i + 1), 70, constraints, symmetryType);
   }
 }
