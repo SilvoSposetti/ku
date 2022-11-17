@@ -268,7 +268,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
 
   // Vertical lines
   std::string verticalLines;
-  int32_t verticalLinesAmount = boardSize / dlxCellSize;
+  int32_t verticalLinesAmount = matrix[0].size() + constraintCounter * MAX_DIGIT - 1;
   double startY = originY;
   double endY = originY + rowsAmount * dlxCellSize;
   for (int32_t i = 0; i <= verticalLinesAmount; i++) {
