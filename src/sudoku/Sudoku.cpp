@@ -18,7 +18,9 @@ Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType cons
     digitsAmount = clamp(totalDigits, 0, 81);
   }
 
+  Timer timer;
   board = Setter::generate(digitsAmount, symmetryType, constraints);
+  timer.printElapsed("Sudoku generated         ");
 
   std::cout << name << " [" << digitsAmount << "|-" << std::to_string(81 - digitsAmount)
             << "]    MaskType: " << std::to_string(static_cast<int>(symmetryType)) << std::endl;

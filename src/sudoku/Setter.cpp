@@ -6,14 +6,17 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
                                         SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
+  Timer timer;
   // Create new random solution once
   const std::vector<std::vector<Sudo>> randomSolution = Solver::createNewBoard(constraints);
+  timer.printElapsed("Solution generated       ");
 
   // Try out multiple given masks until one makes the Sudoku unique
-  constexpr int32_t totalTries = 100;
+  constexpr int32_t totalTries = 1;
   int32_t counter = 0;
   std::vector<std::vector<bool>> givenMask;
 
+  timer.reset();
   while (counter < totalTries) {
     ++counter;
 
@@ -32,11 +35,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
       givenMask = randomMask(totalDigits);
 
     if (Solver::isUnique(randomSolution, givenMask, constraints)) {
-      if (counter == 1)
-        std::cout << "Created board on first try" << std::endl;
-      else {
-        std::cout << "Created board after " << counter << " tries" << std::endl;
-      }
+      timer.printElapsed("Unique board generated   ");
       return std::make_unique<Board>(randomSolution, givenMask);
     }
   }

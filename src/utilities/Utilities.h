@@ -36,6 +36,8 @@ enum class ConstraintType : uint64_t {
   NEGATIVE_DIAGONAL_ODD = 1 << 9,
   ANTI_KING = 1 << 10,
   ANTI_KING_TORUS = 1 << 11,
+  ANTI_KNIGHT = 1 << 12,
+  ANTI_KNIGHT_TORUS = 1 << 13,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
@@ -137,14 +139,14 @@ public:
     const double minutes = std::floor(seconds / 60.0);
     std::string minutesString = std::to_string(static_cast<int32_t>(minutes));
     minutesString = minutesString.size() == 1 ? "0" + minutesString : minutesString;
-    const std::string secondsString = std::to_string(seconds);
-
+    std::string secondsString = std::to_string(seconds - minutes * 60);
+    secondsString = seconds < 10 ? "0" + secondsString : secondsString;
     return minutesString + ":" + secondsString;
   }
 
   void printElapsed(const std::string& message) const {
     const std::string elapsedString = elapsedReadable();
-    std::cout << message << " [ " << elapsedString << " ]" << std::endl;
+    std::cout << message << " [" << elapsedString << "]" << std::endl;
   }
 
 private:
