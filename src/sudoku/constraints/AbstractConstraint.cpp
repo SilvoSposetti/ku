@@ -7,7 +7,6 @@ bool AbstractConstraint::isColumnPrimary(int32_t columnId) const {
 std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
 AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus) {
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;
-  std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> result;
   for (int32_t i = 0; i <= MAX_INDEX; ++i) {
     for (int32_t j = 0; j <= MAX_INDEX; ++j) {
       for (const auto& [otherI, otherJ] : pattern) {
@@ -20,13 +19,20 @@ AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> patte
               {i, j}, {boardIndexI, boardIndexJ}};
           const std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>> elementReversed = {element.second,
                                                                                                        element.first};
-          if (set.find(element) == set.end() || set.find(elementReversed) == set.end()) {
+          if (set.find(element) == set.end() && set.find(elementReversed) == set.end()) {
             set.insert(element);
-            result.emplace_back(element);
           }
         }
       }
     }
   }
+
+  std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> result(set.size());
+  int32_t i = 0;
+  for (const auto& element : set) {
+    result[i] = element;
+    i++;
+  }
+  std::cout << "dashvector size:" << result.size() << std::endl;
   return result;
 }

@@ -10,8 +10,10 @@ The supported constraints are:
 - __Sudoku Row__ (classic Sudoku)
 - __Sudoku Column__ (classic Sudoku)
 - __Sudoku Box__ (classic Sudoku)
-- __King's Move__
-- __King's Move (Torus)__
+- __Anti-King__
+- __Anti-King (Torus)__
+- __Anti-Knight__
+- __Anti-Knight (Torus)__
 - __Negative Diagonal__
 - __Negative Diagonal Even__
 - __Negative Diagonal Odd__
