@@ -16,8 +16,8 @@ const std::string middleGrey = "rgb(130,130,130)";
 const std::string lightGrey = "rgb(230,230,230)";
 const std::string white = "rgb(255,255,255)";
 
-const double thickLine = 7;
-const double mediumLine = 4;
+const double thickLine = 8;
+const double mediumLine = 5;
 const double thinLine = 2;
 const double thinnestLine = 1;
 

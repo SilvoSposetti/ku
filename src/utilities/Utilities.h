@@ -40,6 +40,7 @@ enum class ConstraintType : uint64_t {
   ANTI_KNIGHT = 1 << 12,
   ANTI_KNIGHT_TORUS = 1 << 13,
   DISJOINT_BOXES = 1 << 14,
+  ASTERISK = 1 << 15,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

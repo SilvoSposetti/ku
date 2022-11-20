@@ -19,6 +19,7 @@ void Ku::run() {
   // constraints = constraints | ConstraintType::ANTI_KNIGHT;
   // constraints = constraints | ConstraintType::ANTI_KNIGHT_TORUS;
   // constraints = constraints | ConstraintType::DISJOINT_BOXES;
+  // constraints = constraints | ConstraintType::ASTERISK;
 
   for (int32_t i = 0; i < 1; ++i) {
     const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
