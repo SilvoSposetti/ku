@@ -31,11 +31,19 @@ std::string DisjointBoxes::getSvgGroup() const {
 }
 
 bool DisjointBoxes::satisfy(const std::vector<std::vector<Sudo>>& board) const {
-  for (const auto index : INDICES) {
-    Sudo currentCell = board[index / 3][index % 3];
-    for (int i = 0; i < 3; i += 3) {
-      for (int j = 0; j < 3; j += 3) {
-        if (i != 0 && j != 0 && board[i][j] == currentCell) {
+  for (const auto& digit : SUDO_DIGITS) {
+    for (int32_t i = 0; i < 3; i++) {
+      for (int32_t j = 0; j < 3; j++) {
+        int32_t counter = 0;
+        for (int addI = 0; addI < 9; addI += 3) {
+          for (int addJ = 0; addJ < 9; addJ += 3) {
+            if (board[i + addI][j + addJ] == digit) {
+              counter++;
+            }
+          }
+        }
+        if (counter != 1) {
+          std::cout << static_cast<int>(digit) << std::endl;
           return false;
         }
       }
