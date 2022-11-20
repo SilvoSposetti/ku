@@ -33,6 +33,5 @@ AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> patte
     result[i] = element;
     i++;
   }
-  std::cout << "dashvector size:" << result.size() << std::endl;
   return result;
 }

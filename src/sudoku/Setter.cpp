@@ -12,7 +12,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   timer.printElapsed("Solution generated       ");
 
   // Try out multiple given masks until one makes the Sudoku unique
-  constexpr int32_t totalTries = 1;
+  constexpr int32_t totalTries = 100;
   int32_t counter = 0;
   std::vector<std::vector<bool>> givenMask;
 
