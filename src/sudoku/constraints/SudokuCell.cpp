@@ -13,8 +13,19 @@ std::string SudokuCell::getDescription() const {
 }
 
 std::string SudokuCell::getSvgGroup() const {
-  const std::string rect = SvgUtilities::rect(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), rect, SvgUtilities::getNoFillStroke(thickLine));
+  // Black border
+  std::string border = SvgUtilities::rect(0, 0, 1, 1, SvgUtilities::getNoFillStroke(thickLine));
+
+  // dashed-lines grid
+  std::string grid;
+  const double cellSize = 1.0 / MAX_DIGIT;
+  for (int i = 1; i <= MAX_INDEX; i++) {
+    const double position = cellSize * i;
+    grid += SvgUtilities::line(position, 0, position, 1);
+    grid += SvgUtilities::line(0, position, 1, position);
+  }
+  grid = SvgUtilities::createGroup(getName() + "-Grid", grid, SvgUtilities::getNoFillDashedStroke(thinnestLine, 3, 6));
+  return SvgUtilities::createGroup(getName(), border + grid);
 }
 
 bool SudokuCell::satisfy(const std::vector<std::vector<Sudo>>& board) const {

@@ -68,7 +68,7 @@ public:
 
   static std::string getNoFillStroke(double strokeWidth);
 
-  static std::string getNoFillDashedStroke(double strokeWidth);
+  static std::string getNoFillDashedStroke(double strokeWidth, int lineLength = 7, int lineSpacing = 7);
 
   static std::string getFill(std::string color);
 

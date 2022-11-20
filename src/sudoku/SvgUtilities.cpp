@@ -349,9 +349,9 @@ std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\"";
 }
 
-std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth) {
+std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth, int lineLength, int lineSpacing) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey +
-         "\" + stroke-dasharray=\"7 7\"";
+         "\" stroke-dasharray=\"" + std::to_string(lineLength) + " " + std::to_string(lineSpacing) + "\"";
 }
 
 std::string SvgUtilities::getFill(std::string color) {
