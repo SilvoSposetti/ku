@@ -6,6 +6,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <memory>
 #include <random>
 #include <set>
@@ -38,6 +39,7 @@ enum class ConstraintType : uint64_t {
   ANTI_KING_TORUS = 1 << 11,
   ANTI_KNIGHT = 1 << 12,
   ANTI_KNIGHT_TORUS = 1 << 13,
+  DISJOINT_BOXES = 1 << 14,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

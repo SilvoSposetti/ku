@@ -64,6 +64,34 @@ std::string SvgUtilities::rect(double x, double y, double width, double height, 
          "\" height=\"" + toString(rectHeight) + "\"" + style + "/>\n";
 }
 
+std::string SvgUtilities::rotatedRect(
+    double x, double y, double width, double height, double rotationAngle, const std::string& style) {
+
+  const double TLX = -width * .5;
+  const double TLY = -height * .5;
+  const double TRX = width * .5;
+  const double TRY = -height * .5;
+  const double BLX = -width * .5;
+  const double BLY = height * .5;
+  const double BRX = width * .5;
+  const double BRY = height * .5;
+
+  const double c = cos(rotationAngle);
+  const double s = sin(rotationAngle);
+  const double topLeftX = ((TLX * c - TLY * s) + x) * boardSize;
+  const double topLeftY = ((TLX * s + TLY * c) + y) * boardSize;
+  const double topRightX = ((TRX * c - TRY * s) + x) * boardSize;
+  const double topRightY = ((TRX * s + TRY * c) + y) * boardSize;
+  const double bottomLeftX = ((BLX * c - BLY * s) + x) * boardSize;
+  const double bottomLeftY = ((BLX * s + BLY * c) + y) * boardSize;
+  const double bottomRightX = ((BRX * c - BRY * s) + x) * boardSize;
+  const double bottomRightY = ((BRX * s + BRY * c) + y) * boardSize;
+
+  return "<polygon points=\"" + toString(topLeftX) + "," + toString(topLeftY) + " " + toString(topRightX) + "," +
+         toString(topRightY) + " " + toString(bottomRightX) + "," + toString(bottomRightY) + " " +
+         toString(bottomLeftX) + "," + toString(bottomLeftY) + "\" " + style + "/>\n";
+}
+
 std::string SvgUtilities::text(double x, double y, const std::string& text, const std::string& style) {
   return "<text x=\"" + toString(x) + "\" y=\"" + toString(y) + "\"" + style + ">" + text + "</text>\n";
 }
@@ -320,9 +348,14 @@ std::string SvgUtilities::getRotatedTextStyle(double x, double y, int32_t fontSi
 std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey + "\"";
 }
+
 std::string SvgUtilities::getNoFillDashedStroke(double strokeWidth) {
   return " fill-opacity=\"0\" style=\"stroke-width:" + toString(strokeWidth) + "; stroke:" + darkGrey +
          "\" + stroke-dasharray=\"7 7\"";
+}
+
+std::string SvgUtilities::getFill(std::string color) {
+  return " style=\"fill:" + color + ";\"";
 }
 
 std::string SvgUtilities::plus(double x, double y, double size) {

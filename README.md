@@ -14,6 +14,7 @@ The supported constraints are:
 - __Anti-King (Torus)__
 - __Anti-Knight__
 - __Anti-Knight (Torus)__
+- __Disjoint Boxes__
 - __Negative Diagonal__
 - __Negative Diagonal Even__
 - __Negative Diagonal Odd__

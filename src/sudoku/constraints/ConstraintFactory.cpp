@@ -4,6 +4,7 @@
 #include "AntiKingTorus.h"
 #include "AntiKnight.h"
 #include "AntiKnightTorus.h"
+#include "DisjointBoxes.h"
 #include "NegativeDiagonal.h"
 #include "NegativeDiagonalEven.h"
 #include "NegativeDiagonalOdd.h"
@@ -45,6 +46,8 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
     return std::make_unique<AntiKnight>();
   case ConstraintType::ANTI_KNIGHT_TORUS:
     return std::make_unique<AntiKnightTorus>();
+  case ConstraintType::DISJOINT_BOXES:
+    return std::make_unique<DisjointBoxes>();
   default:
     return std::make_unique<SudokuCell>();
   }

@@ -40,6 +40,9 @@ public:
 
   static std::string rect(double x, double y, double width, double height, const std::string& style = "");
 
+  static std::string
+  rotatedRect(double x, double y, double width, double height, double rotationAngle, const std::string& style = "");
+
   static std::string line(double x1, double y1, double x2, double y2, const std::string& style = "");
 
   static std::string polyLine(const std::vector<std::pair<double, double>>& points, const std::string& style = "");
@@ -66,6 +69,8 @@ public:
   static std::string getNoFillStroke(double strokeWidth);
 
   static std::string getNoFillDashedStroke(double strokeWidth);
+
+  static std::string getFill(std::string color);
 
   static std::string plus(double x, double y, double size);
 
