@@ -52,8 +52,7 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
 
 void Sudoku::exportSudokuToSvg() {
   std::string outputPath;
-#ifndef OUT_DIR
-#else
+#ifdef OUT_DIR
   outputPath = OUT_DIR;
 #endif
 
