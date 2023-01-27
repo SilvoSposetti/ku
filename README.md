@@ -26,8 +26,8 @@ The supported constraints are:
 An export of the the DLX matrix or the Sudoku itself in SVG format is also possible
 
 ## Getting Started
-Use CMake to configure and generate builds.
+Use Meson to configure and generate builds.
 
 ### Dependencies
 - C++20
-- CMake
+- Meson

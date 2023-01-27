@@ -1,6 +1,7 @@
 # Editor files
 .vscode
 .idea
+.cache
 # Output dir
 out
 # Binaries dir
