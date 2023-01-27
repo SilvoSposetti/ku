@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utilities/Utilities.h"
+#include "utilities/Utilities.h"
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 /** Class that holds static methods used to check whether a board satisfies all the constraints

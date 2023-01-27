@@ -1,5 +1,5 @@
 #include "Sudoku.h"
-#include "../utilities/Utilities.h"
+#include "utilities/Utilities.h"
 
 #include <iostream>
 int main() {

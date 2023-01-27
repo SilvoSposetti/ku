@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utilities/Utilities.h"
+#include "utilities/Utilities.h"
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 /** Constructor

@@ -1,5 +1,5 @@
 #pragma once
-#include "../utilities/Utilities.h"
+#include "utilities/Utilities.h"
 
 const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(MAX_DIGIT);

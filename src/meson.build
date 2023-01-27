@@ -48,5 +48,5 @@ ku_sources = files(
   'ku/solver/Node.h',
   'ku/solver/Solver.cpp',
   'ku/solver/Solver.h',
-  'utilities/Utilities.h',
+  'ku/utilities/Utilities.h',
 )

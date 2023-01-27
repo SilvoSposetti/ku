@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../utilities/Utilities.h"
 #include "../constraints/AbstractConstraint.h"
 #include "Node.h"
 

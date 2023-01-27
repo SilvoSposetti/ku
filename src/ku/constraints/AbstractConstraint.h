@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../utilities/Utilities.h"
 #include "../SvgUtilities.h"
 
 /** Base class for all constraints.
