@@ -9,21 +9,23 @@ project('ku',
 add_project_arguments('-DOUT_DIR="' + meson.source_root() +'/out"', language : 'cpp')
 
 # Grab all sources and define includes
-subdir('src')
+subdir('src/ku')
 includes = include_directories('src/ku/')
 
 # Create library
 ku_library = library(meson.project_name(), ku_sources)
 
 # Create executable sandbox and link it with library
+subdir('src/sandbox')
 executable('ku_sandbox',
- 'src/sandbox/main.cpp',
+  sandbox_sources,
   include_directories : includes,
   link_with : ku_library)
 
 # Create test executable and link library
+subdir('test')
 test_executable = executable('ku_test',
- 'test/main.cpp',
+  test_sources,
   include_directories : includes,
   link_with : ku_library)
 test('test', test_executable)
