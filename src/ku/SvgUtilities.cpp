@@ -175,7 +175,6 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
                                     const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo) {
 
   int32_t columnsAmount = 0;
-  int32_t optionalRowsAmount = 0;
   for (const auto& constraintInfo : constraintsInfo) {
     columnsAmount += constraintInfo.second.size();
   }

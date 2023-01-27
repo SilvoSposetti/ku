@@ -51,19 +51,16 @@ inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
   return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
 }
 
-static std::vector<std::vector<Sudo>> emptyField() {
-  std::vector<std::vector<Sudo>> newField(MAX_DIGIT, std::vector<Sudo>(MAX_DIGIT, Sudo::NONE));
-  return newField;
+static inline std::vector<std::vector<Sudo>> emptyField() {
+  return std::vector<std::vector<Sudo>>(MAX_DIGIT, std::vector<Sudo>(MAX_DIGIT, Sudo::NONE));
 }
 
-static std::vector<std::vector<bool>> fullGivenMask() {
-  std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, true));
-  return newMask;
+static inline std::vector<std::vector<bool>> fullGivenMask() {
+  return std::vector<std::vector<bool>>(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, true));
 }
 
-static std::vector<std::vector<bool>> emptyGivenMask() {
-  std::vector<std::vector<bool>> newMask(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
-  return newMask;
+static inline std::vector<std::vector<bool>> emptyGivenMask() {
+  return std::vector<std::vector<bool>>(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
 }
 
 static inline int32_t getCellId(int32_t rowIndex, int32_t columnIndex) {

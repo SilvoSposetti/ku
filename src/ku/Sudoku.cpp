@@ -105,7 +105,7 @@ void Sudoku::exportDlxMatrixToSvg() {
   std::vector<std::pair<std::string, std::vector<bool>>> constraintsInfo;
   for (const auto& constraint : constraints) {
     std::vector<bool> areColumnsPrimary(constraint->getDlxConstraintColumnsAmount(), false);
-    for (int32_t columnId = 0; columnId < areColumnsPrimary.size(); ++columnId) {
+    for (size_t columnId = 0; columnId < areColumnsPrimary.size(); ++columnId) {
       areColumnsPrimary[columnId] = constraint->isColumnPrimary(columnId);
     }
     constraintsInfo.emplace_back(std::make_pair(constraint->getName(), areColumnsPrimary));
