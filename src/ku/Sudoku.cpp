@@ -4,8 +4,9 @@
 #include "SvgUtilities.h"
 #include "constraints/ConstraintFactory.h"
 #include "solver/Solver.h"
+#include "src/ku/utilities/Utilities.h"
 
-Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType constraintTypes, SymmetryType symmetryType)
+Sudoku::Sudoku(const std::string& name, ConstraintType constraintTypes, int32_t givenDigits, SymmetryType symmetryType)
     : name(name) {
 
   // Retrieve constraint list
@@ -13,22 +14,14 @@ Sudoku::Sudoku(const std::string& name, int32_t totalDigits, ConstraintType cons
 
   // Minimum for unique solution: 17
   if (constraintTypes == (ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX)) {
-    digitsAmount = clamp(totalDigits, 17, 81);
+    givenDigitsAmount = clamp(givenDigits, 17, 81);
   } else {
-    digitsAmount = clamp(totalDigits, 0, 81);
+    givenDigitsAmount = clamp(givenDigits, 0, 81);
   }
 
   Timer timer;
-  board = Setter::generate(digitsAmount, symmetryType, constraints);
+  board = Setter::generate(givenDigitsAmount, symmetryType, constraints);
   timer.printElapsed("Sudoku generated         ");
-
-  std::cout << name << " [" << digitsAmount << "|-" << std::to_string(81 - digitsAmount)
-            << "]    MaskType: " << std::to_string(static_cast<int>(symmetryType)) << std::endl;
-  board->print();
-  // board->printGivenPattern();
-  std::cout << std::endl;
-  exportSudokuToSvg();
-  exportDlxMatrixToSvg();
 }
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
@@ -48,6 +41,25 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
   }
 
   return constraintList;
+}
+
+bool Sudoku::verify() {
+  // First, check if solution satisfies the constraints
+  bool solutionIsSatisfactory = true;
+  const std::vector<std::vector<Sudo>> solution = board->getSolution();
+  for (const auto& constraint : constraints) {
+    solutionIsSatisfactory &= constraint->satisfy(solution);
+  }
+  if (!solutionIsSatisfactory) {
+    return false;
+  }
+
+  // Then, solve the sudoku, and see if the solution is unique
+  if (givenDigitsAmount != TOTAL_DIGITS) {
+    const std::vector<std::vector<bool>> givenMask = board->getGivenMask();
+    return Solver::isUnique(solution, givenMask, constraints);
+  }
+  return true;
 }
 
 void Sudoku::exportSudokuToSvg() {

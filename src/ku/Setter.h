@@ -1,12 +1,8 @@
 #pragma once
 
-#include "utilities/Utilities.h"
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
-/** Constructor
- * @param inSolution The solution
- * @param inGivenMask The given Mask
- */
+
 class Setter {
 public:
   Setter() = delete;

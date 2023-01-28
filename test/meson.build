@@ -1,3 +1,4 @@
 test_sources = files(
-  'main.cpp',
+  'DoctestDefine.cpp',
+  'SingleConstraints.cpp',
 )
