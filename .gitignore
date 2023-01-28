@@ -2,6 +2,9 @@
 .vscode
 .idea
 .cache
+# Subprojects dir
+subprojects/*
+!*.wrap
 # Output dir
 out
 # Binaries dir
