@@ -391,7 +391,7 @@ bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
   const int32_t rowAmount = matrix.size();
   const int32_t columnAmount = matrix[0].size();
 
-  // Vector contains whether all columns are secondary (in orcer)
+  // Vector contains whether all columns are secondary (in order)
   std::vector<bool> areColumnsPrimary(columnAmount, false);
   int32_t counter = 0;
   for (const auto& constraint : constraints) {
@@ -419,4 +419,12 @@ bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
     }
   }
   return true;
+}
+
+bool Solver::isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+  bool isSecondaryColumnsOnly = true;
+  for (const auto& constraint : constraints) {
+    isSecondaryColumnsOnly &= constraint->isSecondaryColumnsOnly();
+  }
+  return isSecondaryColumnsOnly;
 }

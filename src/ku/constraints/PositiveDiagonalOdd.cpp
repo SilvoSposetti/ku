@@ -4,10 +4,6 @@ ConstraintType PositiveDiagonalOdd::getType() const {
   return ConstraintType::POSITIVE_DIAGONAL_ODD;
 }
 
-std::string PositiveDiagonalOdd::getName() const {
-  return "Positive-Diagonal-Odd";
-}
-
 std::string PositiveDiagonalOdd::getDescription() const {
   return "The positive diagonal contains only odd digits.";
 }

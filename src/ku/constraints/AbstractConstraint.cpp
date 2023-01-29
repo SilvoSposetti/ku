@@ -1,5 +1,9 @@
 #include "AbstractConstraint.h"
 
+std::string AbstractConstraint::getName() const {
+  return Constraint::getConstraintNameString(getType());
+}
+
 bool AbstractConstraint::isColumnPrimary(int32_t columnId) const {
   return true;
 };
@@ -34,4 +38,15 @@ AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> patte
     i++;
   }
   return result;
+}
+
+bool AbstractConstraint::isSecondaryColumnsOnly() const {
+  bool isSecondaryColumnsOnly = true;
+  for (int32_t i = 0; i < getDlxConstraintColumnsAmount(); i++) {
+    isSecondaryColumnsOnly &= !isColumnPrimary(i);
+    if (!isSecondaryColumnsOnly) {
+      return false;
+    }
+  }
+  return isSecondaryColumnsOnly;
 }

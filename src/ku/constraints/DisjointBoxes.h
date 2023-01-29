@@ -6,8 +6,6 @@ class DisjointBoxes : public AbstractConstraint {
 public:
   virtual ConstraintType getType() const override;
 
-  virtual std::string getName() const override;
-
   virtual std::string getDescription() const override;
 
   virtual std::string getSvgGroup() const override;

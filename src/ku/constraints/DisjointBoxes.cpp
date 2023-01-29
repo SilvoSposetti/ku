@@ -1,10 +1,7 @@
 #include "DisjointBoxes.h"
+
 ConstraintType DisjointBoxes::getType() const {
   return ConstraintType::DISJOINT_BOXES;
-}
-
-std::string DisjointBoxes::getName() const {
-  return "Disjoint-Boxes";
 }
 
 std::string DisjointBoxes::getDescription() const {

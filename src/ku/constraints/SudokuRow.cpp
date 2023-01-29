@@ -4,10 +4,6 @@ ConstraintType SudokuRow::getType() const {
   return ConstraintType::SUDOKU_ROW;
 }
 
-std::string SudokuRow::getName() const {
-  return "Sudoku-Row";
-}
-
 std::string SudokuRow::getDescription() const {
   return "9x1 rows contain all the digits from 1 to 9 exactly once.";
 }

@@ -4,6 +4,7 @@
 #include <atomic>
 #include <chrono>
 #include <cmath>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <math.h>
@@ -22,34 +23,6 @@ constexpr int32_t MID_INDEX = 4;
 constexpr int32_t MIN_INDEX = 0;
 const std::vector<int32_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 const std::vector<Sudo> SUDO_DIGITS = {Sudo::A, Sudo::B, Sudo::C, Sudo::D, Sudo::E, Sudo::F, Sudo::G, Sudo::H, Sudo::I};
-
-enum class ConstraintType : uint64_t {
-  NONE = 0,
-  SUDOKU_CELL = 1 << 0, // Activated by default when creating new Sudoku, do not need to specify it
-  SUDOKU_ROW = 1 << 1,
-  SUDOKU_COLUMN = 1 << 2,
-  SUDOKU_BOX = 1 << 3,
-  POSITIVE_DIAGONAL = 1 << 4,
-  POSITIVE_DIAGONAL_EVEN = 1 << 5,
-  POSITIVE_DIAGONAL_ODD = 1 << 6,
-  NEGATIVE_DIAGONAL = 1 << 7,
-  NEGATIVE_DIAGONAL_EVEN = 1 << 8,
-  NEGATIVE_DIAGONAL_ODD = 1 << 9,
-  ANTI_KING = 1 << 10,
-  ANTI_KING_TORUS = 1 << 11,
-  ANTI_KNIGHT = 1 << 12,
-  ANTI_KNIGHT_TORUS = 1 << 13,
-  DISJOINT_BOXES = 1 << 14,
-  ASTERISK = 1 << 15,
-};
-
-inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
-  return static_cast<ConstraintType>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
-}
-
-inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
-  return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
-}
 
 static inline std::vector<std::vector<Sudo>> emptyField() {
   return std::vector<std::vector<Sudo>>(MAX_DIGIT, std::vector<Sudo>(MAX_DIGIT, Sudo::NONE));

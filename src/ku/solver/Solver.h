@@ -33,6 +33,13 @@ public:
                const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                bool randomize = false);
 
+  /** Preliminary check to see if a set of constraint won't produce a solvable DLX problem. I.e. when the columns that
+   * they define are all secondary
+   * @param constraints The set of constraints
+   * @return Whether the set of constraint is solvable
+   */
+  static bool isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
 private:
   /** Solves a board using DLX
    * @param board A (partial) board that needs to be solved

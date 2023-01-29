@@ -4,10 +4,6 @@ ConstraintType SudokuBox::getType() const {
   return ConstraintType::SUDOKU_BOX;
 }
 
-std::string SudokuBox::getName() const {
-  return "Sudoku-Box";
-}
-
 std::string SudokuBox::getDescription() const {
   return "3x3 boxes contain all the digits from 1 to 9 exactly once.";
 }

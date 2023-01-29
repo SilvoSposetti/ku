@@ -43,6 +43,10 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
   return constraintList;
 }
 
+bool Sudoku::isSolvable(){
+  return Solver::isSolvable(constraints);
+}
+
 bool Sudoku::verify() {
   // First, check if solution satisfies the constraints
   bool solutionIsSatisfactory = true;
@@ -62,13 +66,12 @@ bool Sudoku::verify() {
   return true;
 }
 
-void Sudoku::exportSudokuToSvg() {
-  std::string outputPath;
-#ifdef OUT_DIR
-  outputPath = OUT_DIR;
-#endif
+void Sudoku::exportToSvg(const std::filesystem::path& location) {
 
-  std::string outputFilePath = outputPath + "/" + name + ".svg";
+  if (!std::filesystem::exists(location)) {
+    std::filesystem::create_directories(location);
+  }
+  const std::filesystem::path outputFilePath = location / (name + ".svg");
   std::ofstream outfile(outputFilePath);
 
   // Get SVG string
@@ -101,19 +104,15 @@ void Sudoku::exportSudokuToSvg() {
   outfile.close();
 }
 
-void Sudoku::exportDlxMatrixToSvg() {
-  std::string outputPath;
-#ifndef OUT_DIR
-#else
-  outputPath = OUT_DIR;
-#endif
-
-  std::string outputFilePath = outputPath + "/" + name + "_DLX.svg";
+void Sudoku::exportDlxMatrixToSvg(const std::filesystem::path& location) {
+  if (!std::filesystem::exists(location)) {
+    std::filesystem::create_directories(location);
+  }
+  const std::filesystem::path outputFilePath = location / (name + "-DLX.svg");
   std::ofstream outfile(outputFilePath);
 
-  std::string svgContent;
-
   // DLX Matrix
+  std::string svgContent;
   std::vector<std::pair<std::string, std::vector<bool>>> constraintsInfo;
   for (const auto& constraint : constraints) {
     std::vector<bool> areColumnsPrimary(constraint->getDlxConstraintColumnsAmount(), false);

@@ -4,10 +4,6 @@ ConstraintType PositiveDiagonalEven::getType() const {
   return ConstraintType::POSITIVE_DIAGONAL_EVEN;
 }
 
-std::string PositiveDiagonalEven::getName() const {
-  return "Positive-Diagonal-Even";
-}
-
 std::string PositiveDiagonalEven::getDescription() const {
   return "The positive diagonal contains only even digits.";
 }

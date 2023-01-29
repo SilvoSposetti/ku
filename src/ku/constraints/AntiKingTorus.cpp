@@ -9,10 +9,6 @@ ConstraintType AntiKingTorus::getType() const {
   return ConstraintType::ANTI_KING_TORUS;
 }
 
-std::string AntiKingTorus::getName() const {
-  return "Anti-King-Torus";
-}
-
 std::string AntiKingTorus::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself. This restriction also wraps around the edges "
          "of the board.";

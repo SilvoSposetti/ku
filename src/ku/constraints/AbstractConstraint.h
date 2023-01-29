@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../SvgUtilities.h"
+#include "ConstraintType.h"
 
 /** Base class for all constraints.
  */
@@ -16,7 +17,7 @@ public:
   /** Defines the name of the constraint
    * @return The name
    */
-  virtual std::string getName() const = 0;
+  std::string getName() const;
 
   /** Defines the description of the constraint
    * @return The description
@@ -53,6 +54,11 @@ public:
    * @return Whether the specific cell defined by the inputs should be a 0 or a 1 for DLX
    */
   virtual bool getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const = 0;
+
+  /** Computes the result using getDlxConstraintColumnsAmount() and isColumnPrimary()
+   * @return Wheter the constraint specifies only secondary columns
+   */
+  bool isSecondaryColumnsOnly() const;
 
 protected:
   /** Computes and returns the set of point-point pairs that can be constructed for all cells in a grid according to the

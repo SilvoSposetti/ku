@@ -9,10 +9,6 @@ ConstraintType AntiKing::getType() const {
   return ConstraintType::ANTI_KING;
 }
 
-std::string AntiKing::getName() const {
-  return "Anti-King";
-}
-
 std::string AntiKing::getDescription() const {
   return "The same digit cannot appear at a king's move away from itself.";
 }

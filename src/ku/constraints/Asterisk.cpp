@@ -8,10 +8,6 @@ ConstraintType Asterisk::getType() const {
   return ConstraintType::ASTERISK;
 }
 
-std::string Asterisk::getName() const {
-  return "Asterisk";
-}
-
 std::string Asterisk::getDescription() const {
   return "The 9 cells forming an asterisk contain all the digits from 1 to 9 exactly once.";
 }

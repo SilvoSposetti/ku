@@ -4,10 +4,6 @@ ConstraintType NegativeDiagonal::getType() const {
   return ConstraintType::NEGATIVE_DIAGONAL;
 }
 
-std::string NegativeDiagonal::getName() const {
-  return "Negative-Diagonal";
-}
-
 std::string NegativeDiagonal::getDescription() const {
   return "The negative diagonal contains all the digts from " + std::to_string(MIN_DIGIT) + " to " +
          std::to_string(MAX_DIGIT) + " exactly once.";

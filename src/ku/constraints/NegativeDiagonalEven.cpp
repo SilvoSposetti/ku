@@ -4,10 +4,6 @@ ConstraintType NegativeDiagonalEven::getType() const {
   return ConstraintType::NEGATIVE_DIAGONAL_EVEN;
 }
 
-std::string NegativeDiagonalEven::getName() const {
-  return "Negative-Diagonal-Even";
-}
-
 std::string NegativeDiagonalEven::getDescription() const {
   return "The negative diagonal contains only even digits.";
 }

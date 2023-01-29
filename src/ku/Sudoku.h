@@ -19,6 +19,11 @@ public:
          int32_t givenDigits = TOTAL_DIGITS,
          SymmetryType symmetryType = SymmetryType::RANDOM);
 
+  /** Check if the sudoku is solvable. This is not the case where the constraints define secondary columns only
+   * @return Whether the sudoku is solvable
+   */
+  bool isSolvable();
+
   /** Verify the given sudoku, meaning both checking for:
    * 1. The solution satisfies the constraints.
    * 2. Solving the sudoku produces the solution uniquely.
@@ -27,12 +32,14 @@ public:
   bool verify();
 
   /** Generates and stores the sudoku board to an SVG file in the /out directory
+   * @param location Where the file should be stored
    */
-  void exportSudokuToSvg();
+  void exportToSvg(const std::filesystem::path& location);
 
   /** Generates and stores the DLX matrix of this Sudoku to an SVG file in the /out directory
+   * @param location Where the file should be stored
    */
-  void exportDlxMatrixToSvg();
+  void exportDlxMatrixToSvg(const std::filesystem::path& location);
 
 private:
   /** Constructs a vector of built constraints according to the given constraint types

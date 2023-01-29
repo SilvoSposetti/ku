@@ -11,10 +11,6 @@ ConstraintType AntiKnight::getType() const {
   return ConstraintType::ANTI_KNIGHT;
 }
 
-std::string AntiKnight::getName() const {
-  return "Anti-Knight";
-}
-
 std::string AntiKnight::getDescription() const {
   return "The same digit cannot appear at a knight's move away from itself.";
 }

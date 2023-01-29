@@ -9,10 +9,6 @@ ConstraintType AntiKnightTorus::getType() const {
   return ConstraintType::ANTI_KNIGHT_TORUS;
 }
 
-std::string AntiKnightTorus::getName() const {
-  return "Anti-Knight-Torus";
-}
-
 std::string AntiKnightTorus::getDescription() const {
   return "The same digit cannot appear at a knight's move away from itself. This restriction also wraps around the "
          "edges of the board.";

@@ -24,6 +24,8 @@ int main() {
     const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
     std::unique_ptr<Sudoku> sudoku =
         std::make_unique<Sudoku>("Sudoku " + std::to_string(i + 1), constraints, 60, symmetryType);
+    sudoku->exportToSvg(OUT_DIR);
+    sudoku->exportDlxMatrixToSvg(OUT_DIR);
   }
 
   return EXIT_SUCCESS;

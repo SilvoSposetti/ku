@@ -4,10 +4,6 @@ ConstraintType SudokuCell::getType() const {
   return ConstraintType::SUDOKU_CELL;
 }
 
-std::string SudokuCell::getName() const {
-  return "Sudoku-Cell";
-}
-
 std::string SudokuCell::getDescription() const {
   return "Each cell can only contain one integer between 1 and 9.";
 }

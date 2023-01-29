@@ -4,14 +4,9 @@ ConstraintType NegativeDiagonalOdd::getType() const {
   return ConstraintType::NEGATIVE_DIAGONAL_ODD;
 }
 
-std::string NegativeDiagonalOdd::getName() const {
-  return "Negative-Diagonal-Odd";
-}
-
 std::string NegativeDiagonalOdd::getDescription() const {
   return "The negative diagonal contains only odd digits.";
 }
-
 
 std::string NegativeDiagonalOdd::getSvgGroup() const {
   const std::string zigZagLine = SvgUtilities::zigZagLine(0, 0, 1, 1);

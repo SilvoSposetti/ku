@@ -4,10 +4,6 @@ ConstraintType SudokuColumn::getType() const {
   return ConstraintType::SUDOKU_COLUMN;
 }
 
-std::string SudokuColumn::getName() const {
-  return "Sudoku-Column";
-}
-
 std::string SudokuColumn::getDescription() const {
   return "1x9 columns contain all the digits from 1 to 9 exactly once.";
 }
