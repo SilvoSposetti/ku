@@ -412,11 +412,11 @@ std::string SvgUtilities::squigglyLine(double x1, double y1, double x2, double y
     const double controlX = pointX - controlOffsetX;
     const double controlY = pointY - controlOffsetY;
 
-    squiggly += " S" + getPointString({controlX * boardSize, controlY * boardSize}) + " " +
+    squiggly += " S " + getPointString({controlX * boardSize, controlY * boardSize}) + " " +
                 getPointString({pointX * boardSize, pointY * boardSize});
     side = -side;
   }
-  squiggly += "\">";
+  squiggly += "\"/>";
   return squiggly;
 }
 
