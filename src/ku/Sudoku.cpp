@@ -43,7 +43,7 @@ std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(cons
   return constraintList;
 }
 
-bool Sudoku::isSolvable(){
+bool Sudoku::isSolvable() {
   return Solver::isSolvable(constraints);
 }
 
@@ -127,4 +127,29 @@ void Sudoku::exportDlxMatrixToSvg(const std::filesystem::path& location) {
   // Stream it to file, then save and close
   outfile << svgContent;
   outfile.close();
+}
+
+void Sudoku::printInfo() {
+  // Name
+  std::string info = name + " | ";
+  // Given digits
+  info += std::to_string(givenDigitsAmount) + " (-" + std::to_string(TOTAL_DIGITS - givenDigitsAmount) + ") | ";
+  // Constraints
+  info += "[";
+  std::string constraintsNames;
+  for (const auto& constraint : constraints) {
+    if (constraint->getType() != ConstraintType::SUDOKU_CELL) {
+      constraintsNames += constraint->getName() + ", ";
+    }
+  }
+  if (!constraintsNames.empty()) {
+    constraintsNames = constraintsNames.substr(0, constraintsNames.size() - 2);
+  }
+  info += constraintsNames;
+  info += "]";
+  std::cout << info << std::endl;
+}
+
+void Sudoku::printBoard() {
+  board->print();
 }

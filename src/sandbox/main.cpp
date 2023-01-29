@@ -1,4 +1,5 @@
 #include "Sudoku.h"
+#include "randomGenerator/RandomGenerator.h"
 #include "utilities/Utilities.h"
 
 #include <iostream>
@@ -20,12 +21,14 @@ int main() {
   // constraints = constraints | ConstraintType::DISJOINT_BOXES;
   // constraints = constraints | ConstraintType::ASTERISK;
 
+  const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
   for (int32_t i = 0; i < 1; ++i) {
     const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
-    std::unique_ptr<Sudoku> sudoku =
-        std::make_unique<Sudoku>("Sudoku " + std::to_string(i + 1), constraints, 60, symmetryType);
-    sudoku->exportToSvg(OUT_DIR);
-    sudoku->exportDlxMatrixToSvg(OUT_DIR);
+    Sudoku sudoku("Sudoku " + std::to_string(i + 1), constraints, 60, symmetryType);
+    sudoku.printInfo();
+    sudoku.printBoard();
+    sudoku.exportToSvg(location);
+    sudoku.exportDlxMatrixToSvg(location);
   }
 
   return EXIT_SUCCESS;

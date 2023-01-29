@@ -27,7 +27,7 @@ enum class ConstraintType : uint64_t {
 };
 
 namespace Constraint {
-const std::unordered_set<ConstraintType> ALL_CONSTRAINTS = {
+const std::unordered_set<ConstraintType> ALL_CONSTRAINTS_SET = {
     ConstraintType::SUDOKU_CELL,
     ConstraintType::SUDOKU_ROW,
     ConstraintType::SUDOKU_COLUMN,

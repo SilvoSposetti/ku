@@ -11,7 +11,19 @@ Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& c
   const bool created = Solver::dlx(newField, constraints, false, true);
 
   if (!created) {
-    std::cout << "ERROR: Was not able to generate a new board with the given constraints" << std::endl;
+    std::string constraintsNames;
+    for (const auto& constraint : constraints) {
+      if (constraint->getType() != ConstraintType::SUDOKU_CELL) {
+
+        constraintsNames += constraint->getName() + ", ";
+      }
+    }
+    if (!constraintsNames.empty()) {
+      constraintsNames = constraintsNames.substr(0, constraintsNames.size() - 2);
+    }
+
+    std::cout << "ERROR: Was not able to generate a new board with the given constraints: (" << constraintsNames << ")"
+              << std::endl;
   } else if (!Validator::checkSolution(newField, constraints)) {
     std::cout << "ERROR: Solution created does not satisfy all constraints" << std::endl;
   }

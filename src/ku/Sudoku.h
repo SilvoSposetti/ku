@@ -2,6 +2,7 @@
 
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
+#include "randomGenerator/RandomGenerator.h"
 #include "utilities/Utilities.h"
 
 /** Main class that stores Sudokus
@@ -41,6 +42,14 @@ public:
    */
   void exportDlxMatrixToSvg(const std::filesystem::path& location);
 
+  /** Logs sudoku's info to stdout
+   */
+  void printInfo();
+
+  /** Logs the board to stdout
+   */
+  void printBoard();
+
 private:
   /** Constructs a vector of built constraints according to the given constraint types
    * @param constraintTypes Bitflag of the constraints that should be constructed
@@ -57,4 +66,6 @@ private:
   std::unique_ptr<Board> board;
   /// The list of constraint that make up this Sudoku
   std::vector<std::unique_ptr<AbstractConstraint>> constraints;
+  /// The random generator
+  RandomGenerator randomGenerator;
 };

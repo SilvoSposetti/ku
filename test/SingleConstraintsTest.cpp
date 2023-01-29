@@ -5,29 +5,37 @@
 
 #include <doctest.h>
 
-TEST_CASE("Single constraint only, no missing digits") {
-  const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintOnly";
+TEST_CASE("SingleConstraintsTest") {
+ 
+  SUBCASE("No base rules, no givens") {
+    const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintOnly";
 
-  for (const auto& constraintType : Constraint::ALL_CONSTRAINTS) {
-    const std::string constraintName = Constraint::getConstraintNameString(constraintType);
-    Sudoku sudoku(constraintName + "-Only", constraintType);
-    if (sudoku.isSolvable()) { // Do not verify sudokus' whose constraints do not define primary columns
-      CHECK(sudoku.verify());
+    for (const auto& constraintType : Constraint::ALL_CONSTRAINTS_SET) {
+      const std::string constraintName = Constraint::getConstraintNameString(constraintType);
+      Sudoku sudoku(constraintName + "-Only", constraintType);
+      if (sudoku.isSolvable()) { // Do not verify sudokus' whose constraints do not define primary columns
+        CHECK(sudoku.verify());
+      }
+      sudoku.exportToSvg(location);
+      sudoku.exportDlxMatrixToSvg(location);
     }
-    sudoku.exportToSvg(location);
-    sudoku.exportDlxMatrixToSvg(location);
+  }
+
+  SUBCASE("Sudoku base rules, no givens") {
+    const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintWithSudokuBase";
+
+    const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+
+    for (const auto& constraintType : Constraint::ALL_CONSTRAINTS_SET) {
+      // Add only constraints that are not the base ones
+      if (!static_cast<bool>(constraintType & sudokuBaseConstraints)) {
+        const std::string constraintName = Constraint::getConstraintNameString(constraintType);
+        Sudoku sudoku("SudokuBase-and-" + constraintName, constraintType | sudokuBaseConstraints);
+        CHECK(sudoku.verify());
+        sudoku.exportToSvg(location);
+        sudoku.exportDlxMatrixToSvg(location);
+      }
+    }
   }
 }
-
-// TEST_CASE("Single constraint with Sudoku base rules, no missing digits") {
-//   const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintWithSudokuBase";
-//   for (const auto& constraintType : Constraint::ALL_CONSTRAINTS) {
-//     const std::string constraintName = Constraint::getConstraintNameString(constraintType);
-//     Sudoku sudoku(constraintName, constraintType);
-//     if (sudoku.isSolvable()) { // Do not verify sudokus' whose constraints do not define primary columns
-//       CHECK(sudoku.verify());
-//     }
-//     sudoku.exportToSvg(location);
-//     sudoku.exportDlxMatrixToSvg(location);
-//   }
-// }
