@@ -4,11 +4,8 @@
 
 #include <iostream>
 int main() {
-  ConstraintType constraints = ConstraintType::NONE;
-  constraints = constraints | ConstraintType::SUDOKU_ROW;
-  constraints = constraints | ConstraintType::SUDOKU_COLUMN;
-  constraints = constraints | ConstraintType::SUDOKU_BOX;
-  constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
+  ConstraintType constraints = Constraint::getSudokuConstraints();
+  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_EVEN;
   // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
@@ -23,8 +20,7 @@ int main() {
 
   const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
   for (int32_t i = 0; i < 1; ++i) {
-    const SymmetryType symmetryType = static_cast<SymmetryType>(i % static_cast<int32_t>(SymmetryType::AMOUNT));
-    Sudoku sudoku("Sudoku " + std::to_string(i + 1), constraints, 60, symmetryType);
+    Sudoku sudoku("Sudoku " + std::to_string(i + 1), constraints, SymmetryType::RANDOM, 60);
     sudoku.printInfo();
     sudoku.printBoard();
     sudoku.exportToSvg(location);

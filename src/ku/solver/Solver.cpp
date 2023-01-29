@@ -1,14 +1,15 @@
 #include "Solver.h"
 
 #include "../Validator.h"
+#include "../randomGenerator/RandomGenerator.h"
 
 std::vector<std::vector<Sudo>>
-Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, std::shared_ptr<RandomGenerator> randomGenerator) {
 
   std::vector<std::vector<Sudo>> newField = emptyField();
   std::vector<std::vector<bool>> givenMask = emptyGivenMask();
 
-  const bool created = Solver::dlx(newField, constraints, false, true);
+  const bool created = Solver::dlx(newField, constraints, false, randomGenerator);
 
   if (!created) {
     std::string constraintsNames;
@@ -50,7 +51,7 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
 std::vector<std::vector<int32_t>>
 Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                     bool randomize) {
+                     std::shared_ptr<RandomGenerator> randomGenerator) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
@@ -74,7 +75,7 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
 
   // Randomize the sequence of digits that is passed when constructing the matrix or not
-  const std::vector<Sudo> digitsSequence = randomize ? randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
+  const std::vector<Sudo> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
@@ -107,9 +108,9 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
 bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                  bool checkForUniqueness,
-                 bool randomize) {
+                 std::shared_ptr<RandomGenerator> randomGenerator) {
   // Reduce problem: Sudoku->DLX
-  std::vector<std::vector<int32_t>> matrix = getDlxMatrix(board, constraints, randomize);
+  std::vector<std::vector<int32_t>> matrix = getDlxMatrix(board, constraints, randomGenerator);
 
   // Check that the matrix is valid
   if (!isMatrixSolvable(matrix, constraints)) {

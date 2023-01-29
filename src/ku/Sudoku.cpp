@@ -6,23 +6,17 @@
 #include "solver/Solver.h"
 #include "src/ku/utilities/Utilities.h"
 
-Sudoku::Sudoku(const std::string& name, ConstraintType constraintTypes, int32_t givenDigits, SymmetryType symmetryType)
-    : name(name) {
-
-  // Retrieve constraint list
-  constraints = getConstraintsList(constraintTypes);
-
-  // Minimum for unique solution: 17
-  if (constraintTypes == (ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX)) {
-    givenDigitsAmount = clamp(givenDigits, 17, 81);
-  } else {
-    givenDigitsAmount = clamp(givenDigits, 0, 81);
-  }
-
-  Timer timer;
-  board = Setter::generate(givenDigitsAmount, symmetryType, constraints);
-  timer.printElapsed("Sudoku generated         ");
-}
+Sudoku::Sudoku(const std::string& name,
+               ConstraintType constraintTypes,
+               SymmetryType givenSymmetry,
+               int32_t givenDigits,
+               int32_t seed)
+    : name(name)
+    , givenDigitsAmount(std::clamp(givenDigits, 0, TOTAL_DIGITS))
+    , constraints(getConstraintsList(constraintTypes))
+    , symmetryType(givenSymmetry)
+    , randomGenerator(std::make_shared<RandomGenerator>(seed))
+    , board(Setter::generate(givenDigitsAmount, symmetryType, constraints, randomGenerator)) {}
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
   std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
@@ -66,8 +60,17 @@ bool Sudoku::verify() {
   return true;
 }
 
-void Sudoku::exportToSvg(const std::filesystem::path& location) {
+std::vector<std::vector<Sudo>> Sudoku::getSolution() {
+  return board->getSolution();
+}
+std::vector<std::vector<Sudo>> Sudoku::getField() {
+  return board->getField();
+}
+std::vector<std::vector<bool>> Sudoku::getGivenMask() {
+  return board->getGivenMask();
+}
 
+void Sudoku::exportToSvg(const std::filesystem::path& location) {
   if (!std::filesystem::exists(location)) {
     std::filesystem::create_directories(location);
   }

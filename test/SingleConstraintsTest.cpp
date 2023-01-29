@@ -24,8 +24,7 @@ TEST_CASE("SingleConstraintsTest") {
   SUBCASE("Sudoku base rules, no givens") {
     const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintWithSudokuBase";
 
-    const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
-                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+    const ConstraintType sudokuBaseConstraints = Constraint::getSudokuConstraints();
 
     for (const auto& constraintType : Constraint::ALL_CONSTRAINTS_SET) {
       // Add only constraints that are not the base ones

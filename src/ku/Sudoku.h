@@ -12,13 +12,16 @@ public:
   /** Constructor
    * @param name The name of the Sudoku
    * @param constraintTypes Bitflag of the constraints that should be used to create the Sudoku
+   * @param symmetryType Which symmetry type should be used to remove given digits
    * @param givenDigits The amount of digits that are given
-   * @param symmetryType Which symmetry type should be used to remove given digits. Default: SymmetryType::RANDOM.
+   * @param seed The seed for the random number generator used to generate and solve the sudoku. If -1 then a random
+   * seed will be used
    */
   Sudoku(const std::string& name,
-         ConstraintType constraintTypes,
+         ConstraintType constraintTypes = Constraint::getSudokuConstraints(),
+         SymmetryType givenSymmetry = SymmetryType::RANDOM,
          int32_t givenDigits = TOTAL_DIGITS,
-         SymmetryType symmetryType = SymmetryType::RANDOM);
+         int32_t seed = -1);
 
   /** Check if the sudoku is solvable. This is not the case where the constraints define secondary columns only
    * @return Whether the sudoku is solvable
@@ -31,6 +34,21 @@ public:
    * @return Whether the sudoku si valid
    */
   bool verify();
+
+  /** Retrieve the solution of the sudoku
+   * \return The solution
+   */
+  std::vector<std::vector<Sudo>> getSolution();
+
+  /** Compute and retrieve the field of the sudoku. This is only the given digits of the solution
+   * \return The field
+   */
+  std::vector<std::vector<Sudo>> getField();
+
+  /** Retrieve the given mask of the sudoku. An element is true if it is given
+   * \return The given mask
+   */
+  std::vector<std::vector<bool>> getGivenMask();
 
   /** Generates and stores the sudoku board to an SVG file in the /out directory
    * @param location Where the file should be stored
@@ -58,14 +76,16 @@ private:
   static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);
 
 private:
-  /// The name
-  std::string name;
+  /// The name  
+  const std::string name;
   /// How many givens the sudoku has
-  int32_t givenDigitsAmount;
-  /// The board
-  std::unique_ptr<Board> board;
+  const int32_t givenDigitsAmount;
   /// The list of constraint that make up this Sudoku
-  std::vector<std::unique_ptr<AbstractConstraint>> constraints;
+  const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
+  /// The symmetry type of the sudoku
+  const SymmetryType symmetryType;
   /// The random generator
-  RandomGenerator randomGenerator;
+  std::shared_ptr<RandomGenerator> randomGenerator;
+  /// The board
+  const std::unique_ptr<Board> board;
 };

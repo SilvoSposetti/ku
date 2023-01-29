@@ -1,12 +1,11 @@
 #include "RandomGenerator.h"
 
-RandomGenerator::RandomGenerator() {
-  std::random_device randomDevice;
-  generator = std::mt19937(randomDevice());
-}
-
 RandomGenerator::RandomGenerator(int32_t seed) {
-  generator = std::mt19937(seed);
+  if (seed == -1) {
+    generator = std::mt19937(std::random_device()());
+  } else {
+    generator = std::mt19937(seed);
+  }
 }
 
 int32_t RandomGenerator::randomUniform(int32_t min, int32_t max) {

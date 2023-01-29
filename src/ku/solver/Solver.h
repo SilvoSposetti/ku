@@ -1,16 +1,19 @@
 #pragma once
 
 #include "../constraints/AbstractConstraint.h"
+#include "../randomGenerator/RandomGenerator.h"
 #include "Node.h"
 
 class Solver {
 public:
   /** Creates a new board from scratch with the given constraints using DLX
    * @param constraints A vector of constraints
+   * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A board constructed according to the input constraints
    */
   static std::vector<std::vector<Sudo>>
-  createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                 std::shared_ptr<RandomGenerator> randomGenerator);
 
   /** Computes whether a Sudoku is unique according to the provided solution, givenMask, and set of constraints
    * @param solution The board solution
@@ -25,13 +28,13 @@ public:
   /** Creates and returns the sparse matrix of integers which could be used for DLX
    * @param board A (partial) board
    * @param constraints The set of constraints
-   * @param randomize Whether matrix creation should randomize the order in which the digits are considered
+   * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A sparse matrix representation of the one used by DLX
    */
   static std::vector<std::vector<int32_t>>
   getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
                const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-               bool randomize = false);
+               std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
   /** Preliminary check to see if a set of constraint won't produce a solvable DLX problem. I.e. when the columns that
    * they define are all secondary
@@ -45,13 +48,13 @@ private:
    * @param board A (partial) board that needs to be solved
    * @param constraints The set of constraints that the board should satisfy
    * @param checkForUniqueness Whether the solution found should be unique
-   * @param randomize Whether matrix creation should randomize the order in which the digits are considered
+   * @param randomGenerator The random number generator instance used to draw random numbers
    * @return Whether a solution exits, and if it has been specified, whether it is unique
    */
   static bool dlx(std::vector<std::vector<Sudo>>& board,
                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                   bool checkForUniqueness,
-                  bool randomize = false);
+                  std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
   /** Given a sparse matrix representation of the DLX-Matrix, constructs a matrix of Nodes to be used by the DLX
    * algorithm

@@ -26,6 +26,14 @@ enum class ConstraintType : uint64_t {
   // 2. Constraint::getConstraintName()
 };
 
+inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
+  return static_cast<ConstraintType>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
+}
+
+inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
+  return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
+}
+
 namespace Constraint {
 const std::unordered_set<ConstraintType> ALL_CONSTRAINTS_SET = {
     ConstraintType::SUDOKU_CELL,
@@ -45,6 +53,11 @@ const std::unordered_set<ConstraintType> ALL_CONSTRAINTS_SET = {
     ConstraintType::DISJOINT_BOXES,
     ConstraintType::ASTERISK,
 };
+
+inline ConstraintType getSudokuConstraints() {
+  return ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_COLUMN |
+         ConstraintType::SUDOKU_BOX;
+}
 
 static inline std::string getConstraintNameString(ConstraintType type) {
   switch (type) {
@@ -85,11 +98,3 @@ static inline std::string getConstraintNameString(ConstraintType type) {
   }
 }
 } // namespace Constraint
-
-inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
-  return static_cast<ConstraintType>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
-}
-
-inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
-  return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
-}

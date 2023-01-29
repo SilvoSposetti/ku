@@ -57,20 +57,6 @@ enum class SymmetryType {
   AMOUNT
 };
 
-static inline int32_t randomUniform(const int32_t min, const int32_t max) {
-  // max and min are both inclusive
-  std::random_device randomDevice;
-  std::mt19937 generator(randomDevice());
-  std::uniform_int_distribution<int32_t> uniformIntDistribution(min, max);
-  return uniformIntDistribution(generator);
-}
-
-template <typename T> static inline std::vector<T> randomShuffle(const std::vector<T>& input) {
-  std::vector<T> vector = input;
-  std::shuffle(vector.begin(), vector.end(), std::mt19937(std::random_device()()));
-  return vector;
-}
-
 static inline int32_t clamp(const int32_t value, const int32_t min, const int32_t max) {
   return std::max(std::min(value, max), min);
 }
