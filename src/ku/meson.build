@@ -22,6 +22,7 @@ ku_sources = files(
   'constraints/SudokuCell.cpp',
   'constraints/SudokuColumn.cpp',
   'constraints/SudokuRow.cpp',
+  'MaskUtilities.cpp',
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
 )
