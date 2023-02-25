@@ -25,4 +25,5 @@ ku_sources = files(
   'MaskUtilities.cpp',
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
+  'solver/SparseCoordinateMatrix.cpp',
 )

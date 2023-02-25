@@ -7,7 +7,7 @@
 
 TEST_CASE("SingleConstraintsTest") {
  
-  SUBCASE("No base rules, no givens") {
+  SUBCASE("No base constraints, no givens") {
     const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintOnly";
 
     for (const auto& constraintType : Constraint::ALL_CONSTRAINTS_SET) {
@@ -21,7 +21,7 @@ TEST_CASE("SingleConstraintsTest") {
     }
   }
 
-  SUBCASE("Sudoku base rules, no givens") {
+  SUBCASE("Sudoku base constraints, no givens") {
     const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "tests" / "SingleConstraintWithSudokuBase";
 
     const ConstraintType sudokuBaseConstraints = Constraint::getSudokuConstraints();
