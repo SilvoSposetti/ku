@@ -1,6 +1,8 @@
 #pragma once
 #include "../utilities/Utilities.h"
 
+/** The data contained in the cell of a sparse coordinate matrix
+ */
 struct SparseCooordinateCell {
   int32_t matrixRow;
   int32_t value;
@@ -29,6 +31,12 @@ public:
    * @return The value storedf in the cell
    */
   int32_t getData(int32_t rowIndex, int32_t columnIndex) const;
+
+  /** Reorders the matrix columns according to the new column index provided
+   * @param permutation The new order for the columns
+   * @return Whether reordering can be performed
+   */
+  bool reorderColumns(const std::vector<int32_t>& permutation);
 
 private:
   /// The matrix. Stores only non-zero elements. Has a vector for every column

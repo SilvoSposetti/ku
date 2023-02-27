@@ -1,5 +1,7 @@
 #include "SparseCoordinateMatrix.h"
 
+#include <unordered_set>
+
 SparseCooordinateMatrix::SparseCooordinateMatrix(int32_t totalRows, int32_t totalColumns)
     : matrix(totalColumns)
     , columns(totalColumns)
@@ -48,4 +50,44 @@ int32_t SparseCooordinateMatrix::getData(int32_t rowIndex, int32_t columnIndex) 
     }
   }
   return 0;
+}
+
+bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {
+  // Permutation's size must be the same as the amount of columns in the matrix
+  if (static_cast<int32_t>(permutation.size()) != columns) {
+    return false;
+  }
+
+  // All indices in the permutation must be valid indices
+  if (!std::all_of(
+          permutation.begin(), permutation.end(), [&](int32_t value) { return value >= 0 && value < columns; })) {
+    return false;
+  }
+
+  // The same index cannot appear twice
+  std::unordered_set<int32_t> indicesSet(permutation.begin(), permutation.end());
+  if (indicesSet.size() != permutation.size()) {
+    return false;
+  }
+
+  // Re-order matrix in-place
+  std::vector<bool> isCorrectlyOrdered(matrix.size(), false);
+  // All elements left of index i (with i included) have been correctly ordered
+  for (int32_t i = 0; i < matrix.size(); ++i) {
+    if (isCorrectlyOrdered[i]) {
+      continue;
+    }
+    isCorrectlyOrdered[i] = true;
+    int32_t k = i;
+    int32_t j = permutation[i];
+    while (i != j) {
+      std::swap(matrix[k], matrix[j]);
+      isCorrectlyOrdered[j] = true;
+      k = j;
+      j = permutation[j];
+    }
+  }
+
+
+  return true;
 }
