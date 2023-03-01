@@ -3,6 +3,7 @@
 #include "../constraints/AbstractConstraint.h"
 #include "../randomGenerator/RandomGenerator.h"
 #include "Node.h"
+#include "SparseCoordinateMatrix.h"
 
 class Solver {
 public:
@@ -31,10 +32,9 @@ public:
    * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A sparse matrix representation of the one used by DLX
    */
-  static std::vector<std::vector<int32_t>>
-  getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
-               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-               std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
+  static SparseCooordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                              std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
   /** Preliminary check to see if a set of constraint won't produce a solvable DLX problem. I.e. when the columns that
    * they define are all secondary
@@ -63,7 +63,7 @@ private:
    * @return The root of the constructed matrix of Nodes
    */
   static std::shared_ptr<Node>
-  createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix,
+  createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   /** Performs the actual search of solutions of DLX
@@ -105,6 +105,5 @@ private:
 
   /** Checks if a given sparse matrix represents a valid Exact Cover problem to be fed to DLX
    */
-  static bool isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
-                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  static bool isMatrixSolvable(const SparseCooordinateMatrix& matrix);
 };

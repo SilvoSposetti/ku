@@ -171,14 +171,14 @@ std::string SvgUtilities::givenPatternBorder() {
   return paperUnitsRect(x, y, size, size, getNoFillStroke(thinLine));
 }
 
-std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& matrix,
+std::string SvgUtilities::dlxMatrix(const SparseCooordinateMatrix& matrix,
                                     const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo) {
 
   int32_t columnsAmount = 0;
   for (const auto& constraintInfo : constraintsInfo) {
     columnsAmount += constraintInfo.second.size();
   }
-  const int32_t rowsAmount = matrix.size();
+  const int32_t rowsAmount = matrix.getRowsAmount();
 
   const double originX = 0;
   const double originY = 0;
@@ -252,7 +252,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
     std::string constraintCells;
     for (int32_t i = 0; i < rowsAmount; i++) {
       for (int32_t j = startColumn; j < endColumn; j++) {
-        const int32_t value = matrix[i][j];
+        const int32_t value = matrix.getData(i, j);
         if (value >= 0) {
           const double posX = originX + constraintCounter * constraintSeparation + j * dlxCellSize;
           const double posY = originY + i * dlxCellSize;
@@ -284,7 +284,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
   int32_t currentColumn = 0;
 
   for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix[i][currentColumn] >= 0 && currentColumn < columnsAmount) {
+    if (matrix.getData(i, currentColumn) >= 0 && currentColumn < columnsAmount) {
       const double y = originY + dlxCellSize * i;
       horizontalLines += paperUnitsLine(startX, y, endX, y);
       currentColumn++;
@@ -295,7 +295,7 @@ std::string SvgUtilities::dlxMatrix(const std::vector<std::vector<int32_t>>& mat
 
   // Vertical lines
   std::string verticalLines;
-  int32_t verticalLinesAmount = matrix[0].size() + constraintCounter * MAX_DIGIT - 1;
+  int32_t verticalLinesAmount = matrix.getColumnsAmount() + constraintCounter * MAX_DIGIT - 1;
   double startY = originY;
   double endY = originY + rowsAmount * dlxCellSize;
   for (int32_t i = 0; i <= verticalLinesAmount; i++) {

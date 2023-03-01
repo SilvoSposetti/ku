@@ -1,4 +1,5 @@
 #pragma once
+#include "solver/SparseCoordinateMatrix.h"
 #include "utilities/Utilities.h"
 
 const double boardSize = 1000;
@@ -63,7 +64,7 @@ public:
 
   static std::string getFontSize(int fontSize);
 
-  static std::string dlxMatrix(const std::vector<std::vector<int32_t>>& dlxMatrix,
+  static std::string dlxMatrix(const SparseCooordinateMatrix& dlxMatrix,
                                const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo);
 
   static std::string getNoFillStroke(double strokeWidth);

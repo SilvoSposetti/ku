@@ -4,7 +4,8 @@
 #include "../randomGenerator/RandomGenerator.h"
 
 std::vector<std::vector<Sudo>>
-Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, std::shared_ptr<RandomGenerator> randomGenerator) {
+Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                       std::shared_ptr<RandomGenerator> randomGenerator) {
 
   std::vector<std::vector<Sudo>> newField = emptyField();
   std::vector<std::vector<bool>> givenMask = emptyGivenMask();
@@ -48,10 +49,9 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
   return Solver::dlx(board, constraints, true);
 }
 
-std::vector<std::vector<int32_t>>
-Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
-                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                     std::shared_ptr<RandomGenerator> randomGenerator) {
+SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+                                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                             std::shared_ptr<RandomGenerator> randomGenerator) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
@@ -72,8 +72,8 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
   }
 
   // Initialize matrix with correct size
-  std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
-
+  // std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
+  SparseCooordinateMatrix matrix(totalRows, totalColumns);
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
 
@@ -90,8 +90,9 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
             for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
               if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
                 // Store matrix cell ID
-                matrix[matrixRowCounter][matrixColumnCounter] =
-                    boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1);
+                matrix.setData(matrixRowCounter,
+                               matrixColumnCounter,
+                               boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -99,6 +100,17 @@ Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
           matrixRowCounter++;
         }
       }
+    }
+  }
+
+  // Set which column is secondary in the matrix
+  matrixColumnCounter = 0;
+  for (const auto& constraint : constraints) {
+    for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+      if (!constraint->isColumnPrimary(columnId)) {
+        matrix.setColumnSecondary(matrixColumnCounter);
+      }
+      matrixColumnCounter++;
     }
   }
 
@@ -110,10 +122,10 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
                  bool checkForUniqueness,
                  std::shared_ptr<RandomGenerator> randomGenerator) {
   // Reduce problem: Sudoku->DLX
-  std::vector<std::vector<int32_t>> matrix = getDlxMatrix(board, constraints, randomGenerator);
+  SparseCooordinateMatrix matrix = getDlxMatrix(board, constraints, randomGenerator);
 
   // Check that the matrix is valid
-  if (!isMatrixSolvable(matrix, constraints)) {
+  if (!isMatrixSolvable(matrix)) {
     return false;
   }
 
@@ -155,10 +167,10 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
 }
 
 std::shared_ptr<Node>
-Solver::createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix,
+Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
                                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  const int32_t totalRows = static_cast<int32_t>(matrix.size());
-  const int32_t totalColumns = static_cast<int32_t>(matrix[0].size());
+  const int32_t totalRows = matrix.getRowsAmount();
+  const int32_t totalColumns = matrix.getColumnsAmount();
 
   std::shared_ptr<Node> root = std::make_shared<Node>("root");
   root->header = root;
@@ -190,7 +202,7 @@ Solver::createDancingLinksMatrix(const std::vector<std::vector<int32_t>>& matrix
 
     // Go through all columns
     for (int32_t columnIndex = 0; columnIndex < totalColumns; columnIndex++) {
-      const int32_t matrixRowId = matrix[rowIndex][columnIndex];
+      const int32_t matrixRowId = matrix.getData(rowIndex, columnIndex);
       if (matrixRowId >= 0) {
         // Go to the last existing node of the column, starting from the column header
         std::shared_ptr<Node> lastColumnNode = currentColumnHeader;
@@ -398,30 +410,19 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
   return smallestColumn;
 }
 
-bool Solver::isMatrixSolvable(const std::vector<std::vector<int32_t>>& matrix,
-                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+bool Solver::isMatrixSolvable(const SparseCooordinateMatrix& matrix) {
 
-  const int32_t rowAmount = matrix.size();
-  const int32_t columnAmount = matrix[0].size();
+  const int32_t rowAmount = matrix.getRowsAmount();
+  const int32_t columnAmount = matrix.getColumnsAmount();
 
-  // Vector contains whether all columns are secondary (in order)
-  std::vector<bool> areColumnsPrimary(columnAmount, false);
-  int32_t counter = 0;
-  for (const auto& constraint : constraints) {
-    for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-      areColumnsPrimary[counter] = constraint->isColumnPrimary(columnId);
-      ++counter;
-    }
-  }
-
-  // Matrix is not solvable if the primary columns all contain at least 1 element
+  // Matrix is notsolvable if any of the primary columns is empty
   for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
     bool allNegative = true;
     for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
-      if (!areColumnsPrimary[columnIndex]) {
+      if (!matrix.isColumnPrimary(columnIndex)) {
         allNegative = false;
       }
-      if (matrix[rowIndex][columnIndex] >= 0) {
+      if (matrix.getData(rowIndex, columnIndex) >= 0) {
         allNegative = false;
       }
     }

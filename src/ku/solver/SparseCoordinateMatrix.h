@@ -4,11 +4,18 @@
 /** The data contained in the cell of a sparse coordinate matrix
  */
 struct SparseCooordinateCell {
-  int32_t matrixRow;
-  int32_t value;
+  int32_t matrixRow = 0;
+  int32_t value = -1;
+};
+/** The data contained in a column of a sparse coordinate matrix
+ */
+struct SparseCooordinateColumn {
+  bool isColumnPrimary = true;
+  std::vector<SparseCooordinateCell> elements;
 };
 
-/** A data structure for sparse matrices that uses coordinate format and column-major order.
+/** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
+ * are initialized with the value -1. By default, all columns of the matrix are primary unless manually modified.
  */
 class SparseCooordinateMatrix {
 public:
@@ -17,6 +24,27 @@ public:
    * @param totalColumns The amount of columns the sparse matrix has
    */
   SparseCooordinateMatrix(int32_t totalRows, int32_t totalColumns);
+
+  /** Retrieves the amount of columns that this matrix supports
+   * @return The amount of columns
+   */
+  int32_t getColumnsAmount() const;
+
+  /** Retrieves the amount of rows that this matrix supports
+   * @return The amount of rows
+   */
+  int32_t getRowsAmount() const;
+
+  /** Sets a particular column to be secondary
+   * @return The amount of rows
+   */
+  void setColumnSecondary(int32_t columnIndex);
+
+  /** Retrieves whether a specified column is primary
+   * @param columnIndex The column index
+   * @return Whether the column is primary
+   */
+  bool isColumnPrimary(int32_t columnIndex) const;
 
   /** Sets data into a specific location in the matrix
    * @param rowIndex The row index of the insertion location
@@ -40,11 +68,11 @@ public:
 
 private:
   /// The matrix. Stores only non-zero elements. Has a vector for every column
-  std::vector<std::vector<SparseCooordinateCell>> matrix;
+  std::vector<SparseCooordinateColumn> columns;
 
   /// The maximum amount of columns that the matrix considers
-  int32_t columns = 0;
+  int32_t columnsAmount = 0;
 
   /// The maximum amount of rows that the matrix considers
-  int32_t rows = 0;
+  int32_t rowsAmount = 0;
 };

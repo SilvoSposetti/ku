@@ -5,7 +5,7 @@
 
 TEST_CASE("SparseCoordinateMatrixTest") {
 
-  SUBCASE("Create, Fill, Read") {
+  SUBCASE("Basic Usage") {
     // Create & fill
     const std::vector<std::vector<int32_t>> matrix = {
         {11, 0, 13, 0, 0, 0},
@@ -23,6 +23,18 @@ TEST_CASE("SparseCoordinateMatrixTest") {
         CHECK(sparseMatrix.setData(i, j, matrix[i][j]));
       }
     }
+    CHECK(sparseMatrix.getRowsAmount() == rows);
+    CHECK(sparseMatrix.getColumnsAmount() == columns);
+
+    // Set primary / secondary columns
+    sparseMatrix.setColumnSecondary(0);
+    sparseMatrix.setColumnSecondary(3);
+    CHECK_FALSE(sparseMatrix.isColumnPrimary(0));
+    CHECK(sparseMatrix.isColumnPrimary(1));
+    CHECK(sparseMatrix.isColumnPrimary(2));
+    CHECK_FALSE(sparseMatrix.isColumnPrimary(3));
+    CHECK(sparseMatrix.isColumnPrimary(4));
+    CHECK(sparseMatrix.isColumnPrimary(5));
 
     // Cannot set data outside of matrix size
     CHECK_FALSE(sparseMatrix.setData(rows, 0, 25));
@@ -64,7 +76,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
         {0, 0, 0, 0, 0, 0},
         {66, 0, 62, 0, 61, 0},
     };
-    
+
     const std::vector<int32_t> newPermutation = {5, 3, 1, 2, 0, 4};
     const std::vector<int32_t> newPermutationWrongIndices = {5, 9, 1, 2, 0, 4};
     const std::vector<int32_t> newPermutationDuplicateIndices = {5, 2, 1, 2, 0, 4};
