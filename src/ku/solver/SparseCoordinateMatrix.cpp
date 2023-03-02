@@ -36,27 +36,13 @@ bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, boo
     return false;
   }
 
-  std::vector<SparseCooordinateCell>& column = columns[columnIndex].elements;
-  // Find the insertion index
-  int32_t insertIndex = 0;
-  for (auto& cell : column) {
-    if (cell.matrixRow < rowIndex) {
-      continue;
-    } else if (cell.matrixRow == rowIndex) {
-      // Cell already exists, just change its data and exit early
-      cell.value = data;
-      return true;
-    } else {
-      break;
-    }
-    insertIndex++;
+  if (data == true) {
+    // Add the element to the set
+    columns[columnIndex].elements.insert(rowIndex);
+  } else {
+    columns[columnIndex].elements.erase(rowIndex);
   }
 
-  // Add cell
-  SparseCooordinateCell cell;
-  cell.matrixRow = rowIndex;
-  cell.value = data;
-  column.insert(column.begin() + insertIndex, cell);
   return true;
 }
 
@@ -66,13 +52,8 @@ bool SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) con
     return false;
   }
   // Retrieve value
-  const auto& columnElements = columns[columnIndex].elements;
-  for (const auto& cell : columnElements) {
-    if (cell.matrixRow == rowIndex) {
-      return cell.value;
-    }
-  }
-  return false;
+  const auto& elements = columns[columnIndex].elements;
+  return elements.find(rowIndex) != elements.end();
 }
 
 bool SparseCooordinateMatrix::isSolvableByDlx() const {
@@ -90,16 +71,16 @@ bool SparseCooordinateMatrix::isSolvableByDlx() const {
   }
 
   // Matrix is not solvable if any of the primary columns is empty
-  bool someColumnsAreEmpty = false;
+  bool anyPrimaryColumnIsEmpty = false;
   int32_t columnIndex = 0;
   for (const auto& column : columns) {
-    if (column.elements.size() == 0) {
+    if (column.isColumnPrimary && column.elements.size() == 0) {
       std::cout << "Cannot solve matrix, one of the primary columns contains only unset cells! (the one at index "
                 << columnIndex << ")" << std::endl;
-      someColumnsAreEmpty = true;
+      anyPrimaryColumnIsEmpty = true;
     }
   }
-  return someColumnsAreEmpty;
+  return !anyPrimaryColumnIsEmpty;
 }
 
 bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {

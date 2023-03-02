@@ -1,17 +1,13 @@
 #pragma once
 #include "../utilities/Utilities.h"
 
-/** The data contained in the cell of a sparse coordinate matrix
- */
-struct SparseCooordinateCell {
-  int32_t matrixRow = 0;
-  bool value = false;
-};
 /** The data contained in a column of a sparse coordinate matrix
  */
 struct SparseCooordinateColumn {
+  /// Whether the column is primary
   bool isColumnPrimary = true;
-  std::vector<SparseCooordinateCell> elements;
+  /// A set of all the non-zero elements of the column
+  std::set<int32_t> elements;
 };
 
 /** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
