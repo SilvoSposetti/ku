@@ -5,7 +5,7 @@
  */
 struct SparseCooordinateCell {
   int32_t matrixRow = 0;
-  int32_t value = -1;
+  bool value = false;
 };
 /** The data contained in a column of a sparse coordinate matrix
  */
@@ -49,16 +49,17 @@ public:
   /** Sets data into a specific location in the matrix
    * @param rowIndex The row index of the insertion location
    * @param columnIndex The column index of the insertion location
+   * @param value The value for the cell. I.e. whether the location contains a 0 (false) or 1 (true)
    * @return Whether insertion was successful
    */
-  bool setData(int32_t rowIndex, int32_t columnIndex, int32_t data);
+  bool setCell(int32_t rowIndex, int32_t columnIndex, bool data);
 
   /** Gets data from a specific location in the matrix. Returns 0 if the
    * @param rowIndex The row index of the insertion location
    * @param columnIndex The column index of the insertion location
-   * @return The value storedf in the cell
+   * @return Whether the cell contains a 1 (true) or a zero (false)
    */
-  int32_t getData(int32_t rowIndex, int32_t columnIndex) const;
+  bool getCell(int32_t rowIndex, int32_t columnIndex) const;
 
   /** Reorders the matrix columns according to the new column index provided
    * @param permutation The new order for the columns

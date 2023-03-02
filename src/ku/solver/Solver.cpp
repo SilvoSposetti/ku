@@ -72,7 +72,6 @@ SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>
   }
 
   // Initialize matrix with correct size
-  // std::vector<std::vector<int32_t>> matrix(totalRows, std::vector<int32_t>(totalColumns, -1));
   SparseCooordinateMatrix matrix(totalRows, totalColumns);
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
@@ -88,11 +87,12 @@ SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>
         if (actualDigit == Sudo::NONE || actualDigit == possibleDigit) {
           for (const auto& constraint : constraints) {
             for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
+              if (!constraint->isColumnPrimary(columnId)) {
+                matrix.setColumnSecondary(matrixColumnCounter);
+              }
               if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
                 // Store matrix cell ID
-                matrix.setData(matrixRowCounter,
-                               matrixColumnCounter,
-                               boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
+                matrix.setCell(matrixRowCounter, matrixColumnCounter, true);
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -100,17 +100,6 @@ SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>
           matrixRowCounter++;
         }
       }
-    }
-  }
-
-  // Set which column is secondary in the matrix
-  matrixColumnCounter = 0;
-  for (const auto& constraint : constraints) {
-    for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-      if (!constraint->isColumnPrimary(columnId)) {
-        matrix.setColumnSecondary(matrixColumnCounter);
-      }
-      matrixColumnCounter++;
     }
   }
 
@@ -130,7 +119,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
   }
 
   // Create doubly-linked list according to matrix M
-  const std::shared_ptr<Node> root = createDancingLinksMatrix(matrix, constraints);
+  const std::shared_ptr<Node> root = createDancingLinksMatrix(matrix);
 
   // Find possible solutions
   std::vector<std::vector<std::shared_ptr<Node>>> solutions = searchDlx(root, checkForUniqueness);
@@ -166,9 +155,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
   return false;
 }
 
-std::shared_ptr<Node>
-Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
-                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix) {
   const int32_t totalRows = matrix.getRowsAmount();
   const int32_t totalColumns = matrix.getColumnsAmount();
 
@@ -177,17 +164,15 @@ Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
   std::shared_ptr<Node> currentColumnHeader = root;
 
   // First create all column headers
-  for (const auto& constraint : constraints) {
-    for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); columnId++) {
-      const std::string columnName = constraint->getName() + "[colID: " + std::to_string(columnId) + "]";
-      std::shared_ptr<Node> newHeader = std::make_shared<Node>(columnName);
-      newHeader->isPrimary = constraint->isColumnPrimary(columnId);
-      currentColumnHeader->right = newHeader;
-      newHeader->left = currentColumnHeader;
-      newHeader->header = newHeader; // Assign the header of a column to itself
-      currentColumnHeader = newHeader;
-    }
+  for (int columnId = 0; columnId < totalColumns; columnId++) {
+    std::shared_ptr<Node> newHeader = std::make_shared<Node>(std::to_string(columnId));
+    newHeader->isPrimary = matrix.isColumnPrimary(columnId);
+    currentColumnHeader->right = newHeader;
+    newHeader->left = currentColumnHeader;
+    newHeader->header = newHeader; // Assign the header of a column to itself
+    currentColumnHeader = newHeader;
   }
+
   // Make column headers circular
   currentColumnHeader->right = root;
   root->left = currentColumnHeader;
@@ -202,15 +187,14 @@ Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
 
     // Go through all columns
     for (int32_t columnIndex = 0; columnIndex < totalColumns; columnIndex++) {
-      const int32_t matrixRowId = matrix.getData(rowIndex, columnIndex);
-      if (matrixRowId >= 0) {
+      if (matrix.getCell(rowIndex, columnIndex)) {
         // Go to the last existing node of the column, starting from the column header
         std::shared_ptr<Node> lastColumnNode = currentColumnHeader;
         while (lastColumnNode->down) {
           lastColumnNode = lastColumnNode->down;
         }
         // End of column reached, create new node
-        std::shared_ptr<Node> newNode = std::make_shared<Node>(matrixRowId, columnIndex);
+        std::shared_ptr<Node> newNode = std::make_shared<Node>(rowIndex, columnIndex);
         // If it's the first one of the current row, store a reference to it
         if (!firstRowNode) {
           firstRowNode = newNode;
@@ -411,25 +395,37 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
 }
 
 bool Solver::isMatrixSolvable(const SparseCooordinateMatrix& matrix) {
-
+  // TODO: this function should be part of the SparseCoordinateMatrix class
   const int32_t rowAmount = matrix.getRowsAmount();
   const int32_t columnAmount = matrix.getColumnsAmount();
 
-  // Matrix is notsolvable if any of the primary columns is empty
+  // Matrix is not solvable if all coloumns are secondary
+  bool allSecondary = true;
   for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
-    bool allNegative = true;
-    for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
-      if (!matrix.isColumnPrimary(columnIndex)) {
-        allNegative = false;
-      }
-      if (matrix.getData(rowIndex, columnIndex) >= 0) {
-        allNegative = false;
-      }
+    if (matrix.isColumnPrimary(columnIndex)) {
+      allSecondary = false;
     }
-    if (allNegative) {
-      std::cout << "Cannot solve matrix, one of the primary columns contains all zeros! (the one at index "
-                << columnIndex << ")" << std::endl;
-      return false;
+  }
+  if (allSecondary) {
+    std::cout << "Cannot solve matrix, all columns are secondary" << std::endl;
+    return false;
+  }
+
+  // Matrix is not solvable if any of the primary columns is empty
+  for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
+    if (matrix.isColumnPrimary(columnIndex)) {
+      bool allNotSet = true;
+      for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
+        if (matrix.getCell(rowIndex, columnIndex)) {
+          allNotSet = false;
+          break;
+        }
+      }
+      if (allNotSet) {
+        std::cout << "Cannot solve matrix, one of the primary columns contains only unset cells! (the one at index "
+                  << columnIndex << ")" << std::endl;
+        return false;
+      }
     }
   }
   return true;

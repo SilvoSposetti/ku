@@ -16,21 +16,23 @@ int32_t SparseCooordinateMatrix::getRowsAmount() const {
 }
 
 void SparseCooordinateMatrix::setColumnSecondary(int32_t columnIndex) {
-  if (0 <= columnIndex && columnIndex < columns.size()) {
+  if (0 <= columnIndex && columnIndex < columnsAmount) {
     columns[columnIndex].isColumnPrimary = false;
   }
 }
 
 bool SparseCooordinateMatrix::isColumnPrimary(int32_t columnIndex) const {
-  if (0 <= columnIndex && columnIndex < columns.size()) {
+  if (0 <= columnIndex && columnIndex < columnsAmount) {
     return columns[columnIndex].isColumnPrimary;
   }
   return false;
 }
 
-bool SparseCooordinateMatrix::setData(int32_t rowIndex, int32_t columnIndex, int32_t data) {
+bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, bool data) {
   // Do not insert if the cell is outside of the matrix range
-  if (0 > rowIndex || rowIndex > rowsAmount - 1 || 0 > columnIndex || columnIndex > columnsAmount - 1) {
+  const bool isWithinRange =
+      (0 <= rowIndex && rowIndex < rowsAmount) && (0 <= columnIndex && columnIndex < columnsAmount);
+  if (!isWithinRange) {
     return false;
   }
 
@@ -58,10 +60,10 @@ bool SparseCooordinateMatrix::setData(int32_t rowIndex, int32_t columnIndex, int
   return true;
 }
 
-int32_t SparseCooordinateMatrix::getData(int32_t rowIndex, int32_t columnIndex) const {
+bool SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) const {
   // Return 0 when the indices are not valid
   if (0 > rowIndex || rowIndex > rowsAmount - 1 || 0 > columnIndex || columnIndex > columnsAmount - 1) {
-    return -1;
+    return false;
   }
   // Retrieve value
   const auto& columnElements = columns[columnIndex].elements;
@@ -70,7 +72,7 @@ int32_t SparseCooordinateMatrix::getData(int32_t rowIndex, int32_t columnIndex) 
       return cell.value;
     }
   }
-  return -1;
+  return false;
 }
 
 bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {

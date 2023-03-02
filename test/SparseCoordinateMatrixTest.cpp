@@ -7,20 +7,20 @@ TEST_CASE("SparseCoordinateMatrixTest") {
 
   SUBCASE("Basic Usage") {
     // Create & fill
-    const std::vector<std::vector<int32_t>> matrix = {
-        {11, 0, 13, 0, 0, 0},
-        {21, 22, 0, 24, 0, 0},
-        {0, 32, 33, 0, 0, 0},
-        {0, 0, 43, 44, 0, 46},
-        {0, 0, 0, 0, 0, 0},
-        {61, 62, 0, 0, 0, 66},
+    const std::vector<std::vector<bool>> matrix = {
+        {true, false, true, false, false, false},
+        {true, true, false, true, false, false},
+        {false, true, true, false, false, false},
+        {false, false, true, true, false, true},
+        {false, false, false, false, false, false},
+        {true, true, false, false, false, true},
     };
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
     SparseCooordinateMatrix sparseMatrix(rows, columns);
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        CHECK(sparseMatrix.setData(i, j, matrix[i][j]));
+        CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
       }
     }
     CHECK(sparseMatrix.getRowsAmount() == rows);
@@ -37,44 +37,42 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     CHECK(sparseMatrix.isColumnPrimary(5));
 
     // Cannot set data outside of matrix size
-    CHECK_FALSE(sparseMatrix.setData(rows, 0, 25));
-    CHECK_FALSE(sparseMatrix.setData(0, columns + 25, 25));
-    CHECK_FALSE(sparseMatrix.setData(-5, 0, 25));
-    CHECK_FALSE(sparseMatrix.setData(0, -1, 25));
+    CHECK_FALSE(sparseMatrix.setCell(rows, 0, 25));
+    CHECK_FALSE(sparseMatrix.setCell(0, columns + 25, 25));
+    CHECK_FALSE(sparseMatrix.setCell(-5, 0, 25));
+    CHECK_FALSE(sparseMatrix.setCell(0, -1, 25));
 
-    // Retrieving element outside of the sparse matrix returns 0
-    CHECK(sparseMatrix.getData(-1, 0) == 0);
-    CHECK(sparseMatrix.getData(0, -1) == 0);
-    CHECK(sparseMatrix.getData(rows, 0) == 0);
-    CHECK(sparseMatrix.getData(0, columns) == 0);
+    // Retrieving element outside of the sparse matrix returns false
+    CHECK_FALSE(sparseMatrix.getCell(-1, 0));
+    CHECK_FALSE(sparseMatrix.getCell(0, -1));
+    CHECK_FALSE(sparseMatrix.getCell(rows, 0));
+    CHECK_FALSE(sparseMatrix.getCell(0, columns));
 
     // Get matrix elements one by one and confirm that they match the source matrix
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        CHECK(matrix.at(i).at(j) == sparseMatrix.getData(i, j));
+        CHECK(matrix.at(i).at(j) == sparseMatrix.getCell(i, j));
       }
     }
   }
 
   SUBCASE("Reorder") {
     // Create & fill
-    const std::vector<std::vector<int32_t>> matrix = {
-        {0, 1, 2, 3, 4, 5},
-        {11, 0, 13, 0, 0, 0},
-        {21, 22, 0, 24, 0, 0},
-        {0, 32, 33, 0, 0, 0},
-        {0, 0, 43, 44, 0, 46},
-        {0, 0, 0, 0, 0, 0},
-        {61, 62, 0, 0, 0, 66},
+    const std::vector<std::vector<bool>> matrix = {
+        {true, false, true, false, false, false},
+        {true, true, false, true, false, false},
+        {false, true, true, false, false, false},
+        {false, false, true, true, false, true},
+        {false, false, false, false, false, false},
+        {true, true, false, false, false, true},
     };
     const std::vector<std::vector<int32_t>> reorderedMatrix = {
-        {5, 3, 1, 2, 0, 4},
-        {0, 0, 0, 13, 11, 0},
-        {0, 24, 22, 0, 21, 0},
-        {0, 0, 32, 33, 0, 0},
-        {46, 44, 0, 43, 0, 0},
-        {0, 0, 0, 0, 0, 0},
-        {66, 0, 62, 0, 61, 0},
+        {false, false, false, true, true, false},
+        {false, true, true, false, true, false},
+        {false, false, true, true, false, false},
+        {true, true, false, true, false, false},
+        {false, false, false, false, false, false},
+        {true, false, true, false, true, false},
     };
 
     const std::vector<int32_t> newPermutation = {5, 3, 1, 2, 0, 4};
@@ -88,7 +86,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     SparseCooordinateMatrix sparseMatrix(rows, columns);
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        CHECK(sparseMatrix.setData(i, j, matrix[i][j]));
+        CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
       }
     }
 
@@ -104,7 +102,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     // Get reordered matrix elements one by one and confirm that they match the reordered matrix
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        CHECK(reorderedMatrix.at(i).at(j) == sparseMatrix.getData(i, j));
+        CHECK(reorderedMatrix.at(i).at(j) == sparseMatrix.getCell(i, j));
       }
     }
   }

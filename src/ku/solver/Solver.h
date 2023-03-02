@@ -59,12 +59,9 @@ private:
   /** Given a sparse matrix representation of the DLX-Matrix, constructs a matrix of Nodes to be used by the DLX
    * algorithm
    * @param matrix A sparse matrix representation of the one used by DLX
-   * @param constraints The set of constraints tha the board should satisfy
    * @return The root of the constructed matrix of Nodes
    */
-  static std::shared_ptr<Node>
-  createDancingLinksMatrix(const SparseCooordinateMatrix& matrix,
-                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  static std::shared_ptr<Node> createDancingLinksMatrix(const SparseCooordinateMatrix& matrix);
 
   /** Performs the actual search of solutions of DLX
    * @param root The root to the matrix of Nodes used by DLX
