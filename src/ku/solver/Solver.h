@@ -99,8 +99,4 @@ private:
   /** Picks the smallest column reachable from the root. Smallest meaning the one with less Nodes under it
    */
   static std::shared_ptr<Node> chooseSmallestColumn(const std::shared_ptr<Node>& root);
-
-  /** Checks if a given sparse matrix represents a valid Exact Cover problem to be fed to DLX
-   */
-  static bool isMatrixSolvable(const SparseCooordinateMatrix& matrix);
 };

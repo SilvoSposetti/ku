@@ -75,6 +75,33 @@ bool SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) con
   return false;
 }
 
+bool SparseCooordinateMatrix::isSolvableByDlx() const {
+
+  // Matrix is not solvable if all coloumns are secondary
+  bool allSecondary = true;
+  for (const auto& column : columns) {
+    if (column.isColumnPrimary) {
+      allSecondary = false;
+    }
+  }
+  if (allSecondary) {
+    std::cout << "Cannot solve matrix, all columns are secondary" << std::endl;
+    return false;
+  }
+
+  // Matrix is not solvable if any of the primary columns is empty
+  bool someColumnsAreEmpty = false;
+  int32_t columnIndex = 0;
+  for (const auto& column : columns) {
+    if (column.elements.size() == 0) {
+      std::cout << "Cannot solve matrix, one of the primary columns contains only unset cells! (the one at index "
+                << columnIndex << ")" << std::endl;
+      someColumnsAreEmpty = true;
+    }
+  }
+  return someColumnsAreEmpty;
+}
+
 bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {
   // Permutation's size must be the same as the amount of columns in the matrix
   if (static_cast<int32_t>(permutation.size()) != columnsAmount) {
@@ -96,7 +123,7 @@ bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permuta
   // Re-order matrix in-place
   std::vector<bool> isCorrectlyOrdered(columns.size(), false);
   // All elements left of index i (with i included) have been correctly ordered
-  for (int32_t i = 0; i < columns.size(); ++i) {
+  for (int32_t i = 0; i < columnsAmount; ++i) {
     if (isCorrectlyOrdered[i]) {
       continue;
     }

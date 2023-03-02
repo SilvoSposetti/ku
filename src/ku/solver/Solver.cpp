@@ -114,7 +114,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
   SparseCooordinateMatrix matrix = getDlxMatrix(board, constraints, randomGenerator);
 
   // Check that the matrix is valid
-  if (!isMatrixSolvable(matrix)) {
+  if (!matrix.isSolvableByDlx()) {
     return false;
   }
 
@@ -392,43 +392,6 @@ std::shared_ptr<Node> Solver::chooseSmallestColumn(const std::shared_ptr<Node>& 
     currentColumn = currentColumn->right;
   }
   return smallestColumn;
-}
-
-bool Solver::isMatrixSolvable(const SparseCooordinateMatrix& matrix) {
-  // TODO: this function should be part of the SparseCoordinateMatrix class
-  const int32_t rowAmount = matrix.getRowsAmount();
-  const int32_t columnAmount = matrix.getColumnsAmount();
-
-  // Matrix is not solvable if all coloumns are secondary
-  bool allSecondary = true;
-  for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
-    if (matrix.isColumnPrimary(columnIndex)) {
-      allSecondary = false;
-    }
-  }
-  if (allSecondary) {
-    std::cout << "Cannot solve matrix, all columns are secondary" << std::endl;
-    return false;
-  }
-
-  // Matrix is not solvable if any of the primary columns is empty
-  for (int32_t columnIndex = 0; columnIndex < columnAmount; columnIndex++) {
-    if (matrix.isColumnPrimary(columnIndex)) {
-      bool allNotSet = true;
-      for (int32_t rowIndex = 0; rowIndex < rowAmount; rowIndex++) {
-        if (matrix.getCell(rowIndex, columnIndex)) {
-          allNotSet = false;
-          break;
-        }
-      }
-      if (allNotSet) {
-        std::cout << "Cannot solve matrix, one of the primary columns contains only unset cells! (the one at index "
-                  << columnIndex << ")" << std::endl;
-        return false;
-      }
-    }
-  }
-  return true;
 }
 
 bool Solver::isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
