@@ -1,13 +1,16 @@
 #pragma once
 #include "../utilities/Utilities.h"
 
+#include <unordered_map>
+
 /** The data contained in a column of a sparse coordinate matrix
  */
 struct SparseCooordinateColumn {
   /// Whether the column is primary
   bool isColumnPrimary = true;
-  /// A set of all the non-zero elements of the column
-  std::set<int32_t> elements;
+  /// A map of all the non-negative elements of the column. Key is the sparse matrix index, value is the data stored in
+  /// that index
+  std::unordered_map<int32_t, int32_t> elements;
 };
 
 /** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
@@ -42,20 +45,20 @@ public:
    */
   bool isColumnPrimary(int32_t columnIndex) const;
 
-  /** Sets data into a specific location in the matrix
+  /** Sets data into a specific location in the matrix. Setting a negative value will mark the cell as empty
    * @param rowIndex The row index of the insertion location
    * @param columnIndex The column index of the insertion location
-   * @param value The value for the cell. I.e. whether the location contains a 0 (false) or 1 (true)
+   * @param data The data for the cell.
    * @return Whether insertion was successful
    */
-  bool setCell(int32_t rowIndex, int32_t columnIndex, bool data);
+  bool setCell(int32_t rowIndex, int32_t columnIndex, int32_t data);
 
-  /** Gets data from a specific location in the matrix. Returns 0 if the
+  /** Gets data from a specific location in the matrix. Returns -1 if the location is outside the matrix
    * @param rowIndex The row index of the insertion location
    * @param columnIndex The column index of the insertion location
-   * @return Whether the cell contains a 1 (true) or a zero (false)
+   * @return The data stored in the cell position.
    */
-  bool getCell(int32_t rowIndex, int32_t columnIndex) const;
+  int32_t getCell(int32_t rowIndex, int32_t columnIndex) const;
 
   /** Computes whether the matrix might be solvable by a DLX algorithm. This is the case when the matrix contains olny
    * secondary columns, or when any primary column has no elements

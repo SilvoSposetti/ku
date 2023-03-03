@@ -28,7 +28,7 @@ bool SparseCooordinateMatrix::isColumnPrimary(int32_t columnIndex) const {
   return false;
 }
 
-bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, bool data) {
+bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, int32_t data) {
   // Do not insert if the cell is outside of the matrix range
   const bool isWithinRange =
       (0 <= rowIndex && rowIndex < rowsAmount) && (0 <= columnIndex && columnIndex < columnsAmount);
@@ -36,9 +36,9 @@ bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, boo
     return false;
   }
 
-  if (data == true) {
+  if (data >= 0) {
     // Add the element to the set
-    columns[columnIndex].elements.insert(rowIndex);
+    columns[columnIndex].elements.insert(std::make_pair(rowIndex, data));
   } else {
     columns[columnIndex].elements.erase(rowIndex);
   }
@@ -46,14 +46,19 @@ bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, boo
   return true;
 }
 
-bool SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) const {
-  // Return 0 when the indices are not valid
+int32_t SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) const {
+  // Return the empty cell when the indices are not valid
   if (0 > rowIndex || rowIndex > rowsAmount - 1 || 0 > columnIndex || columnIndex > columnsAmount - 1) {
-    return false;
+    return -1;
   }
   // Retrieve value
   const auto& elements = columns[columnIndex].elements;
-  return elements.find(rowIndex) != elements.end();
+  const auto& foundElement = elements.find(rowIndex);
+  if (foundElement != elements.end()) {
+    return foundElement->second;
+  }
+
+  return -1;
 }
 
 bool SparseCooordinateMatrix::isSolvableByDlx() const {
@@ -66,21 +71,32 @@ bool SparseCooordinateMatrix::isSolvableByDlx() const {
     }
   }
   if (allSecondary) {
-    std::cout << "Cannot solve matrix, all columns are secondary" << std::endl;
+    std::cout << "Matrix not solvable: all columns are secondary" << std::endl;
     return false;
   }
 
   // Matrix is not solvable if any of the primary columns is empty
-  bool anyPrimaryColumnIsEmpty = false;
   int32_t columnIndex = 0;
+  std::vector<int32_t> emptyPrimiaryColumnsIndices;
   for (const auto& column : columns) {
     if (column.isColumnPrimary && column.elements.size() == 0) {
-      std::cout << "Cannot solve matrix, one of the primary columns contains only unset cells! (the one at index "
-                << columnIndex << ")" << std::endl;
-      anyPrimaryColumnIsEmpty = true;
+      emptyPrimiaryColumnsIndices.emplace_back(columnIndex);
     }
+    columnIndex++;
   }
-  return !anyPrimaryColumnIsEmpty;
+  if (!emptyPrimiaryColumnsIndices.empty()) {
+    std::string s = "[";
+    const int32_t size = emptyPrimiaryColumnsIndices.size();
+    for (int32_t i = 0; i < size; i++) {
+      s += std::to_string(emptyPrimiaryColumnsIndices[i]);
+      if (i != size - 1)
+        s += ", ";
+    }
+    s += "]";
+    std::cout << "Matrix not solvable: the following primary columns indices are empty " + s << std::endl;
+  }
+
+  return emptyPrimiaryColumnsIndices.empty();
 }
 
 bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {

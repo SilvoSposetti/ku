@@ -2,18 +2,19 @@
 #include "solver/SparseCoordinateMatrix.h"
 
 #include <doctest.h>
+#include <unordered_map>
 
 TEST_CASE("SparseCoordinateMatrixTest") {
 
   SUBCASE("Basic Usage") {
     // Create & fill
-    const std::vector<std::vector<bool>> matrix = {
-        {true, false, true, false, false, false},
-        {true, true, false, true, false, false},
-        {false, true, true, false, false, false},
-        {false, false, true, true, false, true},
-        {false, false, false, false, false, false},
-        {true, true, false, false, false, true},
+    const std::vector<std::vector<int32_t>> matrix = {
+        {11, -1, 13, -1, -1, -1},
+        {21, 22, -1, 24, -1, -1},
+        {-1, 32, 33, -1, -1, -1},
+        {-1, -1, 43, 44, -1, 46},
+        {-1, -1, -1, -1, -1, -1},
+        {61, 62, -1, -1, -1, 66},
     };
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
@@ -33,10 +34,10 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     CHECK_FALSE(sparseMatrix.setCell(0, -1, 25));
 
     // Retrieving element outside of the sparse matrix returns false
-    CHECK_FALSE(sparseMatrix.getCell(-1, 0));
-    CHECK_FALSE(sparseMatrix.getCell(0, -1));
-    CHECK_FALSE(sparseMatrix.getCell(rows, 0));
-    CHECK_FALSE(sparseMatrix.getCell(0, columns));
+    CHECK(sparseMatrix.getCell(-1, 0) < 0);
+    CHECK(sparseMatrix.getCell(0, -1) < 0);
+    CHECK(sparseMatrix.getCell(rows, 0) < 0);
+    CHECK(sparseMatrix.getCell(0, columns) < 0);
 
     // Get matrix elements one by one and confirm that they match the source matrix
     for (int i = 0; i < rows; i++) {
@@ -45,15 +46,20 @@ TEST_CASE("SparseCoordinateMatrixTest") {
       }
     }
 
-    // Modify sparse matrix by toggling some specific cells
+    // Modify sparse matrix by toggling the data in some specific cells
     const std::vector<std::pair<int32_t, int32_t>> indices = {{1, 5}, {2, 2}, {3, 2}, {3, 0}, {4, 1}};
     for (const auto& [i, j] : indices) {
-      CHECK(sparseMatrix.setCell(i, j, !sparseMatrix.getCell(i, j)));
+      const int32_t value = matrix[i][j];
+      int32_t newValue = -1;
+      if (value < 0) {
+        newValue = 5;
+      }
+      CHECK(sparseMatrix.setCell(i, j, newValue));
       CHECK(sparseMatrix.getCell(i, j) != matrix[i][j]);
     }
     // Re-set them back and check again the whole matrix
     for (const auto& [i, j] : indices) {
-      CHECK(sparseMatrix.setCell(i, j, !sparseMatrix.getCell(i, j)));
+      CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
     }
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
@@ -64,21 +70,23 @@ TEST_CASE("SparseCoordinateMatrixTest") {
 
   SUBCASE("Reorder") {
     // Create & fill
-    const std::vector<std::vector<bool>> matrix = {
-        {true, false, true, false, false, false},
-        {true, true, false, true, false, false},
-        {false, true, true, false, false, false},
-        {false, false, true, true, false, true},
-        {false, false, false, false, false, false},
-        {true, true, false, false, false, true},
+    const std::vector<std::vector<int32_t>> matrix = {
+        {0, 1, 2, 3, 4, 5},
+        {11, -1, 13, -1, -1, -1},
+        {21, 22, -1, 24, -1, -1},
+        {-1, 32, 33, -1, -1, -1},
+        {-1, -1, 43, 44, -1, 46},
+        {-1, -1, -1, -1, -1, -1},
+        {61, 62, -1, -1, -1, 66},
     };
     const std::vector<std::vector<int32_t>> reorderedMatrix = {
-        {false, false, false, true, true, false},
-        {false, true, true, false, true, false},
-        {false, false, true, true, false, false},
-        {true, true, false, true, false, false},
-        {false, false, false, false, false, false},
-        {true, false, true, false, true, false},
+        {5, 3, 1, 2, 0, 4},
+        {-1, -1, -1, 13, 11, -1},
+        {-1, 24, 22, -1, 21, -1},
+        {-1, -1, 32, 33, -1, -1},
+        {46, 44, -1, 43, -1, -1},
+        {-1, -1, -1, -1, -1, -1},
+        {66, -1, 62, -1, 61, -1},
     };
 
     const std::vector<int32_t> newPermutation = {5, 3, 1, 2, 0, 4};
@@ -115,13 +123,13 @@ TEST_CASE("SparseCoordinateMatrixTest") {
 
   SUBCASE("Dlx-Solvability") {
     // Create & fill. Note that there's no column with all cells unset
-    const std::vector<std::vector<bool>> matrix = {
-        {true, false, true, false, false, false},
-        {true, true, false, true, false, false},
-        {false, true, true, false, false, false},
-        {false, false, true, true, true, true},
-        {false, false, false, false, false, false},
-        {true, true, false, false, false, true},
+    const std::vector<std::vector<int32_t>> matrix = {
+        {11, -1, 13, -1, -1, -1},
+        {21, 22, -1, 24, -1, -1},
+        {-1, 32, 33, -1, 5, -1},
+        {-1, -1, 43, 44, -1, 46},
+        {-1, -1, -1, -1, -1, -1},
+        {61, 62, -1, -1, -1, 66},
     };
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
@@ -157,7 +165,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     CHECK(sparseMatrix.isSolvableByDlx());
 
     // Set the only cell of column index 4 of the matrix to false
-    sparseMatrix.setCell(3, 4, false);
+    sparseMatrix.setCell(2, 4, -1);
     // Now matrix is unsolvable
     CHECK_FALSE(sparseMatrix.isSolvableByDlx());
 

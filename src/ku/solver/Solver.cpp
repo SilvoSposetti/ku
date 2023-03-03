@@ -92,7 +92,9 @@ SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>
               }
               if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
                 // Store matrix cell ID
-                matrix.setCell(matrixRowCounter, matrixColumnCounter, true);
+                matrix.setCell(matrixRowCounter,
+                               matrixColumnCounter,
+                               boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -140,7 +142,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
     if (pickedSolution.size() == TOTAL_DIGITS) {
       // Transform found solution to the sudoku board
       for (const auto& node : pickedSolution) { // Pick the first solution
-        // The node itself stores its original DLX-matrix location (row & column)
+        // The node itself stores the flattened (all-zeroes rows removed) row indices
         const int32_t matrixRow = node->matrixRow;
         // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
         // but the process here is reversed
@@ -187,14 +189,15 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMa
 
     // Go through all columns
     for (int32_t columnIndex = 0; columnIndex < totalColumns; columnIndex++) {
-      if (matrix.getCell(rowIndex, columnIndex)) {
+      const int32_t data = matrix.getCell(rowIndex, columnIndex);
+      if (data >= 0) {
         // Go to the last existing node of the column, starting from the column header
         std::shared_ptr<Node> lastColumnNode = currentColumnHeader;
         while (lastColumnNode->down) {
           lastColumnNode = lastColumnNode->down;
         }
         // End of column reached, create new node
-        std::shared_ptr<Node> newNode = std::make_shared<Node>(rowIndex, columnIndex);
+        std::shared_ptr<Node> newNode = std::make_shared<Node>(data, columnIndex);
         // If it's the first one of the current row, store a reference to it
         if (!firstRowNode) {
           firstRowNode = newNode;
