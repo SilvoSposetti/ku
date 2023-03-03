@@ -143,12 +143,12 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
       // Transform found solution to the sudoku board
       for (const auto& node : pickedSolution) { // Pick the first solution
         // The node itself stores the flattened (all-zeroes rows removed) row indices
-        const int32_t matrixRow = node->matrixRow;
+        const int32_t packedData = node->data;
         // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
         // but the process here is reversed
-        const int32_t boardRow = matrixRow / TOTAL_DIGITS;
-        const int32_t boardColumn = (matrixRow / MAX_DIGIT) % MAX_DIGIT;
-        const Sudo actualDigit = static_cast<Sudo>((matrixRow % MAX_DIGIT) + 1);
+        const int32_t boardRow = packedData / TOTAL_DIGITS;
+        const int32_t boardColumn = (packedData / MAX_DIGIT) % MAX_DIGIT;
+        const Sudo actualDigit = static_cast<Sudo>((packedData % MAX_DIGIT) + 1);
         board[boardRow][boardColumn] = actualDigit;
       }
       return true;
@@ -197,7 +197,7 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMa
           lastColumnNode = lastColumnNode->down;
         }
         // End of column reached, create new node
-        std::shared_ptr<Node> newNode = std::make_shared<Node>(data, columnIndex);
+        std::shared_ptr<Node> newNode = std::make_shared<Node>(data);
         // If it's the first one of the current row, store a reference to it
         if (!firstRowNode) {
           firstRowNode = newNode;

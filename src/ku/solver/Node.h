@@ -13,9 +13,8 @@ public:
       : name(std::move(nodeName)){};
   /** Constructor
    */
-  Node(int32_t row, int32_t column)
-      : matrixRow(row)
-      , matrixColumn(column){};
+  Node(int32_t data)
+      : data(data){};
 
   /// Whether the header is primary
   bool isPrimary = true;
@@ -24,9 +23,7 @@ public:
   /// Name of the header
   std::string name;
   /// The DLX-matrix row index of the node
-  int32_t matrixRow = -1;
-  /// The DLX-matrix column index of the node
-  int32_t matrixColumn = -1;
+  int32_t data = -1;
   /// A pointer to the node on the left
   std::shared_ptr<Node> left;
   /// A pointer to the node on the right
