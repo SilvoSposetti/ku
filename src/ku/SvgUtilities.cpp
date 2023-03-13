@@ -249,7 +249,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCooordinateMatrix& matrix,
     std::string constraintCells;
     for (int32_t i = 0; i < rowsAmount; i++) {
       for (int32_t j = startColumn; j < endColumn; j++) {
-        const bool isCellSet = matrix.getCell(i, j);
+        const bool isCellSet = matrix.getCell(i, j) >= 0;
         if (isCellSet) {
           const double posX = originX + constraintCounter * constraintSeparation + j * dlxCellSize;
           const double posY = originY + i * dlxCellSize;
@@ -281,7 +281,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCooordinateMatrix& matrix,
   int32_t currentColumn = 0;
 
   for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix.getCell(i, currentColumn) && currentColumn < columnsAmount) {
+    if (matrix.getCell(i, currentColumn) >= 0 && currentColumn < columnsAmount) {
       const double y = originY + dlxCellSize * i;
       horizontalLines += paperUnitsLine(startX, y, endX, y);
       currentColumn++;
