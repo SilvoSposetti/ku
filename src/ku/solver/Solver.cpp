@@ -165,7 +165,7 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMa
   root->header = root;
   std::shared_ptr<Node> currentColumnHeader = root;
 
-  // First create all column headers
+  // First create all column headers and connect them to each other
   for (int columnId = 0; columnId < totalColumns; columnId++) {
     std::shared_ptr<Node> newHeader = std::make_shared<Node>(std::to_string(columnId));
     newHeader->isPrimary = matrix.isColumnPrimary(columnId);
@@ -240,25 +240,20 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMa
     currentColumnHeader = currentColumnHeader->right;
   }
 
-  // Handle primary and secondary columns
+  // Unlink secondary column headers
   currentColumnHeader = root->right;
-  std::shared_ptr<Node> lastPrimaryColumn = root;
-  // Go through all column headers
   while (currentColumnHeader != root) {
-    const std::shared_ptr<Node> nextColumnHeader = currentColumnHeader->right;
-    if (!nextColumnHeader->isPrimary) {
-      // This is a secondary column, set its left and right pointers to itself
-      currentColumnHeader->right = currentColumnHeader;
-      currentColumnHeader->left = currentColumnHeader;
-    } else {
-      // Make the primary columns be circular remembering which one is the last one to skip regions where there are
-      // secondary columns
-      lastPrimaryColumn->right = currentColumnHeader;
-      currentColumnHeader->left = lastPrimaryColumn;
-      lastPrimaryColumn = currentColumnHeader;
-    }
+    const auto nextNode = currentColumnHeader->right;
 
-    currentColumnHeader = nextColumnHeader;
+    if (!currentColumnHeader->isPrimary) {
+      // Unlink from header list
+      currentColumnHeader->right->left = currentColumnHeader->left;
+      currentColumnHeader->left->right = currentColumnHeader->right;
+      // Set left and right pointers to to itself
+      currentColumnHeader->left = currentColumnHeader;
+      currentColumnHeader->right = currentColumnHeader;
+    }
+    currentColumnHeader = nextNode;
   }
 
   return root;
