@@ -4,7 +4,6 @@
 
 #include <iostream>
 int main() {
-  // ConstraintType constraints = Constraint::getSudokuConstraints();
   ConstraintType constraints = ConstraintType::SUDOKU_CELL;
   constraints = constraints | ConstraintType::SUDOKU_ROW;
   constraints = constraints | ConstraintType::SUDOKU_COLUMN;

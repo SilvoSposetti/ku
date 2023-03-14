@@ -21,9 +21,8 @@ enum class ConstraintType : uint64_t {
   ANTI_KNIGHT_TORUS = 1 << 13,
   DISJOINT_BOXES = 1 << 14,
   ASTERISK = 1 << 15,
-  // When adding a constraint, update:
-  // 1. Constraint::ALL_CONSTRAINTS set
-  // 2. Constraint::getConstraintName()
+  // When adding a constraint, update below:
+  // Constraint::getConstraintNameString()
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
@@ -35,25 +34,6 @@ inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
 }
 
 namespace Constraint {
-const std::unordered_set<ConstraintType> ALL_CONSTRAINTS_SET = {
-    ConstraintType::SUDOKU_CELL,
-    ConstraintType::SUDOKU_ROW,
-    ConstraintType::SUDOKU_COLUMN,
-    ConstraintType::SUDOKU_BOX,
-    ConstraintType::POSITIVE_DIAGONAL,
-    ConstraintType::POSITIVE_DIAGONAL_EVEN,
-    ConstraintType::POSITIVE_DIAGONAL_ODD,
-    ConstraintType::NEGATIVE_DIAGONAL,
-    ConstraintType::NEGATIVE_DIAGONAL_EVEN,
-    ConstraintType::NEGATIVE_DIAGONAL_ODD,
-    ConstraintType::ANTI_KING,
-    ConstraintType::ANTI_KING_TORUS,
-    ConstraintType::ANTI_KNIGHT,
-    ConstraintType::ANTI_KNIGHT_TORUS,
-    ConstraintType::DISJOINT_BOXES,
-    ConstraintType::ASTERISK,
-};
-
 inline ConstraintType getSudokuConstraints() {
   return ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_COLUMN |
          ConstraintType::SUDOKU_BOX;

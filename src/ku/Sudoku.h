@@ -68,7 +68,6 @@ public:
    */
   void printBoard();
 
-private:
   /** Constructs a vector of built constraints according to the given constraint types
    * @param constraintTypes Bitflag of the constraints that should be constructed
    * @return A vector of constraints

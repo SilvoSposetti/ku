@@ -1,6 +1,6 @@
 test_sources = files(
   'DoctestDefine.cpp',
-  'SingleConstraintsTest.cpp',
+  'GenerateSolutionTest.cpp',
   'SparseCoordinateMatrixTest.cpp',
   'RandomGeneratorTest.cpp',
 )
