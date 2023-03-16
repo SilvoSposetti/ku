@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <atomic>
-#include <chrono>
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -82,34 +81,3 @@ unpackId(int32_t packedId, int32_t xAmount, int32_t yAmount, int32_t zAmount) {
   const int32_t third = packedId % zAmount; //  0 <= z < zAmount
   return std::make_tuple(first, second, third);
 }
-
-class Timer {
-public:
-  Timer()
-      : startTime(highResolutionClock::now()) {}
-  void reset() {
-    startTime = highResolutionClock::now();
-  }
-  double elapsed() const {
-    return std::chrono::duration_cast<seconds>(highResolutionClock::now() - startTime).count();
-  }
-  std::string elapsedReadable() const {
-    const double seconds = elapsed();
-    const double minutes = std::floor(seconds / 60.0);
-    std::string minutesString = std::to_string(static_cast<int32_t>(minutes));
-    minutesString = minutesString.size() == 1 ? "0" + minutesString : minutesString;
-    std::string secondsString = std::to_string(seconds - minutes * 60);
-    secondsString = seconds < 10 ? "0" + secondsString : secondsString;
-    return minutesString + ":" + secondsString;
-  }
-
-  void printElapsed(const std::string& message) const {
-    const std::string elapsedString = elapsedReadable();
-    std::cout << message << " [" << elapsedString << "]" << std::endl;
-  }
-
-private:
-  typedef std::chrono::high_resolution_clock highResolutionClock;
-  typedef std::chrono::duration<double, std::ratio<1>> seconds;
-  std::chrono::time_point<highResolutionClock> startTime;
-};

@@ -2,6 +2,7 @@
 
 #include "MaskUtilities.h"
 #include "solver/Solver.h"
+#include "utilities/Timer.h"
 
 std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
                                         SymmetryType symmetryType,

@@ -26,4 +26,5 @@ ku_sources = files(
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
   'solver/SparseCoordinateMatrix.cpp',
+  'utilities/Timer.cpp',
 )

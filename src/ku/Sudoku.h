@@ -75,7 +75,7 @@ public:
   static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);
 
 private:
-  /// The name  
+  /// The name
   const std::string name;
   /// How many givens the sudoku has
   const int32_t givenDigitsAmount;
