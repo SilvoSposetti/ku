@@ -2,7 +2,7 @@
 
 #include "AbstractConstraint.h"
 
-/** A simple factoy pattern to create constraints
+/** A simple factory pattern to create constraints
  */
 class ConstraintFactory {
 public:

@@ -18,7 +18,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     };
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
-    SparseCooordinateMatrix sparseMatrix(rows, columns);
+    SparseCoordinateMatrix sparseMatrix(rows, columns);
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
         CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
@@ -97,7 +97,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
 
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
-    SparseCooordinateMatrix sparseMatrix(rows, columns);
+    SparseCoordinateMatrix sparseMatrix(rows, columns);
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
         CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
@@ -133,7 +133,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     };
     const int32_t rows = matrix.size();
     const int32_t columns = matrix.at(0).size();
-    SparseCooordinateMatrix sparseMatrix(rows, columns);
+    SparseCoordinateMatrix sparseMatrix(rows, columns);
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
         CHECK(sparseMatrix.setCell(i, j, matrix[i][j]));
@@ -144,7 +144,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
 
     {
       // Sparse matrix is not solvable by DLX if all columns are secondary
-      SparseCooordinateMatrix allSecondaryColumnsSparseMatrix = sparseMatrix;
+      SparseCoordinateMatrix allSecondaryColumnsSparseMatrix = sparseMatrix;
       for (int j = 0; j < columns; j++) {
         allSecondaryColumnsSparseMatrix.setColumnSecondary(j);
       }

@@ -57,7 +57,7 @@ public:
   virtual bool getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const = 0;
 
   /** Computes the result using getDlxConstraintColumnsAmount() and isColumnPrimary()
-   * @return Wheter the constraint specifies only secondary columns
+   * @return Whether the constraint specifies only secondary columns
    */
   bool isSecondaryColumnsOnly() const;
 

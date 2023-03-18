@@ -49,7 +49,7 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
   return Solver::dlx(board, constraints, true);
 }
 
-SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                              std::shared_ptr<RandomGenerator> randomGenerator) {
   // To initialize the matrix with the correct size: count how many digits are given
@@ -72,7 +72,7 @@ SparseCooordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>
   }
 
   // Initialize matrix with correct size
-  SparseCooordinateMatrix matrix(totalRows, totalColumns);
+  SparseCoordinateMatrix matrix(totalRows, totalColumns);
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
 
@@ -113,7 +113,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
                  bool checkForUniqueness,
                  std::shared_ptr<RandomGenerator> randomGenerator) {
   // Reduce problem: Sudoku->DLX
-  SparseCooordinateMatrix matrix = getDlxMatrix(board, constraints, randomGenerator);
+  SparseCoordinateMatrix matrix = getDlxMatrix(board, constraints, randomGenerator);
 
   // Check that the matrix is valid
   if (!matrix.isSolvableByDlx()) {
@@ -157,7 +157,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
   return false;
 }
 
-std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMatrix& matrix) {
+std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCoordinateMatrix& matrix) {
   const int32_t totalRows = matrix.getRowsAmount();
   const int32_t totalColumns = matrix.getColumnsAmount();
 
@@ -261,7 +261,7 @@ std::shared_ptr<Node> Solver::createDancingLinksMatrix(const SparseCooordinateMa
 
 std::vector<std::vector<std::shared_ptr<Node>>> Solver::searchDlx(const std::shared_ptr<Node>& root,
                                                                   bool checkForUniqueness) {
-  // The solution holder is modified by the search, everytime it reaches 81 elements a different solution
+  // The solution holder is modified by the search, every time it reaches 81 elements a different solution
   // is found by the algorithm
   std::vector<std::shared_ptr<Node>> solutionHolder;
   // The solutions are going to contain all different 81-sized solutions found

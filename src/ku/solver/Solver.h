@@ -32,7 +32,7 @@ public:
    * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A sparse matrix representation of the one used by DLX
    */
-  static SparseCooordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+  static SparseCoordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                               std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
@@ -61,7 +61,7 @@ private:
    * @param matrix A sparse matrix representation of the one used by DLX
    * @return The root of the constructed matrix of Nodes
    */
-  static std::shared_ptr<Node> createDancingLinksMatrix(const SparseCooordinateMatrix& matrix);
+  static std::shared_ptr<Node> createDancingLinksMatrix(const SparseCoordinateMatrix& matrix);
 
   /** Performs the actual search of solutions of DLX
    * @param root The root to the matrix of Nodes used by DLX

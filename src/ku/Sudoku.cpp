@@ -102,7 +102,7 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
   // Footer
   svgContent += SvgUtilities::getSvgFooter();
 
-  // Stram it to file, then save and close
+  // Stream it to file, then save and close
   outfile << svgContent;
   outfile.close();
 }

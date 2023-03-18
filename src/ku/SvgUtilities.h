@@ -64,7 +64,7 @@ public:
 
   static std::string getFontSize(int fontSize);
 
-  static std::string dlxMatrix(const SparseCooordinateMatrix& dlxMatrix,
+  static std::string dlxMatrix(const SparseCoordinateMatrix& dlxMatrix,
                                const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo);
 
   static std::string getNoFillStroke(double strokeWidth);

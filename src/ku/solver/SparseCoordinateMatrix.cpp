@@ -2,33 +2,33 @@
 
 #include <unordered_set>
 
-SparseCooordinateMatrix::SparseCooordinateMatrix(int32_t totalRows, int32_t totalColumns)
+SparseCoordinateMatrix::SparseCoordinateMatrix(int32_t totalRows, int32_t totalColumns)
     : columns(totalColumns)
     , columnsAmount(totalColumns)
     , rowsAmount(totalRows) {}
 
-int32_t SparseCooordinateMatrix::getColumnsAmount() const {
+int32_t SparseCoordinateMatrix::getColumnsAmount() const {
   return columnsAmount;
 }
 
-int32_t SparseCooordinateMatrix::getRowsAmount() const {
+int32_t SparseCoordinateMatrix::getRowsAmount() const {
   return rowsAmount;
 }
 
-void SparseCooordinateMatrix::setColumnSecondary(int32_t columnIndex) {
+void SparseCoordinateMatrix::setColumnSecondary(int32_t columnIndex) {
   if (0 <= columnIndex && columnIndex < columnsAmount) {
     columns[columnIndex].isColumnPrimary = false;
   }
 }
 
-bool SparseCooordinateMatrix::isColumnPrimary(int32_t columnIndex) const {
+bool SparseCoordinateMatrix::isColumnPrimary(int32_t columnIndex) const {
   if (0 <= columnIndex && columnIndex < columnsAmount) {
     return columns[columnIndex].isColumnPrimary;
   }
   return false;
 }
 
-bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, int32_t data) {
+bool SparseCoordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, int32_t data) {
   // Do not insert if the cell is outside of the matrix range
   const bool isWithinRange =
       (0 <= rowIndex && rowIndex < rowsAmount) && (0 <= columnIndex && columnIndex < columnsAmount);
@@ -46,7 +46,7 @@ bool SparseCooordinateMatrix::setCell(int32_t rowIndex, int32_t columnIndex, int
   return true;
 }
 
-int32_t SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) const {
+int32_t SparseCoordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) const {
   // Return the empty cell when the indices are not valid
   if (0 > rowIndex || rowIndex > rowsAmount - 1 || 0 > columnIndex || columnIndex > columnsAmount - 1) {
     return -1;
@@ -61,9 +61,9 @@ int32_t SparseCooordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) 
   return -1;
 }
 
-bool SparseCooordinateMatrix::isSolvableByDlx() const {
+bool SparseCoordinateMatrix::isSolvableByDlx() const {
 
-  // Matrix is not solvable if all coloumns are secondary
+  // Matrix is not solvable if all columns are secondary
   bool allSecondary = true;
   for (const auto& column : columns) {
     if (column.isColumnPrimary) {
@@ -77,18 +77,18 @@ bool SparseCooordinateMatrix::isSolvableByDlx() const {
 
   // Matrix is not solvable if any of the primary columns is empty
   int32_t columnIndex = 0;
-  std::vector<int32_t> emptyPrimiaryColumnsIndices;
+  std::vector<int32_t> emptyPrimaryColumnsIndices;
   for (const auto& column : columns) {
     if (column.isColumnPrimary && column.elements.size() == 0) {
-      emptyPrimiaryColumnsIndices.emplace_back(columnIndex);
+      emptyPrimaryColumnsIndices.emplace_back(columnIndex);
     }
     columnIndex++;
   }
-  if (!emptyPrimiaryColumnsIndices.empty()) {
+  if (!emptyPrimaryColumnsIndices.empty()) {
     std::string s = "[";
-    const int32_t size = emptyPrimiaryColumnsIndices.size();
+    const int32_t size = emptyPrimaryColumnsIndices.size();
     for (int32_t i = 0; i < size; i++) {
-      s += std::to_string(emptyPrimiaryColumnsIndices[i]);
+      s += std::to_string(emptyPrimaryColumnsIndices[i]);
       if (i != size - 1)
         s += ", ";
     }
@@ -96,10 +96,10 @@ bool SparseCooordinateMatrix::isSolvableByDlx() const {
     std::cout << "Matrix not solvable: the following primary columns indices are empty " + s << std::endl;
   }
 
-  return emptyPrimiaryColumnsIndices.empty();
+  return emptyPrimaryColumnsIndices.empty();
 }
 
-bool SparseCooordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {
+bool SparseCoordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {
   // Permutation's size must be the same as the amount of columns in the matrix
   if (static_cast<int32_t>(permutation.size()) != columnsAmount) {
     return false;

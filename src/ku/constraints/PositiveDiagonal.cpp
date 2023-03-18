@@ -5,7 +5,7 @@ ConstraintType PositiveDiagonal::getType() const {
 }
 
 std::string PositiveDiagonal::getDescription() const {
-  return "The positive diagonal contains all the digts from " + std::to_string(MIN_DIGIT) + " to " +
+  return "The positive diagonal contains all the digits from " + std::to_string(MIN_DIGIT) + " to " +
          std::to_string(MAX_DIGIT) + " exactly once.";
 }
 

@@ -171,7 +171,7 @@ std::string SvgUtilities::givenPatternBorder() {
   return paperUnitsRect(x, y, size, size, getNoFillStroke(thinLine));
 }
 
-std::string SvgUtilities::dlxMatrix(const SparseCooordinateMatrix& matrix,
+std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
                                     const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo) {
 
   int32_t columnsAmount = matrix.getColumnsAmount();

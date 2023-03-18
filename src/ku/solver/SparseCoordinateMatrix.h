@@ -5,7 +5,7 @@
 
 /** The data contained in a column of a sparse coordinate matrix
  */
-struct SparseCooordinateColumn {
+struct SparseCoordinateColumn {
   /// Whether the column is primary
   bool isColumnPrimary = true;
   /// A map of all the non-negative elements of the column. Key is the sparse matrix index, value is the data stored in
@@ -16,13 +16,13 @@ struct SparseCooordinateColumn {
 /** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
  * are initialized with the value -1. By default, all columns of the matrix are primary unless manually modified.
  */
-class SparseCooordinateMatrix {
+class SparseCoordinateMatrix {
 public:
   /** Constructor
    * @param totalRows The amount of rows the sparse matrix has
    * @param totalColumns The amount of columns the sparse matrix has
    */
-  SparseCooordinateMatrix(int32_t totalRows, int32_t totalColumns);
+  SparseCoordinateMatrix(int32_t totalRows, int32_t totalColumns);
 
   /** Retrieves the amount of columns that this matrix supports
    * @return The amount of columns
@@ -60,7 +60,7 @@ public:
    */
   int32_t getCell(int32_t rowIndex, int32_t columnIndex) const;
 
-  /** Computes whether the matrix might be solvable by a DLX algorithm. This is the case when the matrix contains olny
+  /** Computes whether the matrix might be solvable by a DLX algorithm. This is the case when the matrix contains only
    * secondary columns, or when any primary column has no elements
    * @return Whether the matrix might be solvable
    */
@@ -74,7 +74,7 @@ public:
 
 private:
   /// The matrix. Stores only non-zero elements. Has a vector for every column
-  std::vector<SparseCooordinateColumn> columns;
+  std::vector<SparseCoordinateColumn> columns;
 
   /// The maximum amount of columns that the matrix considers
   int32_t columnsAmount = 0;
