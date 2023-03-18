@@ -56,9 +56,6 @@ enum class SymmetryType {
   AMOUNT
 };
 
-static inline int32_t clamp(const int32_t value, const int32_t min, const int32_t max) {
-  return std::max(std::min(value, max), min);
-}
 
 static inline int32_t packId(int32_t x, int32_t y, int32_t xAmount, int32_t yAmount) {
   return x * yAmount + y;

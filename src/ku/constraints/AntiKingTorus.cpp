@@ -27,9 +27,10 @@ std::string AntiKingTorus::getSvgGroup() const {
       for (const auto& [otherI, otherJ] : pattern) {
         const int32_t indexI = i + otherI;
         const int32_t indexJ = j + otherJ;
-        const bool isFirstPointOnBoard = i == clamp(i, MIN_INDEX, MAX_INDEX) && j == clamp(j, MIN_INDEX, MAX_INDEX);
+        const bool isFirstPointOnBoard =
+            i == std::clamp(i, MIN_INDEX, MAX_INDEX) && j == std::clamp(j, MIN_INDEX, MAX_INDEX);
         const bool isSecondPointOnBoard =
-            indexI == clamp(indexI, MIN_INDEX, MAX_INDEX) && indexJ == clamp(indexJ, MIN_INDEX, MAX_INDEX);
+            indexI == std::clamp(indexI, MIN_INDEX, MAX_INDEX) && indexJ == std::clamp(indexJ, MIN_INDEX, MAX_INDEX);
         if (isFirstPointOnBoard || isSecondPointOnBoard) {
           dashSet.insert({{i, j}, {indexI, indexJ}});
         }
