@@ -14,7 +14,7 @@ TEST_CASE("Timer") {
       std::this_thread::sleep_for(waitTime);
       // Can check time also right after default-initialization
       const double secondsPassed = timer.elapsed();
-      const auto timePassed = std::chrono::duration<double>(secondsPassed);
+      const auto timePassed = std::chrono::duration<double>(secondsPassed * 1000.0);
       CHECK(timePassed >= waitTime);
       // Reset
       timer.reset();
