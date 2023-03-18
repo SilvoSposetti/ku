@@ -42,7 +42,7 @@ int32_t SudokuRow::getDlxConstraintColumnsAmount() const {
 
 bool SudokuRow::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
   // columnId encodes the (row, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
   const int32_t row = unpacked.first;
   const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
 

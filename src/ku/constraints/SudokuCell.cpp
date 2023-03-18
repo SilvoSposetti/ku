@@ -35,7 +35,7 @@ int32_t SudokuCell::getDlxConstraintColumnsAmount() const {
 bool SudokuCell::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
 
   // columnId encodes the location (row, column) pair of a digit on the board
-  const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
   const int32_t row = unpacked.first;
   const int32_t column = unpacked.second;
 

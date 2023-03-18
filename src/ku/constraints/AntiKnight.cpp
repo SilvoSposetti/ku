@@ -59,7 +59,7 @@ bool AntiKnight::isColumnPrimary(int32_t columnId) const {
 }
 
 bool AntiKnight::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [dashId, digitIndex] = unpackId(columnId, dashVector.size(), MAX_DIGIT);
+  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), MAX_DIGIT);
   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 

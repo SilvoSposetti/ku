@@ -55,26 +55,3 @@ enum class SymmetryType {
   TWO_AXES_ROTATION,
   AMOUNT
 };
-
-
-static inline int32_t packId(int32_t x, int32_t y, int32_t xAmount, int32_t yAmount) {
-  return x * yAmount + y;
-}
-
-static inline int32_t packId(int32_t x, int32_t y, int32_t z, int32_t xAmount, int32_t yAmount, int32_t zAmount) {
-  return x * (yAmount * zAmount) + y * (zAmount) + z;
-}
-
-static inline std::pair<int32_t, int32_t> unpackId(int32_t packedId, int32_t xAmount, int32_t yAmount) {
-  const int32_t first = packedId / yAmount; // 0 <= x < xAmount
-  const int32_t second = packedId % yAmount; // 0 <= y < yAmount
-  return std::make_pair(first, second);
-}
-
-static inline std::tuple<int32_t, int32_t, int32_t>
-unpackId(int32_t packedId, int32_t xAmount, int32_t yAmount, int32_t zAmount) {
-  const int32_t first = packedId / (yAmount * zAmount); // 0 <= x < xAmount
-  const int32_t second = (packedId % (yAmount * zAmount)) / zAmount; //  0 <= y < yAmount
-  const int32_t third = packedId % zAmount; //  0 <= z < zAmount
-  return std::make_tuple(first, second, third);
-}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
 #include "ConstraintType.h"
 
 /** Base class for all constraints.

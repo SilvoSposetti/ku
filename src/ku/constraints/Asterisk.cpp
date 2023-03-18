@@ -45,7 +45,7 @@ int32_t Asterisk::getDlxConstraintColumnsAmount() const {
 }
 
 bool Asterisk::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [cellId, digitIndex] = unpackId(columnId, cells.size(), MAX_DIGIT);
+  const auto [cellId, digitIndex] = IdPacking::unpackId(columnId, cells.size(), MAX_DIGIT);
   const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 

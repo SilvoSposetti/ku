@@ -55,7 +55,7 @@ int32_t DisjointBoxes::getDlxConstraintColumnsAmount() const {
 
 bool DisjointBoxes::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
   // columnId encodes the (cell ID within a box, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
   const int32_t cellIdWithinBox = unpacked.first;
   const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
 
