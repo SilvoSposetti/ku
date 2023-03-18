@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
+#include "utilities/SymmetryType.h"
 
 namespace Setter {
 
