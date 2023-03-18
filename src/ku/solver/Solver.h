@@ -12,7 +12,7 @@ public:
    * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A board constructed according to the input constraints
    */
-  static std::vector<std::vector<Sudo>>
+  static std::vector<std::vector<Sudo::Digit>>
   createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                  std::shared_ptr<RandomGenerator> randomGenerator);
 
@@ -22,7 +22,7 @@ public:
    * @param constraints The constraints which the solution satisfies
    * @return givenMask
    */
-  static bool isUnique(const std::vector<std::vector<Sudo>>& solution,
+  static bool isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
                        const std::vector<std::vector<bool>>& givenMask,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
@@ -32,7 +32,7 @@ public:
    * @param randomGenerator The random number generator instance used to draw random numbers
    * @return A sparse matrix representation of the one used by DLX
    */
-  static SparseCoordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+  static SparseCoordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                               std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
@@ -51,7 +51,7 @@ private:
    * @param randomGenerator The random number generator instance used to draw random numbers
    * @return Whether a solution exits, and if it has been specified, whether it is unique
    */
-  static bool dlx(std::vector<std::vector<Sudo>>& board,
+  static bool dlx(std::vector<std::vector<Sudo::Digit>>& board,
                   const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                   bool checkForUniqueness,
                   std::shared_ptr<RandomGenerator> randomGenerator = nullptr);

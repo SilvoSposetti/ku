@@ -28,10 +28,10 @@ std::string SudokuBox::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(mediumLine));
 }
 
-bool SudokuBox::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool SudokuBox::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   // The board satisfies the constraint if all boxes do not contain duplicate digits
   std::vector<std::vector<std::pair<int32_t, int32_t>>> boxesIndices = getBoxIndices();
-  for (const auto& d : SUDO_DIGITS) {
+  for (const auto& d : Sudo::SUDO_DIGITS) {
     for (const auto& boxIndexPairs : boxesIndices) {
       int32_t count = 0;
       for (const auto& pair : boxIndexPairs) {
@@ -72,11 +72,11 @@ int32_t SudokuBox::getDlxConstraintColumnsAmount() const {
   return 9 * 9; // 9(boxes), 9(possible digits in each box)
 }
 
-bool SudokuBox::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuBox::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
   // columnId encodes the (box id, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
   const int32_t boxId = unpacked.first;
-  const Sudo possibleDigit = static_cast<Sudo>(unpacked.second + 1);
+  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
 
   return boxId == getBoxId(i, j) && possibleDigit == digit;
 }

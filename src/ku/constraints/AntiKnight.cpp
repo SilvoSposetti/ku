@@ -17,7 +17,7 @@ std::string AntiKnight::getDescription() const {
 
 std::string AntiKnight::getSvgGroup() const {
   std::string lines;
-  const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
+  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
   const double distanceFromCenterAxis = (1 - .618) * cellSize;
   for (const auto& [pairA, pairB] : dashVector) {
     const double abX = cellSize * pairB.first - cellSize * pairA.first;
@@ -39,7 +39,7 @@ std::string AntiKnight::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool AntiKnight::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool AntiKnight::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   for (const auto& [first, second] : dashVector) {
     if (board[first.first][first.second] == board[second.first][second.second]) {
       return false;
@@ -50,7 +50,7 @@ bool AntiKnight::satisfy(const std::vector<std::vector<Sudo>>& board) const {
 
 int32_t AntiKnight::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
-  return amount * MAX_DIGIT;
+  return amount * Sudo::MAX_DIGIT;
 }
 
 bool AntiKnight::isColumnPrimary(int32_t columnId) const {
@@ -58,9 +58,9 @@ bool AntiKnight::isColumnPrimary(int32_t columnId) const {
   return false;
 }
 
-bool AntiKnight::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), MAX_DIGIT);
-  const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+bool AntiKnight::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
+  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), Sudo::MAX_DIGIT);
+  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 
   const auto [firstPair, secondPair] = dashVector[dashId];

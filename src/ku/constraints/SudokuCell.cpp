@@ -14,8 +14,8 @@ std::string SudokuCell::getSvgGroup() const {
 
   // dashed-lines grid
   std::string grid;
-  const double cellSize = 1.0 / MAX_DIGIT;
-  for (int i = 1; i <= MAX_INDEX; i++) {
+  const double cellSize = 1.0 / Sudo::MAX_DIGIT;
+  for (int i = 1; i <= Sudo::MAX_INDEX; i++) {
     const double position = cellSize * i;
     grid += SvgUtilities::line(position, 0, position, 1);
     grid += SvgUtilities::line(0, position, 1, position);
@@ -24,18 +24,18 @@ std::string SudokuCell::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), border + grid);
 }
 
-bool SudokuCell::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool SudokuCell::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   return true;
 }
 
 int32_t SudokuCell::getDlxConstraintColumnsAmount() const {
-  return TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
+  return Sudo::TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
 }
 
-bool SudokuCell::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuCell::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
 
   // columnId encodes the location (row, column) pair of a digit on the board
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, MAX_DIGIT, MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
   const int32_t row = unpacked.first;
   const int32_t column = unpacked.second;
 

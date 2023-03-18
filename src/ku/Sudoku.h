@@ -21,7 +21,7 @@ public:
   Sudoku(const std::string& name,
          ConstraintType constraintTypes = Constraint::getSudokuConstraints(),
          SymmetryType givenSymmetry = SymmetryType::RANDOM,
-         int32_t givenDigits = TOTAL_DIGITS,
+         int32_t givenDigits = Sudo::TOTAL_DIGITS,
          int32_t seed = -1);
 
   /** Check if the sudoku is solvable. This is not the case where the constraints define secondary columns only
@@ -39,12 +39,12 @@ public:
   /** Retrieve the solution of the sudoku
    * \return The solution
    */
-  std::vector<std::vector<Sudo>> getSolution();
+  std::vector<std::vector<Sudo::Digit>> getSolution();
 
   /** Compute and retrieve the field of the sudoku. This is only the given digits of the solution
    * \return The field
    */
-  std::vector<std::vector<Sudo>> getField();
+  std::vector<std::vector<Sudo::Digit>> getField();
 
   /** Retrieve the given mask of the sudoku. An element is true if it is given
    * \return The given mask

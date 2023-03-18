@@ -12,7 +12,9 @@
 #include <set>
 #include <vector>
 
-enum class Sudo : int32_t {
+namespace Sudo {
+
+enum class Digit : int32_t {
   NONE = 0,
   A = 1,
   B = 2,
@@ -32,24 +34,20 @@ constexpr int32_t MAX_INDEX = 8;
 constexpr int32_t MID_INDEX = 4;
 constexpr int32_t MIN_INDEX = 0;
 const std::vector<int32_t> INDICES = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-const std::vector<Sudo> SUDO_DIGITS = {Sudo::A, Sudo::B, Sudo::C, Sudo::D, Sudo::E, Sudo::F, Sudo::G, Sudo::H, Sudo::I};
+const std::vector<Digit> SUDO_DIGITS = {
+    Digit::A, Digit::B, Digit::C, Digit::D, Digit::E, Digit::F, Digit::G, Digit::H, Digit::I};
 
-static inline std::vector<std::vector<Sudo>> emptyField() {
-  return std::vector<std::vector<Sudo>>(MAX_DIGIT, std::vector<Sudo>(MAX_DIGIT, Sudo::NONE));
+static inline std::vector<std::vector<Sudo::Digit>> emptyField() {
+  return std::vector<std::vector<Sudo::Digit>>(Sudo::MAX_DIGIT,
+                                               std::vector<Sudo::Digit>(Sudo::MAX_DIGIT, Sudo::Digit::NONE));
 }
 
 static inline std::vector<std::vector<bool>> fullGivenMask() {
-  return std::vector<std::vector<bool>>(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, true));
+  return std::vector<std::vector<bool>>(Sudo::MAX_DIGIT, std::vector<bool>(Sudo::MAX_DIGIT, true));
 }
 
 static inline std::vector<std::vector<bool>> emptyGivenMask() {
-  return std::vector<std::vector<bool>>(MAX_DIGIT, std::vector<bool>(MAX_DIGIT, false));
+  return std::vector<std::vector<bool>>(Sudo::MAX_DIGIT, std::vector<bool>(Sudo::MAX_DIGIT, false));
 }
 
-static inline int32_t getCellId(int32_t rowIndex, int32_t columnIndex) {
-  return rowIndex * MAX_DIGIT + columnIndex;
-}
-
-static inline std::pair<int32_t, int32_t> getIndices(int32_t cellId) {
-  return std::make_pair(cellId / MAX_DIGIT, cellId % MAX_DIGIT);
-}
+} // namespace Sudo

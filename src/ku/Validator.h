@@ -10,6 +10,6 @@ public:
   Validator() = delete;
   /** Checks if the board provided is a valid solution according to the given constraints
    */
-  static bool checkSolution(const std::vector<std::vector<Sudo>>& board,
+  static bool checkSolution(const std::vector<std::vector<Sudo::Digit>>& board,
                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 };

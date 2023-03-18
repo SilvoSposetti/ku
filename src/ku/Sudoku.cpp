@@ -12,7 +12,7 @@ Sudoku::Sudoku(const std::string& name,
                int32_t givenDigits,
                int32_t seed)
     : name(name)
-    , givenDigitsAmount(std::clamp(givenDigits, 0, TOTAL_DIGITS))
+    , givenDigitsAmount(std::clamp(givenDigits, 0, Sudo::TOTAL_DIGITS))
     , constraints(getConstraintsList(constraintTypes))
     , symmetryType(givenSymmetry)
     , randomGenerator(std::make_shared<RandomGenerator>(seed))
@@ -44,7 +44,7 @@ bool Sudoku::isSolvable() {
 bool Sudoku::verify() {
   // First, check if solution satisfies the constraints
   bool solutionIsSatisfactory = true;
-  const std::vector<std::vector<Sudo>> solution = board->getSolution();
+  const std::vector<std::vector<Sudo::Digit>> solution = board->getSolution();
   for (const auto& constraint : constraints) {
     solutionIsSatisfactory &= constraint->satisfy(solution);
   }
@@ -53,17 +53,17 @@ bool Sudoku::verify() {
   }
 
   // Then, solve the sudoku, and see if the solution is unique
-  if (givenDigitsAmount != TOTAL_DIGITS) {
+  if (givenDigitsAmount != Sudo::TOTAL_DIGITS) {
     const std::vector<std::vector<bool>> givenMask = board->getGivenMask();
     return Solver::isUnique(solution, givenMask, constraints);
   }
   return true;
 }
 
-std::vector<std::vector<Sudo>> Sudoku::getSolution() {
+std::vector<std::vector<Sudo::Digit>> Sudoku::getSolution() {
   return board->getSolution();
 }
-std::vector<std::vector<Sudo>> Sudoku::getField() {
+std::vector<std::vector<Sudo::Digit>> Sudoku::getField() {
   return board->getField();
 }
 std::vector<std::vector<bool>> Sudoku::getGivenMask() {
@@ -136,7 +136,7 @@ void Sudoku::printInfo() {
   // Name
   std::string info = name + " | ";
   // Given digits
-  info += std::to_string(givenDigitsAmount) + " (-" + std::to_string(TOTAL_DIGITS - givenDigitsAmount) + ") | ";
+  info += std::to_string(givenDigitsAmount) + " (-" + std::to_string(Sudo::TOTAL_DIGITS - givenDigitsAmount) + ") | ";
   // Constraints
   info += "[";
   std::string constraintsNames;

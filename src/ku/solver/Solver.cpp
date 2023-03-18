@@ -3,12 +3,12 @@
 #include "../Validator.h"
 #include "../randomGenerator/RandomGenerator.h"
 
-std::vector<std::vector<Sudo>>
+std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                        std::shared_ptr<RandomGenerator> randomGenerator) {
 
-  std::vector<std::vector<Sudo>> newField = emptyField();
-  std::vector<std::vector<bool>> givenMask = emptyGivenMask();
+  std::vector<std::vector<Sudo::Digit>> newField = Sudo::emptyField();
+  std::vector<std::vector<bool>> givenMask = Sudo::emptyGivenMask();
 
   const bool created = Solver::dlx(newField, constraints, false, randomGenerator);
 
@@ -32,16 +32,16 @@ Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& c
   return newField;
 }
 
-bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
+bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
                       const std::vector<std::vector<bool>>& givenMask,
                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
   // Create board to use for solving
-  std::vector<std::vector<Sudo>> board = solution;
-  for (const auto& i : INDICES) {
-    for (const auto& j : INDICES) {
+  std::vector<std::vector<Sudo::Digit>> board = solution;
+  for (const auto& i : Sudo::INDICES) {
+    for (const auto& j : Sudo::INDICES) {
       if (!givenMask[i][j]) {
-        board[i][j] = Sudo::NONE;
+        board[i][j] = Sudo::Digit::NONE;
       }
     }
   }
@@ -49,22 +49,22 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo>>& solution,
   return Solver::dlx(board, constraints, true);
 }
 
-SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>& board,
+SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                              std::shared_ptr<RandomGenerator> randomGenerator) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
     for (const auto& digit : row) {
-      if (digit != Sudo::NONE) {
+      if (digit != Sudo::Digit::NONE) {
         ++givenAmount;
       }
     }
   }
   // 729 rows => (81 cells, 9 possible digits for each cell)
   constexpr int32_t maximumRows = 9 * 9 * 9;
-  // Each given reduces the amount of rows by (MAX_DIGIT - 1)
-  const int32_t totalRows = maximumRows - (MAX_DIGIT - 1) * givenAmount;
+  // Each given reduces the amount of rows by (Sudo::MAX_DIGIT - 1)
+  const int32_t totalRows = maximumRows - (Sudo::MAX_DIGIT - 1) * givenAmount;
 
   int32_t totalColumns = 0;
   for (const auto& constraint : constraints) {
@@ -74,17 +74,17 @@ SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>
   // Initialize matrix with correct size
   SparseCoordinateMatrix matrix(totalRows, totalColumns);
   // Randomize the sequence of digits that is passed when constructing the matrix or not
-  const std::vector<Sudo> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(SUDO_DIGITS) : SUDO_DIGITS;
+  const std::vector<Sudo::Digit> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(Sudo::SUDO_DIGITS) : Sudo::SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
-  for (const auto& boardI : INDICES) { // Go through all sudoku rows
-    for (const auto& boardJ : INDICES) { // Go through all sudoku column
-      const Sudo actualDigit = board[boardI][boardJ];
+  for (const auto& boardI : Sudo::INDICES) { // Go through all sudoku rows
+    for (const auto& boardJ : Sudo::INDICES) { // Go through all sudoku column
+      const Sudo::Digit actualDigit = board[boardI][boardJ];
       for (const auto& possibleDigit : digitsSequence) { // Go through all possible digits for this cell
         // Avoid rows where the cell and its possible digits don't create a "1" in the matrix, since the digit
         // is already given
-        if (actualDigit == Sudo::NONE || actualDigit == possibleDigit) {
+        if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
           for (const auto& constraint : constraints) {
             for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
               if (!constraint->isColumnPrimary(columnId)) {
@@ -94,7 +94,7 @@ SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>
                 // Store matrix cell ID
                 matrix.setCell(matrixRowCounter,
                                matrixColumnCounter,
-                               boardI * TOTAL_DIGITS + boardJ * MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
+                               boardI * Sudo::TOTAL_DIGITS + boardJ * Sudo::MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -108,7 +108,7 @@ SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo>>
   return matrix;
 }
 
-bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
+bool Solver::dlx(std::vector<std::vector<Sudo::Digit>>& board,
                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                  bool checkForUniqueness,
                  std::shared_ptr<RandomGenerator> randomGenerator) {
@@ -139,16 +139,16 @@ bool Solver::dlx(std::vector<std::vector<Sudo>>& board,
     // Use first solution out of all those that are found
     const std::vector<std::shared_ptr<Node>> pickedSolution = solutions[0];
     // This solution should have 81 nodes, one for each cell
-    if (pickedSolution.size() == TOTAL_DIGITS) {
+    if (pickedSolution.size() == Sudo::TOTAL_DIGITS) {
       // Transform found solution to the sudoku board
       for (const auto& node : pickedSolution) { // Pick the first solution
         // The node itself stores the flattened (all-zeroes rows removed) row indices
         const int32_t packedData = node->data;
         // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
         // but the process here is reversed
-        const int32_t boardRow = packedData / TOTAL_DIGITS;
-        const int32_t boardColumn = (packedData / MAX_DIGIT) % MAX_DIGIT;
-        const Sudo actualDigit = static_cast<Sudo>((packedData % MAX_DIGIT) + 1);
+        const int32_t boardRow = packedData / Sudo::TOTAL_DIGITS;
+        const int32_t boardColumn = (packedData / Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT;
+        const Sudo::Digit actualDigit = static_cast<Sudo::Digit>((packedData % Sudo::MAX_DIGIT) + 1);
         board[boardRow][boardColumn] = actualDigit;
       }
       return true;

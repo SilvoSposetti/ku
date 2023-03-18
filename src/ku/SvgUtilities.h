@@ -3,7 +3,7 @@
 #include "utilities/Utilities.h"
 
 const double boardSize = 1000;
-const double cellSize = boardSize / static_cast<double>(MAX_DIGIT);
+const double cellSize = boardSize / static_cast<double>(Sudo::MAX_DIGIT);
 const double boardMargin = cellSize * 1.5;
 const double totalBoardSize = boardSize + 2 * boardMargin;
 const double dlxMatrixHeight = boardSize * 1.2;
@@ -53,10 +53,10 @@ public:
   static std::string titleAndDescription(const std::string& sudokuName,
                                          const std::vector<std::string>& constraintDescriptions);
 
-  static std::string givenDigits(const std::vector<std::vector<Sudo>>& solution,
+  static std::string givenDigits(const std::vector<std::vector<Sudo::Digit>>& solution,
                                  const std::vector<std::vector<bool>>& givenMask);
 
-  static std::string givenDigit(int32_t cellIndexI, int32_t cellIndexJ, Sudo digit);
+  static std::string givenDigit(int32_t cellIndexI, int32_t cellIndexJ, Sudo::Digit digit);
 
   static std::string givenPattern(int32_t cellIndexI, int32_t cellIndexJ, bool isGiven);
 

@@ -13,7 +13,7 @@ std::string NegativeDiagonalOdd::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   // The board satisfies the constraint if the negative diagonal contains only odd digits
   const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllNegativeDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
@@ -25,10 +25,10 @@ bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo>>& board) c
 }
 
 int32_t NegativeDiagonalOdd::getDlxConstraintColumnsAmount() const {
-  return MAX_DIGIT; // There are 9 cells in the negative diagonal
+  return Sudo::MAX_DIGIT; // There are 9 cells in the negative diagonal
 }
 
-bool NegativeDiagonalOdd::getDlxConstraint(Sudo digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool NegativeDiagonalOdd::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
   // columnId maps to a cell in the diagonal
   const int32_t row = columnId;
   const int32_t column = columnId;

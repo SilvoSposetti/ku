@@ -119,15 +119,15 @@ std::string SvgUtilities::titleAndDescription(const std::string& sudokuName,
   return title + description;
 }
 
-std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo>>& solution,
+std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo::Digit>>& solution,
                                       const std::vector<std::vector<bool>>& givenMask) {
   const int givenDigitFontSize = boardSize / 13;
   const std::string givenDigitTextStyle =
       " text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"" + std::to_string(givenDigitFontSize) + "\"";
 
   std::string givenDigits;
-  for (const auto& i : INDICES) {
-    for (const auto& j : INDICES) {
+  for (const auto& i : Sudo::INDICES) {
+    for (const auto& j : Sudo::INDICES) {
       if (givenMask[i][j]) {
         const double cellCenterX = (j + 0.5) * cellSize;
         const double cellCenterY = (i + 0.5) * cellSize;
@@ -143,8 +143,8 @@ std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo>>& solu
   const std::string nonGivenDigitTextStyle = " text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"" +
                                              std::to_string(nonGivenDigitFontSize) + "\"";
   std::string nonGivenDigits;
-  for (const auto& i : INDICES) {
-    for (const auto& j : INDICES) {
+  for (const auto& i : Sudo::INDICES) {
+    for (const auto& j : Sudo::INDICES) {
       if (!givenMask[i][j]) {
         const double cellCenterX = (j + 0.5) * cellSize;
         const double cellCenterY = (i + 0.5) * cellSize;
@@ -159,15 +159,15 @@ std::string SvgUtilities::givenDigits(const std::vector<std::vector<Sudo>>& solu
 
 std::string SvgUtilities::givenPattern(int32_t cellIndexI, int32_t cellIndexJ, bool isGiven) {
   const double x = boardSize + boardMargin + givenPatternCellSize * cellIndexJ;
-  const double y = boardSize + boardMargin - givenPatternCellSize * ((MAX_DIGIT + 2) - cellIndexI);
+  const double y = boardSize + boardMargin - givenPatternCellSize * ((Sudo::MAX_DIGIT + 2) - cellIndexI);
   const std::string style = isGiven ? darkRectStyle : lightRectStyle;
   return paperUnitsRect(x, y, givenPatternCellSize, givenPatternCellSize, style);
 }
 
 std::string SvgUtilities::givenPatternBorder() {
   const double x = boardSize + boardMargin;
-  const double y = boardSize + boardMargin - givenPatternCellSize * ((MAX_DIGIT + 2));
-  const double size = givenPatternCellSize * MAX_DIGIT;
+  const double y = boardSize + boardMargin - givenPatternCellSize * ((Sudo::MAX_DIGIT + 2));
+  const double size = givenPatternCellSize * Sudo::MAX_DIGIT;
   return paperUnitsRect(x, y, size, size, getNoFillStroke(thinLine));
 }
 
@@ -181,7 +181,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
   const double originY = 0;
 
   const int32_t constraintSeparationAmount = std::max(0.0, static_cast<double>(constraintsInfo.size() - 1));
-  const double constraintSeparationCellMultiplier = static_cast<double>(MAX_DIGIT);
+  const double constraintSeparationCellMultiplier = static_cast<double>(Sudo::MAX_DIGIT);
 
   const double verticalCellSize = boardSize / rowsAmount;
   const double horizontalCellSize =
@@ -189,7 +189,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
   const double dlxCellSize = std::min(verticalCellSize, horizontalCellSize);
 
   const int32_t textSize = boardSize / 100;
-  const int32_t textDistance = dlxCellSize * MAX_DIGIT * 2;
+  const int32_t textDistance = dlxCellSize * Sudo::MAX_DIGIT * 2;
   const double constraintSeparation = dlxCellSize * constraintSeparationCellMultiplier;
 
   const double namesBuffer = boardSize * 0.15;
@@ -232,7 +232,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
       // Some columns are optionals, some are not. Do multiple small rectangle to show which ones
       for (const auto& isColumnPrimary : constraintInfo.second) {
         if (!isColumnPrimary) {
-          double leftX = (columnsCounter + optionalColumnsCounter + constraintCounter * MAX_DIGIT) * dlxCellSize;
+          double leftX = (columnsCounter + optionalColumnsCounter + constraintCounter * Sudo::MAX_DIGIT) * dlxCellSize;
           double rightX = dlxCellSize;
           optionalConstraintsBackground += paperUnitsRect(leftX, boardHeight, rightX, textDistance);
         }
@@ -292,11 +292,11 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
 
   // Vertical lines
   std::string verticalLines;
-  int32_t verticalLinesAmount = matrix.getColumnsAmount() + constraintCounter * MAX_DIGIT - 1;
+  int32_t verticalLinesAmount = matrix.getColumnsAmount() + constraintCounter * Sudo::MAX_DIGIT - 1;
   double startY = originY;
   double endY = originY + rowsAmount * dlxCellSize;
   for (int32_t i = 0; i <= verticalLinesAmount; i++) {
-    if (i % MAX_DIGIT == 0) {
+    if (i % Sudo::MAX_DIGIT == 0) {
       const double x = originX + dlxCellSize * i;
       verticalLines += paperUnitsLine(x, startY, x, endY);
     }

@@ -11,14 +11,14 @@ bool AbstractConstraint::isColumnPrimary(int32_t columnId) const {
 std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
 AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus) {
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;
-  for (int32_t i = 0; i <= MAX_INDEX; ++i) {
-    for (int32_t j = 0; j <= MAX_INDEX; ++j) {
+  for (int32_t i = 0; i <= Sudo::MAX_INDEX; ++i) {
+    for (int32_t j = 0; j <= Sudo::MAX_INDEX; ++j) {
       for (const auto& [otherI, otherJ] : pattern) {
         int32_t boardIndexI = i + otherI;
         int32_t boardIndexJ = j + otherJ;
-        boardIndexI = doTorus ? (boardIndexI + MAX_DIGIT) % MAX_DIGIT : boardIndexI;
-        boardIndexJ = doTorus ? (boardIndexJ + MAX_DIGIT) % MAX_DIGIT : boardIndexJ;
-        if (doTorus || (0 <= boardIndexI && boardIndexI <= MAX_INDEX && 0 <= boardIndexJ && boardIndexJ <= MAX_INDEX)) {
+        boardIndexI = doTorus ? (boardIndexI + Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT : boardIndexI;
+        boardIndexJ = doTorus ? (boardIndexJ + Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT : boardIndexJ;
+        if (doTorus || (0 <= boardIndexI && boardIndexI <= Sudo::MAX_INDEX && 0 <= boardIndexJ && boardIndexJ <= Sudo::MAX_INDEX)) {
           const std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>> element = {
               {i, j}, {boardIndexI, boardIndexJ}};
           const std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>> elementReversed = {element.second,

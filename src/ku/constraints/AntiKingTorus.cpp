@@ -16,21 +16,21 @@ std::string AntiKingTorus::getDescription() const {
 
 std::string AntiKingTorus::getSvgGroup() const {
   std::string lines;
-  const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
+  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
   const double distanceFromCenterAxis = (1 - .618) * cellSize;
 
   // Create set of all point pairs to draw
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashSet;
 
-  for (int i = -2; i < MAX_INDEX + 2; i++) {
-    for (int j = -2; j < MAX_INDEX + 2; j++) {
+  for (int i = -2; i < Sudo::MAX_INDEX + 2; i++) {
+    for (int j = -2; j < Sudo::MAX_INDEX + 2; j++) {
       for (const auto& [otherI, otherJ] : pattern) {
         const int32_t indexI = i + otherI;
         const int32_t indexJ = j + otherJ;
         const bool isFirstPointOnBoard =
-            i == std::clamp(i, MIN_INDEX, MAX_INDEX) && j == std::clamp(j, MIN_INDEX, MAX_INDEX);
+            i == std::clamp(i, Sudo::MIN_INDEX, Sudo::MAX_INDEX) && j == std::clamp(j, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
         const bool isSecondPointOnBoard =
-            indexI == std::clamp(indexI, MIN_INDEX, MAX_INDEX) && indexJ == std::clamp(indexJ, MIN_INDEX, MAX_INDEX);
+            indexI == std::clamp(indexI, Sudo::MIN_INDEX, Sudo::MAX_INDEX) && indexJ == std::clamp(indexJ, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
         if (isFirstPointOnBoard || isSecondPointOnBoard) {
           dashSet.insert({{i, j}, {indexI, indexJ}});
         }
@@ -59,7 +59,7 @@ std::string AntiKingTorus::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
 }
 
-bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
+bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   for (const auto& [first, second] : dashVector) {
     if (board[first.first][first.second] == board[second.first][second.second]) {
       return false;
@@ -70,7 +70,7 @@ bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo>>& board) const {
 
 int32_t AntiKingTorus::getDlxConstraintColumnsAmount() const {
   int32_t amount = dashVector.size();
-  return amount * MAX_DIGIT;
+  return amount * Sudo::MAX_DIGIT;
 }
 
 bool AntiKingTorus::isColumnPrimary(int32_t columnId) const {
@@ -78,9 +78,9 @@ bool AntiKingTorus::isColumnPrimary(int32_t columnId) const {
   return false;
 }
 
-bool AntiKingTorus::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), MAX_DIGIT);
-  const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+bool AntiKingTorus::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
+  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), Sudo::MAX_DIGIT);
+  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 
   const auto [firstPair, secondPair] = dashVector[dashId];

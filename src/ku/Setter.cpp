@@ -11,12 +11,12 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
 
   Timer timer;
   // Create new random solution once
-  const std::vector<std::vector<Sudo>> randomSolution = Solver::createNewBoard(constraints, randomGenerator);
+  const std::vector<std::vector<Sudo::Digit>> randomSolution = Solver::createNewBoard(constraints, randomGenerator);
   timer.printElapsed("Solution generated       ");
 
   // Skip mask generation if there are no missing digits
-  if (totalDigits == TOTAL_DIGITS) {
-    return std::make_unique<Board>(randomSolution, fullGivenMask());
+  if (totalDigits == Sudo::TOTAL_DIGITS) {
+    return std::make_unique<Board>(randomSolution, Sudo::fullGivenMask());
   }
 
   // Try out multiple given masks until one makes the Sudoku unique
@@ -48,5 +48,5 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
     }
   }
   std::cout << "Unable to create board after " << counter << " tries" << std::endl;
-  return std::make_unique<Board>(randomSolution, emptyGivenMask());
+  return std::make_unique<Board>(randomSolution, Sudo::emptyGivenMask());
 }

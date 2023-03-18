@@ -14,7 +14,7 @@ std::string Asterisk::getDescription() const {
 
 std::string Asterisk::getSvgGroup() const {
   std::string squares;
-  const double cellSize = 1.0 / static_cast<double>(MAX_DIGIT);
+  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
 
   for (const auto& [i, j] : cells) {
     const double topLeftX = i * cellSize;
@@ -25,8 +25,8 @@ std::string Asterisk::getSvgGroup() const {
   return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
 }
 
-bool Asterisk::satisfy(const std::vector<std::vector<Sudo>>& board) const {
-  for (const auto& d : SUDO_DIGITS) {
+bool Asterisk::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
+  for (const auto& d : Sudo::SUDO_DIGITS) {
     int32_t counter = 0;
     for (const auto& [i, j] : cells) {
       if (board[i][j] == d) {
@@ -41,12 +41,12 @@ bool Asterisk::satisfy(const std::vector<std::vector<Sudo>>& board) const {
 }
 
 int32_t Asterisk::getDlxConstraintColumnsAmount() const {
-  return MAX_DIGIT;
+  return Sudo::MAX_DIGIT;
 }
 
-bool Asterisk::getDlxConstraint(Sudo digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [cellId, digitIndex] = IdPacking::unpackId(columnId, cells.size(), MAX_DIGIT);
-  const Sudo possibleDigit = static_cast<Sudo>(digitIndex + 1);
+bool Asterisk::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
+  const auto [cellId, digitIndex] = IdPacking::unpackId(columnId, cells.size(), Sudo::MAX_DIGIT);
+  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 
   const bool isInCellsSet = cells.find({i, j}) != cells.end();

@@ -5,16 +5,16 @@ bool MaskUtilities::isOnMainDiagonal(int32_t rowIndex, int32_t columnIndex) {
 }
 
 bool MaskUtilities::isOnCenter(int32_t rowIndex, int32_t columnIndex) {
-  return rowIndex == MID_INDEX && columnIndex == MID_INDEX;
+  return rowIndex == Sudo::MID_INDEX && columnIndex == Sudo::MID_INDEX;
 }
 
 std::vector<std::vector<bool>> MaskUtilities::randomMask(int32_t totalDigits,
                                                          std::shared_ptr<RandomGenerator> randomGenerator) {
-  std::vector<std::vector<bool>> mask = fullGivenMask();
-  int32_t digits = TOTAL_DIGITS;
+  std::vector<std::vector<bool>> mask = Sudo::fullGivenMask();
+  int32_t digits = Sudo::TOTAL_DIGITS;
   while (digits != totalDigits) {
-    const int32_t i = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
-    const int32_t j = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
+    const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     if (mask[i][j]) {
       mask[i][j] = false;
       digits--;
@@ -25,15 +25,15 @@ std::vector<std::vector<bool>> MaskUtilities::randomMask(int32_t totalDigits,
 
 std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDigits,
                                                                  std::shared_ptr<RandomGenerator> randomGenerator) {
-  std::vector<std::vector<bool>> mask = fullGivenMask();
-  int32_t digitsToRemove = TOTAL_DIGITS - totalDigits;
+  std::vector<std::vector<bool>> mask = Sudo::fullGivenMask();
+  int32_t digitsToRemove = Sudo::TOTAL_DIGITS - totalDigits;
   // "Diagonal" digits are removed once at the beginning, then in pairs
   int32_t diagonalDigitsRemaining = 9;
   // "Other" ("Non-Diagonal") are always removed in pairs for symmetry
   int32_t otherDigitsRemaining = 72;
 
   if (digitsToRemove % 2 != 0) {
-    const int32_t randomIndex = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
+    const int32_t randomIndex = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     mask[randomIndex][randomIndex] = false;
     digitsToRemove--;
     diagonalDigitsRemaining--;
@@ -44,8 +44,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
     const int32_t random = randomGenerator->randomUniform(2, diagonalDigitsRemaining + otherDigitsRemaining);
     if (random < diagonalDigitsRemaining) {
       // Remove two digits from the diagonal
-      const int32_t index1 = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
-      const int32_t index2 = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
+      const int32_t index1 = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t index2 = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
       if (index1 != index2) {
         if (mask[index1][index1] && mask[index2][index2]) {
           mask[index1][index1] = false;
@@ -58,8 +58,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
       }
     } else {
       // Remove two digits from the other digits
-      const int32_t i = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
-      const int32_t j = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
+      const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
       if (!isOnMainDiagonal(i, j) && mask[i][j]) {
         mask[i][j] = false;
         digitsToRemove--;
@@ -77,8 +77,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
 
 std::vector<std::vector<bool>> MaskUtilities::diagonalRotationMask(int32_t totalDigits,
                                                                    std::shared_ptr<RandomGenerator> randomGenerator) {
-  std::vector<std::vector<bool>> mask = fullGivenMask();
-  int32_t digitsToRemove = TOTAL_DIGITS - totalDigits;
+  std::vector<std::vector<bool>> mask = Sudo::fullGivenMask();
+  int32_t digitsToRemove = Sudo::TOTAL_DIGITS - totalDigits;
 
   // If amount of total digits to remove is not even: need to remove the center
   if (digitsToRemove % 2 != 0) {
@@ -87,8 +87,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalRotationMask(int32_t total
   }
   // Then, can remove digits two-by-to with diagonal rotation
   while (digitsToRemove > 0) {
-    const int32_t i = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
-    const int32_t j = randomGenerator->randomUniform(MIN_INDEX, MAX_INDEX);
+    const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     if (!isOnCenter(i, j) && digitsToRemove >= 2) {
       if (mask[i][j]) {
         mask[i][j] = false;
