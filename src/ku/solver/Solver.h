@@ -33,8 +33,8 @@ public:
    * @return A sparse matrix representation of the one used by DLX
    */
   static SparseCoordinateMatrix getDlxMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
-                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                              std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
+                                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                             std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
 
   /** Preliminary check to see if a set of constraint won't produce a solvable DLX problem. I.e. when the columns that
    * they define are all secondary

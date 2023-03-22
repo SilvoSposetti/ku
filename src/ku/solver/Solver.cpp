@@ -2,6 +2,7 @@
 
 #include "../Validator.h"
 #include "../randomGenerator/RandomGenerator.h"
+#include "../Sudo.h"
 
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,

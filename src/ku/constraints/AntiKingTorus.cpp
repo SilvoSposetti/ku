@@ -1,5 +1,7 @@
 #include "AntiKingTorus.h"
 
+#include <algorithm>
+
 AntiKingTorus::AntiKingTorus() {
   pattern = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
   dashVector = createDashVector(pattern, true);
@@ -27,10 +29,10 @@ std::string AntiKingTorus::getSvgGroup() const {
       for (const auto& [otherI, otherJ] : pattern) {
         const int32_t indexI = i + otherI;
         const int32_t indexJ = j + otherJ;
-        const bool isFirstPointOnBoard =
-            i == std::clamp(i, Sudo::MIN_INDEX, Sudo::MAX_INDEX) && j == std::clamp(j, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
-        const bool isSecondPointOnBoard =
-            indexI == std::clamp(indexI, Sudo::MIN_INDEX, Sudo::MAX_INDEX) && indexJ == std::clamp(indexJ, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+        const bool isFirstPointOnBoard = i == std::clamp(i, Sudo::MIN_INDEX, Sudo::MAX_INDEX) &&
+                                         j == std::clamp(j, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+        const bool isSecondPointOnBoard = indexI == std::clamp(indexI, Sudo::MIN_INDEX, Sudo::MAX_INDEX) &&
+                                          indexJ == std::clamp(indexJ, Sudo::MIN_INDEX, Sudo::MAX_INDEX);
         if (isFirstPointOnBoard || isSecondPointOnBoard) {
           dashSet.insert({{i, j}, {indexI, indexJ}});
         }

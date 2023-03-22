@@ -4,6 +4,8 @@
 #include "../utilities/IdPacking.h"
 #include "ConstraintType.h"
 
+#include <set>
+
 /** Base class for all constraints.
  */
 class AbstractConstraint {

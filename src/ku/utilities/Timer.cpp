@@ -1,8 +1,5 @@
 #include "Timer.h"
 
-#include <cmath>
-#include <iostream>
-
 Timer::Timer()
     : startTime(std::chrono::high_resolution_clock::now()){};
 

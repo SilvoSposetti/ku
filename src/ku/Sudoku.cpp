@@ -4,7 +4,8 @@
 #include "SvgUtilities.h"
 #include "constraints/ConstraintFactory.h"
 #include "solver/Solver.h"
-#include "src/ku/utilities/Utilities.h"
+#include "src/ku/Sudo.h"
+#include <fstream>
 
 Sudoku::Sudoku(const std::string& name,
                ConstraintType constraintTypes,

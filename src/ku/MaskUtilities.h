@@ -1,6 +1,5 @@
 #pragma once
 #include "randomGenerator/RandomGenerator.h"
-#include "utilities/Utilities.h"
 
 namespace MaskUtilities {
 /** Determines whether a cell is on the main diagonal

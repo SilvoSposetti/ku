@@ -1,6 +1,7 @@
 #include "SvgUtilities.h"
 
 #include <iomanip>
+#include <algorithm>
 
 std::string SvgUtilities::getSvgHeader() {
   std::string header = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"";

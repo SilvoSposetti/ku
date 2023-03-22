@@ -1,5 +1,7 @@
 #include "MaskUtilities.h"
 
+#include "Sudo.h"
+
 bool MaskUtilities::isOnMainDiagonal(int32_t rowIndex, int32_t columnIndex) {
   return rowIndex == columnIndex;
 }

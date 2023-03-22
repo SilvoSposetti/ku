@@ -3,8 +3,9 @@
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
-#include "utilities/Utilities.h"
 #include "utilities/SymmetryType.h"
+#include <filesystem>
+
 
 /** Main class that stores Sudokus
  */

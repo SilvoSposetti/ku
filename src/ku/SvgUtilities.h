@@ -1,6 +1,9 @@
 #pragma once
+
+#include "Sudo.h"
 #include "solver/SparseCoordinateMatrix.h"
-#include "utilities/Utilities.h"
+
+#include <string>
 
 const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(Sudo::MAX_DIGIT);

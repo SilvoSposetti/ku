@@ -18,19 +18,22 @@ subdir('src/ku')
 includes = include_directories('src/ku/')
 
 # Create library
-ku_library = library(meson.project_name(), ku_sources)
+ku_library = library(meson.project_name(),
+  sources: ku_sources, 
+  cpp_pch: 'src/ku/pch/pch.h')
 
 # Create executable sandbox and link it with library
 subdir('src/sandbox')
 executable('ku_sandbox',
-  sandbox_sources,
+  sources: sandbox_sources,
   include_directories : includes,
   link_with : ku_library)
 
 # Create test executable and link library
 subdir('test')
 test_executable = executable('ku_test',
-  test_sources,
+  sources: test_sources,
+  cpp_pch: 'test/pch/pch.h',
   include_directories : includes,
   link_with : ku_library,
   dependencies: doctest_dependency)
