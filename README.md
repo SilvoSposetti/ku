@@ -1,5 +1,11 @@
-# ku ![GitHub repo size](https://img.shields.io/github/repo-size/SilvoSposetti/ku?style=for-the-badge) ![GitHub](https://img.shields.io/github/license/SilvoSposetti/ku?style=for-the-badge)
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <h1 align="center">ku</h3>
 
+  ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/SilvoSposetti/ku?style=for-the-badge) ![GitHub](https://img.shields.io/github/license/SilvoSposetti/ku?style=for-the-badge)
+
+</div>
 A lightweight C++ library to generate, solve, and export Sudokus.
 
 ## Description
