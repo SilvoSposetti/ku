@@ -4,6 +4,8 @@
 #include "../utilities/IdPacking.h"
 #include "ConstraintType.h"
 
+#include <cmath>
+#include <iostream>
 #include <set>
 
 /** Base class for all constraints.

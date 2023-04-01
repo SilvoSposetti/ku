@@ -15,12 +15,11 @@ doctest_dependency = doctest_project.get_variable('doctest_dep')
 
 # Grab all sources and define includes
 subdir('src/ku')
-includes = include_directories('src/ku/')
+includes = include_directories('src/ku')
 
 # Create library
 ku_library = library(meson.project_name(),
-  sources: ku_sources, 
-  cpp_pch: 'src/ku/pch/pch.h')
+  sources: ku_sources)
 
 # Create executable sandbox and link it with library
 subdir('src/sandbox')
@@ -33,7 +32,6 @@ executable('ku_sandbox',
 subdir('test')
 test_executable = executable('ku_test',
   sources: test_sources,
-  cpp_pch: 'test/pch/pch.h',
   include_directories : includes,
   link_with : ku_library,
   dependencies: doctest_dependency)

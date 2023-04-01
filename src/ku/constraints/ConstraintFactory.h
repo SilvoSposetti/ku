@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AbstractConstraint.h"
+#include <memory>
 
 /** A simple factory pattern to create constraints
  */

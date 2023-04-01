@@ -5,6 +5,8 @@
 #include "randomGenerator/RandomGenerator.h"
 #include "utilities/SymmetryType.h"
 
+#include <memory>
+
 namespace Setter {
 
 /** Generates a random sudoku with the given inputs

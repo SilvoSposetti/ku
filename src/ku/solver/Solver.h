@@ -5,6 +5,8 @@
 #include "Node.h"
 #include "SparseCoordinateMatrix.h"
 
+#include <memory>
+
 class Solver {
 public:
   /** Creates a new board from scratch with the given constraints using DLX

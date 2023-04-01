@@ -1,5 +1,7 @@
 #include "Board.h"
 
+#include <iostream>
+
 Board::Board(const std::vector<std::vector<Sudo::Digit>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask)
     : solution(inSolution)
     , givenMask(inGivenMask) {}

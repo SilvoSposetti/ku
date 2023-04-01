@@ -1,8 +1,8 @@
 #include "Solver.h"
 
+#include "../Sudo.h"
 #include "../Validator.h"
 #include "../randomGenerator/RandomGenerator.h"
-#include "../Sudo.h"
 
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
@@ -51,8 +51,8 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
 }
 
 SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
-                                             const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                             std::shared_ptr<RandomGenerator> randomGenerator) {
+                                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                            std::shared_ptr<RandomGenerator> randomGenerator) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
@@ -75,7 +75,8 @@ SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo::
   // Initialize matrix with correct size
   SparseCoordinateMatrix matrix(totalRows, totalColumns);
   // Randomize the sequence of digits that is passed when constructing the matrix or not
-  const std::vector<Sudo::Digit> digitsSequence = randomGenerator ? randomGenerator->randomShuffle(Sudo::SUDO_DIGITS) : Sudo::SUDO_DIGITS;
+  const std::vector<Sudo::Digit> digitsSequence =
+      randomGenerator ? randomGenerator->randomShuffle(Sudo::SUDO_DIGITS) : Sudo::SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
@@ -95,7 +96,8 @@ SparseCoordinateMatrix Solver::getDlxMatrix(const std::vector<std::vector<Sudo::
                 // Store matrix cell ID
                 matrix.setCell(matrixRowCounter,
                                matrixColumnCounter,
-                               boardI * Sudo::TOTAL_DIGITS + boardJ * Sudo::MAX_DIGIT + (static_cast<int32_t>(possibleDigit) - 1));
+                               boardI * Sudo::TOTAL_DIGITS + boardJ * Sudo::MAX_DIGIT +
+                                   (static_cast<int32_t>(possibleDigit) - 1));
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }

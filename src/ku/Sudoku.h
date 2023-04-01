@@ -4,8 +4,8 @@
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
 #include "utilities/SymmetryType.h"
-#include <filesystem>
 
+#include <filesystem>
 
 /** Main class that stores Sudokus
  */

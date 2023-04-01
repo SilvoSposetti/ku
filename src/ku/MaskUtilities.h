@@ -1,6 +1,8 @@
 #pragma once
 #include "randomGenerator/RandomGenerator.h"
 
+#include <memory>
+
 namespace MaskUtilities {
 /** Determines whether a cell is on the main diagonal
  * @param rowIndex The row index of the cell

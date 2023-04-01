@@ -1,11 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <tuple>
 #include <utility>
 
 namespace IdPacking {
 
-/** Linearizes two positive integer IDs into a single positive integer.
+/** Linearize two positive integer IDs into a single positive integer.
  * @param x The ID in the x dimension
  * @param y The ID in the y dimension
  * @param xAmount The amount of IDs in the x-dimension
@@ -14,7 +15,7 @@ namespace IdPacking {
  */
 uint32_t packId(uint32_t x, uint32_t y, uint32_t xAmount, uint32_t yAmount);
 
-/** Linearizes three positive integer IDs into a single positive integer.
+/** Linearize three positive integer IDs into a single positive integer.
  * @param x The ID in the x dimension
  * @param y The ID in the y dimension
  * @param z The ID in the z dimension

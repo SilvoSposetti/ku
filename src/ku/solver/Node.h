@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 /** Node class used to implement the data structure for DLX (both the nodes and the headers)
  */
 class Node {

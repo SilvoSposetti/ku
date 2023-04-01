@@ -2,6 +2,8 @@
 
 #include "Sudo.h"
 
+#include <string>
+
 /** Stores the board of a Sudoku
  */
 class Board {

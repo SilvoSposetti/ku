@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Sudo.h"
 #include "Board.h"
+#include "Sudo.h"
 #include "constraints/AbstractConstraint.h"
+
+#include <memory>
+
 /** Class that holds static methods used to check whether a board satisfies all the constraints
  */
 class Validator {

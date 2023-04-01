@@ -1,7 +1,8 @@
 #include "SparseCoordinateMatrix.h"
 
-#include <unordered_set>
 #include <algorithm>
+#include <iostream>
+#include <unordered_set>
 
 SparseCoordinateMatrix::SparseCoordinateMatrix(int32_t totalRows, int32_t totalColumns)
     : columns(totalColumns)

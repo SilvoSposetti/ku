@@ -18,7 +18,8 @@ AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> patte
         int32_t boardIndexJ = j + otherJ;
         boardIndexI = doTorus ? (boardIndexI + Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT : boardIndexI;
         boardIndexJ = doTorus ? (boardIndexJ + Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT : boardIndexJ;
-        if (doTorus || (0 <= boardIndexI && boardIndexI <= Sudo::MAX_INDEX && 0 <= boardIndexJ && boardIndexJ <= Sudo::MAX_INDEX)) {
+        if (doTorus || (0 <= boardIndexI && boardIndexI <= Sudo::MAX_INDEX && 0 <= boardIndexJ &&
+                        boardIndexJ <= Sudo::MAX_INDEX)) {
           const std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>> element = {
               {i, j}, {boardIndexI, boardIndexJ}};
           const std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>> elementReversed = {element.second,
