@@ -17,6 +17,14 @@ int32_t SparseCoordinateMatrix::getRowsAmount() const {
   return rowsAmount;
 }
 
+int32_t SparseCoordinateMatrix::getValidElementsAmount() const {
+  int32_t counter = 0;
+  for (const auto& column : columns) {
+    counter += column.elements.size();
+  }
+  return counter;
+}
+
 void SparseCoordinateMatrix::setColumnSecondary(int32_t columnIndex) {
   if (0 <= columnIndex && columnIndex < columnsAmount) {
     columns[columnIndex].isColumnPrimary = false;

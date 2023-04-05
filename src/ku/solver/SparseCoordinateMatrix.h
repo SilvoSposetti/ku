@@ -34,6 +34,11 @@ public:
    */
   int32_t getRowsAmount() const;
 
+  /** Retrieves the amount of valid (non-negative) elements
+   * @return The amount of valid elements
+   */
+  int32_t getValidElementsAmount() const;
+
   /** Sets a particular column to be secondary
    * @return The amount of rows
    */

@@ -26,6 +26,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     }
     CHECK(sparseMatrix.getRowsAmount() == rows);
     CHECK(sparseMatrix.getColumnsAmount() == columns);
+    CHECK(sparseMatrix.getValidElementsAmount() == 13);
 
     // Cannot set data outside of matrix size
     CHECK_FALSE(sparseMatrix.setCell(rows, 0, 25));
