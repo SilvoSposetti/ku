@@ -1,6 +1,8 @@
 #include "DlxMatrix.h"
 
+#include <algorithm>
 #include <iostream>
+#include <limits>
 
 DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
     : itemsAmount(sparseMatrix.getColumnsAmount())
@@ -62,8 +64,8 @@ DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
     if (nodesList[nodeId].type == DlxNodeType::Spacer) {
       // x.up is the address of the first node in the option before x
       // x.down is the address of the last node in the option after x
-      nodesList[nodeId].up = lastSpacerId + 1;
       if (lastSpacerId > 0) {
+        nodesList[nodeId].up = lastSpacerId + 1;
         nodesList[lastSpacerId].down = nodeId - 1;
       }
       lastSpacerId = nodeId;
@@ -71,7 +73,7 @@ DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
   }
 
   const auto getInfo = [&](const std::string& inName, int32_t value) -> std::string {
-    if (value > 0) {
+    if (value != INVALID_INDEX) {
       std::string valueString = std::to_string(value);
       while (valueString.size() < 2) {
         valueString = " " + valueString;
@@ -86,11 +88,11 @@ DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
     std::string s;
     s += getInfo("ID", counter);
     s += node.name + " \t";
-    s += getInfo("L", node.left);
-    s += getInfo("R", node.right);
+    s += getInfo("H", node.header);
     s += getInfo("U", node.up);
     s += getInfo("D", node.down);
-    s += getInfo("H", node.header);
+    s += getInfo("L", node.left);
+    s += getInfo("R", node.right);
     s += getInfo("LEN", node.length);
     s += getInfo("Data", node.data);
     std::cout << s << std::endl;
@@ -98,16 +100,126 @@ DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
   }
 }
 
-int32_t DlxMatrix::getFirstSmallestColumnIndex() const {
-  return 0; // TODO: implement
+std::unordered_set<int32_t> DlxMatrix::solve() {
+  std::unordered_set<int32_t> nodeIndices = runAlgorithmX();
+  std::cout << "Node Ids: ";
+  for (const auto& id : nodeIndices) {
+    std::cout << id << " ";
+  }
+  std::cout << std::endl;
+
+  std::unordered_set<int32_t> optionIds;
+  for (const auto& id : nodeIndices) {
+    // Count how many spacers are in front of the node
+    const int32_t spacersAmount =
+        std::count_if(nodesList.begin(), nodesList.begin() + id, [&](const DlxNode& node) -> bool {
+          return node.type == DlxNodeType::Spacer;
+        });
+    optionIds.insert(spacersAmount - 1);
+  }
+
+  return optionIds;
 }
 
-void DlxMatrix::coverColumn(int32_t columnIndex) {
-  cover(columnIndex + 1);
+std::unordered_set<int32_t> DlxMatrix::runAlgorithmX() {
+  // List to store all node pointers for backtracking
+  std::vector<int32_t> x(optionsAmount, -1);
+  std::unordered_set<int32_t> solution = {};
+  int32_t l = 0; // 0 < l < optionsAmount -1
+
+  std::cout << "Start|";
+
+  // X1
+  {
+    std::cout << "X1|";
+
+    int32_t i = 0;
+    int32_t p = 0;
+    int32_t j = 0;
+  X2: // Enter level l
+    std::cout << "X2|";
+    if (nodesList[0].right == 0) {
+      solution = {x.begin(), x.begin() + l};
+      goto X8;
+    }
+    // X3: // Choose i
+    std::cout << "X3|";
+    i = pickFirstSmallestColumnIndex();
+    // X4: // Cover i
+    std::cout << "X4|";
+    cover(i);
+    x[l] = nodesList[i].down;
+  X5: // Try x[l]
+    std::cout << "X5|";
+    if (x[l] == i) {
+      // Tried all options for i
+      goto X7;
+    } else {
+      int32_t p = x[l] + 1;
+      while (p != x[l]) {
+        int32_t j = nodesList[p].header;
+        if (j == INVALID_INDEX) {
+          p = nodesList[p].up;
+        } else {
+          // Cover items != i in the option that contains x[l]
+          cover(j);
+          p++;
+        }
+      }
+      l++;
+      goto X2;
+    }
+  X6: // Try again
+    std::cout << "X6|";
+    p = x[l] - 1;
+    while (p != x[l]) {
+      j = nodesList[p].header;
+      if (j == INVALID_INDEX) {
+        p = nodesList[p].down;
+      } else {
+        uncover(j);
+        p--;
+      }
+    }
+    i = nodesList[x[l]].header;
+    x[l] = nodesList[x[l]].down;
+    goto X5;
+  X7:
+    std::cout << "X7|";
+    uncover(i);
+  X8:
+    std::cout << "X8|";
+    if (l == 0) {
+      goto END;
+    } else {
+      l--;
+      goto X6;
+    }
+  }
+
+// end;
+END:
+  std::cout << std::endl;
+  return solution;
 }
 
-void DlxMatrix::uncoverColumn(int32_t columnIndex) {
-  uncover(columnIndex + 1);
+int32_t DlxMatrix::pickFirstSmallestColumnIndex() const {
+  return nodesList[0].right;
+  int32_t maxLength = std::numeric_limits<int32_t>::max();
+  int32_t index = INVALID_INDEX;
+  int32_t column = nodesList[0].right;
+  while (column != 0) {
+    const int32_t length = nodesList[column].length;
+    if (length < maxLength) {
+      index = column;
+      maxLength = length;
+    }
+    column = nodesList[column].right;
+  }
+  if (maxLength != std::numeric_limits<int32_t>::max()) {
+    return index;
+  }
+  return INVALID_INDEX;
 }
 
 void DlxMatrix::cover(int32_t itemIndex) {
@@ -146,7 +258,7 @@ void DlxMatrix::hide(int32_t p) {
     const int32_t x = nodesList[q].header;
     const int32_t u = nodesList[q].up;
     const int32_t d = nodesList[q].down;
-    if (x <= 0) { // Q is a spacer
+    if (x == INVALID_INDEX) { // Q is a spacer
       q = u;
     } else {
       nodesList[u].down = d;
@@ -163,7 +275,7 @@ void DlxMatrix::unhide(int32_t p) {
     const int32_t x = nodesList[q].header;
     const int32_t u = nodesList[q].up;
     const int32_t d = nodesList[q].down;
-    if (x <= 0) {
+    if (x == INVALID_INDEX) { // Q is a spacer
       q = d;
     } else {
       nodesList[u].down = q;
