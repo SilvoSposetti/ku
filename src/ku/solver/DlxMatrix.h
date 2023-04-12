@@ -1,50 +1,11 @@
 #pragma once
 
 #include "SparseCoordinateMatrix.h"
+#include "DlxNode.h"
 
 #include <string>
 #include <unordered_set>
 #include <vector>
-
-enum class DlxNodeType : uint8_t { Root, Header, Node, Spacer };
-
-struct DlxNode {
-
-  DlxNode(DlxNodeType type)
-      : type(type) {
-    switch (type) {
-    case DlxNodeType::Root:
-      name = "root  ";
-      break;
-    case DlxNodeType::Header:
-      name = "header";
-      break;
-    case DlxNodeType::Node:
-      name = "node  ";
-      break;
-    case DlxNodeType::Spacer:
-      name = "spacer";
-      break;
-    default:
-      name = "node  ";
-      break;
-    }
-  };
-
-  DlxNodeType type = DlxNodeType::Node;
-  /// The data stored in the node. Used by nodes only
-  int32_t data = -1;
-  /// Pointer to left node
-  int32_t left = -1;
-  /// Pointer to left node
-  int32_t right = -1;
-  int32_t up = -1;
-  int32_t down = -1;
-  int32_t header = -1;
-  int32_t length = -1;
-
-  std::string name;
-};
 
 /** Class that encapsulates the data structure used by Algorithm X and the functions that are run on it.
  * It is used to find solutions of Exact Cover problems described by a sparse matrix.

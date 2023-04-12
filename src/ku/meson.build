@@ -28,6 +28,7 @@ ku_sources = files(
   'solver/Solver.cpp',
   'solver/SparseCoordinateMatrix.cpp',
   'solver/DlxMatrix.cpp',
+  'solver/DlxNode.cpp',
   'utilities/IdPacking.cpp',
   'utilities/Timer.cpp',
 )
