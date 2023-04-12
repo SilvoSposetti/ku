@@ -44,7 +44,7 @@ void DlxMatrix::printDataStructure() const {
   for (const auto& node : structure) {
     std::string s;
     s += getInfo("ID", counter);
-    s += node.name + "  ";
+    s += node.getTypeString() + "  ";
     s += getInfo("H", node.header);
     s += getInfo("U", node.up);
     s += getInfo("D", node.down);

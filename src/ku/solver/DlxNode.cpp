@@ -1,22 +1,19 @@
 #include "DlxNode.h"
 
 DlxNode::DlxNode(DlxNodeType type)
-    : type(type) {
+    : type(type) {}
+
+std::string DlxNode::getTypeString() const {
   switch (type) {
   case DlxNodeType::Root:
-    name = "root  ";
-    break;
+    return "root  ";
   case DlxNodeType::Header:
-    name = "header";
-    break;
+    return "header";
   case DlxNodeType::Node:
-    name = "node  ";
-    break;
+    return "node  ";
   case DlxNodeType::Spacer:
-    name = "spacer";
-    break;
+    return "spacer";
   default:
-    name = "node  ";
-    break;
+    return "node  ";
   }
-}
+};

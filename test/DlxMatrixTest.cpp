@@ -31,7 +31,7 @@ TEST_CASE("DLX Matrix") {
 
     SparseCoordinateMatrix sparseMatrix = createSparseCoordinateMatrix(exactCoverMatrix);
     DlxMatrix dlxMatrix(sparseMatrix);
-    // dlxMatrix.printDataStructure();
+    dlxMatrix.printDataStructure();
 
     const std::unordered_set<int32_t> solutionRows = dlxMatrix.solve();
     CHECK(solutionRows == std::unordered_set<int32_t>{0, 3, 4});
