@@ -175,4 +175,60 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     // Then it can be solved
     CHECK(sparseMatrix.isSolvableByDlx());
   }
+
+  SUBCASE("Matrix Constructor") {
+    // Malformed: -> sparse matrix is empty
+    const std::vector<std::vector<int32_t>> malformedMatrix = {
+        {11, -1, 13, -1, -1, -1},
+        {21, 22, -1, 24, -1, -1},
+        {-1, 32, 33, -1, -1, -1},
+        {-1, -1, 43, 44, -1, 46, -1},
+        {-1, -1, -1, -1, -1, -1},
+        {61, 62, -1, -1, -1, 66},
+    };
+    SparseCoordinateMatrix malformedSparseMatrix{malformedMatrix};
+    CHECK(malformedSparseMatrix.getRowsAmount() == 0);
+    CHECK(malformedSparseMatrix.getColumnsAmount() == 0);
+    CHECK(malformedSparseMatrix.getValidElementsAmount() == 0);
+    for (std::size_t i = 0; i < malformedMatrix.size(); i++) {
+      for (std::size_t j = 0; j < malformedMatrix[i].size(); j++) {
+        CHECK(malformedSparseMatrix.getCell(i, j) < 0);
+      }
+    }
+
+    // Correctly formed, but empty
+    const std::vector<std::vector<int32_t>> emptyMatrix = {
+        {-1, -1, -1, -1, -1, -1},
+        {-1, -1, -1, -1, -1, -1},
+    };
+    SparseCoordinateMatrix emptySparseMatrix{malformedMatrix};
+    CHECK(malformedSparseMatrix.getRowsAmount() == 0);
+    CHECK(malformedSparseMatrix.getColumnsAmount() == 0);
+    CHECK(malformedSparseMatrix.getValidElementsAmount() == 0);
+    for (std::size_t i = 0; i < malformedMatrix.size(); i++) {
+      for (std::size_t j = 0; j < malformedMatrix[i].size(); j++) {
+        CHECK(malformedSparseMatrix.getCell(i, j) < 0);
+      }
+    }
+
+    // Correctly formed
+    const std::vector<std::vector<int32_t>> matrix = {
+        {11, -1, 13, -1, -1, -1},
+        {21, 22, -1, 24, -1, -1},
+        {-1, 32, 33, -1, -1, -1},
+        {-1, -1, 43, 44, -1, 46},
+        {-1, -1, -1, -1, -1, -1},
+        {61, 62, -1, -1, -1, 66},
+    };
+
+    SparseCoordinateMatrix sparseMatrix{matrix};
+    CHECK(sparseMatrix.getRowsAmount() == matrix.size());
+    CHECK(sparseMatrix.getColumnsAmount() == matrix[0].size());
+    CHECK(sparseMatrix.getValidElementsAmount() == 13);
+    for (std::size_t i = 0; i < matrix.size(); i++) {
+      for (std::size_t j = 0; j < matrix[i].size(); j++) {
+        CHECK(sparseMatrix.getCell(i, j) == matrix[i][j]);
+      }
+    }
+  }
 }

@@ -9,6 +9,30 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(int32_t totalRows, int32_t totalC
     , columnsAmount(totalColumns)
     , rowsAmount(totalRows) {}
 
+SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<int32_t>>& matrix) {
+  rowsAmount = matrix.size();
+  if (rowsAmount == 0) {
+    reset();
+    return;
+  }
+  columnsAmount = matrix[0].size();
+  columns = std::vector<SparseCoordinateColumn>(columnsAmount);
+
+  for (size_t i = 0; i < matrix.size(); i++) {
+    if (matrix[i].size() != matrix[0].size()) {
+      reset();
+      return;
+    }
+    for (size_t j = 0; j < matrix[i].size(); j++) {
+      setCell(i, j, matrix[i][j]);
+    }
+  }
+  
+  if(getValidElementsAmount() == 0){
+    reset();
+  }
+}
+
 int32_t SparseCoordinateMatrix::getColumnsAmount() const {
   return columnsAmount;
 }
@@ -146,4 +170,10 @@ bool SparseCoordinateMatrix::reorderColumns(const std::vector<int32_t>& permutat
   }
 
   return true;
+}
+
+void SparseCoordinateMatrix::reset() {
+  columnsAmount = 0;
+  rowsAmount = 0;
+  columns.clear();
 }

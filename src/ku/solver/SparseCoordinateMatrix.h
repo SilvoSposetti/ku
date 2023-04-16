@@ -10,7 +10,7 @@ struct SparseCoordinateColumn {
   bool isColumnPrimary = true;
   /// A map of all the non-negative elements of the column. Key is the sparse matrix index, value is the data stored in
   /// that index
-  std::unordered_map<int32_t, int32_t> elements;
+  std::unordered_map<int32_t, int32_t> elements = {};
 };
 
 /** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
@@ -18,11 +18,15 @@ struct SparseCoordinateColumn {
  */
 class SparseCoordinateMatrix {
 public:
-  /** Constructor
+  /** Constructor. Creates an empty sparse coordinate matrix. The elements can be set individually with setCell()
    * @param totalRows The amount of rows the sparse matrix has
    * @param totalColumns The amount of columns the sparse matrix has
    */
   SparseCoordinateMatrix(int32_t totalRows, int32_t totalColumns);
+
+  /** Constructor. Creates a sparse coordinate matrix according to a given
+   */
+  SparseCoordinateMatrix(const std::vector<std::vector<int32_t>>& matrix);
 
   /** Retrieves the amount of columns that this matrix supports
    * @return The amount of columns
@@ -76,6 +80,11 @@ public:
    * @return Whether reordering can be performed
    */
   bool reorderColumns(const std::vector<int32_t>& permutation);
+
+private:
+  /** Resets the sparse matrix. I.e. rows and columns are set to 0 and the columns vector is cleared.
+   */
+  void reset();
 
 private:
   /// The matrix. Stores only non-zero elements. Has a vector for every column
