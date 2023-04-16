@@ -168,7 +168,6 @@ std::unordered_set<int32_t> DlxMatrix::runAlgorithmX() {
   int32_t otherItemIndex = 0;
 
 X2: // Enter the current level
-  std::cout << level << " | ";
   if (structure[0].right == 0) {
     solution = {x.begin(), x.begin() + level};
     goto X8;

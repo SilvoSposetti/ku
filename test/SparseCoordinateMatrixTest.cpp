@@ -177,37 +177,37 @@ TEST_CASE("SparseCoordinateMatrixTest") {
   }
 
   SUBCASE("Matrix Constructor") {
-    // Malformed: -> sparse matrix is empty
-    const std::vector<std::vector<int32_t>> malformedMatrix = {
-        {11, -1, 13, -1, -1, -1},
-        {21, 22, -1, 24, -1, -1},
-        {-1, 32, 33, -1, -1, -1},
-        {-1, -1, 43, 44, -1, 46, -1},
-        {-1, -1, -1, -1, -1, -1},
-        {61, 62, -1, -1, -1, 66},
-    };
-    SparseCoordinateMatrix malformedSparseMatrix{malformedMatrix};
-    CHECK(malformedSparseMatrix.getRowsAmount() == 0);
-    CHECK(malformedSparseMatrix.getColumnsAmount() == 0);
-    CHECK(malformedSparseMatrix.getValidElementsAmount() == 0);
-    for (std::size_t i = 0; i < malformedMatrix.size(); i++) {
-      for (std::size_t j = 0; j < malformedMatrix[i].size(); j++) {
-        CHECK(malformedSparseMatrix.getCell(i, j) < 0);
-      }
-    }
 
-    // Correctly formed, but empty
-    const std::vector<std::vector<int32_t>> emptyMatrix = {
-        {-1, -1, -1, -1, -1, -1},
-        {-1, -1, -1, -1, -1, -1},
+    const std::vector<std::vector<std::vector<int32_t>>> invalidMatrices = {
+        {
+            // Malformed
+            {11, -1, 13, -1, -1, -1},
+            {21, 22, -1, 24, -1, -1},
+            {-1, 32, 33, -1, -1, -1},
+            {-1, -1, 43, 44, -1, 46, -1}, // This row is malformed
+            {-1, -1, -1, -1, -1, -1},
+            {61, 62, -1, -1, -1, 66},
+        },
+        {
+            // Correctly formed, but no valid element empty
+            {-1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1},
+        },
+        {
+            // Empty matrix
+        },
     };
-    SparseCoordinateMatrix emptySparseMatrix{malformedMatrix};
-    CHECK(malformedSparseMatrix.getRowsAmount() == 0);
-    CHECK(malformedSparseMatrix.getColumnsAmount() == 0);
-    CHECK(malformedSparseMatrix.getValidElementsAmount() == 0);
-    for (std::size_t i = 0; i < malformedMatrix.size(); i++) {
-      for (std::size_t j = 0; j < malformedMatrix[i].size(); j++) {
-        CHECK(malformedSparseMatrix.getCell(i, j) < 0);
+    for (const auto& inValidMatrix : invalidMatrices) {
+      SparseCoordinateMatrix invalidSparseMatrix{inValidMatrix};
+      // 0 Rows or Columns
+      CHECK(invalidSparseMatrix.getRowsAmount() == 0);
+      CHECK(invalidSparseMatrix.getColumnsAmount() == 0);
+      // All elements are invalid
+      CHECK(invalidSparseMatrix.getValidElementsAmount() == 0);
+      for (std::size_t i = 0; i < invalidMatrices.size(); i++) {
+        for (std::size_t j = 0; j < invalidMatrices[i].size(); j++) {
+          CHECK(invalidSparseMatrix.getCell(i, j) < 0);
+        }
       }
     }
 
