@@ -7,10 +7,16 @@
 DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
     : itemsAmount(sparseMatrix.getColumnsAmount())
     , optionsAmount(sparseMatrix.getRowsAmount()) {
-  createDlxDataStructure(sparseMatrix);
+  if (sparseMatrix.getValidElementsAmount() > 0) {
+    createDlxDataStructure(sparseMatrix);
+  }
 }
 
 std::unordered_set<int32_t> DlxMatrix::solve() {
+  if (optionsAmount == 0 || itemsAmount == 0) {
+    return {};
+  }
+
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
   std::unordered_set<int32_t> nodeIndices = runAlgorithmX();
 
@@ -162,6 +168,7 @@ std::unordered_set<int32_t> DlxMatrix::runAlgorithmX() {
   int32_t otherItemIndex = 0;
 
 X2: // Enter the current level
+  std::cout << level << " | ";
   if (structure[0].right == 0) {
     solution = {x.begin(), x.begin() + level};
     goto X8;
