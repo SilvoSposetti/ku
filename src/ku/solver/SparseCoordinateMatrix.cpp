@@ -27,8 +27,8 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<int
       setCell(i, j, matrix[i][j]);
     }
   }
-  
-  if(getValidElementsAmount() == 0){
+
+  if (getValidElementsAmount() == 0) {
     reset();
   }
 }
@@ -96,6 +96,9 @@ int32_t SparseCoordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) c
 }
 
 bool SparseCoordinateMatrix::isSolvableByDlx() const {
+  if (columnsAmount == 0 || rowsAmount == 0 || columns.size() == 0) {
+    return true;
+  }
 
   // Matrix is not solvable if all columns are secondary
   bool allSecondary = true;

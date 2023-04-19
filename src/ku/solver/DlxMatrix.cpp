@@ -12,25 +12,30 @@ DlxMatrix::DlxMatrix(const SparseCoordinateMatrix& sparseMatrix)
   }
 }
 
-std::unordered_set<int32_t> DlxMatrix::solve() {
-  if (optionsAmount == 0 || itemsAmount == 0) {
-    return {};
-  }
-
+std::vector<std::unordered_set<int32_t>> DlxMatrix::solve() {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  std::unordered_set<int32_t> nodeIndices = runAlgorithmX();
+  std::vector<std::unordered_set<int32_t>> solutions = runAlgorithmX(false);
 
   // Find out which options are the solution
-  std::unordered_set<int32_t> optionIds;
-  for (const auto& id : nodeIndices) {
-    // Count how many spacers are in front of the node
-    const int32_t spacersAmount =
-        std::count_if(structure.begin(), structure.begin() + id, [&](const DlxNode& node) -> bool {
-          return node.type == DlxNodeType::Spacer;
-        });
-    optionIds.insert(spacersAmount - 1);
+  std::vector<std::unordered_set<int32_t>> optionIdsVector;
+  for (const auto& nodeIndices : solutions) {
+    std::unordered_set<int32_t> optionIds;
+    for (const auto& id : nodeIndices) {
+      // Count how many spacers are in front of the node
+      const int32_t spacersAmount =
+          std::count_if(structure.begin(), structure.begin() + id, [&](const DlxNode& node) -> bool {
+            return node.type == DlxNodeType::Spacer;
+          });
+      optionIds.insert(spacersAmount - 1);
+    }
+    optionIdsVector.emplace_back(optionIds);
   }
-  return optionIds;
+
+  return optionIdsVector;
+}
+
+bool DlxMatrix::hasUniqueSolution() {
+  return runAlgorithmX(true).size() == 1;
 }
 
 void DlxMatrix::printDataStructure() const {
@@ -146,20 +151,25 @@ void DlxMatrix::createDlxDataStructure(const SparseCoordinateMatrix& sparseMatri
   }
 }
 
-std::unordered_set<int32_t> DlxMatrix::runAlgorithmX() {
+std::vector<std::unordered_set<int32_t>> DlxMatrix::runAlgorithmX(bool checkForUniqueness) {
+  // Don't run Algorithm X on an empty DLX-Matrix
+  if (optionsAmount == 0 || itemsAmount == 0) {
+    return {};
+  }
+
   // x is the list of all options currently selected, this is used for backtracking
   // an option in this case is represented by the index of a node that is contained by the option
   std::vector<int32_t> x(optionsAmount, -1);
 
-  // The following vector will store the solution, i.e. the list of nodes which are contained by the options that solve
+  // The following vector will store the solutions, i.e. the sets of nodes which are contained by the options that solve
   // the exact cover problem
-  std::unordered_set<int32_t> solution = {};
+  std::vector<std::unordered_set<int32_t>> solutions;
 
   // The following algorithm is taken by the draft of Volume 4 of "The Art of Computer Programming" written by Donald
   // Knuth. In particular, this has been taken from the pre-fascicle 5c, which concentrates on the "Dancing Links"
   // technique.
   // It make use of goto-statements and the x vector as a means to perform backtracking. I've left the names of the
-  // steps as Knuth names them (X1 to X8).
+  // steps as Knuth names them (Step X1 to Step X8).
 
   // X1 (Initialization)
   int32_t level = 0; // Keeps track of the current "depth" level
@@ -169,8 +179,15 @@ std::unordered_set<int32_t> DlxMatrix::runAlgorithmX() {
 
 X2: // Enter the current level
   if (structure[0].right == 0) {
-    solution = {x.begin(), x.begin() + level};
-    goto X8;
+    // The list of currently selected options x contains a valid solution! Store it.
+    solutions.emplace_back(std::unordered_set<int32_t>({x.begin(), x.begin() + level}));
+    if (checkForUniqueness && solutions.size() >= 2) {
+      // Early exit if checking for uniqueness, since more than one solution was found
+      goto X8;
+    } else {
+      // Need to backtrack and continue with the algorithm to find possible further solutions
+      goto X7;
+    }
   }
   // X3: // Choose an item
   itemIndex = pickFirstSmallestItemIndex();
@@ -226,7 +243,18 @@ X8: // Leave level l
   }
 
 END:
-  return solution;
+  // Handle checking for uniqueness
+  if (checkForUniqueness) {
+    if (solutions.size() == 1) {
+      // Return the single solution found
+      return solutions;
+    } else {
+      // Returning a non-1-sized solutions
+      return {};
+    }
+  }
+
+  return solutions;
 }
 
 int32_t DlxMatrix::pickFirstSmallestItemIndex() const {

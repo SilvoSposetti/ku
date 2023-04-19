@@ -174,6 +174,10 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     sparseMatrix.setColumnSecondary(4);
     // Then it can be solved
     CHECK(sparseMatrix.isSolvableByDlx());
+  
+    // Empty matrix is solvable
+    const SparseCoordinateMatrix emptyMatrix{{}};
+    CHECK(emptyMatrix.isSolvableByDlx());
   }
 
   SUBCASE("Matrix Constructor") {

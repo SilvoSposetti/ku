@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SparseCoordinateMatrix.h"
 #include "DlxNode.h"
+#include "SparseCoordinateMatrix.h"
 
 #include <string>
 #include <unordered_set>
@@ -18,10 +18,16 @@ public:
    */
   DlxMatrix(const SparseCoordinateMatrix& sparseMatrix);
 
-  /** Solves the exact cover problem
-   * @return Returns a set of option (row) indices that solve the Exact Cover problem
+  /** Solves the Exact Cover problem and retrieves none, one or many solutions to it. Uses Algorithm X.
+   * @return Returns potentially zero, one or many sets of options (row) indices that solve the problem defined by the
+   * matrix
    */
-  std::unordered_set<int32_t> solve();
+  std::vector<std::unordered_set<int32_t>> solve();
+
+  /** Computes whether the Exact Cover problem has exactly one solution. Uses Algorithm X.
+   * @return Whether exactly one solution exists to the problem defined by the matrix.
+   */
+  bool hasUniqueSolution();
 
   /** Logs to standard output the internal data structure used. Useful for debugging
    */
@@ -34,10 +40,10 @@ private:
   void createDlxDataStructure(const SparseCoordinateMatrix& sparseMatrix);
 
   /** Runs Algorithm X on the internal data structure to find a solution.
-   * @return A set of indices pointing to nodes in the data structure. These point to the first nodes of options that
-   * are part of the solution found.
+   * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
+   * to the first nodes of options that are part of the solution found.
    */
-  std::unordered_set<int32_t> runAlgorithmX();
+  std::vector<std::unordered_set<int32_t>> runAlgorithmX(bool checkForUniqueness);
 
   /** Computes the index of the item with smallest length in the active list of the data structure. If there are
    * multiple elements with the same smallest length, it returns the first one.
@@ -74,7 +80,6 @@ private:
   int32_t itemsAmount = 0;
   /// The amount of options in the exact cover problem
   int32_t optionsAmount = 0;
-
   /// The data structure. A list of nodes constructed from a sparse matrix
   std::vector<DlxNode> structure = {};
 };
