@@ -53,11 +53,9 @@ TEST_CASE("DLX Matrix") {
     for (const auto& unsolvableMatrix : unsolvableMatrices) {
       SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
       CHECK(sparseMatrix.isSolvableByDlx()); // Theoretically solvable, but no solutions can be found
-      DlxMatrix dlxMatrix(sparseMatrix);
-      // dlxMatrix.printDataStructure();
-
-      CHECK(!dlxMatrix.hasUniqueSolution());
-      const std::vector<std::unordered_set<int32_t>> solutionRows = dlxMatrix.solve();
+      //   AlgorithmX::printDataStructure(sparseMatrix);
+      CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
+      const std::vector<std::unordered_set<int32_t>> solutionRows = AlgorithmX::run(sparseMatrix);
       CHECK(solutionRows.empty());
     }
   }
@@ -109,11 +107,9 @@ TEST_CASE("DLX Matrix") {
     for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
       CHECK(sparseMatrix.isSolvableByDlx());
-      DlxMatrix dlxMatrix(sparseMatrix);
-      // dlxMatrix.printDataStructure();
-
-      CHECK(dlxMatrix.hasUniqueSolution());
-      const std::vector<std::unordered_set<int32_t>> solutions = dlxMatrix.solve();
+      //   AlgorithmX::printDataStructure(sparseMatrix);
+      CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
+      const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
       CHECK(solutions.size() == 1);
       CHECK(solutions.at(0) == exactCoverSolution);
     }
@@ -184,10 +180,8 @@ TEST_CASE("DLX Matrix") {
     for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
       CHECK(sparseMatrix.isSolvableByDlx());
-      DlxMatrix dlxMatrix(sparseMatrix);
-      dlxMatrix.printDataStructure();
-
-      const std::vector<std::unordered_set<int32_t>> solutions = dlxMatrix.solve();
+      //   AlgorithmX::printDataStructure(sparseMatrix);
+      const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
       CHECK(solutions.size() == exactCoverSolutions.size());
       // Check that every solution found appears in the list of the ones provided
       for (const auto& exactCoverSolution : exactCoverSolutions) {

@@ -7,79 +7,27 @@
 #include <unordered_set>
 #include <vector>
 
-/** Class that encapsulates the data structure used by Algorithm X and the functions that are run on it.
- * It is used to find solutions of Exact Cover problems described by a sparse matrix.
+/** Namespace that interfaces with Algorithm X. It is used to find solutions of Exact Cover problems described by
+ * sparse matrices.
  */
-class DlxMatrix {
+namespace AlgorithmX {
 
-public:
-  /** Constructor
-   * @param sparseMatrix The sparse matrix representing the Exact Cover problem
-   */
-  DlxMatrix(const SparseCoordinateMatrix& sparseMatrix);
+/** Solves the Exact Cover problem described by the matrix and retrieves none, one or many solutions.
+ * @param sparseMatrix The sparse matrix representing the Exact Cover problem
+ * @return Returns potentially zero, one or many sets of options (matrix-rows) indices that solve the matrix's problem
+ */
+std::vector<std::unordered_set<int32_t>> run(const SparseCoordinateMatrix& sparseMatrix);
 
-  /** Solves the Exact Cover problem and retrieves none, one or many solutions to it. Uses Algorithm X.
-   * @return Returns potentially zero, one or many sets of options (row) indices that solve the problem defined by the
-   * matrix
-   */
-  std::vector<std::unordered_set<int32_t>> solve();
+/** Computes whether the Exact Cover problem has exactly one solution. Has a potential early exit with respect to run()
+ * since it returns false as soon as it finds 2 solutions.
+ * @param sparseMatrix The sparse matrix representing the Exact Cover problem
+ * @return Whether exactly one solution exists to the problem defined by the matrix.
+ */
+bool hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix);
 
-  /** Computes whether the Exact Cover problem has exactly one solution. Uses Algorithm X.
-   * @return Whether exactly one solution exists to the problem defined by the matrix.
-   */
-  bool hasUniqueSolution();
+/** Logs to standard output the internal data structure used. Useful for debugging.
+ * @param sparseMatrix The sparse matrix representing the Exact Cover problem
+ */
+void printDataStructure(const SparseCoordinateMatrix& sparseMatrix);
 
-  /** Logs to standard output the internal data structure used. Useful for debugging
-   */
-  void printDataStructure() const;
-
-private:
-  /** Constructs the internal data structure
-   * @param sparseMatrix The sparse matrix used for construction
-   */
-  void createDlxDataStructure(const SparseCoordinateMatrix& sparseMatrix);
-
-  /** Runs Algorithm X on the internal data structure to find a solution.
-   * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
-   * to the first nodes of options that are part of the solution found.
-   */
-  std::vector<std::unordered_set<int32_t>> runAlgorithmX(bool checkForUniqueness);
-
-  /** Computes the index of the item with smallest length in the active list of the data structure. If there are
-   * multiple elements with the same smallest length, it returns the first one.
-   * @return The index to the first smallest item in the data structure
-   */
-  int32_t pickFirstSmallestItemIndex() const;
-
-  /** Covers an item. Covering means modifying node pointers such that the item does not appear in the active list.
-   * Modifies the internal data structure.
-   * @param itemIndex The index of the item that needs to be covered
-   */
-  void coverItem(int32_t itemIndex);
-
-  /** Uncovers an item. Uncovering means modifying node pointers such that the item reappears in the active
-   * list. Modifies the internal data structure.
-   * @param itemIndex The index of the item that needs to be uncovered
-   */
-  void uncoverItem(int32_t itemIndex);
-
-  /** Hides an option. Hiding means modifying node pointers such that the option disappears from the available options.
-   * Modifies the internal data structure.
-   * @param optionIndex The index of a node that is part of the option to be hidden
-   */
-  void hideOption(int32_t optionNode);
-
-  /** Unhides an option. Unhiding means modifying node pointers such that the option reappears from the available
-   * options. Modifies the internal data structure.
-   * @param optionIndex The index of a node that is part of the option to be unhidden
-   */
-  void unhideOption(int32_t optionNode);
-
-private:
-  /// The amount of items in the exact cover problem
-  int32_t itemsAmount = 0;
-  /// The amount of options in the exact cover problem
-  int32_t optionsAmount = 0;
-  /// The data structure. A list of nodes constructed from a sparse matrix
-  std::vector<DlxNode> structure = {};
-};
+}; // namespace AlgorithmX
