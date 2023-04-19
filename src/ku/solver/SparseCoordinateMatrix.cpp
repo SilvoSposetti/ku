@@ -95,7 +95,7 @@ int32_t SparseCoordinateMatrix::getCell(int32_t rowIndex, int32_t columnIndex) c
   return -1;
 }
 
-bool SparseCoordinateMatrix::isSolvableByDlx() const {
+bool SparseCoordinateMatrix::isSolvableByAlgorithmX() const {
   if (columnsAmount == 0 || rowsAmount == 0 || columns.size() == 0) {
     return true;
   }

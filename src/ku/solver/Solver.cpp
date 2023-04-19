@@ -119,7 +119,7 @@ bool Solver::dlx(std::vector<std::vector<Sudo::Digit>>& board,
   SparseCoordinateMatrix matrix = getDlxMatrix(board, constraints, randomGenerator);
 
   // Check that the matrix is valid
-  if (!matrix.isSolvableByDlx()) {
+  if (!matrix.isSolvableByAlgorithmX()) {
     return false;
   }
 

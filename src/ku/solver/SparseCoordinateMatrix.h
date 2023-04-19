@@ -69,11 +69,11 @@ public:
    */
   int32_t getCell(int32_t rowIndex, int32_t columnIndex) const;
 
-  /** Computes whether the matrix might be solvable by a DLX algorithm. This is the case when the matrix contains only
+  /** Computes whether the matrix might be solvable by Algorithm X. This is the case when the matrix contains only
    * secondary columns, or when any primary column has no elements
    * @return Whether the matrix might be solvable
    */
-  bool isSolvableByDlx() const;
+  bool isSolvableByAlgorithmX() const;
 
   /** Reorders the matrix columns according to the new column index provided
    * @param permutation The new order for the columns

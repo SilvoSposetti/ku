@@ -1,4 +1,6 @@
-#include "DlxMatrix.h"
+#include "AlgorithmX.h"
+
+#include "AlgorithmXNode.h"
 
 #include <algorithm>
 #include <iostream>
@@ -13,7 +15,7 @@ namespace {
  * @param sparseMatrix The sparse matrix used for construction
  * @return The data structure of nodes
  */
-std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
+std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
   int32_t itemsAmount = sparseMatrix.getColumnsAmount();
   int32_t optionsAmount = sparseMatrix.getRowsAmount();
   int32_t validElements = sparseMatrix.getValidElementsAmount();
@@ -21,8 +23,8 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
     return {};
   }
 
-  // DlxNodes contain "pointers" to other elements in the structure in the form of integer indices.
-  // The structure is composed of multiple sections packed into a single vector of DlxNodes.
+  // AlgorithmXNodes contain "pointers" to other elements in the structure in the form of integer indices.
+  // The structure is composed of multiple sections packed into a single vector of AlgorithmXNodes.
   // 1. A root node.
   // 2. A list of header nodes. A header is given to every item.
   //    - Header nodes make a circular doubly linked-list together with the root node.
@@ -38,16 +40,16 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
   // - An down-link to the last node in the option after X.
 
   // TODO: allocate the right amount of memory here using validElements
-  std::vector<DlxNode> structure;
+  std::vector<AlgorithmXNode> structure;
 
   // Create root
-  DlxNode root{DlxNodeType::Root};
+  AlgorithmXNode root{AlgorithmXNodeType::Root};
   structure.emplace_back(root);
 
   // Create headers
   for (int32_t i = 0; i < itemsAmount; i++) {
     const int32_t headerId = i + 1; // The root exists already
-    structure.emplace_back(DlxNode{DlxNodeType::Header});
+    structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Header});
     structure[headerId].left = (headerId - 1) % (itemsAmount + 1);
     structure[headerId].right = (headerId + 1) % (itemsAmount + 1);
     structure[headerId].length = 0;
@@ -58,7 +60,7 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
   structure.front().left = structure.size() - 1;
 
   // Add the first spacer node
-  structure.emplace_back(DlxNode{DlxNodeType::Spacer});
+  structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Spacer});
 
   // Add regular nodes
   for (int32_t i = 0; i < optionsAmount; i++) {
@@ -67,7 +69,7 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
       if (cellValue >= 0) {
         const int32_t nodeId = structure.size();
         const int32_t headerId = j + 1;
-        structure.emplace_back(DlxNode{DlxNodeType::Node});
+        structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Node});
         structure.back().header = headerId;
         structure.back().data = cellValue;
 
@@ -88,13 +90,13 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
       }
     }
     // Add a spacer node after all nodes of the option have been added
-    structure.emplace_back(DlxNode{DlxNodeType::Spacer});
+    structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Spacer});
   }
 
   // Spacer nodes are missing their up and down pointers.
   int32_t lastSpacerId = -1;
   for (size_t nodeId = 0; nodeId < structure.size(); nodeId++) {
-    if (structure[nodeId].type == DlxNodeType::Spacer) {
+    if (structure[nodeId].type == AlgorithmXNodeType::Spacer) {
       // If X is a spacer, X.up is the address of the first node in the option before x
       // If X is a spacer, X.down is the address of the last node in the option after x
       if (lastSpacerId > 0) {
@@ -112,7 +114,7 @@ std::vector<DlxNode> createDlxDataStructure(const SparseCoordinateMatrix& sparse
  * @param structure A reference to the structure currently being used
  * @return The index to the first smallest item in the data structure
  */
-int32_t pickFirstSmallestItemIndex(const std::vector<DlxNode>& structure) {
+int32_t pickFirstSmallestItemIndex(const std::vector<AlgorithmXNode>& structure) {
   // This follows the MRV (Minimum Remaining Values) heuristic.
   int32_t maxLength = std::numeric_limits<int32_t>::max();
   int32_t index = -1;
@@ -136,7 +138,7 @@ int32_t pickFirstSmallestItemIndex(const std::vector<DlxNode>& structure) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param optionIndex The index of a node that is part of the option to be hidden
  */
-void hideOption(std::vector<DlxNode>& structure, int32_t optionNode) {
+void hideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
   // Hide all nodes of the option that contains node p
   int32_t nextNode = optionNode + 1;
   while (nextNode != optionNode) {
@@ -159,7 +161,7 @@ void hideOption(std::vector<DlxNode>& structure, int32_t optionNode) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param optionIndex The index of a node that is part of the option to be unhidden
  */
-void unhideOption(std::vector<DlxNode>& structure, int32_t optionNode) {
+void unhideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
   // Unhide all nodes of the option that contains p
   int32_t previousNode = optionNode - 1;
   while (previousNode != optionNode) {
@@ -182,7 +184,7 @@ void unhideOption(std::vector<DlxNode>& structure, int32_t optionNode) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param itemIndex The index of the item that needs to be covered
  */
-void coverItem(std::vector<DlxNode>& structure, int32_t itemIndex) {
+void coverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
   // Hide all options that contain a node for the item
   int32_t optionIndex = structure[itemIndex].down;
   while (optionIndex != itemIndex) {
@@ -201,7 +203,7 @@ void coverItem(std::vector<DlxNode>& structure, int32_t itemIndex) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param itemIndex The index of the item that needs to be uncovered
  */
-void uncoverItem(std::vector<DlxNode>& structure, int32_t itemIndex) {
+void uncoverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
   // "Re-link" the header by using its un-modified links
   int32_t l = structure[itemIndex].left;
   int32_t r = structure[itemIndex].right;
@@ -221,7 +223,7 @@ void uncoverItem(std::vector<DlxNode>& structure, int32_t itemIndex) {
  * @param nodeIndicesSets The sets of node indices that describe Algorithm X's solutions
  */
 std::vector<std::unordered_set<int32_t>>
-retrieveOptionIndices(const std::vector<DlxNode>& structure,
+retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
                       const std::vector<std::unordered_set<int32_t>>& nodeIndicesSets) {
   // Find out which options indices are the ones that the solution describes
   std::vector<std::unordered_set<int32_t>> optionIdsVector;
@@ -230,8 +232,8 @@ retrieveOptionIndices(const std::vector<DlxNode>& structure,
     for (const auto& nodeId : nodeIndices) {
       // Count how many spacers are in front of the node
       const int32_t spacersAmount =
-          std::count_if(structure.begin(), structure.begin() + nodeId, [&](const DlxNode& node) -> bool {
-            return node.type == DlxNodeType::Spacer;
+          std::count_if(structure.begin(), structure.begin() + nodeId, [&](const AlgorithmXNode& node) -> bool {
+            return node.type == AlgorithmXNodeType::Spacer;
           });
       optionIds.insert(spacersAmount - 1);
     }
@@ -249,8 +251,8 @@ retrieveOptionIndices(const std::vector<DlxNode>& structure,
  */
 std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix,
                                                        bool checkForUniqueness) {
-  // Don't run Algorithm X on an empty DLX-Matrix
-  std::vector<DlxNode> structure = createDlxDataStructure(sparseMatrix);
+  // Don't run Algorithm X on an empty sparse matrix 
+  std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
   if (structure.empty()) {
     return {};
   };
@@ -367,7 +369,7 @@ bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix) {
 }
 
 void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
-  const std::vector<DlxNode> structure = createDlxDataStructure(sparseMatrix);
+  const std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
 
   // Helper function
   const auto getInfo = [&](const std::string& inName, int32_t value) -> std::string {

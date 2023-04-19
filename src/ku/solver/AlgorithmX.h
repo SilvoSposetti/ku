@@ -1,6 +1,5 @@
 #pragma once
 
-#include "DlxNode.h"
 #include "SparseCoordinateMatrix.h"
 
 #include <string>

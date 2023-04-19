@@ -1,5 +1,5 @@
 test_sources = files(
-  'DlxMatrixTest.cpp',
+  'AlgorithmXTest.cpp',
   'DoctestDefine.cpp',
   'GenerateSolutionTest.cpp',
   'IdPackingTest.cpp',

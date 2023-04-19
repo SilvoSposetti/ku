@@ -2,23 +2,23 @@
 
 #include <string>
 
-/** Enum class defining the type of a DlxNode
+/** Enum class defining the type of a node
  */
-enum class DlxNodeType : uint8_t { Root, Header, Node, Spacer };
+enum class AlgorithmXNodeType : uint8_t { Root, Header, Node, Spacer };
 
-/** Simple struct for nodes used in the DlxMatrix data structure.
+/** Simple struct for nodes used in the Algorithm X's data structure.
  * Root  : defines [left|right]
  * Header: defines [left|right|up|down|length]
  * Node  : defines [data|up|down|top]
  * Spacer: defines [up|down]
  */
-struct DlxNode {
+struct AlgorithmXNode {
   /** Constructor
    * @param type The type of node
    */
-  DlxNode(DlxNodeType type);
+  AlgorithmXNode(AlgorithmXNodeType type);
 
-  DlxNodeType type = DlxNodeType::Node;
+  AlgorithmXNodeType type = AlgorithmXNodeType::Node;
   /// The data stored in the node. Used by regular nodes only
   int32_t data = -1;
   /// Pointer to left node

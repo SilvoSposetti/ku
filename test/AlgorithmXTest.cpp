@@ -1,11 +1,11 @@
-#include "solver/DlxMatrix.h"
+#include "solver/AlgorithmX.h"
 
 #include "doctest.h"
 #include "solver/SparseCoordinateMatrix.h"
 
 #include <algorithm>
 
-TEST_CASE("DLX Matrix") {
+TEST_CASE("Algorithm X") {
   SUBCASE("No solutions") {
     const std::vector<std::vector<std::vector<int32_t>>> unsolvableMatrices = {
         {
@@ -52,7 +52,7 @@ TEST_CASE("DLX Matrix") {
     };
     for (const auto& unsolvableMatrix : unsolvableMatrices) {
       SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
-      CHECK(sparseMatrix.isSolvableByDlx()); // Theoretically solvable, but no solutions can be found
+      CHECK(sparseMatrix.isSolvableByAlgorithmX()); // Theoretically solvable, but no solutions can be found
       //   AlgorithmX::printDataStructure(sparseMatrix);
       CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
       const std::vector<std::unordered_set<int32_t>> solutionRows = AlgorithmX::run(sparseMatrix);
@@ -106,7 +106,7 @@ TEST_CASE("DLX Matrix") {
 
     for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      CHECK(sparseMatrix.isSolvableByDlx());
+      CHECK(sparseMatrix.isSolvableByAlgorithmX());
       //   AlgorithmX::printDataStructure(sparseMatrix);
       CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
       const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
@@ -179,7 +179,7 @@ TEST_CASE("DLX Matrix") {
 
     for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      CHECK(sparseMatrix.isSolvableByDlx());
+      CHECK(sparseMatrix.isSolvableByAlgorithmX());
       //   AlgorithmX::printDataStructure(sparseMatrix);
       const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
       CHECK(solutions.size() == exactCoverSolutions.size());

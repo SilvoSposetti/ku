@@ -122,7 +122,7 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     }
   }
 
-  SUBCASE("Dlx-Solvability") {
+  SUBCASE("Algorithm X Solvability") {
     // Create & fill. Note that there's no column with all cells unset
     const std::vector<std::vector<int32_t>> matrix = {
         {11, -1, 13, -1, -1, -1},
@@ -141,15 +141,15 @@ TEST_CASE("SparseCoordinateMatrixTest") {
       }
     }
     // All columns are primary by default
-    CHECK(sparseMatrix.isSolvableByDlx());
+    CHECK(sparseMatrix.isSolvableByAlgorithmX());
 
     {
-      // Sparse matrix is not solvable by DLX if all columns are secondary
+      // Sparse matrix is not solvable by Algorithm X if all columns are secondary
       SparseCoordinateMatrix allSecondaryColumnsSparseMatrix = sparseMatrix;
       for (int j = 0; j < columns; j++) {
         allSecondaryColumnsSparseMatrix.setColumnSecondary(j);
       }
-      CHECK_FALSE(allSecondaryColumnsSparseMatrix.isSolvableByDlx());
+      CHECK_FALSE(allSecondaryColumnsSparseMatrix.isSolvableByAlgorithmX());
     }
 
     // Set primary / secondary columns
@@ -163,21 +163,21 @@ TEST_CASE("SparseCoordinateMatrixTest") {
     CHECK(sparseMatrix.isColumnPrimary(5));
 
     // Even after modifications, the matrix is still solvable
-    CHECK(sparseMatrix.isSolvableByDlx());
+    CHECK(sparseMatrix.isSolvableByAlgorithmX());
 
     // Set the only cell of column index 4 of the matrix to false
     sparseMatrix.setCell(2, 4, -1);
     // Now matrix is unsolvable
-    CHECK_FALSE(sparseMatrix.isSolvableByDlx());
+    CHECK_FALSE(sparseMatrix.isSolvableByAlgorithmX());
 
     // But if that column is set to be secondary
     sparseMatrix.setColumnSecondary(4);
     // Then it can be solved
-    CHECK(sparseMatrix.isSolvableByDlx());
-  
+    CHECK(sparseMatrix.isSolvableByAlgorithmX());
+
     // Empty matrix is solvable
     const SparseCoordinateMatrix emptyMatrix{{}};
-    CHECK(emptyMatrix.isSolvableByDlx());
+    CHECK(emptyMatrix.isSolvableByAlgorithmX());
   }
 
   SUBCASE("Matrix Constructor") {
