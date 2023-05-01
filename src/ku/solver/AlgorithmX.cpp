@@ -59,6 +59,18 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
   structure.front().right = 1;
   structure.front().left = structure.size() - 1;
 
+  // Unlink all secondary column headers
+  for (int i = 1; i < itemsAmount + 1; i++) {
+    if (!sparseMatrix.isColumnPrimary(i - 1)) {
+      // Unlink from header list
+      structure[structure[i].right].left = structure[i].left;
+      structure[structure[i].left].right = structure[i].right;
+      // Set left and right pointers to to itself
+      structure[i].left = i;
+      structure[i].right = i;
+    }
+  }
+
   // Add the first spacer node
   structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Spacer});
 
@@ -251,7 +263,7 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
  */
 std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix,
                                                        bool checkForUniqueness) {
-  // Don't run Algorithm X on an empty sparse matrix 
+  // Don't run Algorithm X on an empty sparse matrix
   std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
   if (structure.empty()) {
     return {};
