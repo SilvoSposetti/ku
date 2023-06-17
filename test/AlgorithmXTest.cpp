@@ -52,7 +52,7 @@ TEST_CASE("Algorithm X") {
     };
     for (const auto& unsolvableMatrix : unsolvableMatrices) {
       SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
-      CHECK(sparseMatrix.isSolvableByAlgorithmX()); // Theoretically solvable, but no solutions can be found
+      REQUIRE(sparseMatrix.isSolvableByAlgorithmX()); // Theoretically solvable, but no solutions can be found
       //   AlgorithmX::printDataStructure(sparseMatrix);
       CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
       const std::vector<std::unordered_set<int32_t>> solutionRows = AlgorithmX::run(sparseMatrix);
@@ -106,7 +106,7 @@ TEST_CASE("Algorithm X") {
 
     for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      CHECK(sparseMatrix.isSolvableByAlgorithmX());
+      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
       //   AlgorithmX::printDataStructure(sparseMatrix);
       CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
       const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
@@ -179,7 +179,7 @@ TEST_CASE("Algorithm X") {
 
     for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
       SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      CHECK(sparseMatrix.isSolvableByAlgorithmX());
+      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
       //   AlgorithmX::printDataStructure(sparseMatrix);
       const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
       // Check that every solution found appears in the list of the ones provided
@@ -211,7 +211,6 @@ TEST_CASE("Algorithm X") {
                 },
             },
             {
-
                 // Example 2
                 {
                     {-1, -1, 10, -1}, // Part of solution 2.A
@@ -241,6 +240,23 @@ TEST_CASE("Algorithm X") {
                     {1, 2}, // Solution 2.B
                 },
             },
+            {
+                // Example 4
+                {
+                    {-1, 10, -1, -1, -1}, //  Part of solution 4.A
+                    {11, -1, 12, -1, 13}, //  Part of solution 4.A | 4.B | 4.C
+                    {-1, -1, -1, -1, -1},
+                    {-1, 14, -1, 15, 16},
+                    {-1, 17, -1, 18, -1}, //  Part of solution 4.B
+                    {-1, 19, -1, -1, -1}, //  Part of solution 4.C
+                },
+                {3, 4}, // Indices of the items that are secondary
+                {
+                    {0, 1}, // Solution 2.A
+                    {1, 4}, // Solution 2.B
+                    {1, 5}, // Solution 2.C
+                },
+            },
         };
 
     for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolutions] : exactCoverMatrices) {
@@ -249,7 +265,7 @@ TEST_CASE("Algorithm X") {
         sparseMatrix.setColumnSecondary(secondaryItemIndex);
         CHECK(!sparseMatrix.isColumnPrimary(secondaryItemIndex));
       }
-      CHECK(sparseMatrix.isSolvableByAlgorithmX());
+      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
       //   AlgorithmX::printDataStructure(sparseMatrix);
       const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
       // Check that every solution found appears in the list of the ones provided
