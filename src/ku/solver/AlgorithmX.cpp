@@ -284,51 +284,57 @@ std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMat
   // It make use of goto-statements and the x vector as a means to perform backtracking. I've left the names of the
   // steps as Knuth names them (Step X1 to Step X8).
 
-  // X1 (Initialization)
+  // X1 // Initialize, structure is already set up
   int32_t level = 0; // Keeps track of the current "depth" level
   int32_t itemIndex = 0;
   int32_t nodeIndex = 0;
   int32_t otherItemIndex = 0;
 
-X2: // Enter the current level
+X2 : // Enter the current level
+{
   if (structure[0].right == 0) {
     // The list of currently selected options x contains a valid solution! Store it.
     solutions.emplace_back(std::unordered_set<int32_t>({x.begin(), x.begin() + level}));
-    if (checkForUniqueness && solutions.size() >= 2) {
-      // Early exit if checking for uniqueness, since more than one solution was found
-      goto X8;
-    } else {
-      // Need to backtrack and continue with the algorithm to find possible further solutions
-      goto X7;
-    }
+    goto X8;
+    // if (checkForUniqueness && solutions.size() >= 2) {
+    //   // Early exit if checking for uniqueness, since more than one solution was found
+    //   goto X8;
+    // } else {
+    //   // Need to backtrack and continue with the algorithm to find possible further solutions
+    //   goto X7;
+    // }
   }
   // X3: // Choose an item
   itemIndex = pickFirstSmallestItemIndex(structure);
   // X4: // Cover the item
   coverItem(structure, itemIndex);
   x[level] = structure[itemIndex].down;
-X5: // Try x[level]
+}
+X5 : // Try x[level]
+{
   if (x[level] == itemIndex) {
     // Tried all options for the chosen item, need to backtrack
     goto X7;
-  } else {
-    int32_t nextNodeIndex = x[level] + 1;
-    while (nextNodeIndex != x[level]) {
-      int32_t nextNodeHeader = structure[nextNodeIndex].header;
-      if (nextNodeHeader < 0) { // nextNode is a spacer
-        // Follow nextNode's up to get the first node of the previous option
-        nextNodeIndex = structure[nextNodeIndex].up;
-      } else {
-        // Cover items != itemIndex in the option that contains x[level]
-        coverItem(structure, nextNodeHeader);
-        nextNodeIndex++;
-      }
-    }
-    // Increase the level (do another "recursive" step)
-    level++;
-    goto X2;
   }
-X6: // Try again
+  int32_t nextNodeIndex = x[level] + 1;
+  while (nextNodeIndex != x[level]) {
+    int32_t nextNodeHeaderIndex = structure[nextNodeIndex].header;
+    if (nextNodeHeaderIndex < 0) { // nextNode is a spacer
+      // Follow nextNode's up to get the first node of the previous option
+      nextNodeIndex = structure[nextNodeIndex].up;
+    } else {
+      // Cover items != itemIndex in the option that contains x[level]
+      coverItem(structure, nextNodeHeaderIndex);
+      nextNodeIndex++;
+    }
+  }
+  // Increase the level (do another "recursive" step)
+  level++;
+  goto X2;
+}
+
+X6 : // Try again
+{
   nodeIndex = x[level] - 1;
   while (nodeIndex != x[level]) {
     otherItemIndex = structure[nodeIndex].header;
@@ -336,7 +342,7 @@ X6: // Try again
       // Follow current node's down to get the last node of the following option
       nodeIndex = structure[nodeIndex].down;
     } else {
-      // Uncover the other item index
+      // Uncover the other item index, doing the opposite as in X5
       uncoverItem(structure, otherItemIndex);
       nodeIndex--;
     }
@@ -344,9 +350,15 @@ X6: // Try again
   itemIndex = structure[x[level]].header;
   x[level] = structure[x[level]].down;
   goto X5;
-X7: // Backtrack
+}
+
+X7 : // Backtrack
+{
   uncoverItem(structure, itemIndex);
-X8: // Leave level l
+}
+
+X8 : // Leave level l
+{
   if (level == 0) {
     goto END;
   } else {
@@ -354,8 +366,9 @@ X8: // Leave level l
     level--;
     goto X6;
   }
+}
 
-END:
+END : {
   // Handle checking for uniqueness
   if (checkForUniqueness) {
     if (solutions.size() == 1) {
@@ -367,6 +380,7 @@ END:
     }
   }
   return retrieveOptionIndices(structure, solutions);
+}
 };
 
 } // namespace
