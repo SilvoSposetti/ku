@@ -7,7 +7,7 @@
  */
 struct SparseCoordinateColumn {
   /// Whether the column is primary
-  bool isColumnPrimary = true;
+  bool isPrimary = true;
   /// A map of all the non-negative elements of the column. Key is the sparse matrix index, value is the data stored in
   /// that index
   std::unordered_map<int32_t, int32_t> elements = {};
@@ -80,6 +80,11 @@ public:
    * @return Whether reordering can be performed
    */
   bool reorderColumns(const std::vector<int32_t>& permutation);
+
+  /** Reorders the matrix columns: first primary columns, then secondary columns. Within the two categories, columns
+   * with less valid elements are placed first.
+   */
+  void sortPrimaryAndSecondaryColumns();
 
 private:
   /** Resets the sparse matrix. I.e. rows and columns are set to 0 and the columns vector is cleared.
