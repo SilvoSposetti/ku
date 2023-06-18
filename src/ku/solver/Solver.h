@@ -2,7 +2,6 @@
 
 #include "../constraints/AbstractConstraint.h"
 #include "../randomGenerator/RandomGenerator.h"
-#include "Node.h"
 #include "SparseCoordinateMatrix.h"
 
 #include <memory>
