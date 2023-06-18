@@ -65,9 +65,11 @@ bool Sudoku::verify() {
 std::vector<std::vector<Sudo::Digit>> Sudoku::getSolution() {
   return board->getSolution();
 }
+
 std::vector<std::vector<Sudo::Digit>> Sudoku::getField() {
   return board->getField();
 }
+
 std::vector<std::vector<bool>> Sudoku::getGivenMask() {
   return board->getGivenMask();
 }
@@ -127,7 +129,7 @@ void Sudoku::exportDlxMatrixToSvg(const std::filesystem::path& location) {
     constraintsInfo.emplace_back(std::make_pair(constraint->getName(), areColumnsPrimary));
   }
 
-  svgContent += SvgUtilities::dlxMatrix(Solver::getDlxMatrix(board->getField(), constraints), constraintsInfo);
+  svgContent += SvgUtilities::dlxMatrix(Solver::getExactCoverMatrix(constraints), constraintsInfo);
 
   // Stream it to file, then save and close
   outfile << svgContent;

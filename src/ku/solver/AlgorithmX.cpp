@@ -255,14 +255,17 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
 };
 
 /** Runs Algorithm X on the internal data structure to find a solution.
- * @param checkForUniqueness Whether simply checking for a unique solution. Offers early exit if more than one solution
- * is found.
+ * @param checkForUniqueness Whether confirming the solution's uniqueness is required. When true this offers early exit
+ * if more than one solution is found.
+ * @param findASolution Whether all solutions need to be found. When true this offers early exit as soon as the first
+ * solution is found
  * @param sparseMatrix The sparse matrix that defines an Exact Cover problem
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix,
-                                                       bool checkForUniqueness) {
+std::vector<std::unordered_set<int32_t>>
+runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix, bool findASolution, bool checkForUniqueness) {
+
   // Don't run Algorithm X on an empty sparse matrix
   std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
   if (structure.empty()) {
@@ -296,13 +299,6 @@ X2 : // Enter the current level
     // The list of currently selected options x contains a valid solution! Store it.
     solutions.emplace_back(std::unordered_set<int32_t>({x.begin(), x.begin() + level}));
     goto X8;
-    // if (checkForUniqueness && solutions.size() >= 2) {
-    //   // Early exit if checking for uniqueness, since more than one solution was found
-    //   goto X8;
-    // } else {
-    //   // Need to backtrack and continue with the algorithm to find possible further solutions
-    //   goto X7;
-    // }
   }
   // X3: // Choose an item
   itemIndex = pickFirstSmallestItemIndex(structure);
@@ -359,7 +355,13 @@ X7 : // Backtrack
 
 X8 : // Leave level l
 {
-  if (level == 0) {
+  // Exit early if checking for uniqueness and more than one solution is found
+  const bool uniquenessEarlyExit = checkForUniqueness && solutions.size() >= 2;
+  // Exit early if it's not required to find all solutions and at least one has been found
+  const bool singleSolutionEarlyExit = findASolution && solutions.size() >= 1;
+  // When the level reaches 0, all possible solutions have been evaluated
+  const bool searchedThroughAllPossibilities = level == 0;
+  if (singleSolutionEarlyExit || uniquenessEarlyExit || searchedThroughAllPossibilities) {
     goto END;
   } else {
     // Decrease level (backtrack one "recursive" step)
@@ -368,30 +370,27 @@ X8 : // Leave level l
   }
 }
 
-END : {
-  // Handle checking for uniqueness
-  if (checkForUniqueness) {
-    if (solutions.size() == 1) {
-      // Return the single solution found
-      return solutions;
-    } else {
-      // Returning a non-1-sized solutions
-      return {};
-    }
-  }
-  return retrieveOptionIndices(structure, solutions);
-}
+END : { return retrieveOptionIndices(structure, solutions); }
 };
 
 } // namespace
 
-std::vector<std::unordered_set<int32_t>> AlgorithmX::run(const SparseCoordinateMatrix& sparseMatrix) {
+std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const SparseCoordinateMatrix& sparseMatrix) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  return runAlgorithmX(sparseMatrix, false);
+  return runAlgorithmX(sparseMatrix, false, false);
+}
+
+std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMatrix& sparseMatrix) {
+  // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
+  const auto solutions = runAlgorithmX(sparseMatrix, false, true);
+  if (solutions.size() >= 1) {
+    return solutions[0];
+  }
+  return {};
 }
 
 bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix) {
-  return runAlgorithmX(sparseMatrix, true).size() == 1;
+  return runAlgorithmX(sparseMatrix, true, false).size() == 1;
 }
 
 void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) {

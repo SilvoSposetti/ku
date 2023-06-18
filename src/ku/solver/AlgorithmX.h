@@ -11,11 +11,17 @@
  */
 namespace AlgorithmX {
 
-/** Solves the Exact Cover problem described by the matrix and retrieves none, one or many solutions.
+/** Solves the Exact Cover problem described by the matrix and retrieves all solutions.
  * @param sparseMatrix The sparse matrix representing the Exact Cover problem
  * @return Returns potentially zero, one or many sets of options (matrix-rows) indices that solve the matrix's problem
  */
-std::vector<std::unordered_set<int32_t>> run(const SparseCoordinateMatrix& sparseMatrix);
+std::vector<std::unordered_set<int32_t>> findAllSolutions(const SparseCoordinateMatrix& sparseMatrix);
+
+/** Solves the Exact Cover problem described by the matrix and retrieves the first solution found.
+ * @param sparseMatrix The sparse matrix representing the Exact Cover problem
+ * @return Returns potentially zero, one or many sets of options (matrix-rows) indices that solve the matrix's problem
+ */
+std::unordered_set<int32_t> findOneSolution(const SparseCoordinateMatrix& sparseMatrix);
 
 /** Computes whether the Exact Cover problem has exactly one solution. Has a potential early exit with respect to run()
  * since it returns false as soon as it finds 2 solutions.
