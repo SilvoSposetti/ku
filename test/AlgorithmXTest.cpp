@@ -62,46 +62,68 @@ TEST_CASE("Algorithm X") {
 
   SUBCASE("Single solution, primary items only") {
     const std::vector<std::pair<std::vector<std::vector<int32_t>>, std::unordered_set<int32_t>>> exactCoverMatrices = {
-        {{
-             // Example 1
-             {-1, -1, 10, -1, 11, -1, -1}, // Part of solution 1
-             {12, -1, -1, 13, -1, -1, 14},
-             {-1, 15, 16, -1, -1, 17, -1},
-             {18, -1, -1, 19, -1, 20, -1}, // Part of solution 1
-             {-1, 21, -1, -1, -1, -1, 22}, // Part of solution 1
-             {-1, -1, -1, 23, 24, -1, 25},
-         },
-         {0, 3, 4}}, // Solution 1
-        {{
-             // Example 2
-             {10, -1, -1, 11, -1, -1, 12},
-             {13, -1, -1, 14, -1, -1, -1}, // Part of solution 2
-             {-1, -1, -1, 15, 16, -1, 17},
-             {-1, -1, 18, -1, 19, 20, -1}, // Part of solution 2
-             {-1, 21, 22, -1, -1, 23, 24},
-             {-1, 25, -1, -1, -1, -1, 30}, // Part of solution 2
-             {-1, -1, -1, -1, -1, -1, -1}, // Empty option
+        {
+            // Example 1
+            {
+                {-1, -1, 10, -1, 11, -1, -1}, // Part of solution 1
+                {12, -1, -1, 13, -1, -1, 14},
+                {-1, 15, 16, -1, -1, 17, -1},
+                {18, -1, -1, 19, -1, 20, -1}, // Part of solution 1
+                {-1, 21, -1, -1, -1, -1, 22}, // Part of solution 1
+                {-1, -1, -1, 23, 24, -1, 25},
+            },
+            {0, 3, 4}, // Solution 1
+        },
+        {
+            // Example 2
+            {
+                {10, -1, -1, 11, -1, -1, 12},
+                {13, -1, -1, 14, -1, -1, -1}, // Part of solution 2
+                {-1, -1, -1, 15, 16, -1, 17},
+                {-1, -1, 18, -1, 19, 20, -1}, // Part of solution 2
+                {-1, 21, 22, -1, -1, 23, 24},
+                {-1, 25, -1, -1, -1, -1, 30}, // Part of solution 2
+                {-1, -1, -1, -1, -1, -1, -1}, // Empty option
 
-         },
-         {1, 3, 5}}, // Solution 2
-        {{
-             // Example 3
-             {10, 11, -1, -1, -1, -1}, // Part of solution 3
-             {-1, -1, -1, -1, 12, 13}, // Part of solution 3
-             {-1, -1, -1, 14, 15, -1},
-             {16, -1, 18, -1, -1, -1},
-             {-1, -1, -1, -1, -1, -1}, // Empty option
-             {-1, -1, 21, -1, -1, -1}, // Part of solution 3
-             {-1, -1, -1, 22, -1, -1}, // Part of solution 3
-             {23, -1, 24, -1, -1, 26},
-         },
-         {0, 1, 5, 6}}, // Solution 3
-        {{
-             // Example 4
-             {-1, -1, -1, -1, -1, -1}, // Empty option
-             {10, 11, 12, 13, 14, 15}, // Single option containing all items
-         },
-         {1}}, // Solution 4
+            },
+            {1, 3, 5}, // Solution 2
+        },
+        {
+            // Example 3
+            {
+                {10, 11, -1, -1, -1, -1}, // Part of solution 3
+                {-1, -1, -1, -1, 12, 13}, // Part of solution 3
+                {-1, -1, -1, 14, 15, -1},
+                {16, -1, 18, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1}, // Empty option
+                {-1, -1, 21, -1, -1, -1}, // Part of solution 3
+                {-1, -1, -1, 22, -1, -1}, // Part of solution 3
+                {23, -1, 24, -1, -1, 26},
+            },
+            {0, 1, 5, 6}, // Solution 3
+        },
+        {
+            // Example 4
+            {
+                {-1, -1, -1, -1, -1, -1}, // Empty option
+                {10, 11, 12, 13, 14, 15}, // Single option containing all items
+            },
+            {1}, // Solution 4
+        },
+        {
+            // Example 5
+            {
+                {10},
+            },
+            {0}, // Solution 5
+        },
+        {
+            // Example 6
+            {
+                {10, 11},
+            },
+            {0} // Solution 6
+        },
     };
 
     for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
@@ -202,8 +224,8 @@ TEST_CASE("Algorithm X") {
     const std::vector<std::pair<std::vector<std::vector<int32_t>>, std::vector<std::unordered_set<int32_t>>>>
         exactCoverMatrices = {
             {
+                // Example 1
                 {
-                    // Example 1
                     {12, -1, -1, 13, -1, -1, 14},
                     {18, -1, -1, 19, -1, 20, -1}, // Part of solution 1.A
                     {-1, 28, -1, -1, 29, 30, -1}, // Part of solution 1.B
@@ -222,8 +244,8 @@ TEST_CASE("Algorithm X") {
                 },
             },
             {
+                // Example 2
                 {
-                    // Example 2
                     {10, -1, -1, -1}, // Part of solution 2.A | 2.B
                     {-1, 11, -1, -1}, // Part of solution 2.A
                     {-1, -1, 12, -1}, // Part of solution 2.A | 2.C
@@ -238,8 +260,8 @@ TEST_CASE("Algorithm X") {
                 },
             },
             {
+                // Example 3
                 {
-                    // Example 3
                     {-1, -1, -1}, // Empty option
                     {13, -1, -1}, // Solution 3.A | 3.B
                     {-1, 14, -1}, // Solution 3.A | 3.C
@@ -255,6 +277,41 @@ TEST_CASE("Algorithm X") {
                     {4, 3}, // Solution 3.C
                     {5, 2}, // Solution 3.D
                     {7}, // Solution 3.E
+                },
+            },
+            {
+                // Example 4
+                {
+                    {10, -1}, // Solution 4.A | 4.B | 4.C
+                    {11, -1}, // Solution 4.D | 4.E | 4.F
+                    {12, -1}, // Solution 4.G | 4.H | 4.I
+                    {-1, 13}, // Solution 4.A | 4.D | 4.G
+                    {-1, 14}, // Solution 4.B | 4.E | 4.H
+                    {-1, 15}, // Solution 4.C | 4.F | 4.I
+                },
+                {
+                    {0, 3}, // Solution 4.A
+                    {0, 4}, // Solution 4.B
+                    {0, 5}, // Solution 4.C
+                    {1, 3}, // Solution 4.D
+                    {1, 4}, // Solution 4.E
+                    {1, 5}, // Solution 4.F
+                    {2, 3}, // Solution 4.G
+                    {2, 4}, // Solution 4.H
+                    {2, 5}, // Solution 4.I
+                },
+            },
+            {
+                // Example 5
+                {
+                    {10}, // Solution 5.A
+                    {11}, // Solution 5.B
+                    {12}, // Solution 5.C
+                },
+                {
+                    {0}, // Solution 5.A
+                    {1}, // Solution 5.B
+                    {2}, // Solution 5.C
                 },
             },
         };
