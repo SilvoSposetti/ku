@@ -4,7 +4,7 @@
 #include <doctest.h>
 #include <unordered_map>
 
-TEST_CASE("SparseCoordinateMatrixTest") {
+TEST_CASE("Sparse Coordinate Matrix") {
 
   SUBCASE("Basic Usage") {
     // Create & fill

@@ -5,7 +5,7 @@
 
 #include <unordered_set>
 
-TEST_CASE("RandomGeneratorTest") {
+TEST_CASE("Random Generator") {
   const int32_t amount = 1000;
 
   SUBCASE("Random Uniform") {
