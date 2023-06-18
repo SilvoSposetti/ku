@@ -3,6 +3,7 @@
 #include "../Sudo.h"
 #include "../Validator.h"
 #include "../randomGenerator/RandomGenerator.h"
+#include "../utilities/IdPacking.h"
 #include "AlgorithmX.h"
 
 std::vector<std::vector<Sudo::Digit>>
@@ -111,7 +112,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
     }
   }
   // 729 rows => (81 cells, 9 possible digits for each cell)
-  constexpr int32_t maximumRows = 9 * 9 * 9;
+  constexpr int32_t maximumRows = Sudo::MAX_DIGIT * Sudo::MAX_DIGIT * Sudo::MAX_DIGIT;
   // Each given reduces the amount of rows by (Sudo::MAX_DIGIT - 1)
   const int32_t totalRows = maximumRows - (Sudo::MAX_DIGIT - 1) * givenAmount;
 
@@ -129,7 +130,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
   for (const auto& boardI : Sudo::INDICES) { // Go through all sudoku rows
-    for (const auto& boardJ : Sudo::INDICES) { // Go through all sudoku column
+    for (const auto& boardJ : Sudo::INDICES) { // Go through all sudoku columns
       const Sudo::Digit actualDigit = board[boardI][boardJ];
       for (const auto& possibleDigit : digitsSequence) { // Go through all possible digits for this cell
         // Avoid rows where the cell and its possible digits don't create a "1" in the matrix, since the digit
@@ -144,8 +145,12 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
                 // Store matrix cell ID
                 matrix.setCell(matrixRowCounter,
                                matrixColumnCounter,
-                               boardI * Sudo::TOTAL_DIGITS + boardJ * Sudo::MAX_DIGIT +
-                                   (static_cast<int32_t>(possibleDigit) - 1));
+                               IdPacking::packId(boardI,
+                                                 boardJ,
+                                                 static_cast<int32_t>(possibleDigit) - 1,
+                                                 Sudo::MAX_DIGIT,
+                                                 Sudo::MAX_DIGIT,
+                                                 Sudo::MAX_DIGIT));
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -173,9 +178,8 @@ void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Su
     } while (dataRetrieved < 0 && columnIndex < columnsAmount);
     // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
     // but the process here is reversed
-    const int32_t boardRow = dataRetrieved / Sudo::TOTAL_DIGITS;
-    const int32_t boardColumn = (dataRetrieved / Sudo::MAX_DIGIT) % Sudo::MAX_DIGIT;
-    const Sudo::Digit actualDigit = static_cast<Sudo::Digit>((dataRetrieved % Sudo::MAX_DIGIT) + 1);
-    board[boardRow][boardColumn] = actualDigit;
+    const auto [boardRow, boardColumn, digit] =
+        IdPacking::unpackId(dataRetrieved, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+    board[boardRow][boardColumn] = static_cast<Sudo::Digit>(digit + 1);
   }
 }
