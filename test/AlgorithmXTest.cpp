@@ -19,10 +19,10 @@ TEST_CASE("Algorithm X") {
         },
         {
             // Valid, but no solution possible
-            {1, -1, 1},
+            {10, -1, 11},
             {-1, -1, -1}, // Empty option
-            {-1, 1, 1},
-            {1, 1, -1},
+            {-1, 12, 13},
+            {14, 15, -1},
             {-1, -1, -1}, // Empty option
         },
         {
@@ -115,7 +115,89 @@ TEST_CASE("Algorithm X") {
     }
   }
 
-  SUBCASE("Single solution, primary and secondary items") {}
+  SUBCASE("Single solution, primary and secondary items") {
+    const std::vector<std::tuple<std::vector<std::vector<int32_t>>, std::vector<int32_t>, std::unordered_set<int32_t>>>
+        exactCoverMatrices = {
+            {
+                // Example 1
+                {
+                    {10, -1, -1, -1, -1, -1, -1}, // Part of solution 1
+                    {-1, 11, -1, -1, 12, -1, -1}, // Part of solution 1
+                    {-1, 13, -1, -1, -1, 14, -1},
+                    {-1, -1, 15, -1, 16, 17, -1},
+                    {-1, -1, 18, -1, -1, 19, 20},
+                    {-1, -1, 21, -1, -1, 22, -1}, // Part of solution 1
+                    {-1, -1, -1, 23, -1, -1, 24}, // Part of solution 1
+                },
+                {4, 5, 6}, // Indices of the items that are secondary
+                {0, 1, 5, 6}, // Solution 1
+            },
+            {
+                // Example 2
+                {
+                    {-1, 10, -1, 11},
+                    {-1, 12, -1, -1}, // Part of solution 2
+                    {13, -1, -1, -1}, // Part of solution 2
+                    {-1, -1, -1, -1},
+                    {-1, -1, 15, 16}, // Part of solution 2
+                    {17, -1, -1, 18},
+                },
+                {3}, // Indices of the items that are secondary
+                {1, 2, 4}, // Solution 2
+            },
+            {
+                // Example 3 (like Example 2, but with the secondary colum moved)
+                {
+                    {11, -1, 10, -1},
+                    {-1, -1, 12, -1}, // Part of solution 3
+                    {-1, 13, -1, -1}, // Part of solution 3
+                    {-1, -1, -1, -1},
+                    {16, -1, -1, 15}, // Part of solution 3
+                    {18, 17, -1, -1},
+                },
+                {0}, // Indices of the items that are secondary
+                {1, 2, 4}, // Solution 2
+            },
+            {
+                // Example 4 (empty secondary items)
+                {
+                    {13, -1, -1, -1, -1, -1}, // Part of solution 4
+                    {-1, -1, 14, -1, -1, -1},
+                    {-1, -1, -1, 12, -1, -1}, // Part of solution 4
+                    {-1, -1, 16, 17, -1, -1},
+                    {-1, 10, 11, -1, -1, -1}, // Part of solution 4
+                },
+                {4, 5}, // Indices of the items that are secondary
+                {0, 2, 4}, // Solution 4
+            },
+            {
+                // Example 5
+                {
+                    {-1, -1, -1, 10, -1}, //  No primary items! This solution is not selected
+                    {11, -1, 12, -1, -1}, //  Part of solution 5
+                    {-1, -1, -1, -1, -1},
+                    {-1, 13, -1, -1, 14}, //  Part of solution 5
+                },
+                {2, 3, 4}, // Indices of the items that are secondary
+                {1, 3}, // Solution 5
+            },
+        };
+
+    for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolution] : exactCoverMatrices) {
+      SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
+      for (const auto& secondaryItemIndex : secondaryItemIndices) {
+        sparseMatrix.setColumnSecondary(secondaryItemIndex);
+        CHECK(!sparseMatrix.isColumnPrimary(secondaryItemIndex));
+      }
+      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+      //   AlgorithmX::printDataStructure(sparseMatrix);
+      CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
+      const std::vector<std::unordered_set<int32_t>> solutions = AlgorithmX::run(sparseMatrix);
+      CHECK(solutions.size() == 1);
+      CHECK(solutions.at(0) == exactCoverSolution);
+    }
+  }
+
   SUBCASE("Multiple solutions, primary items only") {
     const std::vector<std::pair<std::vector<std::vector<int32_t>>, std::vector<std::unordered_set<int32_t>>>>
         exactCoverMatrices = {
@@ -228,16 +310,16 @@ TEST_CASE("Algorithm X") {
             {
                 // Example 3 (like Example 2, but with the secondary colum moved)
                 {
-                    {-1, -1, -1, 10}, // Part of solution 2.A
-                    {12, 13, -1, -1}, // Part of solution 2.B
-                    {-1, -1, 15, 16}, // Part of solution 2.B
+                    {-1, -1, -1, 10}, // Part of solution 3.A
+                    {12, 13, -1, -1}, // Part of solution 3.B
+                    {-1, -1, 15, 16}, // Part of solution 3.B
                     {-1, -1, -1, -1},
-                    {14, -1, 15, -1}, // Part of solution 2.A
+                    {14, -1, 15, -1}, // Part of solution 3.A
                 },
                 {1}, // Indices of the items that are secondary
                 {
-                    {0, 4}, // Solution 2.A
-                    {1, 2}, // Solution 2.B
+                    {0, 4}, // Solution 3.A
+                    {1, 2}, // Solution 3.B
                 },
             },
             {
@@ -252,9 +334,9 @@ TEST_CASE("Algorithm X") {
                 },
                 {3, 4}, // Indices of the items that are secondary
                 {
-                    {0, 1}, // Solution 2.A
-                    {1, 4}, // Solution 2.B
-                    {1, 5}, // Solution 2.C
+                    {0, 1}, // Solution 4.A
+                    {1, 4}, // Solution 4.B
+                    {1, 5}, // Solution 4.C
                 },
             },
         };

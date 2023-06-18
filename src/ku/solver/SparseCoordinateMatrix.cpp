@@ -105,6 +105,7 @@ bool SparseCoordinateMatrix::isSolvableByAlgorithmX() const {
   for (const auto& column : columns) {
     if (column.isColumnPrimary) {
       allSecondary = false;
+      break;
     }
   }
   if (allSecondary) {
