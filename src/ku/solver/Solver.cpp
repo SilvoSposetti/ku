@@ -6,6 +6,8 @@
 #include "../utilities/IdPacking.h"
 #include "AlgorithmX.h"
 
+#include <map>
+
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                        std::shared_ptr<RandomGenerator> randomGenerator) {
@@ -66,6 +68,70 @@ bool Solver::isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& 
   return isSecondaryColumnsOnly;
 }
 
+void Solver::reorderColumns(SparseCoordinateMatrix& matrix, std::shared_ptr<RandomGenerator> randomGenerator) {
+  const int32_t columnsAmount = matrix.getColumnsAmount();
+
+  // Gather column information, in the form of lists of {columnIndex, columnSize} for primary and secondary items
+  std::vector<std::pair<int32_t, int32_t>> primaryColumns;
+  std::vector<std::pair<int32_t, int32_t>> secondaryColumns;
+  for (int32_t i = 0; i < columnsAmount; i++) {
+    const int32_t columnSize = matrix.getColumnValidCellsAmount(i);
+    if (matrix.isColumnPrimary(i)) {
+      primaryColumns.emplace_back(std::make_pair(i, columnSize));
+    } else {
+      secondaryColumns.emplace_back(std::make_pair(i, columnSize));
+    }
+  }
+
+  // Sort both lists by the sizes
+  const auto sortByColumnSize = [&](const std::pair<int32_t, int32_t>& left,
+                                    const std::pair<int32_t, int32_t>& right) -> bool {
+    return left.second < right.second;
+  };
+  // Sort primary columns by their size
+  std::sort(primaryColumns.begin(), primaryColumns.end(), sortByColumnSize);
+
+  // Sort secondary columns by their size as well, even though it doesn't seem to make a difference
+  std::sort(secondaryColumns.begin(), secondaryColumns.end(), sortByColumnSize);
+
+  // If the random generator is available, scramble equally-sized primary columns
+  if (randomGenerator) {
+    // Create map from all group sizes tp all the column indices that they contain
+    std::map<int32_t, std::vector<int32_t>> map;
+    for (const auto& [index, size] : primaryColumns) {
+      if (map.find(size) == map.end()) {
+        map.insert({size, std::vector<int32_t>({index})});
+      } else {
+        map.at(size).emplace_back(index);
+      }
+    }
+    std::cout << map.size() << std::endl;
+
+    for (auto& [size, indices] : map) {
+      indices = randomGenerator->randomShuffle(indices);
+    }
+
+    primaryColumns.clear();
+    for (const auto& [size, indices] : map) {
+      for (const auto& index : indices) {
+        primaryColumns.emplace_back(std::make_pair(index, size));
+      }
+    }
+  }
+
+  // Create permutation vector
+  std::vector<int32_t> permutation;
+  for (const auto& p : primaryColumns) {
+    permutation.emplace_back(p.first);
+  }
+  for (const auto& s : secondaryColumns) {
+    permutation.emplace_back(s.first);
+  }
+
+  // Sort the matrix according to the desired permutation
+  matrix.reorderColumns(permutation);
+}
+
 bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                    bool checkForUniqueness,
@@ -77,6 +143,10 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
   if (!matrix.isSolvableByAlgorithmX()) {
     return false;
   }
+
+  // Sort columns increasing by size for (on average) faster solve, and (if necessary) scramble equally-sized columns
+  // from the result
+  reorderColumns(matrix, randomGenerator);
 
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {

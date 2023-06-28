@@ -176,36 +176,11 @@ bool SparseCoordinateMatrix::reorderColumns(const std::vector<int32_t>& permutat
   return true;
 }
 
-void SparseCoordinateMatrix::sortPrimaryAndSecondaryColumns() {
-  // Gather column information, in the form of lists of {columnIndex, columnSize} for primary and secondary items
-  std::vector<std::pair<int32_t, int32_t>> primaryColumns;
-  std::vector<std::pair<int32_t, int32_t>> secondaryColumns;
-  for (int32_t i = 0; i < columnsAmount; i++) {
-    if (columns[i].isPrimary) {
-      primaryColumns.emplace_back(std::make_pair(i, columns[i].elements.size()));
-    } else {
-      secondaryColumns.emplace_back(std::make_pair(i, columns[i].elements.size()));
-    }
+int32_t SparseCoordinateMatrix::getColumnValidCellsAmount(int32_t columnIndex) const {
+  if (0 <= columnIndex && columnIndex < columnsAmount) {
+    return columns[columnIndex].elements.size();
   }
-
-  // Sort both lists by the sizes
-  const auto sortByColumnSize = [&](const std::pair<int32_t, int32_t>& left,
-                                    const std::pair<int32_t, int32_t>& right) -> bool {
-    return left.second < right.second;
-  };
-  std::sort(primaryColumns.begin(), primaryColumns.end(), sortByColumnSize);
-  std::sort(secondaryColumns.begin(), secondaryColumns.end(), sortByColumnSize);
-
-  // Create permutation vector
-  std::vector<int32_t> permutation;
-  for (const auto& p : primaryColumns) {
-    permutation.emplace_back(p.first);
-  }
-  for (const auto& s : secondaryColumns) {
-    permutation.emplace_back(s.first);
-  }
-
-  reorderColumns(permutation);
+  return -1;
 }
 
 void SparseCoordinateMatrix::reset() {

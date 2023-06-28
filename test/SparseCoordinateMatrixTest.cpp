@@ -236,38 +236,20 @@ TEST_CASE("Sparse Coordinate Matrix") {
     }
   }
 
-  SUBCASE("Sort Primary and Secondary Columns") {
+  SUBCASE("Valid cells of") {
     const std::vector<std::vector<int32_t>> matrix = {
-        // s  p   s   s   p   p   s   p   p   p
-        {14, 13, -1, -1, 11, 10, -1, 12, -1, -1},
-        {20, 18, -1, -1, -1, 16, 19, 17, 15, -1},
-        {-1, 24, 25, 26, 22, -1, -1, 23, -1, 21},
-        {-1, 29, -1, 30, 27, -1, -1, 28, -1, -1},
-        {-1, 33, -1, 34, 31, -1, -1, 32, -1, -1},
-        {39, 37, 38, 40, -1, 36, -1, -1, -1, 35},
+        {14, 13, -1, -1, 11, 10, 10, -1, -1, -1, 12, 12, -1, -1},
+        {20, 18, -1, -1, -1, 16, 16, 20, 21, 19, 17, 17, 22, -1},
+        {-1, 24, 25, 26, 22, -1, -1, -1, -1, -1, 23, 23, -1, 21},
+        {-1, 29, -1, 30, 27, -1, -1, -1, -1, -1, 28, 28, -1, -1},
+        {-1, 33, -1, 34, 31, -1, -1, -1, -1, -1, 32, 32, -1, -1},
+        {39, 37, 38, 40, -1, 36, 36, -1, -1, -1, -1, -1, -1, 35},
     };
-    const std::vector<int32_t> secondaryColumns = {0, 2, 3, 6};
-
-    const std::vector<std::vector<int32_t>> sortedMatrix = {
-        // p  p   p   p   p   p   s   s   s   s
-        {-1, -1, 10, 11, 12, 13, -1, -1, 14, -1},
-        {15, -1, 16, -1, 17, 18, 19, -1, 20, -1},
-        {-1, 21, -1, 22, 23, 24, -1, 25, -1, 26},
-        {-1, -1, -1, 27, 28, 29, -1, -1, -1, 30},
-        {-1, -1, -1, 31, 32, 33, -1, -1, -1, 34},
-        {-1, 35, 36, -1, -1, 37, -1, 38, 39, 40},
-    };
+    const std::vector<int32_t> columnSizes = {3, 6, 2, 4, 4, 3, 3, 1, 1, 1, 5, 5, 1, 2};
 
     SparseCoordinateMatrix sparseMatrix(matrix);
-    for (const auto columnIndex : secondaryColumns) {
-      sparseMatrix.setColumnSecondary(columnIndex);
-    }
-    sparseMatrix.sortPrimaryAndSecondaryColumns();
-
-    for (int32_t i = 0; i < sparseMatrix.getRowsAmount(); i++) {
-      for (int32_t j = 0; j < sparseMatrix.getColumnsAmount(); j++) {
-        CHECK(sparseMatrix.getCell(i, j) == sortedMatrix[i][j]);
-      }
+    for (int32_t columnIndex = 0; columnIndex < sparseMatrix.getColumnsAmount(); columnIndex++) {
+      CHECK(columnSizes[columnIndex] == sparseMatrix.getColumnValidCellsAmount(columnIndex));
     }
   }
 }

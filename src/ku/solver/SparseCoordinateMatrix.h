@@ -81,10 +81,11 @@ public:
    */
   bool reorderColumns(const std::vector<int32_t>& permutation);
 
-  /** Reorders the matrix columns: first primary columns, then secondary columns. Within the two categories, columns
-   * with less valid elements are placed first.
+  /** Retrieves the amount of valid cells within a column
+   * @param columnIndex The index of the column
+   * @return The amount of non-zero elements that a column contains
    */
-  void sortPrimaryAndSecondaryColumns();
+  int32_t getColumnValidCellsAmount(int32_t columnIndex) const;
 
 private:
   /** Resets the sparse matrix. I.e. rows and columns are set to 0 and the columns vector is cleared.

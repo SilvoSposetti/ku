@@ -30,12 +30,20 @@ public:
   static SparseCoordinateMatrix
   getExactCoverMatrix(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
-  /** Preliminary check to see if a set of constraint won't produce a solvable Algorithm X problem. I.e. when the
+  /** Preliminary check to see if a set of constraints won't produce a solvable Algorithm X problem. E.g. when the
    * columns that they define are all secondary
    * @param constraints The set of constraints
    * @return Whether the set of constraint is solvable
    */
   static bool isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
+  /** Reorders the columns of a SparseCoordinateMatrix. Puts primary columns at the left of the matrix and sorts them
+   * from the one with the least valid cells to the one with the most. If a random generator is provided, it
+   * additionally scrambles groups of columns that have the same amount of valid cells.
+   * @param matrix The matrix to reorder in-place
+   * @param randomGenerator The random generator used to scramble equally-sized columns.
+   */
+  static void reorderColumns(SparseCoordinateMatrix& matrix, std::shared_ptr<RandomGenerator> randomGenerator);
 
 private:
   /** Solves a board using Algorithm X
