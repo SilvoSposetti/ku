@@ -23,7 +23,7 @@ public:
          ConstraintType constraintTypes = Constraint::getSudokuConstraints(),
          SymmetryType givenSymmetry = SymmetryType::RANDOM,
          int32_t givenDigits = Sudo::TOTAL_DIGITS,
-         int32_t seed = -1);
+         std::optional<int32_t> seed = std::nullopt);
 
   /** Check if the sudoku is solvable. This is not the case where the constraints define secondary columns only
    * @return Whether the sudoku is solvable

@@ -105,7 +105,6 @@ void Solver::reorderColumns(SparseCoordinateMatrix& matrix, std::shared_ptr<Rand
         map.at(size).emplace_back(index);
       }
     }
-    std::cout << map.size() << std::endl;
 
     for (auto& [size, indices] : map) {
       indices = randomGenerator->randomShuffle(indices);

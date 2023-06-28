@@ -13,8 +13,8 @@ TEST_CASE("Random Generator") {
     const int32_t maximum = std::numeric_limits<int32_t>::max();
 
     SUBCASE("Random Seed") {
-      RandomGenerator generator1(-1);
-      RandomGenerator generator2(-1);
+      RandomGenerator generator1;
+      RandomGenerator generator2;
 
       std::unordered_set<int32_t> set1;
       std::unordered_set<int32_t> set2;
@@ -60,8 +60,8 @@ TEST_CASE("Random Generator") {
     std::iota(vector.begin(), vector.end(), 0);
 
     SUBCASE("Random Seed") {
-      RandomGenerator generator1(-1);
-      RandomGenerator generator2(-1);
+      RandomGenerator generator1;
+      RandomGenerator generator2;
       const std::vector<int32_t> vector1 = generator1.randomShuffle(vector);
       const std::vector<int32_t> vector2 = generator2.randomShuffle(vector);
       CHECK(vector1 != vector2);
@@ -96,8 +96,8 @@ TEST_CASE("Random Generator") {
     const int32_t givens = 40;
 
     SUBCASE("Random Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, givens, -1);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, givens, -1);
+      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, givens);
+      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, givens);
 
       CHECK(sudoku1.getSolution() != sudoku2.getSolution());
       CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());

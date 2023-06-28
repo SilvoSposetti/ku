@@ -1,10 +1,10 @@
 #include "RandomGenerator.h"
 
-RandomGenerator::RandomGenerator(int32_t seed) {
-  if (seed == -1) {
+RandomGenerator::RandomGenerator(std::optional<int32_t> seed) {
+  if (!seed) {
     generator = std::mt19937(std::random_device()());
   } else {
-    generator = std::mt19937(seed);
+    generator = std::mt19937(*seed);
   }
 }
 

@@ -12,7 +12,7 @@ Sudoku::Sudoku(const std::string& name,
                ConstraintType constraintTypes,
                SymmetryType givenSymmetry,
                int32_t givenDigits,
-               int32_t seed)
+               std::optional<int32_t> seed)
     : name(name)
     , givenDigitsAmount(std::clamp(givenDigits, 0, Sudo::TOTAL_DIGITS))
     , constraints(getConstraintsList(constraintTypes))

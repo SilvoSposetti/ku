@@ -1,14 +1,15 @@
 #pragma once
 
 #include <algorithm>
+#include <optional>
 #include <random>
 
 class RandomGenerator {
 public:
-  /** Constructor
-   * @param seed The seed for the random number generator. If -1 then a random seed will be used
+  /** Constructor.
+   * @param seed The seed for the random number generator. Uses a random seed if not available.
    */
-  RandomGenerator(int32_t seed);
+  RandomGenerator(std::optional<int32_t> seed = std::nullopt);
 
   /** Returns a random integer between min and max (inclusive)
    * @param min Minimum number
