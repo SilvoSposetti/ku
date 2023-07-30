@@ -23,9 +23,9 @@ public:
 private:
   /** The pattern for the dashVector, couples the middle cell (0, 0) with those defined by the pattern
    */
-  std::set<std::pair<int32_t, int32_t>> pattern;
+  const std::set<std::pair<int32_t, int32_t>> pattern;
 
   /** Contains all possible dashes (point pairs) for the Anti-King's constraint
    */
-  std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashVector;
+  const std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashVector;
 };

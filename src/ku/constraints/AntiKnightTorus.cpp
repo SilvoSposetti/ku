@@ -2,10 +2,9 @@
 
 #include <algorithm>
 
-AntiKnightTorus::AntiKnightTorus() {
-  pattern = {{2, -1}, {2, 1}, {1, 2}, {-1, 2}};
-  dashVector = createDashVector(pattern, true);
-}
+AntiKnightTorus::AntiKnightTorus()
+    : pattern({{2, -1}, {2, 1}, {1, 2}, {-1, 2}})
+    , dashVector(createDashVector(pattern, true)) {}
 
 ConstraintType AntiKnightTorus::getType() const {
   return ConstraintType::ANTI_KNIGHT_TORUS;

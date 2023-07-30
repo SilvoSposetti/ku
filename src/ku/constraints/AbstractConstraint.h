@@ -12,7 +12,13 @@
  */
 class AbstractConstraint {
 public:
+  /** Default constructor
+   */
   AbstractConstraint() = default;
+
+  /** Virtual default destructor, otherwise child classes' destructors are not called
+   */
+  virtual ~AbstractConstraint() = default;
 
   /** Defines the type of this constraint
    * @return The enum defining this constraint

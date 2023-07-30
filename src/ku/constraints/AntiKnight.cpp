@@ -2,10 +2,8 @@
 
 #include <set>
 
-AntiKnight::AntiKnight() {
-  pattern = {{2, -1}, {2, 1}, {1, 2}, {-1, 2}};
-  dashVector = createDashVector(pattern, false);
-}
+AntiKnight::AntiKnight()
+    : dashVector(createDashVector({{2, -1}, {2, 1}, {1, 2}, {-1, 2}}, false)) {}
 
 ConstraintType AntiKnight::getType() const {
   return ConstraintType::ANTI_KNIGHT;

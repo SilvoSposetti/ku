@@ -1,9 +1,7 @@
 #include "AntiKing.h"
 
-AntiKing::AntiKing() {
-  pattern = {{1, -1}, {1, 0}, {1, 1}, {0, 1}};
-  dashVector = createDashVector(pattern, false);
-}
+AntiKing::AntiKing()
+    : dashVector(createDashVector({{1, -1}, {1, 0}, {1, 1}, {0, 1}}, false)) {}
 
 ConstraintType AntiKing::getType() const {
   return ConstraintType::ANTI_KING;
