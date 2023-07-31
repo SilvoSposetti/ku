@@ -28,11 +28,12 @@ executable('ku_sandbox',
   include_directories : includes,
   link_with : ku_library)
 
-# Create test executable and link library
-subdir('test')
-test_executable = executable('ku_test',
-  sources: test_sources,
+# Create unit test executable and link library
+subdir('test/unitTest')
+unit_test_executable = executable('ku_unit_test',
+  sources: unit_test_sources,
   include_directories : includes,
   link_with : ku_library,
   dependencies: doctest_dependency)
-test('test', test_executable)
+
+test('unit_test', unit_test_executable, is_parallel : true)

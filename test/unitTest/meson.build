@@ -1,4 +1,4 @@
-test_sources = files(
+unit_test_sources = files(
   'AlgorithmXTest.cpp',
   'DoctestDefine.cpp',
   'GenerateSolutionTest.cpp',

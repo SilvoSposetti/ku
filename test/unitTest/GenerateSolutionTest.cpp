@@ -4,14 +4,13 @@
 
 #include <doctest.h>
 
+static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
+  const auto constraints = Sudoku::getConstraintsList(constraintType);
+  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>(0);
+  return Solver::createNewBoard(constraints, generator);
+};
+
 TEST_CASE("Generate Solution") {
-
-  const auto generateBoard = [&](ConstraintType constraintType) -> std::vector<std::vector<Sudo::Digit>> {
-    const auto constraints = Sudoku::getConstraintsList(constraintType);
-    std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>(0);
-    return Solver::createNewBoard(constraints, generator);
-  };
-
   SUBCASE("Sudoku Cell") {
     const auto board = generateBoard(ConstraintType::SUDOKU_CELL);
     CHECK(board != Sudo::emptyField());
