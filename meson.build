@@ -36,4 +36,16 @@ unit_test_executable = executable('ku_unit_test',
   link_with : ku_library,
   dependencies: doctest_dependency)
 
-test('unit_test', unit_test_executable, is_parallel : true)
+test('unit_test', unit_test_executable)
+
+# Create performance test executable and link library only if building in release
+if get_option('buildtype') == 'release'
+  subdir('test/performanceTest')
+    performance_test_executable = executable('ku_performance_test',
+      sources: performance_test_sources,
+      include_directories : includes,
+      link_with : ku_library,
+      dependencies: doctest_dependency)
+  test('performance_test', performance_test_executable)
+endif
+

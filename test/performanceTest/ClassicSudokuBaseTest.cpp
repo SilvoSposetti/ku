@@ -1,77 +1,74 @@
-
 #include "Sudoku.h"
+#include "constraints/ConstraintType.h"
+#include "doctest.h"
 #include "solver/Solver.h"
 
-#include <doctest.h>
-
 static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
-  const auto constraints = Sudoku::getConstraintsList(constraintType);
-  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>(0);
+  const auto constraints =
+      Sudoku::getConstraintsList(ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_COLUMN |
+                                 ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX | constraintType);
+  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>();
   return Solver::createNewBoard(constraints, generator);
 };
 
-TEST_CASE("Generate Solution") {
-  SUBCASE("Sudoku Cell") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_CELL);
-    CHECK(board != Sudo::emptyField());
-  }
-  SUBCASE("Sudoku Row") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_ROW);
-    CHECK(board != Sudo::emptyField());
-  }
-  SUBCASE("Sudoku Column") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_COLUMN);
-    CHECK(board != Sudo::emptyField());
-  }
-  SUBCASE("Sudoku Box") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_BOX);
-    CHECK(board != Sudo::emptyField());
-  }
-  SUBCASE("Positive Diagonal") {
+TEST_SUITE("Classic Sudoku Base") {
+
+  TEST_CASE("Classic Sudoku Base: Positive Diagonal") {
     const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Positive Diagonal Even") {
+
+  TEST_CASE("Classic Sudoku Base: Positive Diagonal Even") {
     const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_EVEN);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Positive Diagonal Odd") {
+
+  TEST_CASE("Classic Sudoku Base: Positive Diagonal Odd") {
     const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_ODD);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Negative Diagonal") {
+
+  TEST_CASE("Classic Sudoku Base: Negative Diagonal") {
     const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Negative Diagonal Even") {
+
+  TEST_CASE("Classic Sudoku Base: Negative Diagonal Even") {
     const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_EVEN);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Negative Diagonal Odd") {
+
+  TEST_CASE("Classic Sudoku Base: Negative Diagonal Odd") {
     const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_ODD);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Anti King") {
+
+  TEST_CASE("Classic Sudoku Base: Anti King") {
     const auto board = generateBoard(ConstraintType::ANTI_KING);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Anti King Torus") {
+
+  TEST_CASE("Classic Sudoku Base: Anti King Torus") {
     const auto board = generateBoard(ConstraintType::ANTI_KING_TORUS);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Anti Knight") {
+
+  TEST_CASE("Classic Sudoku Base: Anti Knight") {
     const auto board = generateBoard(ConstraintType::ANTI_KNIGHT);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Anti Knight Torus") {
+
+  TEST_CASE("Classic Sudoku Base: Anti Knight Torus") {
     const auto board = generateBoard(ConstraintType::ANTI_KNIGHT_TORUS);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Disjoint Boxes") {
+
+  TEST_CASE("Classic Sudoku Base: Disjoint Boxes") {
     const auto board = generateBoard(ConstraintType::DISJOINT_BOXES);
     CHECK(board != Sudo::emptyField());
   }
-  SUBCASE("Asterisk") {
+
+  TEST_CASE("Classic Sudoku Base: Asterisk") {
     const auto board = generateBoard(ConstraintType::ASTERISK);
     CHECK(board != Sudo::emptyField());
   }
