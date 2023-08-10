@@ -22,6 +22,7 @@ int main() {
   // constraints = constraints | ConstraintType::ANTI_KNIGHT_TORUS;
   // constraints = constraints | ConstraintType::DISJOINT_BOXES;
   // constraints = constraints | ConstraintType::ASTERISK;
+  // constraints = constraints | ConstraintType::HYPER_SUDOKU;
 
   const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
   for (int32_t i = 0; i < 1; ++i) {

@@ -22,6 +22,7 @@ enum class ConstraintType : uint64_t {
   ANTI_KNIGHT_TORUS = 1 << 13,
   DISJOINT_BOXES = 1 << 14,
   ASTERISK = 1 << 15,
+  HYPER_SUDOKU = 1 << 16,
   // When adding a constraint, update below:
   // Constraint::getConstraintNameString()
 };
@@ -74,6 +75,8 @@ static inline std::string getConstraintNameString(ConstraintType type) {
     return "Disjoint-Boxes";
   case ConstraintType::ASTERISK:
     return "Asterisk";
+  case ConstraintType::HYPER_SUDOKU:
+    return "Hyper-Sudoku";
   default:
     return "Unknown Constraint";
   }
