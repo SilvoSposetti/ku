@@ -255,16 +255,16 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
 };
 
 /** Runs Algorithm X on the internal data structure to find a solution.
- * @param checkForUniqueness Whether confirming the solution's uniqueness is required. When true this offers early exit
+ * @param findFirstSolution Whether a single solution suffices. When true this offers early exit as soon as the first
+ * one is found
+ * @param checkForUniqueness Whether confirming a unique solution is required. When true this offers early exit
  * if more than one solution is found.
- * @param findASolution Whether all solutions need to be found. When true this offers early exit as soon as the first
- * solution is found
  * @param sparseMatrix The sparse matrix that defines an Exact Cover problem
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
 std::vector<std::unordered_set<int32_t>>
-runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix, bool findASolution, bool checkForUniqueness) {
+runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix, bool findFirstSolution, bool checkForUniqueness) {
 
   // Don't run Algorithm X on an empty sparse matrix
   std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
@@ -358,7 +358,7 @@ X8 : // Leave level l
   // Exit early if checking for uniqueness and more than one solution is found
   const bool uniquenessEarlyExit = checkForUniqueness && solutions.size() >= 2;
   // Exit early if it's not required to find all solutions and at least one has been found
-  const bool singleSolutionEarlyExit = findASolution && solutions.size() >= 1;
+  const bool singleSolutionEarlyExit = findFirstSolution && solutions.size() >= 1;
   // When the level reaches 0, all possible solutions have been evaluated
   const bool searchedThroughAllPossibilities = level == 0;
   if (singleSolutionEarlyExit || uniquenessEarlyExit || searchedThroughAllPossibilities) {
@@ -382,7 +382,7 @@ std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const Spar
 
 std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMatrix& sparseMatrix) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  const auto solutions = runAlgorithmX(sparseMatrix, false, true);
+  const auto solutions = runAlgorithmX(sparseMatrix, true, false);
   if (solutions.size() >= 1) {
     return solutions[0];
   }
@@ -390,7 +390,7 @@ std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMa
 }
 
 bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix) {
-  return runAlgorithmX(sparseMatrix, true, false).size() == 1;
+  return runAlgorithmX(sparseMatrix, false, true).size() == 1;
 }
 
 void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
