@@ -14,6 +14,7 @@ ku_sources = files(
   'constraints/Asterisk.cpp',
   'constraints/ConstraintFactory.cpp',
   'constraints/DisjointBoxes.cpp',
+  'constraints/HyperSudoku.cpp',
   'constraints/NegativeDiagonal.cpp',
   'constraints/NegativeDiagonalEven.cpp',
   'constraints/NegativeDiagonalOdd.cpp',
