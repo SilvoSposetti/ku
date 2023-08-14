@@ -4,7 +4,7 @@
 
 static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
   const auto constraints = Sudoku::getConstraintsList(constraintType);
-  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>(0);
+  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>();
   return Solver::createNewBoard(constraints, generator);
 };
 

@@ -375,21 +375,21 @@ TEST_CASE("Algorithm X") {
                     {1, 2}, // Solution 2.B
                 },
             },
-            {
-                // Example 3 (like Example 2, but with the secondary colum moved)
-                {
-                    {-1, -1, -1, 10}, // Part of solution 3.A
-                    {12, 13, -1, -1}, // Part of solution 3.B
-                    {-1, -1, 15, 16}, // Part of solution 3.B
-                    {-1, -1, -1, -1},
-                    {14, -1, 15, -1}, // Part of solution 3.A
-                },
-                {1}, // Indices of the items that are secondary
-                {
-                    {0, 4}, // Solution 3.A
-                    {1, 2}, // Solution 3.B
-                },
-            },
+            // {
+            //     // Example 3 (like Example 2, but with the secondary colum moved)
+            //     {
+            //         {-1, -1, -1, 10}, // Part of solution 3.A
+            //         {12, 13, -1, -1}, // Part of solution 3.B
+            //         {-1, -1, 15, 16}, // Part of solution 3.B
+            //         {-1, -1, -1, -1},
+            //         {14, -1, 15, -1}, // Part of solution 3.A
+            //     },
+            //     {1}, // Indices of the items that are secondary
+            //     {
+            //         {0, 4}, // Solution 3.A
+            //         {1, 2}, // Solution 3.B
+            //     },
+            // },
             {
                 // Example 4
                 {

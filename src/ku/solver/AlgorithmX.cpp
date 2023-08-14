@@ -39,85 +39,86 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
   // - An up-link to the first node in the option before X.
   // - An down-link to the last node in the option after X.
 
-  // TODO: allocate the right amount of memory here using validElements
-  std::vector<AlgorithmXNode> structure;
+  constexpr int32_t rootNodesAmount = 1; // One root
+  const int32_t headerNodesAmount = itemsAmount; // As many header as there are items
+  const int32_t regularNodesAmount = validElements; // One regular node for each non-zero elements in the matrix
+  const int32_t spacerNodesAmount = optionsAmount + 1; // One spacer in front of each option + one spacer at the end
+  const int32_t totalNodesAmount = rootNodesAmount + headerNodesAmount + regularNodesAmount + spacerNodesAmount;
+  std::vector<AlgorithmXNode> structure(totalNodesAmount);
 
-  // Create root
-  AlgorithmXNode root{AlgorithmXNodeType::Root};
-  structure.emplace_back(root);
+  // Set the root node
+  structure[0].type = AlgorithmXNodeType::Root;
 
-  // Create headers
-  for (int32_t i = 0; i < itemsAmount; i++) {
-    const int32_t headerId = i + 1; // The root exists already
-    structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Header});
-    structure[headerId].left = (headerId - 1) % (itemsAmount + 1);
-    structure[headerId].right = (headerId + 1) % (itemsAmount + 1);
-    structure[headerId].length = 0;
-  };
+  // I1: Read the first line
+  int32_t N_1 = -1;
+  int32_t i = 0;
 
-  // make header list circular
-  structure.front().right = 1;
-  structure.front().left = structure.size() - 1;
-
-  // Unlink all secondary column headers
-  for (int i = 1; i < itemsAmount + 1; i++) {
-    if (!sparseMatrix.isColumnPrimary(i - 1)) {
-      // Unlink from header list
-      structure[structure[i].right].left = structure[i].left;
-      structure[structure[i].left].right = structure[i].right;
-      // Set left and right pointers to to itself
-      structure[i].left = i;
-      structure[i].right = i;
+  for (int itemId = 0; itemId < itemsAmount; itemId++) {
+    i++;
+    structure[i].type = AlgorithmXNodeType::Header;
+    // structure[i].name = std::to_string(itemId);
+    structure[i].left = i - 1;
+    structure[i - 1].right = i;
+    if (!sparseMatrix.isColumnPrimary(itemId) && N_1 <= 0) {
+      N_1 = i - 1;
     }
   }
 
-  // Add the first spacer node
-  structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Spacer});
+  // I2:  Finish the horizontal list
+  int32_t N = i;
+  if (N_1 <= 0) {
+    // There were no secondary items
+    N_1 = N;
+  }
+  // The active secondary items (if any) are accessible from the node at index N+1
+  structure[N + 1].left = N;
+  structure[N].right = N + 1;
+  structure[N_1 + 1].left = N + 1;
+  structure[N + 1].right = N_1 + 1;
+  structure[0].left = N_1;
+  structure[N_1].right = 0;
 
-  // Add regular nodes
-  for (int32_t i = 0; i < optionsAmount; i++) {
-    for (int32_t j = 0; j < itemsAmount; j++) {
-      const int32_t cellValue = sparseMatrix.getCell(i, j);
+  // I3: Prepare for options
+  for (int32_t j = 1; j <= N; j++) {
+    structure[j].length = 0;
+    structure[j].up = j;
+    structure[j].down = j;
+  }
+  int32_t M = 0;
+  int32_t p = N + 1;
+  // At this moment, p is the first spacer
+  structure[p].type = AlgorithmXNodeType::Spacer;
+  structure[p].header = -1;
+
+  for (int32_t optionId = 0; optionId < optionsAmount; optionId++) {
+    int32_t j = 0;
+    for (int32_t i_j = 1; i_j < itemsAmount + 1; i_j++) {
+      const int32_t cellValue = sparseMatrix.getCell(optionId, i_j - 1);
       if (cellValue >= 0) {
-        const int32_t nodeId = structure.size();
-        const int32_t headerId = j + 1;
-        structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Node});
-        structure.back().header = headerId;
-        structure.back().data = cellValue;
-
-        // Increase header length since we just added a node
-        structure[headerId].length++;
-        if (structure[headerId].down <= 0) {
-          structure[headerId].down = nodeId;
-          structure[headerId].up = nodeId;
-          structure[nodeId].up = headerId;
-          structure[nodeId].down = headerId;
-        } else {
-          int32_t lastNodeId = structure[headerId].up;
-          structure[lastNodeId].down = nodeId;
-          structure[headerId].up = nodeId;
-          structure[nodeId].down = headerId;
-          structure[nodeId].up = lastNodeId;
-        }
+        j++;
+        // I4: Read an option
+        structure[p + j].type = AlgorithmXNodeType::Node;
+        structure[i_j].length++;
+        // p + j is the index of the current node, just added to the structure
+        const int32_t q = structure[i_j].up; // q is the bottom-est node under header i_j
+        structure[q].down = p + j; // Set the down of q to the current
+        structure[p + j].up = q; // Set q as the top node of the current
+        structure[p + j].down = i_j; // Set the down of the current node, which is now the bottom-est
+        structure[p + j].header = i_j; // Set the header of the current node
+        structure[p + j].data = cellValue; // set the data of the current node
+        structure[i_j].up = p + j; // Set the up of the header to the
       }
     }
-    // Add a spacer node after all nodes of the option have been added
-    structure.emplace_back(AlgorithmXNode{AlgorithmXNodeType::Spacer});
+    // I5: Finish an option
+    const int32_t k = j;
+    M = M + 1;
+    structure[p].down = p + k;
+    p = p + k + 1;
+    structure[p].type = AlgorithmXNodeType::Spacer;
+    structure[p].header = -M;
+    structure[p].up = p - k;
   }
 
-  // Spacer nodes are missing their up and down pointers.
-  int32_t lastSpacerId = -1;
-  for (size_t nodeId = 0; nodeId < structure.size(); nodeId++) {
-    if (structure[nodeId].type == AlgorithmXNodeType::Spacer) {
-      // If X is a spacer, X.up is the address of the first node in the option before x
-      // If X is a spacer, X.down is the address of the last node in the option after x
-      if (lastSpacerId > 0) {
-        structure[nodeId].up = lastSpacerId + 1;
-        structure[lastSpacerId].down = nodeId - 1;
-      }
-      lastSpacerId = nodeId;
-    }
-  }
   return structure;
 };
 
@@ -157,7 +158,7 @@ void hideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
     const int32_t x = structure[nextNode].header;
     const int32_t u = structure[nextNode].up;
     const int32_t d = structure[nextNode].down;
-    if (x < 0) { // Q is a spacer
+    if (structure[nextNode].type == AlgorithmXNodeType::Spacer) { // Q is a spacer
       nextNode = u; // up link of a spacer points to the first node of the previous option
     } else {
       structure[u].down = d;
@@ -180,7 +181,7 @@ void unhideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
     const int32_t x = structure[previousNode].header;
     const int32_t u = structure[previousNode].up;
     const int32_t d = structure[previousNode].down;
-    if (x < 0) { // Q is a spacer
+    if (structure[previousNode].type == AlgorithmXNodeType::Spacer) { // Q is a spacer
       previousNode = d; // down link of a spacer points to the last node of the following option
     } else {
       structure[u].down = previousNode;
@@ -315,7 +316,7 @@ X5 : // Try x[level]
   int32_t nextNodeIndex = x[level] + 1;
   while (nextNodeIndex != x[level]) {
     int32_t nextNodeHeaderIndex = structure[nextNodeIndex].header;
-    if (nextNodeHeaderIndex < 0) { // nextNode is a spacer
+    if (structure[nextNodeIndex].type == AlgorithmXNodeType::Spacer) { // nextNode is a spacer
       // Follow nextNode's up to get the first node of the previous option
       nextNodeIndex = structure[nextNodeIndex].up;
     } else {
@@ -334,7 +335,7 @@ X6 : // Try again
   nodeIndex = x[level] - 1;
   while (nodeIndex != x[level]) {
     otherItemIndex = structure[nodeIndex].header;
-    if (otherItemIndex < 0) { // current node is a spacer
+    if (structure[nodeIndex].type == AlgorithmXNodeType::Spacer) { // current node is a spacer
       // Follow current node's down to get the last node of the following option
       nodeIndex = structure[nodeIndex].down;
     } else {

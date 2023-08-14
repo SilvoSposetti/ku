@@ -14,11 +14,7 @@ enum class AlgorithmXNodeType : uint8_t { Root, Header, Node, Spacer };
  * Spacer: defines [up|down]
  */
 struct AlgorithmXNode {
-  /** Constructor
-   * @param type The type of node
-   */
-  AlgorithmXNode(AlgorithmXNodeType type);
-
+  
   AlgorithmXNodeType type = AlgorithmXNodeType::Node;
   /// The data stored in the node. Used by regular nodes only
   int32_t data = -1;

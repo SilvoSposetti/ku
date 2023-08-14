@@ -6,8 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
-/** Namespace that interfaces with Algorithm X. It is used to find solutions of Exact Cover problems described by
- * sparse matrices.
+/** Namespace that interfaces with Algorithm X, a recursive, nondeterministic, depth-first, backtracking algorithm.
+ * It is used to find solutions of Exact Cover problems described by sparse binary matrices.
  */
 namespace AlgorithmX {
 
