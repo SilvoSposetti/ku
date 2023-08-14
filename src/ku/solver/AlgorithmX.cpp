@@ -93,8 +93,7 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
   for (int32_t optionId = 0; optionId < optionsAmount; optionId++) {
     int32_t j = 0;
     for (int32_t i_j = 1; i_j < itemsAmount + 1; i_j++) {
-      const int32_t cellValue = sparseMatrix.getCell(optionId, i_j - 1);
-      if (cellValue >= 0) {
+      if (sparseMatrix.isCellSet(optionId, i_j - 1)) {
         j++;
         // I4: Read an option
         structure[p + j].type = AlgorithmXNodeType::Node;
@@ -105,7 +104,6 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
         structure[p + j].up = q; // Set q as the top node of the current
         structure[p + j].down = i_j; // Set the down of the current node, which is now the bottom-est
         structure[p + j].header = i_j; // Set the header of the current node
-        structure[p + j].data = cellValue; // set the data of the current node
         structure[i_j].up = p + j; // Set the up of the header to the
       }
     }
@@ -420,7 +418,6 @@ void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) 
     s += getInfo("L", node.left);
     s += getInfo("R", node.right);
     s += getInfo("LEN", node.length);
-    s += getInfo("Data", node.data);
     std::cout << s << std::endl;
     counter++;
   }

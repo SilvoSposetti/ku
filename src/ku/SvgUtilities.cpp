@@ -13,6 +13,7 @@ std::string SvgUtilities::getSvgHeader() {
 
   return header;
 }
+
 std::string SvgUtilities::getSvgFooter() {
   return "</svg>\n";
   ;
@@ -44,6 +45,7 @@ std::string SvgUtilities::line(double x1, double y1, double x2, double y2, const
   return "<line x1=\"" + toString(xPosition1) + "\" y1=\"" + toString(yPosition1) + "\" x2=\"" + toString(xPosition2) +
          "\" y2=\"" + toString(yPosition2) + "\"" + style + "/>\n";
 }
+
 std::string SvgUtilities::polyLine(const std::vector<std::pair<double, double>>& points, const std::string& style) {
   std::string pointsList;
   for (const auto& point : points) {
@@ -251,8 +253,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
     std::string constraintCells;
     for (int32_t i = 0; i < rowsAmount; i++) {
       for (int32_t j = startColumn; j < endColumn; j++) {
-        const bool isCellSet = matrix.getCell(i, j) >= 0;
-        if (isCellSet) {
+        if (matrix.isCellSet(i, j)) {
           const double posX = originX + constraintCounter * constraintSeparation + j * dlxCellSize;
           const double posY = originY + i * dlxCellSize;
           constraintCells += paperUnitsRect(posX, posY, dlxCellSize, dlxCellSize);
@@ -283,7 +284,7 @@ std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
   int32_t currentColumn = 0;
 
   for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix.getCell(i, currentColumn) >= 0 && currentColumn < columnsAmount) {
+    if (matrix.isCellSet(i, currentColumn) && currentColumn < columnsAmount) {
       const double y = originY + dlxCellSize * i;
       horizontalLines += paperUnitsLine(startX, y, endX, y);
       currentColumn++;
@@ -403,7 +404,7 @@ std::string SvgUtilities::squigglyLine(double x1, double y1, double x2, double y
   double side = 1;
 
   std::string squiggly = "<path d=\"M " + getPointString({x1, y1});
-  for (int i = 1; i < segmentsAmount; i++) {
+  for (int32_t i = 1; i < segmentsAmount; i++) {
     const double offset = side * actualSize * 0.5;
     const double pointX = x1 + i * actualSize * lineDirectionX + offset * perpendicularDirectionX;
     const double pointY = y1 + i * actualSize * lineDirectionY + offset * perpendicularDirectionY;

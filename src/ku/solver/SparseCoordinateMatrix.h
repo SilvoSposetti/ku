@@ -1,32 +1,32 @@
 #pragma once
 #include "../Sudo.h"
+#include "../randomGenerator/RandomGenerator.h"
 
-#include <unordered_map>
-
-/** The data contained in a column of a sparse coordinate matrix
- */
-struct SparseCoordinateColumn {
-  /// Whether the column is primary
-  bool isPrimary = true;
-  /// A map of all the non-negative elements of the column. Key is the sparse matrix index, value is the data stored in
-  /// that index
-  std::unordered_map<int32_t, int32_t> elements = {};
-};
+#include <memory>
+#include <set>
+#include <unordered_set>
 
 /** A data structure for sparse matrices that uses coordinate format and column-major order. All elements of the matrix
  * are initialized with the value -1. By default, all columns of the matrix are primary unless manually modified.
  */
 class SparseCoordinateMatrix {
 public:
-  /** Constructor. Creates an empty sparse coordinate matrix. The elements can be set individually with setCell()
-   * @param totalRows The amount of rows the sparse matrix has
-   * @param totalColumns The amount of columns the sparse matrix has
+  /** Constructor. Creates a sparse coordinate matrix according to a given binary matrix and the data associated with
+   * each row.
+   * @param matrix The binary matrix in row-major order
+   * @param rowsData The data for each row. If empty, the default value of -1 is used for every row
+   * @param secondaryColumnsIndices The indices of the secondary columns
+   * @param randomGenerator Optionally, the random generator used to scramble the columns
    */
-  SparseCoordinateMatrix(int32_t totalRows, int32_t totalColumns);
+  SparseCoordinateMatrix(const std::vector<std::vector<bool>>& classicMatrix,
+                         const std::unordered_set<int32_t>& secondaryColumnsIndices = {},
+                         const std::vector<int32_t>& rowsDataVector = {});
 
-  /** Constructor. Creates a sparse coordinate matrix according to a given
+  /** Prepares the matrix for Algorithm X. Puts primary columns at the beginning of the matrix and secondary columns at
+   * the end. Sorts columns by their length, and if a random generator is provided, scrambles columns that have the
+   * same length.
    */
-  SparseCoordinateMatrix(const std::vector<std::vector<int32_t>>& matrix);
+  void preprocess(std::shared_ptr<RandomGenerator> randomGenerator = {});
 
   /** Retrieves the amount of columns that this matrix supports
    * @return The amount of columns
@@ -38,15 +38,10 @@ public:
    */
   int32_t getRowsAmount() const;
 
-  /** Retrieves the amount of valid (non-negative) elements
+  /** Retrieves the amount of valid (set) elements
    * @return The amount of valid elements
    */
   int32_t getValidElementsAmount() const;
-
-  /** Sets a particular column to be secondary
-   * @return The amount of rows
-   */
-  void setColumnSecondary(int32_t columnIndex);
 
   /** Retrieves whether a specified column is primary
    * @param columnIndex The column index
@@ -54,32 +49,31 @@ public:
    */
   bool isColumnPrimary(int32_t columnIndex) const;
 
-  /** Sets data into a specific location in the matrix. Setting a negative value will mark the cell as empty
-   * @param rowIndex The row index of the insertion location
-   * @param columnIndex The column index of the insertion location
-   * @param data The data for the cell.
-   * @return Whether insertion was successful
-   */
-  bool setCell(int32_t rowIndex, int32_t columnIndex, int32_t data);
-
-  /** Gets data from a specific location in the matrix. Returns -1 if the location is outside the matrix
+  /** Returns whether a specific cell is set or not. Returns false if the location is outside of the matrix.
    * @param rowIndex The row index of the insertion location
    * @param columnIndex The column index of the insertion location
    * @return The data stored in the cell position.
    */
-  int32_t getCell(int32_t rowIndex, int32_t columnIndex) const;
+  bool isCellSet(int32_t rowIndex, int32_t columnIndex) const;
 
-  /** Computes whether the matrix might be solvable by Algorithm X. This is the case when the matrix contains only
-   * secondary columns, or when any primary column has no elements
-   * @return Whether the matrix might be solvable
+  /** Sets the data of a specific row of the matrix
+   * @param rowIndex The row index of the insertion location
+   * @param data The column index of the insertion location
+   * @return The data of the row if successful, otherwise -1
    */
-  bool isSolvableByAlgorithmX() const;
+  int32_t getRowData(int32_t rowIndex) const;
 
   /** Reorders the matrix columns according to the new column index provided
    * @param permutation The new order for the columns
    * @return Whether reordering can be performed
    */
   bool reorderColumns(const std::vector<int32_t>& permutation);
+
+  /** Computes whether the matrix might be solvable by Algorithm X. This is the case when the matrix contains only
+   * secondary columns, or when any primary column has no elements
+   * @return Whether the matrix might be solvable
+   */
+  bool isSolvableByAlgorithmX() const;
 
   /** Retrieves the amount of valid cells within a column
    * @param columnIndex The index of the column
@@ -88,17 +82,36 @@ public:
   int32_t getColumnValidCellsAmount(int32_t columnIndex) const;
 
 private:
-  /** Resets the sparse matrix. I.e. rows and columns are set to 0 and the columns vector is cleared.
+  /** Helper to compute whether a certain column index is valid
+   * @param columnIndex The column index
+   * @return Whether the index is valid
    */
-  void reset();
+  bool isValidColumnIndex(int32_t columnIndex) const;
+
+  /** Helper to compute whether a certain row index is valid
+   * @param rowIndex The row index
+   * @return Whether the index is valid
+   */
+  bool isValidRowIndex(int32_t rowIndex) const;
 
 private:
-  /// The matrix. Stores only non-zero elements. Has a vector for every column
-  std::vector<SparseCoordinateColumn> columns;
+  /// The maximum amount of rows that the matrix considers
+  std::size_t rowsAmount = 0;
 
   /// The maximum amount of columns that the matrix considers
-  int32_t columnsAmount = 0;
+  std::size_t columnsAmount = 0;
 
-  /// The maximum amount of rows that the matrix considers
-  int32_t rowsAmount = 0;
+  /// The binary matrix, arranged by column
+  std::vector<std::vector<bool>> matrix;
+
+  /// Sorted sets of all the non-zero indices of elements for every row
+  std::vector<std::set<int32_t>> rowsElements;
+
+  /// The data stored within a row
+  std::vector<int32_t> rowsData;
+
+  /// The Whether the columns are primary (not secondary)
+  std::vector<bool> areColumnsPrimary;
+
+  static constexpr int32_t invalidRowValue = -1;
 };

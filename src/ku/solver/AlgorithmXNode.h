@@ -16,8 +16,6 @@ enum class AlgorithmXNodeType : uint8_t { Root, Header, Node, Spacer };
 struct AlgorithmXNode {
   
   AlgorithmXNodeType type = AlgorithmXNodeType::Node;
-  /// The data stored in the node. Used by regular nodes only
-  int32_t data = -1;
   /// Pointer to left node
   int32_t left = -1;
   /// Pointer to left node

@@ -127,7 +127,7 @@ void Solver::reorderColumns(SparseCoordinateMatrix& matrix, std::shared_ptr<Rand
     permutation.emplace_back(s.first);
   }
 
-  // Sort the matrix according to the desired permutation
+  // Do matrix preprocessing
   matrix.reorderColumns(permutation);
 }
 
@@ -137,6 +137,9 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    std::shared_ptr<RandomGenerator> randomGenerator) {
   // Reduce problem: Sudoku -> Exact Cover
   SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints, randomGenerator);
+
+  // Preprocess the matrix to get it ready for Algorithm X
+  // matrix.preprocess(randomGenerator);
 
   // Check that the matrix is valid
   if (!matrix.isSolvableByAlgorithmX()) {
@@ -191,13 +194,17 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
   }
 
   // Initialize matrix with correct size
-  SparseCoordinateMatrix matrix(totalRows, totalColumns);
+  std::vector<std::vector<bool>> matrix(totalRows, std::vector<bool>(totalColumns, false));
+  std::vector<int32_t> rowsData(totalRows, -1);
+  std::unordered_set<int32_t> secondaryColumns;
+
   // Randomize the sequence of digits that is passed when constructing the matrix or not
   const std::vector<Sudo::Digit> digitsSequence =
       randomGenerator ? randomGenerator->randomShuffle(Sudo::SUDO_DIGITS) : Sudo::SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;
+  int32_t setMatrixRowData = -1;
   for (const auto& boardI : Sudo::INDICES) { // Go through all sudoku rows
     for (const auto& boardJ : Sudo::INDICES) { // Go through all sudoku columns
       const Sudo::Digit actualDigit = board[boardI][boardJ];
@@ -208,18 +215,21 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
           for (const auto& constraint : constraints) {
             for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
               if (!constraint->isColumnPrimary(columnId)) {
-                matrix.setColumnSecondary(matrixColumnCounter);
+                secondaryColumns.insert(matrixColumnCounter);
               }
               if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
-                // Store matrix cell ID
-                matrix.setCell(matrixRowCounter,
-                               matrixColumnCounter,
-                               IdPacking::packId(boardI,
-                                                 boardJ,
-                                                 static_cast<int32_t>(possibleDigit) - 1,
-                                                 Sudo::MAX_DIGIT,
-                                                 Sudo::MAX_DIGIT,
-                                                 Sudo::MAX_DIGIT));
+                // Set cell
+                matrix[matrixRowCounter][matrixColumnCounter] = true;
+                // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
+                if (setMatrixRowData < matrixRowCounter) {
+                  rowsData[matrixRowCounter] = IdPacking::packId(boardI,
+                                                                 boardJ,
+                                                                 static_cast<int32_t>(possibleDigit) - 1,
+                                                                 Sudo::MAX_DIGIT,
+                                                                 Sudo::MAX_DIGIT,
+                                                                 Sudo::MAX_DIGIT);
+                  setMatrixRowData++;
+                }
               }
               matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
             }
@@ -230,25 +240,19 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
     }
   }
 
-  return matrix;
+  SparseCoordinateMatrix sparseMatrix(matrix, secondaryColumns, rowsData);
+  return sparseMatrix;
 }
 
 void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
                                                       const SparseCoordinateMatrix& matrix,
                                                       const std::unordered_set<int32_t>& solutionRows) {
-  const int32_t columnsAmount = matrix.getColumnsAmount();
-
   for (const auto& rowIndex : solutionRows) {
-    int32_t dataRetrieved = -1;
-    int32_t columnIndex = 0;
-    do {
-      dataRetrieved = matrix.getCell(rowIndex, columnIndex);
-      columnIndex++;
-    } while (dataRetrieved < 0 && columnIndex < columnsAmount);
-    // This uses the same method used to identify the cells of the SUDOKU_CELL constraint,
-    // but the process here is reversed
+    int32_t packedData = matrix.getRowData(rowIndex);
+    // Uses the same method used to identify the cells of the SUDOKU_CELL constraint, but the process here is reversed.
+    // This was set when reducing Sudoku to Exact Cover
     const auto [boardRow, boardColumn, digit] =
-        IdPacking::unpackId(dataRetrieved, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+        IdPacking::unpackId(packedData, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
     board[boardRow][boardColumn] = static_cast<Sudo::Digit>(digit + 1);
   }
 }
