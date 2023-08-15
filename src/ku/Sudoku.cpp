@@ -17,8 +17,8 @@ Sudoku::Sudoku(const std::string& name,
     , givenDigitsAmount(std::clamp(givenDigits, 0, Sudo::TOTAL_DIGITS))
     , constraints(getConstraintsList(constraintTypes))
     , symmetryType(givenSymmetry)
-    , randomGenerator(std::make_shared<RandomGenerator>(seed))
-    , board(Setter::generate(givenDigitsAmount, symmetryType, constraints, randomGenerator)) {}
+    , seed(seed)
+    , board(Setter::generate(givenDigitsAmount, symmetryType, constraints, seed)) {}
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
   std::vector<std::unique_ptr<AbstractConstraint>> constraintList;

@@ -7,8 +7,7 @@ static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constr
   const auto constraints =
       Sudoku::getConstraintsList(ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_COLUMN |
                                  ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX | constraintType);
-  std::shared_ptr<RandomGenerator> generator = std::make_shared<RandomGenerator>();
-  return Solver::createNewBoard(constraints, generator);
+  return Solver::createNewBoard(constraints, std::nullopt);
 };
 
 TEST_SUITE("Classic Sudoku Base") {

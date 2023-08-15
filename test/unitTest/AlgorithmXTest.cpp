@@ -6,6 +6,9 @@
 #include <algorithm>
 
 TEST_CASE("Algorithm X") {
+
+  const std::vector<std::optional<int32_t>> seeds = {std::nullopt, 0, 1, -566, 9845};
+
   SUBCASE("No solutions") {
     const std::vector<std::vector<std::vector<bool>>> unsolvableMatrices = {
         {
@@ -44,14 +47,16 @@ TEST_CASE("Algorithm X") {
             {1, 1, 0},
         },
     };
-    for (const auto& unsolvableMatrix : unsolvableMatrices) {
-      SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
-      // Theoretically solvable, but no solutions can be found
-      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-      //   AlgorithmX::printDataStructure(sparseMatrix);
-      CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
-      CHECK(AlgorithmX::findAllSolutions(sparseMatrix).empty());
-      CHECK(AlgorithmX::findOneSolution(sparseMatrix).empty());
+    for (const auto& seed : seeds) {
+      for (const auto& unsolvableMatrix : unsolvableMatrices) {
+        SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
+        // Theoretically solvable, but no solutions can be found
+        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(sparseMatrix);
+        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
+        CHECK(AlgorithmX::findAllSolutions(sparseMatrix, seed).empty());
+        CHECK(AlgorithmX::findOneSolution(sparseMatrix, seed).empty());
+      }
     }
   }
 
@@ -120,19 +125,20 @@ TEST_CASE("Algorithm X") {
             {0} // Solution 6
         },
     };
+    for (const auto& seed : seeds) {
+      for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
+        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
+        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+        AlgorithmX::printDataStructure(sparseMatrix);
 
-    for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
-      SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-      AlgorithmX::printDataStructure(sparseMatrix);
-
-      CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
-      const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix);
-      CHECK(allSolutions.size() == 1);
-      CHECK(allSolutions.at(0) == exactCoverSolution);
-      const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix);
-      CHECK(!oneSolution.empty());
-      CHECK(oneSolution == exactCoverSolution);
+        CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+        CHECK(allSolutions.size() == 1);
+        CHECK(allSolutions.at(0) == exactCoverSolution);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        CHECK(!oneSolution.empty());
+        CHECK(oneSolution == exactCoverSolution);
+      }
     }
   }
 
@@ -204,18 +210,19 @@ TEST_CASE("Algorithm X") {
                 {1, 3}, // Solution 5
             },
         };
-
-    for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolution] : exactCoverMatrices) {
-      SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
-      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-      //   AlgorithmX::printDataStructure(sparseMatrix);
-      CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix));
-      const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix);
-      CHECK(allSolutions.size() == 1);
-      CHECK(allSolutions.at(0) == exactCoverSolution);
-      const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix);
-      CHECK(!oneSolution.empty());
-      CHECK(oneSolution == exactCoverSolution);
+    for (const auto& seed : seeds) {
+      for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolution] : exactCoverMatrices) {
+        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
+        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(sparseMatrix);
+        CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+        CHECK(allSolutions.size() == 1);
+        CHECK(allSolutions.at(0) == exactCoverSolution);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        CHECK(!oneSolution.empty());
+        CHECK(oneSolution == exactCoverSolution);
+      }
     }
   }
 
@@ -314,22 +321,23 @@ TEST_CASE("Algorithm X") {
                 },
             },
         };
-
-    for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
-      SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-      //   AlgorithmX::printDataStructure(sparseMatrix);
-      CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
-      const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix);
-      // Check that every solution found appears in the list of the ones provided
-      CHECK(allSolutions.size() == exactCoverSolutions.size());
-      for (const auto& solution : allSolutions) {
-        CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
+    for (const auto& seed : seeds) {
+      for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
+        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
+        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(sparseMatrix);
+        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+        // Check that every solution found appears in the list of the ones provided
+        CHECK(allSolutions.size() == exactCoverSolutions.size());
+        for (const auto& solution : allSolutions) {
+          CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
+        }
+        // Check that the one solution found appears in the list of the ones provided
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        CHECK(!oneSolution.empty());
+        CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
       }
-      // Check that the one solution found appears in the list of the ones provided
-      const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix);
-      CHECK(!oneSolution.empty());
-      CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
     }
   }
 
@@ -402,22 +410,23 @@ TEST_CASE("Algorithm X") {
                 },
             },
         };
-
-    for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolutions] : exactCoverMatrices) {
-      SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
-      REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-      //   AlgorithmX::printDataStructure(sparseMatrix);
-      CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix));
-      const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix);
-      // Check that every solution found appears in the list of the ones provided
-      CHECK(allSolutions.size() == exactCoverSolutions.size());
-      for (const auto& solution : allSolutions) {
-        CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
+    for (const auto& seed : seeds) {
+      for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolutions] : exactCoverMatrices) {
+        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
+        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(sparseMatrix);
+        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+        // Check that every solution found appears in the list of the ones provided
+        CHECK(allSolutions.size() == exactCoverSolutions.size());
+        for (const auto& solution : allSolutions) {
+          CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
+        }
+        // Check that the one solution found appears in the list of the ones provided
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        CHECK(!oneSolution.empty());
+        CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
       }
-      // Check that the one solution found appears in the list of the ones provided
-      const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix);
-      CHECK(!oneSolution.empty());
-      CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
     }
   }
 }

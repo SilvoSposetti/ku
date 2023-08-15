@@ -1,21 +1,21 @@
 #pragma once
 
 #include "../constraints/AbstractConstraint.h"
-#include "../randomGenerator/RandomGenerator.h"
 #include "SparseCoordinateMatrix.h"
 
 #include <memory>
+#include <optional>
 
 class Solver {
 public:
   /** Creates a new board from scratch with the given constraints using Algorithm X
    * @param constraints A vector of constraints
-   * @param randomGenerator The random number generator instance used to draw random numbers
+   * @param seed The seed for the random number generator used to run Algorithm X
    * @return A board constructed according to the input constraints
    */
   static std::vector<std::vector<Sudo::Digit>>
   createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                 std::shared_ptr<RandomGenerator> randomGenerator);
+                 std::optional<int32_t> seed);
 
   /** Computes whether a Sudoku is unique according to the provided solution, givenMask, and set of constraints
    * @param solution The board solution
@@ -50,13 +50,13 @@ private:
    * @param board A (partial) board that needs to be solved
    * @param constraints The set of constraints that the board should satisfy
    * @param checkForUniqueness Whether the solution found should be unique
-   * @param randomGenerator The random number generator instance used to draw random numbers
+   * @param seed The seed for the random number generator used to run Algorithm X
    * @return Whether a solution exits, and if it has been specified, whether it is unique
    */
   static bool solve(std::vector<std::vector<Sudo::Digit>>& board,
                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                     bool checkForUniqueness,
-                    std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
+                    std::optional<int32_t> seed);
 
   /** Creates and returns the sparse matrix of integers which could be used for Algorithm X
    * @param board A (partial) board
@@ -66,8 +66,7 @@ private:
    */
   static SparseCoordinateMatrix
   reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sudo::Digit>>& board,
-                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                         std::shared_ptr<RandomGenerator> randomGenerator = nullptr);
+                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   /** Creates a Sudoku board from an Exact Cover matrix and one of its (possibly many) solutions
    * @param matrix The Exact Cover problem's sparse matrix

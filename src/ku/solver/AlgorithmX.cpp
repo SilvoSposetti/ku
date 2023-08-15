@@ -1,5 +1,6 @@
 #include "AlgorithmX.h"
 
+#include "../randomGenerator/RandomGenerator.h"
 #include "AlgorithmXNode.h"
 
 #include <algorithm>
@@ -125,18 +126,28 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
  * @param structure A reference to the structure currently being used
  * @return The index to the first smallest item in the data structure
  */
-int32_t pickFirstSmallestItemIndex(const std::vector<AlgorithmXNode>& structure) {
+int32_t pickUsingMrvHeuristic(const std::vector<AlgorithmXNode>& structure, RandomGenerator& randomGenerator) {
   // This follows the MRV (Minimum Remaining Values) heuristic.
-  int32_t maxLength = std::numeric_limits<int32_t>::max();
+  int32_t maxLength = std::numeric_limits<int32_t>::max(); // Theta in Knuth's book, see answer to Exercise 9.
   int32_t index = -1;
-  int32_t column = structure[0].right;
-  while (column != 0) {
-    const int32_t length = structure[column].length;
+  int32_t header = structure[0].right; // p in Knuth's book, see answer to Exercise 9.
+
+  int32_t r = -1;
+  while (header != 0) {
+    const int32_t length = structure[header].length; // Lambda in Knuth's book, see answer to Exercise 9.
     if (length < maxLength) {
-      index = column;
+      index = header;
       maxLength = length;
+      r = 1;
     }
-    column = structure[column].right;
+    if (length == maxLength) {
+      r++;
+      if (randomGenerator.uniformFloat(0.0f, 1.0f) < 1.0f / static_cast<float>(r)) {
+        index = header;
+      }
+    }
+
+    header = structure[header].right;
   }
   if (maxLength != std::numeric_limits<int32_t>::max()) {
     return index;
@@ -262,8 +273,10 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>>
-runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix, bool findFirstSolution, bool checkForUniqueness) {
+std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix,
+                                                       bool findFirstSolution,
+                                                       bool checkForUniqueness,
+                                                       const std::optional<int32_t>& seed) {
 
   // Don't run Algorithm X on an empty sparse matrix
   std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
@@ -279,6 +292,9 @@ runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix, bool findFirstSolution
   // The following vector will store the solutions, i.e. the sets of nodes which are contained by the options that solve
   // the exact cover problem
   std::vector<std::unordered_set<int32_t>> solutions;
+
+  // Initialize random generator to pick columns randomly according to a certain seed
+  RandomGenerator randomGenerator(seed);
 
   // The following algorithm is taken by the draft of Volume 4 of "The Art of Computer Programming" written by Donald
   // Knuth. In particular, this has been taken from the pre-fascicle 5c, which concentrates on the "Dancing Links"
@@ -300,7 +316,7 @@ X2 : // Enter the current level
     goto X8;
   }
   // X3: // Choose an item
-  itemIndex = pickFirstSmallestItemIndex(structure);
+  itemIndex = pickUsingMrvHeuristic(structure, randomGenerator);
   // X4: // Cover the item
   coverItem(structure, itemIndex);
   x[level] = structure[itemIndex].down;
@@ -374,22 +390,24 @@ END : { return retrieveOptionIndices(structure, solutions); }
 
 } // namespace
 
-std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const SparseCoordinateMatrix& sparseMatrix) {
+std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const SparseCoordinateMatrix& sparseMatrix,
+                                                                      const std::optional<int32_t>& seed) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  return runAlgorithmX(sparseMatrix, false, false);
+  return runAlgorithmX(sparseMatrix, false, false, seed);
 }
 
-std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMatrix& sparseMatrix) {
+std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMatrix& sparseMatrix,
+                                                        const std::optional<int32_t>& seed) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  const auto solutions = runAlgorithmX(sparseMatrix, true, false);
+  const auto solutions = runAlgorithmX(sparseMatrix, true, false, seed);
   if (solutions.size() >= 1) {
     return solutions[0];
   }
   return {};
 }
 
-bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix) {
-  return runAlgorithmX(sparseMatrix, false, true).size() == 1;
+bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix, const std::optional<int32_t>& seed) {
+  return runAlgorithmX(sparseMatrix, false, true, seed).size() == 1;
 }
 
 void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) {

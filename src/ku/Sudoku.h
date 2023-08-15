@@ -85,8 +85,8 @@ private:
   const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
   /// The symmetry type of the sudoku
   const SymmetryType symmetryType;
-  /// The random generator
-  std::shared_ptr<RandomGenerator> randomGenerator;
+  /// The seed for the random numbers generator
+  std::optional<int32_t> seed;
   /// The board
   const std::unique_ptr<Board> board;
 };

@@ -10,12 +10,12 @@
 
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                       std::shared_ptr<RandomGenerator> randomGenerator) {
+                       std::optional<int32_t> seed) {
 
   std::vector<std::vector<Sudo::Digit>> newField = Sudo::emptyField();
   std::vector<std::vector<bool>> givenMask = Sudo::emptyGivenMask();
 
-  const bool created = Solver::solve(newField, constraints, false, randomGenerator);
+  const bool created = Solver::solve(newField, constraints, false, seed);
 
   if (!created) {
     std::string constraintsNames;
@@ -50,7 +50,7 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
       }
     }
   }
-  return Solver::solve(board, constraints, true);
+  return Solver::solve(board, constraints, true, std::nullopt);
 }
 
 SparseCoordinateMatrix
@@ -134,9 +134,9 @@ void Solver::reorderColumns(SparseCoordinateMatrix& matrix, std::shared_ptr<Rand
 bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                    bool checkForUniqueness,
-                   std::shared_ptr<RandomGenerator> randomGenerator) {
+                   std::optional<int32_t> seed) {
   // Reduce problem: Sudoku -> Exact Cover
-  SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints, randomGenerator);
+  SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints);
 
   // Preprocess the matrix to get it ready for Algorithm X
   // matrix.preprocess(randomGenerator);
@@ -148,16 +148,16 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
 
   // Sort columns increasing by size for (on average) faster solve, and (if necessary) scramble equally-sized columns
   // from the result
-  reorderColumns(matrix, randomGenerator);
+  // reorderColumns(matrix, randomGenerator);
 
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {
-    return AlgorithmX::hasUniqueSolution(matrix);
+    return AlgorithmX::hasUniqueSolution(matrix, seed);
   }
   // AlgorithmX::printDataStructure(matrix);
 
   // Find a possible solution
-  std::unordered_set<int32_t> solution = AlgorithmX::findOneSolution(matrix);
+  std::unordered_set<int32_t> solution = AlgorithmX::findOneSolution(matrix, seed);
 
   // Use first solution out of all those that are found
   // This solution should have 81 elements, one for each cell piked
@@ -172,8 +172,7 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
 
 SparseCoordinateMatrix
 Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sudo::Digit>>& board,
-                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                               std::shared_ptr<RandomGenerator> randomGenerator) {
+                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   // To initialize the matrix with the correct size: count how many digits are given
   int32_t givenAmount = 0;
   for (const auto& row : board) {
@@ -199,8 +198,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
   std::unordered_set<int32_t> secondaryColumns;
 
   // Randomize the sequence of digits that is passed when constructing the matrix or not
-  const std::vector<Sudo::Digit> digitsSequence =
-      randomGenerator ? randomGenerator->randomShuffle(Sudo::SUDO_DIGITS) : Sudo::SUDO_DIGITS;
+  const std::vector<Sudo::Digit> digitsSequence = Sudo::SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
   int32_t matrixColumnCounter = 0;

@@ -7,11 +7,11 @@
 std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
                                         SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                                        std::shared_ptr<RandomGenerator> randomGenerator) {
+                                        std::optional<int32_t> seed) {
 
   Timer timer;
   // Create new random solution once
-  const std::vector<std::vector<Sudo::Digit>> randomSolution = Solver::createNewBoard(constraints, randomGenerator);
+  const std::vector<std::vector<Sudo::Digit>> randomSolution = Solver::createNewBoard(constraints, seed);
   timer.printElapsed("Solution generated       ");
 
   // Skip mask generation if there are no missing digits
@@ -24,6 +24,7 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   int32_t counter = 0;
   std::vector<std::vector<bool>> givenMask;
 
+  std::shared_ptr<RandomGenerator> randomGenerator = std::make_shared<RandomGenerator>(seed);
   timer.reset();
   while (counter < totalTries) {
     ++counter;

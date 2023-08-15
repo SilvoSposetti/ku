@@ -11,12 +11,19 @@ public:
    */
   RandomGenerator(std::optional<int32_t> seed = std::nullopt);
 
-  /** Returns a random integer between min and max (inclusive)
+  /** Returns a random integer in the interval [min, max]
    * @param min Minimum number
    * @param max Maximum number
    * @return A random integer in the range
    */
-  int32_t randomUniform(int32_t min, int32_t max);
+  int32_t uniformInteger(int32_t min, int32_t max);
+
+  /** Returns a random float in the interval [min, max)
+   * @param min Minimum number
+   * @param max Maximum number
+   * @return A random float in the range
+   */
+  float uniformFloat(float min, float max);
 
   /** Returns a copy of the original vector, whose elements are randomly shuffled
    * @param input The original vector

@@ -15,8 +15,8 @@ std::vector<std::vector<bool>> MaskUtilities::randomMask(int32_t totalDigits,
   std::vector<std::vector<bool>> mask = Sudo::fullGivenMask();
   int32_t digits = Sudo::TOTAL_DIGITS;
   while (digits != totalDigits) {
-    const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
-    const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t i = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t j = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     if (mask[i][j]) {
       mask[i][j] = false;
       digits--;
@@ -35,7 +35,7 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
   int32_t otherDigitsRemaining = 72;
 
   if (digitsToRemove % 2 != 0) {
-    const int32_t randomIndex = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t randomIndex = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     mask[randomIndex][randomIndex] = false;
     digitsToRemove--;
     diagonalDigitsRemaining--;
@@ -43,11 +43,11 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
 
   while (digitsToRemove > 0) {
     // Randomly decide if two digits need to be removed either from the diagonal or from the other ones
-    const int32_t random = randomGenerator->randomUniform(2, diagonalDigitsRemaining + otherDigitsRemaining);
+    const int32_t random = randomGenerator->uniformInteger(2, diagonalDigitsRemaining + otherDigitsRemaining);
     if (random < diagonalDigitsRemaining) {
       // Remove two digits from the diagonal
-      const int32_t index1 = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
-      const int32_t index2 = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t index1 = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t index2 = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
       if (index1 != index2) {
         if (mask[index1][index1] && mask[index2][index2]) {
           mask[index1][index1] = false;
@@ -60,8 +60,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalMirrorMask(int32_t totalDi
       }
     } else {
       // Remove two digits from the other digits
-      const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
-      const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t i = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+      const int32_t j = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
       if (!isOnMainDiagonal(i, j) && mask[i][j]) {
         mask[i][j] = false;
         digitsToRemove--;
@@ -89,8 +89,8 @@ std::vector<std::vector<bool>> MaskUtilities::diagonalRotationMask(int32_t total
   }
   // Then, can remove digits two-by-to with diagonal rotation
   while (digitsToRemove > 0) {
-    const int32_t i = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
-    const int32_t j = randomGenerator->randomUniform(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t i = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t j = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
     if (!isOnCenter(i, j) && digitsToRemove >= 2) {
       if (mask[i][j]) {
         mask[i][j] = false;
