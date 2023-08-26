@@ -1,6 +1,5 @@
 #pragma once
 #include "../Sudo.h"
-#include "../randomGenerator/RandomGenerator.h"
 
 #include <memory>
 #include <set>
@@ -14,19 +13,19 @@ public:
   /** Constructor. Creates a sparse coordinate matrix according to a given binary matrix and the data associated with
    * each row.
    * @param matrix The binary matrix in row-major order
-   * @param rowsData The data for each row. If empty, the default value of -1 is used for every row
    * @param secondaryColumnsIndices The indices of the secondary columns
-   * @param randomGenerator Optionally, the random generator used to scramble the columns
+   * @param placeSecondaryColumnsAtEnd Whether secondary columns should be placed at the end
+   * @param rowsDataVector The data for each row. If empty, the default value of -1 is used for every row
    */
   SparseCoordinateMatrix(const std::vector<std::vector<bool>>& classicMatrix,
                          const std::unordered_set<int32_t>& secondaryColumnsIndices = {},
+                         bool placeSecondaryColumnsAtEnd = true,
                          const std::vector<int32_t>& rowsDataVector = {});
 
   /** Prepares the matrix for Algorithm X. Puts primary columns at the beginning of the matrix and secondary columns at
-   * the end. Sorts columns by their length, and if a random generator is provided, scrambles columns that have the
-   * same length.
+   * the end.
    */
-  void preprocess(std::shared_ptr<RandomGenerator> randomGenerator = {});
+  void preprocess();
 
   /** Retrieves the amount of columns that this matrix supports
    * @return The amount of columns
@@ -62,12 +61,6 @@ public:
    * @return The data of the row if successful, otherwise -1
    */
   int32_t getRowData(int32_t rowIndex) const;
-
-  /** Reorders the matrix columns according to the new column index provided
-   * @param permutation The new order for the columns
-   * @return Whether reordering can be performed
-   */
-  bool reorderColumns(const std::vector<int32_t>& permutation);
 
   /** Computes whether the matrix might be solvable by Algorithm X. This is the case when the matrix contains only
    * secondary columns, or when any primary column has no elements

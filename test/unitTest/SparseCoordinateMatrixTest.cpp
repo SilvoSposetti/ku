@@ -1,96 +1,92 @@
 
 #include "solver/SparseCoordinateMatrix.h"
 
+#include <algorithm>
 #include <doctest.h>
 #include <unordered_map>
 
 TEST_CASE("Sparse Coordinate Matrix") {
 
-  SUBCASE("Basic Usage") {
-    // Create & fill
-    const std::vector<std::vector<bool>> matrix = {
-        {1, 0, 1, 0, 0, 0},
-        {1, 1, 0, 1, 0, 0},
-        {0, 1, 1, 0, 0, 0},
-        {0, 0, 1, 1, 0, 1},
-        {0, 0, 0, 0, 0, 0},
-        {1, 1, 0, 0, 0, 1},
-    };
-    const std::vector<int32_t> matrixData = {1, 2, 3, 4, 5, 6};
-    const int32_t rows = matrix.size();
-    const int32_t columns = matrix.at(0).size();
-    SparseCoordinateMatrix sparseMatrix(matrix, {}, matrixData);
-    CHECK(sparseMatrix.getRowsAmount() == rows);
-    CHECK(sparseMatrix.getColumnsAmount() == columns);
-    CHECK(sparseMatrix.getValidElementsAmount() == 13);
+  SUBCASE("Constuctor") {
+    SUBCASE("Basic Usage") {
+      // Create & fill
+      const std::vector<std::vector<bool>> matrix = {
+          {1, 0, 1, 0, 0, 0},
+          {1, 1, 0, 1, 0, 0},
+          {0, 1, 1, 0, 0, 0},
+          {0, 0, 1, 1, 0, 1},
+          {0, 0, 0, 0, 0, 0},
+          {1, 1, 0, 0, 0, 1},
+      };
+      const std::vector<int32_t> matrixData = {1, 2, 3, 4, 5, 6};
+      const int32_t rows = matrix.size();
+      const int32_t columns = matrix.at(0).size();
+      SparseCoordinateMatrix sparseMatrix(matrix, {}, false, matrixData);
+      CHECK(sparseMatrix.getRowsAmount() == rows);
+      CHECK(sparseMatrix.getColumnsAmount() == columns);
+      CHECK(sparseMatrix.getValidElementsAmount() == 13);
 
-    // Retrieving element outside of the sparse matrix returns false
-    CHECK_FALSE(sparseMatrix.isCellSet(-1, 0));
-    CHECK_FALSE(sparseMatrix.isCellSet(0, -1));
-    CHECK_FALSE(sparseMatrix.isCellSet(rows, 0));
-    CHECK_FALSE(sparseMatrix.isCellSet(0, columns));
+      // Retrieving element outside of the sparse matrix returns false
+      CHECK_FALSE(sparseMatrix.isCellSet(-1, 0));
+      CHECK_FALSE(sparseMatrix.isCellSet(0, -1));
+      CHECK_FALSE(sparseMatrix.isCellSet(rows, 0));
+      CHECK_FALSE(sparseMatrix.isCellSet(0, columns));
 
-    // Get matrix elements one by one and confirm that they match the source matrix
-    for (int32_t rowId = 0; rowId < rows; rowId++) {
-      CHECK(sparseMatrix.getRowData(rowId) == matrixData[rowId]);
-    }
-  }
+      // Get matrix elements one by one and confirm that they match the source matrix. No secondary columns, no
+      // reordering happening
+      for (int32_t rowIndex = 0; rowIndex < rows; rowIndex++) {
+        for (int32_t columnIndex = 0; columnIndex < columns; columnIndex++) {
+          CHECK(matrix[rowIndex][columnIndex] == sparseMatrix.isCellSet(rowIndex, columnIndex));
+        }
+      }
 
-  SUBCASE("Reorder") {
-    // Create & fill
-    const std::vector<std::vector<bool>> matrix = {
-        // {0, 1, 2, 3, 4, 5},
-        {1, 0, 1, 0, 0, 0},
-        {1, 1, 0, 1, 0, 0},
-        {0, 1, 1, 0, 0, 0},
-        {0, 0, 1, 1, 0, 1},
-        {0, 0, 0, 0, 0, 0},
-        {1, 1, 0, 0, 0, 1},
-    };
-    const std::vector<std::vector<bool>> reorderedMatrix = {
-        // {5, 3, 1, 2, 0, 4},
-        {0, 0, 0, 1, 1, 0},
-        {0, 1, 1, 0, 1, 0},
-        {0, 0, 1, 1, 0, 0},
-        {1, 1, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0, 0},
-        {1, 0, 1, 0, 1, 0},
-    };
-
-    const std::vector<int32_t> newPermutation = {5, 3, 1, 2, 0, 4};
-    const std::vector<int32_t> newPermutationWrongIndices = {5, 9, 1, 2, 0, 4};
-    const std::vector<int32_t> newPermutationDuplicateIndices = {5, 2, 1, 2, 0, 4};
-    const std::vector<int32_t> newPermutationTooBig = {5, 3, 1, 2, 0, 4, 9};
-    const std::vector<int32_t> newPermutationTooSmall = {5, 1, 2, 0, 4};
-
-    const int32_t rows = matrix.size();
-    const int32_t columns = matrix.at(0).size();
-    SparseCoordinateMatrix sparseMatrix(matrix);
-
-    // Input check
-    CHECK_FALSE(sparseMatrix.reorderColumns(newPermutationTooBig));
-    CHECK_FALSE(sparseMatrix.reorderColumns(newPermutationTooSmall));
-    CHECK_FALSE(sparseMatrix.reorderColumns(newPermutationDuplicateIndices));
-    CHECK_FALSE(sparseMatrix.reorderColumns(newPermutationWrongIndices));
-
-    // Confirm that the matrix was untouched
-    for (int32_t i = 0; i < rows; i++) {
-      for (int32_t j = 0; j < columns; j++) {
-        CHECK(matrix[i][j] == sparseMatrix.isCellSet(i, j));
+      // Check that the data is consistent
+      for (int32_t rowId = 0; rowId < rows; rowId++) {
+        CHECK(sparseMatrix.getRowData(rowId) == matrixData[rowId]);
       }
     }
 
-    // Reorder
-    CHECK(sparseMatrix.reorderColumns(newPermutation));
+    SUBCASE("Secondary columns at end") {
+      // Create & fill
+      const std::vector<std::vector<bool>> matrix = {
+          // p1, s1, p2, s2, s3, p3
+          {1, 0, 1, 0, 0, 0},
+          {1, 1, 0, 1, 0, 0},
+          {0, 1, 1, 0, 0, 0},
+          {0, 0, 1, 1, 0, 1},
+          {0, 0, 0, 0, 0, 0},
+          {1, 1, 0, 0, 0, 1},
+      };
+      const std::vector<int32_t> matrixData = {1, 2, 3, 4, 5, 6};
+      const int32_t rows = matrix.size();
+      const int32_t columns = matrix.at(0).size();
+      SparseCoordinateMatrix sparseMatrix(matrix, {1, 3, 4}, true, matrixData);
+      CHECK(sparseMatrix.getRowsAmount() == rows);
+      CHECK(sparseMatrix.getColumnsAmount() == columns);
+      CHECK(sparseMatrix.getValidElementsAmount() == 13);
 
-    // Get reordered matrix elements one by one and confirm that they match the reordered matrix
-    for (int32_t i = 0; i < rows; i++) {
-      for (int32_t j = 0; j < columns; j++) {
-        CHECK(reorderedMatrix[i][j] == sparseMatrix.isCellSet(i, j));
+      const std::vector<std::vector<bool>> equivalentReorderedMatrix = {
+          // p1, p2, p3, s1, s2, s3
+          {1, 1, 0, 0, 0, 0},
+          {1, 0, 0, 1, 1, 0},
+          {0, 1, 0, 1, 0, 0},
+          {0, 1, 1, 0, 1, 0},
+          {0, 0, 0, 0, 0, 0},
+          {1, 0, 1, 1, 0, 0},
+      };
+      // Get matrix elements one by one and confirm that they match the equivalent reordered matrix.
+      for (int32_t rowIndex = 0; rowIndex < rows; rowIndex++) {
+        for (int32_t columnIndex = 0; columnIndex < columns; columnIndex++) {
+          CHECK(equivalentReorderedMatrix[rowIndex][columnIndex] == sparseMatrix.isCellSet(rowIndex, columnIndex));
+        }
+      }
+
+      // Check that the data is consistent
+      for (int32_t rowId = 0; rowId < rows; rowId++) {
+        CHECK(sparseMatrix.getRowData(rowId) == matrixData[rowId]);
       }
     }
   }
-
   SUBCASE("Algorithm X Solvability") {
     // Create & fill. Note that there's no column with all cells unset
     const std::vector<std::vector<bool>> matrix = {
@@ -107,7 +103,7 @@ TEST_CASE("Sparse Coordinate Matrix") {
     // All columns are primary by default
     CHECK(sparseMatrix.isSolvableByAlgorithmX());
 
-    {
+    SUBCASE("All columns secondary") {
       // Sparse matrix is not solvable by Algorithm X if all columns are secondary
       std::unordered_set<int32_t> allColumns;
       for (int32_t columnId = 0; columnId < columns; columnId++) {
@@ -117,38 +113,71 @@ TEST_CASE("Sparse Coordinate Matrix") {
       CHECK_FALSE(allSecondaryColumnsSparseMatrix.isSolvableByAlgorithmX());
     }
 
-    {
-      // With the given modifications, the matrix is still solvable
+    SUBCASE("Some columns secondary") {
+      // With the given modifications, the matrix is not solvable, as the secondary columns are not at the end
+      SparseCoordinateMatrix unsolvableSparseMatrix(matrix, {0, 3}, false);
+      CHECK_FALSE(unsolvableSparseMatrix.isColumnPrimary(0));
+      CHECK(unsolvableSparseMatrix.isColumnPrimary(1));
+      CHECK(unsolvableSparseMatrix.isColumnPrimary(2));
+      CHECK_FALSE(unsolvableSparseMatrix.isColumnPrimary(3));
+      CHECK(unsolvableSparseMatrix.isColumnPrimary(4));
+      CHECK(unsolvableSparseMatrix.isColumnPrimary(5));
+
+      CHECK_FALSE(unsolvableSparseMatrix.isSolvableByAlgorithmX());
+
+      // But if constructed by placing secondary columns at the end, the matrix becomes solvable
       SparseCoordinateMatrix solvableSparseMatrix(matrix, {0, 3});
-      CHECK_FALSE(solvableSparseMatrix.isColumnPrimary(0));
+      CHECK(solvableSparseMatrix.isColumnPrimary(0));
       CHECK(solvableSparseMatrix.isColumnPrimary(1));
       CHECK(solvableSparseMatrix.isColumnPrimary(2));
-      CHECK_FALSE(solvableSparseMatrix.isColumnPrimary(3));
-      CHECK(solvableSparseMatrix.isColumnPrimary(4));
-      CHECK(solvableSparseMatrix.isColumnPrimary(5));
+      CHECK(solvableSparseMatrix.isColumnPrimary(3));
+      CHECK_FALSE(solvableSparseMatrix.isColumnPrimary(4));
+      CHECK_FALSE(solvableSparseMatrix.isColumnPrimary(5));
 
       CHECK(solvableSparseMatrix.isSolvableByAlgorithmX());
     }
 
-    {
-      // Matrix with an all-zeroes column
-      const std::vector<std::vector<bool>> invalidMatrix = {
-          {1, 0, 1, 0, 0, 0},
-          {1, 1, 0, 1, 0, 0},
-          {0, 1, 1, 0, 0, 0},
-          {0, 0, 1, 1, 0, 1},
-          {0, 0, 0, 0, 0, 0},
-          {1, 1, 0, 0, 0, 1},
-      };
+    SUBCASE("Empty primary columns") {
+      {
+        // Matrix with two all-zeroes columns at the end
+        const std::vector<std::vector<bool>> invalidMatrix = {
+            {1, 0, 1, 0, 0, 0, 0},
+            {1, 1, 0, 1, 0, 0, 0},
+            {0, 1, 1, 0, 0, 0, 0},
+            {0, 0, 1, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 0, 0, 1, 0, 0},
+        };
 
-      SparseCoordinateMatrix unsolvableMatrix(invalidMatrix);
-      // Now matrix is unsolvable, since a primary column is empty
-      CHECK_FALSE(unsolvableMatrix.isSolvableByAlgorithmX());
+        SparseCoordinateMatrix unsolvableMatrix(invalidMatrix);
+        // Now matrix is unsolvable, since a primary column is empty
+        CHECK_FALSE(unsolvableMatrix.isSolvableByAlgorithmX());
 
-      // But if the empty column is set to be secondary
-      SparseCoordinateMatrix solvableMatrix(invalidMatrix, {4});
-      // Now matrix is unsolvable
-      CHECK(solvableMatrix.isSolvableByAlgorithmX());
+        // But if the last empty columns are set to be secondary the matrix becomes solvable
+        SparseCoordinateMatrix solvableMatrix(invalidMatrix, {5, 6});
+        CHECK(solvableMatrix.isSolvableByAlgorithmX());
+      }
+
+      {
+        // Matrix with an all-zeroes column in the middle
+        const std::vector<std::vector<bool>> invalidMatrix = {
+            {1, 0, 1, 0, 0, 0},
+            {1, 1, 0, 0, 1, 0},
+            {0, 1, 1, 0, 0, 0},
+            {0, 0, 1, 0, 1, 1},
+            {0, 0, 0, 0, 0, 0},
+            {1, 1, 0, 0, 0, 1},
+        };
+
+        SparseCoordinateMatrix unsolvableMatrix(invalidMatrix);
+        // Matrix is unsolvable, since a primary column is empty
+        CHECK_FALSE(unsolvableMatrix.isSolvableByAlgorithmX());
+
+        // Even if the empty column is set to be secondary the matrix remains unsolvable, as the secondary column is not
+        // at the end
+        SparseCoordinateMatrix solvableMatrix(invalidMatrix, {3}, false);
+        CHECK_FALSE(solvableMatrix.isSolvableByAlgorithmX());
+      }
     }
 
     // Empty matrix is solvable
@@ -204,7 +233,7 @@ TEST_CASE("Sparse Coordinate Matrix") {
     const std::vector<int32_t> matrixData = {0, 1, 2, 3, 4, 5};
     const std::unordered_set<int32_t> secondaryColumnIndices = {5, 2};
 
-    SparseCoordinateMatrix sparseMatrix{matrix, secondaryColumnIndices, matrixData};
+    SparseCoordinateMatrix sparseMatrix{matrix, secondaryColumnIndices, false, matrixData};
     CHECK(sparseMatrix.getRowsAmount() == matrix.size());
     CHECK(sparseMatrix.getColumnsAmount() == matrix[0].size());
     CHECK(sparseMatrix.getValidElementsAmount() == 13);

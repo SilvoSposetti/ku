@@ -9,6 +9,7 @@
 
 SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<bool>>& classicMatrix,
                                                const std::unordered_set<int32_t>& secondaryColumnIndices,
+                                               bool placeSecondaryColumnsAtEnd,
                                                const std::vector<int32_t>& rowsDataVector)
     : rowsAmount(classicMatrix.size())
     , columnsAmount(!classicMatrix.empty() ? classicMatrix[0].size() : 0)
@@ -30,19 +31,60 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<boo
     return;
   }
 
-  for (std::size_t rowIndex = 0; rowIndex < classicMatrix.size(); rowIndex++) {
-    for (std::size_t columnIndex = 0; columnIndex < classicMatrix[rowIndex].size(); columnIndex++) {
-      // Store the values in column-major order
-      if (classicMatrix[rowIndex][columnIndex]) {
-        matrix[columnIndex][rowIndex] = true;
-        rowsElements[rowIndex].insert(columnIndex);
+  if (!placeSecondaryColumnsAtEnd || secondaryColumnIndices.empty()) {
+    // Set all elements
+    for (std::size_t rowIndex = 0; rowIndex < rowsAmount; rowIndex++) {
+      for (std::size_t columnIndex = 0; columnIndex < columnsAmount; columnIndex++) {
+        // Store the values in column-major order
+        if (classicMatrix[rowIndex][columnIndex]) {
+          matrix[columnIndex][rowIndex] = true;
+          rowsElements[rowIndex].insert(columnIndex);
+        }
       }
     }
-  }
 
-  // Set all the secondary columns
-  for (const int32_t secondaryColumnIndex : secondaryColumnIndices) {
-    if (isValidColumnIndex(secondaryColumnIndex)) {
+    // Set all the secondary columns
+    for (const int32_t secondaryColumnIndex : secondaryColumnIndices) {
+      if (isValidColumnIndex(secondaryColumnIndex)) {
+        areColumnsPrimary[secondaryColumnIndex] = false;
+      }
+    }
+  } else {
+    // Set all elements, but skip the secondary columns
+    int32_t currentColumn = 0;
+    for (std::size_t columnIndex = 0; columnIndex < columnsAmount; columnIndex++) {
+      if (!(secondaryColumnIndices.count(columnIndex) >= 1)) {
+        for (std::size_t rowIndex = 0; rowIndex < rowsAmount; rowIndex++) {
+          // Store the values in column-major order
+          if (classicMatrix[rowIndex][columnIndex]) {
+            matrix[currentColumn][rowIndex] = true;
+            rowsElements[rowIndex].insert(currentColumn);
+          }
+        }
+        currentColumn++;
+      }
+    }
+    const int32_t firstSecondaryColumnIndex = currentColumn;
+
+    // Then, set all elements of the secondary columns
+    std::vector<int32_t> sortedSecondaryColumns;
+    for (const auto& element : secondaryColumnIndices) {
+      sortedSecondaryColumns.emplace_back(element);
+    }
+    std::sort(sortedSecondaryColumns.begin(), sortedSecondaryColumns.end());
+    for (const auto& secondaryColumnIndex : sortedSecondaryColumns) {
+      for (std::size_t rowIndex = 0; rowIndex < rowsAmount; rowIndex++) {
+        if (classicMatrix[rowIndex][secondaryColumnIndex]) {
+          matrix[currentColumn][rowIndex] = true;
+          rowsElements[rowIndex].insert(currentColumn);
+        }
+      }
+      currentColumn++;
+    }
+
+    // Set all the secondary columns
+    for (int32_t secondaryColumnIndex = firstSecondaryColumnIndex; secondaryColumnIndex < columnsAmount;
+         secondaryColumnIndex++) {
       areColumnsPrimary[secondaryColumnIndex] = false;
     }
   }
@@ -53,9 +95,8 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<boo
   }
 }
 
-void preprocess(std::shared_ptr<RandomGenerator> randomGenerator) {
-  // TODO do some Algorithm X preprocessing
-  std::cout << "" << std::endl;
+void SparseCoordinateMatrix::preprocess() {
+  // TODO add Algorithm X preprocessing
 }
 
 int32_t SparseCoordinateMatrix::getColumnsAmount() const {
@@ -111,6 +152,15 @@ bool SparseCoordinateMatrix::isSolvableByAlgorithmX() const {
     }
   }
 
+  // Matrix is not solvable if the secondary columns are not at the end
+  auto firstSecondaryElementIterator = std::find(areColumnsPrimary.begin(), areColumnsPrimary.end(), false);
+  if (firstSecondaryElementIterator != areColumnsPrimary.end()) {
+    if (std::any_of(firstSecondaryElementIterator, areColumnsPrimary.end(), [](bool value) { return value; })) {
+      std::cout << "Matrix not solvable: the secondary columns are not all at the end" << std::endl;
+      return false;
+    };
+  }
+
   return true;
 }
 
@@ -120,63 +170,6 @@ int32_t SparseCoordinateMatrix::getRowData(int32_t rowIndex) const {
   }
   return invalidRowValue;
 };
-
-bool SparseCoordinateMatrix::reorderColumns(const std::vector<int32_t>& permutation) {
-  // Permutation's size must be the same as the amount of columns in the matrix
-  if (permutation.size() != columnsAmount) {
-    return false;
-  }
-
-  // All indices in the permutation must be valid indices
-  if (std::any_of(permutation.begin(), permutation.end(), [&](int32_t columnIndex) {
-        return !isValidColumnIndex(columnIndex);
-      })) {
-    return false;
-  }
-
-  // The same index cannot appear twice
-  std::unordered_set<int32_t> indicesSet(permutation.begin(), permutation.end());
-  if (indicesSet.size() != permutation.size()) {
-    return false;
-  }
-
-  // Re-order matrix in-place
-  std::vector<bool> isCorrectlyOrdered(columnsAmount, false);
-  // All elements left of index i (with i included) have been correctly ordered
-  for (std::size_t i = 0; i < columnsAmount; ++i) {
-    if (isCorrectlyOrdered[i]) {
-      continue;
-    }
-    isCorrectlyOrdered[i] = true;
-    std::size_t k = i;
-    std::size_t j = permutation[i];
-    while (i != j) {
-      std::swap(matrix[k], matrix[j]);
-      areColumnsPrimary.swap(areColumnsPrimary[k], areColumnsPrimary[j]);
-      isCorrectlyOrdered[j] = true;
-      k = j;
-      j = permutation[j];
-    }
-  }
-
-  // Re-order the rowsElements by substituting them with a new one created using the permutation
-  std::unordered_map<int32_t, int32_t> map;
-  for (std::size_t i = 0; i < permutation.size(); i++) {
-    map.insert({permutation[i], i});
-  }
-
-  std::vector<std::set<int32_t>> newRowsElements;
-  for (const auto& rowElements : rowsElements) {
-    std::set<int32_t> newRow;
-    for (const auto& element : rowElements) {
-      newRow.insert(map[element]);
-    }
-    newRowsElements.emplace_back(newRow);
-  }
-  rowsElements = newRowsElements;
-
-  return true;
-}
 
 int32_t SparseCoordinateMatrix::getColumnValidCellsAmount(int32_t columnIndex) const {
   if (isValidColumnIndex(columnIndex)) {

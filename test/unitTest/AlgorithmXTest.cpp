@@ -129,8 +129,7 @@ TEST_CASE("Algorithm X") {
       for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
         SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        AlgorithmX::printDataStructure(sparseMatrix);
-
+        // AlgorithmX::printDataStructure(sparseMatrix);
         CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
         const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
         CHECK(allSolutions.size() == 1);
@@ -377,21 +376,21 @@ TEST_CASE("Algorithm X") {
                     {1, 2}, // Solution 2.B
                 },
             },
-            // {
-            //     // Example 3 (like Example 2, but with the secondary colum moved)
-            //     {
-            //         {-1, -1, -1, 10}, // Part of solution 3.A
-            //         {12, 13, -1, -1}, // Part of solution 3.B
-            //         {-1, -1, 15, 16}, // Part of solution 3.B
-            //         {-1, -1, -1, -1},
-            //         {14, -1, 15, -1}, // Part of solution 3.A
-            //     },
-            //     {1}, // Indices of the items that are secondary
-            //     {
-            //         {0, 4}, // Solution 3.A
-            //         {1, 2}, // Solution 3.B
-            //     },
-            // },
+            {
+                // Example 3 (like Example 2, but with the secondary colum moved)
+                {
+                    {0, 0, 0, 1}, // Part of solution 3.A
+                    {1, 1, 0, 0}, // Part of solution 3.B
+                    {0, 0, 1, 1}, // Part of solution 3.B
+                    {0, 0, 0, 0},
+                    {1, 0, 1, 0}, // Part of solution 3.A
+                },
+                {1}, // Indices of the items that are secondary
+                {
+                    {0, 4}, // Solution 3.A
+                    {1, 2}, // Solution 3.B
+                },
+            },
             {
                 // Example 4
                 {
