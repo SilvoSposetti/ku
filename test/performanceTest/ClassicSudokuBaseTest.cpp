@@ -1,3 +1,4 @@
+#include "KuTestArguments.h"
 #include "Sudoku.h"
 #include "constraints/ConstraintType.h"
 #include "doctest.h"
@@ -7,7 +8,7 @@ static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constr
   const auto constraints =
       Sudoku::getConstraintsList(ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_COLUMN |
                                  ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX | constraintType);
-  return Solver::createNewBoard(constraints, std::nullopt);
+  return Solver::createNewBoard(constraints, KuTestArguments::seed);
 };
 
 TEST_SUITE("Classic Sudoku Base") {

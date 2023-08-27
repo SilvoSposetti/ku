@@ -51,4 +51,4 @@ meson setup --buildtype=release bin/Release
 ### Dependencies
 - C++20
 - [Meson](https://mesonbuild.com/)
-- [Doctest](https://github.com/doctest/doctest), which is grabbed automatically by Meson as it's a WrapDB package.
+- [doctest](https://github.com/doctest/doctest)

@@ -1,5 +1,6 @@
 performance_test_sources = files(
-  'DoctestDefine.cpp',
-  'SingleConstraintTest.cpp',
   'ClassicSudokuBaseTest.cpp',
+  'main.cpp',
+  'KuTestArguments.cpp',
+  'SingleConstraintTest.cpp',
 )
