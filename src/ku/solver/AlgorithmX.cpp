@@ -93,20 +93,19 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
 
   for (int32_t optionId = 0; optionId < optionsAmount; optionId++) {
     int32_t j = 0;
-    for (int32_t i_j = 1; i_j < itemsAmount + 1; i_j++) {
-      if (sparseMatrix.isCellSet(optionId, i_j - 1)) {
-        j++;
-        // I4: Read an option
-        structure[p + j].type = AlgorithmXNodeType::Node;
-        structure[i_j].length++;
-        // p + j is the index of the current node, just added to the structure
-        const int32_t q = structure[i_j].up; // q is the bottom-est node under header i_j
-        structure[q].down = p + j; // Set the down of q to the current
-        structure[p + j].up = q; // Set q as the top node of the current
-        structure[p + j].down = i_j; // Set the down of the current node, which is now the bottom-est
-        structure[p + j].header = i_j; // Set the header of the current node
-        structure[i_j].up = p + j; // Set the up of the header to the
-      }
+    for (const auto& i_j_index : sparseMatrix.getRowElements(optionId)) {
+      const int32_t i_j = i_j_index + 1;
+      j++;
+      // I4: Read an option
+      structure[p + j].type = AlgorithmXNodeType::Node;
+      structure[i_j].length++;
+      // p + j is the index of the current node, just added to the structure
+      const int32_t q = structure[i_j].up; // q is the bottom-est node under header i_j
+      structure[q].down = p + j; // Set the down of q to the current
+      structure[p + j].up = q; // Set q as the top node of the current
+      structure[p + j].down = i_j; // Set the down of the current node, which is now the bottom-est
+      structure[p + j].header = i_j; // Set the header of the current node
+      structure[i_j].up = p + j; // Set the up of the header to the
     }
     // I5: Finish an option
     const int32_t k = j;

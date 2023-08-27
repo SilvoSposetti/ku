@@ -74,6 +74,12 @@ public:
    */
   int32_t getColumnValidCellsAmount(int32_t columnIndex) const;
 
+  /** Retrieves the indices of all non-zero columns for a given row
+   * @param rowIndex The index of the row
+   * @return A set of the nonzero elements
+   */
+  std::set<int32_t> getRowElements(int32_t rowIndex) const;
+
 private:
   /** Helper to compute whether a certain column index is valid
    * @param columnIndex The column index

@@ -270,4 +270,26 @@ TEST_CASE("Sparse Coordinate Matrix") {
       CHECK(columnSizes[columnIndex] == sparseMatrix.getColumnValidCellsAmount(columnIndex));
     }
   }
+
+  SUBCASE("Row elements") {
+    const std::vector<std::vector<bool>> matrix = {
+        {1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0},
+        {1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+        {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
+        {0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0},
+        {0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0},
+        {1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1},
+    };
+
+    std::set<int32_t> firstRow = {0, 1, 4, 5, 6, 10, 11};
+    std::set<int32_t> thirdRow = {1, 2, 3, 4, 10, 11, 13};
+
+    const SparseCoordinateMatrix sparseMatrix(matrix);
+    for (std::size_t rowIndex = 0; rowIndex < matrix.size(); rowIndex++) {
+      const auto rowElements = sparseMatrix.getRowElements(rowIndex);
+      for (const auto& columnIndex : rowElements) {
+        CHECK(matrix[rowIndex][columnIndex]);
+      }
+    }
+  }
 }

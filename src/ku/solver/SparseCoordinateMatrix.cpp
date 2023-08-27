@@ -178,6 +178,13 @@ int32_t SparseCoordinateMatrix::getColumnValidCellsAmount(int32_t columnIndex) c
   return -1;
 }
 
+std::set<int32_t> SparseCoordinateMatrix::getRowElements(int32_t rowIndex) const {
+  if (isValidRowIndex(rowIndex)) {
+    return rowsElements[rowIndex];
+  }
+  return {};
+}
+
 bool SparseCoordinateMatrix::isValidColumnIndex(int32_t columnIndex) const {
   return 0 <= static_cast<std::size_t>(columnIndex) && static_cast<std::size_t>(columnIndex) < columnsAmount;
 }
