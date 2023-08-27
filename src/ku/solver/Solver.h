@@ -14,8 +14,7 @@ public:
    * @return A board constructed according to the input constraints
    */
   static std::vector<std::vector<Sudo::Digit>>
-  createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
-                 std::optional<int32_t> seed);
+  createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, std::optional<int32_t> seed);
 
   /** Computes whether a Sudoku is unique according to the provided solution, givenMask, and set of constraints
    * @param solution The board solution

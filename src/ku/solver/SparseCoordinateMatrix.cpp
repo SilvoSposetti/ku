@@ -51,7 +51,7 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<boo
     }
   } else {
     // Set all elements, but skip the secondary columns
-    int32_t currentColumn = 0;
+    std::size_t currentColumn = 0;
     for (std::size_t columnIndex = 0; columnIndex < columnsAmount; columnIndex++) {
       if (!(secondaryColumnIndices.count(columnIndex) >= 1)) {
         for (std::size_t rowIndex = 0; rowIndex < rowsAmount; rowIndex++) {
@@ -64,7 +64,7 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<boo
         currentColumn++;
       }
     }
-    const int32_t firstSecondaryColumnIndex = currentColumn;
+    const std::size_t firstSecondaryColumnIndex = currentColumn;
 
     // Then, set all elements of the secondary columns
     std::vector<int32_t> sortedSecondaryColumns;
@@ -83,7 +83,7 @@ SparseCoordinateMatrix::SparseCoordinateMatrix(const std::vector<std::vector<boo
     }
 
     // Set all the secondary columns
-    for (int32_t secondaryColumnIndex = firstSecondaryColumnIndex; secondaryColumnIndex < columnsAmount;
+    for (std::size_t secondaryColumnIndex = firstSecondaryColumnIndex; secondaryColumnIndex < columnsAmount;
          secondaryColumnIndex++) {
       areColumnsPrimary[secondaryColumnIndex] = false;
     }

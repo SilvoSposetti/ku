@@ -14,11 +14,11 @@ enum class AlgorithmXNodeType : uint8_t { Root, Header, Node, Spacer };
  * Spacer: defines [up|down]
  */
 struct AlgorithmXNode {
-  
+
   AlgorithmXNodeType type = AlgorithmXNodeType::Node;
   /// Pointer to left node
   int32_t left = -1;
-  /// Pointer to left node
+  /// Pointer to right node
   int32_t right = -1;
   /// Pointer to up node
   int32_t up = -1;
