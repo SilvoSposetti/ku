@@ -13,6 +13,11 @@ static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constr
 
 TEST_SUITE("Classic Sudoku Base") {
 
+  TEST_CASE("Classic Sudoku") {
+    const auto board = generateBoard(ConstraintType::NONE);
+    CHECK(board != Sudo::emptyField());
+  }
+
   TEST_CASE("Classic Sudoku Base: Positive Diagonal") {
     const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL);
     CHECK(board != Sudo::emptyField());
