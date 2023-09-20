@@ -127,31 +127,29 @@ std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sp
  */
 int32_t pickUsingMrvHeuristic(const std::vector<AlgorithmXNode>& structure, RandomGenerator& randomGenerator) {
   // This follows the MRV (Minimum Remaining Values) heuristic.
-  int32_t maxLength = std::numeric_limits<int32_t>::max(); // Theta in Knuth's book, see answer to Exercise 9.
-  int32_t index = -1;
-  int32_t header = structure[0].right; // p in Knuth's book, see answer to Exercise 9.
+  int32_t minimumLength = std::numeric_limits<int32_t>::max();
+  int32_t node = structure[0].right;
+  int32_t selectedNode = -1;
+  int32_t minimumLengthNodesAmount = 0;
 
-  int32_t r = -1;
-  while (header != 0) {
-    const int32_t length = structure[header].length; // Lambda in Knuth's book, see answer to Exercise 9.
-    if (length < maxLength) {
-      index = header;
-      maxLength = length;
-      r = 1;
-    }
-    if (length == maxLength) {
-      r++;
-      if (randomGenerator.uniformFloat(0.0f, 1.0f) < 1.0f / static_cast<float>(r)) {
-        index = header;
+  while (node != 0) {
+    int32_t length = structure[node].length;
+    if (length < minimumLength) {
+      minimumLength = length;
+      selectedNode = node;
+      minimumLengthNodesAmount = 1;
+    } else if (length == minimumLength) {
+      minimumLengthNodesAmount++;
+      if (randomGenerator.uniformFloat(0.0f, 1.0f) < (1.0f / static_cast<float>(minimumLengthNodesAmount))) {
+        selectedNode = node;
       }
     }
-
-    header = structure[header].right;
+    node = structure[node].right;
+    if (minimumLength == 0) {
+      break;
+    }
   }
-  if (maxLength != std::numeric_limits<int32_t>::max()) {
-    return index;
-  }
-  return -1;
+  return selectedNode;
 };
 
 /** Hides an option in the structure. Hiding means modifying node pointers such that the option disappears from the
