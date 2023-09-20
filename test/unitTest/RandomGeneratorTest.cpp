@@ -3,14 +3,15 @@
 #include "Sudoku.h"
 #include "doctest.h"
 
+#include <algorithm>
 #include <unordered_set>
 
 TEST_CASE("Random Generator") {
   constexpr int32_t amount = 1000;
 
   SUBCASE("Uniform integer") {
-    const int32_t minimum = std::numeric_limits<int32_t>::min();
-    const int32_t maximum = std::numeric_limits<int32_t>::max();
+    const int32_t minimum = -100.0f;
+    const int32_t maximum = 618.0f;
 
     SUBCASE("Random Seed") {
       RandomGenerator generator1;
@@ -22,6 +23,10 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformInteger(minimum, maximum));
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -37,6 +42,10 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformInteger(minimum, maximum));
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -51,13 +60,17 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformInteger(minimum, maximum));
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 == set2);
     }
   }
 
   SUBCASE("Uniform float") {
-    const float minimum = std::numeric_limits<float>::min();
-    const float maximum = std::numeric_limits<float>::max();
+    const float minimum = 0.0f;
+    const float maximum = 5.0f;
 
     SUBCASE("Random Seed") {
       RandomGenerator generator1;
@@ -69,6 +82,10 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformFloat(minimum, maximum));
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -84,6 +101,10 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformFloat(minimum, maximum));
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -98,6 +119,10 @@ TEST_CASE("Random Generator") {
         set1.insert(generator1.uniformFloat(minimum, maximum));
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
+      CHECK(std::all_of(
+          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+      CHECK(std::all_of(
+          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 == set2);
     }
   }
