@@ -10,7 +10,7 @@ ConstraintType AntiKnight::getType() const {
 }
 
 std::string AntiKnight::getDescription() const {
-  return "The same digit cannot appear at a knight's move away from itself.";
+  return "A digit cannot appear at a knight's move away from itself.";
 }
 
 std::string AntiKnight::getSvgGroup() const {

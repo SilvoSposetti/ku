@@ -11,8 +11,8 @@ ConstraintType AntiKnightTorus::getType() const {
 }
 
 std::string AntiKnightTorus::getDescription() const {
-  return "The same digit cannot appear at a knight's move away from itself. This restriction also wraps around the "
-         "edges of the board.";
+  return "A digit cannot appear at a knight's move away from itself. This restriction also wraps around the edges of "
+         "the board.";
 }
 
 std::string AntiKnightTorus::getSvgGroup() const {

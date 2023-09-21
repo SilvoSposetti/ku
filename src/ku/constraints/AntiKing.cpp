@@ -8,7 +8,7 @@ ConstraintType AntiKing::getType() const {
 }
 
 std::string AntiKing::getDescription() const {
-  return "The same digit cannot appear at a king's move away from itself.";
+  return "A digit cannot appear at a king's move away from itself.";
 }
 
 std::string AntiKing::getSvgGroup() const {
