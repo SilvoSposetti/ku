@@ -16,14 +16,23 @@ public:
   static std::vector<std::vector<Sudo::Digit>>
   createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, std::optional<int32_t> seed);
 
+  /** Fills an existing board with the given digits and constraints using Algorithm X
+   * @param givens A set of given digits
+   * @param constraints A vector of constraints
+   * @param seed The seed for the random number generator used to run Algorithm X
+   * @return A board constructed according to the input constraints
+   */
+  static std::vector<std::vector<Sudo::Digit>>
+  fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& givens,
+                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                    std::optional<int32_t> seed);
+
   /** Computes whether a Sudoku is unique according to the provided solution, givenMask, and set of constraints
-   * @param solution The board solution
-   * @param givenMask The given mask
+   * @param field The field
    * @param constraints The constraints which the solution satisfies
    * @return givenMask
    */
-  static bool isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
-                       const std::vector<std::vector<bool>>& givenMask,
+  static bool isUnique(const std::vector<std::vector<Sudo::Digit>>& field,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   static SparseCoordinateMatrix

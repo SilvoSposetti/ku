@@ -37,20 +37,23 @@ Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& c
   return newField;
 }
 
-bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& solution,
-                      const std::vector<std::vector<bool>>& givenMask,
+std::vector<std::vector<Sudo::Digit>>
+Solver::fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& givens,
+                          const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                          std::optional<int32_t> seed) {
+  auto field = givens;
+  const bool solved = Solver::solve(field, constraints, false, seed);
+  if (solved) {
+    return field;
+  }
+  return Sudo::emptyField();
+}
+
+bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& field,
                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
-  // Create board to use for solving
-  std::vector<std::vector<Sudo::Digit>> board = solution;
-  for (const auto& i : Sudo::INDICES) {
-    for (const auto& j : Sudo::INDICES) {
-      if (!givenMask[i][j]) {
-        board[i][j] = Sudo::Digit::NONE;
-      }
-    }
-  }
-  return Solver::solve(board, constraints, true, std::nullopt);
+  std::vector<std::vector<Sudo::Digit>> temporaryField = field;
+  return Solver::solve(temporaryField, constraints, true, std::nullopt);
 }
 
 SparseCoordinateMatrix

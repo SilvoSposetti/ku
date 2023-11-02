@@ -43,11 +43,41 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
     else
       givenMask = MaskUtilities::randomMask(totalDigits, randomGenerator);
 
-    if (Solver::isUnique(randomSolution, givenMask, constraints)) {
+    // Create board to use for solving
+    std::vector<std::vector<Sudo::Digit>> field = randomSolution;
+    for (const auto& i : Sudo::INDICES) {
+      for (const auto& j : Sudo::INDICES) {
+        if (!givenMask[i][j]) {
+          field[i][j] = Sudo::Digit::NONE;
+        }
+      }
+    }
+
+    if (Solver::isUnique(field, constraints)) {
       timer.printElapsed("Unique board generated   ");
       return std::make_unique<Board>(randomSolution, givenMask);
     }
   }
   std::cout << "Unable to create board after " << counter << " tries" << std::endl;
   return std::make_unique<Board>(randomSolution, Sudo::emptyGivenMask());
+}
+
+std::unique_ptr<Board> Setter::generate(const std::vector<std::vector<Sudo::Digit>>& givens,
+                                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                        std::optional<int32_t> seed) {
+  const auto solution = Solver::fillExistingBoard(givens, constraints, seed);
+  if (solution != Sudo::emptyField()) {
+    std::vector<std::vector<bool>> givenMask = Sudo::emptyGivenMask();
+    for (const auto& i : Sudo::INDICES) {
+      for (const auto& j : Sudo::INDICES) {
+        if (!givenMask[i][j]) {
+          givenMask[i][j] = givens[i][j] != Sudo::Digit::NONE;
+        }
+      }
+    }
+    return std::make_unique<Board>(solution, givenMask);
+  }
+  
+  std::cout << "Unable to find solution with provided givens" << std::endl;
+  return std::make_unique<Board>(Solver::createNewBoard(constraints, seed), Sudo::emptyGivenMask());
 }

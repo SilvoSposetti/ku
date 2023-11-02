@@ -11,7 +11,7 @@
  */
 class Sudoku {
 public:
-  /** Constructor
+  /** Constructor without given digits
    * @param name The name of the Sudoku
    * @param constraintTypes Bitflag of the constraints that should be used to create the Sudoku
    * @param symmetryType Which symmetry type should be used to remove given digits
@@ -20,9 +20,21 @@ public:
    * seed will be used
    */
   Sudoku(const std::string& name,
-         ConstraintType constraintTypes = Constraint::getSudokuConstraints(),
+         ConstraintType constraintTypes,
          SymmetryType givenSymmetry = SymmetryType::RANDOM,
          int32_t givenDigits = Sudo::TOTAL_DIGITS,
+         std::optional<int32_t> seed = std::nullopt);
+
+  /** Constructor with some given digits
+   * @param name The name of the Sudoku
+   * @param givens A matrix of given digits where 0 is an empty cell of the grid
+   * @param constraintTypes Bitflag of the constraints that should be used to create the Sudoku
+   * @param seed The seed for the random number generator used to generate and solve the sudoku. If -1 then a random
+   * seed will be used
+   */
+  Sudoku(const std::string& name,
+         const std::vector<std::vector<int32_t>>& givens,
+         ConstraintType constraintTypes,
          std::optional<int32_t> seed = std::nullopt);
 
   /** Check if the sudoku is solvable. This is not the case where the constraints define secondary columns only
@@ -77,10 +89,13 @@ public:
   static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);
 
 private:
+  int32_t getGivenDigitsAmount() const;
+
+  static std::vector<std::vector<Sudo::Digit>> transformGivens(const std::vector<std::vector<int32_t>>& givens);
+
+private:
   /// The name
   const std::string name;
-  /// How many givens the sudoku has
-  const int32_t givenDigitsAmount;
   /// The list of constraint that make up this Sudoku
   const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
   /// The symmetry type of the sudoku

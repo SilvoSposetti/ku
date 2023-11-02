@@ -20,4 +20,14 @@ std::unique_ptr<Board> generate(int32_t totalDigits,
                                 SymmetryType symmetryType,
                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                 std::optional<int32_t> seed);
+
+/** Generates a random sudoku with the given inputs
+ * @param givens The explicitly-set given digits
+ * @param constraints The set of constraints that are used to generate the solution
+ * @param seed The seed for the random number generator used when setting the Sudoku
+ * @return A randomly generated board
+ */
+std::unique_ptr<Board> generate(const std::vector<std::vector<Sudo::Digit>>& givens,
+                                const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
+                                std::optional<int32_t> seed);
 }; // namespace Setter

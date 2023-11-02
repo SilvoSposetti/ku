@@ -4,5 +4,6 @@ unit_test_sources = files(
   'main.cpp',
   'RandomGeneratorTest.cpp',
   'SparseCoordinateMatrixTest.cpp',
+  'SudokuTest.cpp',
   'TimerTest.cpp',
 )

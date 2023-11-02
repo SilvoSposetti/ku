@@ -14,11 +14,20 @@ Sudoku::Sudoku(const std::string& name,
                int32_t givenDigits,
                std::optional<int32_t> seed)
     : name(name)
-    , givenDigitsAmount(std::clamp(givenDigits, 0, Sudo::TOTAL_DIGITS))
     , constraints(getConstraintsList(constraintTypes))
     , symmetryType(givenSymmetry)
     , seed(seed)
-    , board(Setter::generate(givenDigitsAmount, symmetryType, constraints, seed)) {}
+    , board(Setter::generate(givenDigits, symmetryType, constraints, seed)) {}
+
+Sudoku::Sudoku(const std::string& name,
+               const std::vector<std::vector<int32_t>>& givens,
+               ConstraintType constraintTypes,
+               std::optional<int32_t> seed)
+    : name(name)
+    , constraints(getConstraintsList(constraintTypes))
+    , symmetryType(SymmetryType::RANDOM)
+    , seed(seed)
+    , board(Setter::generate(transformGivens(givens), constraints, seed)) {}
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
   std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
@@ -55,9 +64,9 @@ bool Sudoku::verify() {
   }
 
   // Then, solve the sudoku, and see if the solution is unique
-  if (givenDigitsAmount != Sudo::TOTAL_DIGITS) {
+  if (getGivenDigitsAmount() != Sudo::TOTAL_DIGITS) {
     const std::vector<std::vector<bool>> givenMask = board->getGivenMask();
-    return Solver::isUnique(solution, givenMask, constraints);
+    return Solver::isUnique(board->getField(), constraints);
   }
   return true;
 }
@@ -140,7 +149,8 @@ void Sudoku::printInfo() {
   // Name
   std::string info = name + " | ";
   // Given digits
-  info += std::to_string(givenDigitsAmount) + " (-" + std::to_string(Sudo::TOTAL_DIGITS - givenDigitsAmount) + ") | ";
+  info += std::to_string(getGivenDigitsAmount()) + " (-" + std::to_string(Sudo::TOTAL_DIGITS - getGivenDigitsAmount()) +
+          ") | ";
   // Constraints
   info += "[";
   std::string constraintsNames;
@@ -159,4 +169,38 @@ void Sudoku::printInfo() {
 
 void Sudoku::printBoard() {
   board->print();
+}
+
+int32_t Sudoku::getGivenDigitsAmount() const {
+  int32_t givenDigitsAmount = 0;
+  for (const auto& row : board->getField()) {
+    for (const auto& digit : row) {
+      if (digit != Sudo::Digit::NONE) {
+        givenDigitsAmount++;
+      }
+    }
+  }
+  return givenDigitsAmount;
+}
+
+std::vector<std::vector<Sudo::Digit>> Sudoku::transformGivens(const std::vector<std::vector<int32_t>>& givens) {
+
+  if (givens.size() != Sudo::MAX_DIGIT) {
+    return Sudo::emptyField();
+  }
+  if (std::any_of(givens.begin(), givens.end(), [&](const std::vector<int32_t>& row) {
+        return row.size() != Sudo::MAX_DIGIT;
+      })) {
+    return Sudo::emptyField();
+  }
+
+  std::vector<std::vector<Sudo::Digit>> transformedGivens;
+  for (const auto& row : givens) {
+    std::vector<Sudo::Digit> transformedRow;
+    for (const auto& digit : row) {
+      transformedRow.emplace_back(static_cast<Sudo::Digit>(digit));
+    }
+    transformedGivens.emplace_back(transformedRow);
+  }
+  return transformedGivens;
 }
