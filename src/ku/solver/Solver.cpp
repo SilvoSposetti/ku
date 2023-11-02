@@ -38,10 +38,10 @@ Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& c
 }
 
 std::vector<std::vector<Sudo::Digit>>
-Solver::fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& givens,
+Solver::fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& clues,
                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                           std::optional<int32_t> seed) {
-  auto field = givens;
+  auto field = clues;
   const bool solved = Solver::solve(field, constraints, false, seed);
   if (solved) {
     return field;

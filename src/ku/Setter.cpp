@@ -62,22 +62,22 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   return std::make_unique<Board>(randomSolution, Sudo::emptyGivenMask());
 }
 
-std::unique_ptr<Board> Setter::generate(const std::vector<std::vector<Sudo::Digit>>& givens,
+std::unique_ptr<Board> Setter::generate(const std::vector<std::vector<Sudo::Digit>>& clues,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                         std::optional<int32_t> seed) {
-  const auto solution = Solver::fillExistingBoard(givens, constraints, seed);
+  const auto solution = Solver::fillExistingBoard(clues, constraints, seed);
   if (solution != Sudo::emptyField()) {
     std::vector<std::vector<bool>> givenMask = Sudo::emptyGivenMask();
     for (const auto& i : Sudo::INDICES) {
       for (const auto& j : Sudo::INDICES) {
         if (!givenMask[i][j]) {
-          givenMask[i][j] = givens[i][j] != Sudo::Digit::NONE;
+          givenMask[i][j] = clues[i][j] != Sudo::Digit::NONE;
         }
       }
     }
     return std::make_unique<Board>(solution, givenMask);
   }
-  
-  std::cout << "Unable to find solution with provided givens" << std::endl;
+
+  std::cout << "Unable to find solution with provided clues" << std::endl;
   return std::make_unique<Board>(Solver::createNewBoard(constraints, seed), Sudo::emptyGivenMask());
 }

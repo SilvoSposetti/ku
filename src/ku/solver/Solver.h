@@ -17,13 +17,13 @@ public:
   createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints, std::optional<int32_t> seed);
 
   /** Fills an existing board with the given digits and constraints using Algorithm X
-   * @param givens A set of given digits
+   * @param clues A set of given digits
    * @param constraints A vector of constraints
    * @param seed The seed for the random number generator used to run Algorithm X
    * @return A board constructed according to the input constraints
    */
   static std::vector<std::vector<Sudo::Digit>>
-  fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& givens,
+  fillExistingBoard(const std::vector<std::vector<Sudo::Digit>>& clues,
                     const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                     std::optional<int32_t> seed);
 

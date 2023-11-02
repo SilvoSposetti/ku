@@ -162,11 +162,11 @@ TEST_CASE("Random Generator") {
   SUBCASE("Sudoku") {
     const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
                                                  ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
-    const int32_t givens = 40;
+    const int32_t clues = 40;
 
     SUBCASE("Random Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, givens);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, givens);
+      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, clues);
+      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, clues);
 
       CHECK(sudoku1.getSolution() != sudoku2.getSolution());
       CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
@@ -174,8 +174,8 @@ TEST_CASE("Random Generator") {
     }
 
     SUBCASE("Different Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, givens, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, givens, 1);
+      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, clues, 0);
+      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, clues, 1);
 
       CHECK(sudoku1.getSolution() != sudoku2.getSolution());
       CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
@@ -183,8 +183,8 @@ TEST_CASE("Random Generator") {
     }
 
     SUBCASE("Same Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, givens, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, givens, 0);
+      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, SymmetryType::RANDOM, clues, 0);
+      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, SymmetryType::RANDOM, clues, 0);
 
       CHECK(sudoku1.getSolution() == sudoku2.getSolution());
       CHECK(sudoku1.getGivenMask() == sudoku2.getGivenMask());

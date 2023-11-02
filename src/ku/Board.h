@@ -9,11 +9,11 @@
 class Board {
 public:
   /** Constructor
-   * @param inSolution The solution
-   * @param inGivenMask The given Mask
+   * @param solution The solution
+   * @param givenMask The given Mask
    */
-  Board(const std::vector<std::vector<Sudo::Digit>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask);
-
+  Board(const std::vector<std::vector<Sudo::Digit>>& solution, const std::vector<std::vector<bool>>& givenMask);
+  
   /** Prints the given pattern of this board to console
    */
   void printGivenPattern() const;

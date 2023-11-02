@@ -27,13 +27,13 @@ public:
 
   /** Constructor with some given digits
    * @param name The name of the Sudoku
-   * @param givens A matrix of given digits where 0 is an empty cell of the grid
+   * @param clues A matrix of given digits where 0 is an empty cell of the grid
    * @param constraintTypes Bitflag of the constraints that should be used to create the Sudoku
    * @param seed The seed for the random number generator used to generate and solve the sudoku. If -1 then a random
    * seed will be used
    */
   Sudoku(const std::string& name,
-         const std::vector<std::vector<int32_t>>& givens,
+         const std::vector<std::vector<int32_t>>& clues,
          ConstraintType constraintTypes,
          std::optional<int32_t> seed = std::nullopt);
 
@@ -89,9 +89,16 @@ public:
   static std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes);
 
 private:
+  /** Helper to compute the amount of clues
+   * @return The amount of clues
+   */
   int32_t getGivenDigitsAmount() const;
 
-  static std::vector<std::vector<Sudo::Digit>> transformGivens(const std::vector<std::vector<int32_t>>& givens);
+  /** Helper used to transform a matrix of integers into a matrix of Sudo::Digits
+   * @param clues The board of clues
+   * @return The transformed matrix
+   */
+  static std::vector<std::vector<Sudo::Digit>> transformClues(const std::vector<std::vector<int32_t>>& clues);
 
 private:
   /// The name

@@ -20,14 +20,14 @@ Sudoku::Sudoku(const std::string& name,
     , board(Setter::generate(givenDigits, symmetryType, constraints, seed)) {}
 
 Sudoku::Sudoku(const std::string& name,
-               const std::vector<std::vector<int32_t>>& givens,
+               const std::vector<std::vector<int32_t>>& clues,
                ConstraintType constraintTypes,
                std::optional<int32_t> seed)
     : name(name)
     , constraints(getConstraintsList(constraintTypes))
     , symmetryType(SymmetryType::RANDOM)
     , seed(seed)
-    , board(Setter::generate(transformGivens(givens), constraints, seed)) {}
+    , board(Setter::generate(transformClues(clues), constraints, seed)) {}
 
 std::vector<std::unique_ptr<AbstractConstraint>> Sudoku::getConstraintsList(const ConstraintType constraintTypes) {
   std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
@@ -183,24 +183,24 @@ int32_t Sudoku::getGivenDigitsAmount() const {
   return givenDigitsAmount;
 }
 
-std::vector<std::vector<Sudo::Digit>> Sudoku::transformGivens(const std::vector<std::vector<int32_t>>& givens) {
+std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<std::vector<int32_t>>& clues) {
 
-  if (givens.size() != Sudo::MAX_DIGIT) {
+  if (clues.size() != Sudo::MAX_DIGIT) {
     return Sudo::emptyField();
   }
-  if (std::any_of(givens.begin(), givens.end(), [&](const std::vector<int32_t>& row) {
+  if (std::any_of(clues.begin(), clues.end(), [&](const std::vector<int32_t>& row) {
         return row.size() != Sudo::MAX_DIGIT;
       })) {
     return Sudo::emptyField();
   }
 
-  std::vector<std::vector<Sudo::Digit>> transformedGivens;
-  for (const auto& row : givens) {
+  std::vector<std::vector<Sudo::Digit>> transformedClues;
+  for (const auto& row : clues) {
     std::vector<Sudo::Digit> transformedRow;
     for (const auto& digit : row) {
       transformedRow.emplace_back(static_cast<Sudo::Digit>(digit));
     }
-    transformedGivens.emplace_back(transformedRow);
+    transformedClues.emplace_back(transformedRow);
   }
-  return transformedGivens;
+  return transformedClues;
 }

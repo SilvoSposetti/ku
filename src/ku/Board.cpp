@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-Board::Board(const std::vector<std::vector<Sudo::Digit>>& inSolution, const std::vector<std::vector<bool>>& inGivenMask)
-    : solution(inSolution)
-    , givenMask(inGivenMask) {}
+Board::Board(const std::vector<std::vector<Sudo::Digit>>& solution, const std::vector<std::vector<bool>>& givenMask)
+    : solution(solution)
+    , givenMask(givenMask) {}
 
 const std::vector<std::vector<Sudo::Digit>>& Board::getSolution() const {
   return solution;
