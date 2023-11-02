@@ -1,11 +1,9 @@
 #include "Setter.h"
 
-#include "MaskUtilities.h"
 #include "solver/Solver.h"
 #include "utilities/Timer.h"
 
 std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
-                                        SymmetryType symmetryType,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                         std::optional<int32_t> seed) {
 
@@ -28,20 +26,8 @@ std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
   timer.reset();
   while (counter < totalTries) {
     ++counter;
-
-    // Create given mask
-    if (symmetryType == SymmetryType::ONE_DIAGONAL_MIRROR)
-      givenMask = MaskUtilities::diagonalMirrorMask(totalDigits, randomGenerator);
-    else if (symmetryType == SymmetryType::ONE_DIAGONAL_ROTATION)
-      givenMask = MaskUtilities::diagonalRotationMask(totalDigits, randomGenerator);
-    //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_MIRROR) givenMask = randomMask(totalDigits);
-    //    else if (symmetryType == SymmetryType::TWO_DIAGONALS_ROTATION) givenMask = randomMask(totalDigits);
-    //    else if (symmetryType == SymmetryType::ONE_AXIS_MIRROR) givenMask = randomMask(totalDigits);
-    //    else if (symmetryType == SymmetryType::ONE_AXIS_ROTATION) givenMask = randomMask(totalDigits);
-    //    else if (symmetryType == SymmetryType::TWO_AXES_MIRROR) givenMask = randomMask(totalDigits);
-    //    else if (symmetryType == SymmetryType::TWO_AXES_ROTATION) givenMask = randomMask(totalDigits);
-    else
-      givenMask = MaskUtilities::randomMask(totalDigits, randomGenerator);
+    // Try a random mask
+    givenMask = Setter::randomMask(totalDigits, randomGenerator);
 
     // Create board to use for solving
     std::vector<std::vector<Sudo::Digit>> field = randomSolution;
@@ -80,4 +66,19 @@ std::unique_ptr<Board> Setter::generate(const std::vector<std::vector<Sudo::Digi
 
   std::cout << "Unable to find solution with provided clues" << std::endl;
   return std::make_unique<Board>(Solver::createNewBoard(constraints, seed), Sudo::emptyGivenMask());
+}
+
+std::vector<std::vector<bool>> Setter::randomMask(int32_t totalDigits,
+                                                  std::shared_ptr<RandomGenerator> randomGenerator) {
+  std::vector<std::vector<bool>> mask = Sudo::fullGivenMask();
+  int32_t digits = Sudo::TOTAL_DIGITS;
+  while (digits != totalDigits) {
+    const int32_t i = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    const int32_t j = randomGenerator->uniformInteger(Sudo::MIN_INDEX, Sudo::MAX_INDEX);
+    if (mask[i][j]) {
+      mask[i][j] = false;
+      digits--;
+    }
+  }
+  return mask;
 }

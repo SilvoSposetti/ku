@@ -1,6 +1,5 @@
 ku_sources = files(
   'Board.cpp',
-  'MaskUtilities.cpp',
   'Setter.cpp',
   'Sudo.cpp',
   'Sudoku.cpp',

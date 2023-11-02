@@ -3,7 +3,6 @@
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
-#include "utilities/SymmetryType.h"
 
 #include <memory>
 
@@ -17,7 +16,6 @@ namespace Setter {
  * @return A randomly generated board
  */
 std::unique_ptr<Board> generate(int32_t totalDigits,
-                                SymmetryType symmetryType,
                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                 std::optional<int32_t> seed);
 
@@ -30,4 +28,11 @@ std::unique_ptr<Board> generate(int32_t totalDigits,
 std::unique_ptr<Board> generate(const std::vector<std::vector<Sudo::Digit>>& clues,
                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                 std::optional<int32_t> seed);
+
+/** Computes and returns a randomly generated mask
+ * @param totalDigits How many digits should be left on the board
+ * @param randomGenerator The random number generator instance used to draw random numbers
+ * @return The constructed given mask
+ */
+std::vector<std::vector<bool>> randomMask(int32_t totalDigits, std::shared_ptr<RandomGenerator> randomGenerator);
 }; // namespace Setter

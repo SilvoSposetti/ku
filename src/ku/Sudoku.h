@@ -3,7 +3,6 @@
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
-#include "utilities/SymmetryType.h"
 
 #include <filesystem>
 
@@ -14,14 +13,12 @@ public:
   /** Constructor without given digits
    * @param name The name of the Sudoku
    * @param constraintTypes Bitflag of the constraints that should be used to create the Sudoku
-   * @param symmetryType Which symmetry type should be used to remove given digits
    * @param givenDigits The amount of digits that are given
    * @param seed The seed for the random number generator used to generate and solve the sudoku. If -1 then a random
    * seed will be used
    */
   Sudoku(const std::string& name,
          ConstraintType constraintTypes,
-         SymmetryType givenSymmetry = SymmetryType::RANDOM,
          int32_t givenDigits = Sudo::TOTAL_DIGITS,
          std::optional<int32_t> seed = std::nullopt);
 
@@ -105,8 +102,6 @@ private:
   const std::string name;
   /// The list of constraint that make up this Sudoku
   const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
-  /// The symmetry type of the sudoku
-  const SymmetryType symmetryType;
   /// The seed for the random numbers generator
   std::optional<int32_t> seed;
   /// The board

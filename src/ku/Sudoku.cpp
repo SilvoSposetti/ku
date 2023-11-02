@@ -10,14 +10,12 @@
 
 Sudoku::Sudoku(const std::string& name,
                ConstraintType constraintTypes,
-               SymmetryType givenSymmetry,
                int32_t givenDigits,
                std::optional<int32_t> seed)
     : name(name)
     , constraints(getConstraintsList(constraintTypes))
-    , symmetryType(givenSymmetry)
     , seed(seed)
-    , board(Setter::generate(givenDigits, symmetryType, constraints, seed)) {}
+    , board(Setter::generate(givenDigits, constraints, seed)) {}
 
 Sudoku::Sudoku(const std::string& name,
                const std::vector<std::vector<int32_t>>& clues,
@@ -25,7 +23,6 @@ Sudoku::Sudoku(const std::string& name,
                std::optional<int32_t> seed)
     : name(name)
     , constraints(getConstraintsList(constraintTypes))
-    , symmetryType(SymmetryType::RANDOM)
     , seed(seed)
     , board(Setter::generate(transformClues(clues), constraints, seed)) {}
 
