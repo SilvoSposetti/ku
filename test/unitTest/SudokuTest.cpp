@@ -79,7 +79,6 @@ TEST_CASE("Sudoku") {
     };
 
     Sudoku sudoku("DigitsOfPi32Clues", input, classicConstraints);
-    sudoku.printBoard();
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
 
@@ -110,7 +109,6 @@ TEST_CASE("Sudoku") {
     };
 
     Sudoku sudoku("DigitsOfPi17Clues", input, classicConstraints);
-    sudoku.printBoard();
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
 }
