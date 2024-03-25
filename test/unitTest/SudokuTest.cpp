@@ -111,6 +111,37 @@ TEST_CASE("Sudoku") {
     Sudoku sudoku("DigitsOfPi17Clues", input, classicConstraints);
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
+
+  SUBCASE("SolvedWithOnlyNakedSingles") {
+    // 17 clues is the minimum allowed for a classic sudoku to may still have a unique solution
+    const std::vector<std::vector<int32_t>> input = {
+        {0, 0, 3, 0, 1, 0, 0, 0, 0},
+        {4, 1, 5, 0, 0, 0, 0, 9, 0},
+        {2, 0, 6, 5, 0, 0, 3, 0, 0},
+        {5, 0, 0, 0, 8, 0, 0, 0, 9},
+        {0, 7, 0, 9, 0, 0, 0, 3, 2},
+        {0, 3, 8, 0, 0, 4, 0, 6, 0},
+        {0, 0, 0, 2, 6, 0, 4, 0, 3},
+        {0, 0, 0, 3, 0, 0, 0, 0, 8},
+        {3, 2, 0, 0, 0, 7, 9, 5, 0},
+    };
+
+    const std::vector<std::vector<int32_t>> solution = {
+        {7, 9, 3, 4, 1, 2, 6, 8, 5},
+        {4, 1, 5, 6, 3, 8, 2, 9, 7},
+        {2, 8, 6, 5, 7, 9, 3, 1, 4},
+        {5, 6, 2, 1, 8, 3, 7, 4, 9},
+        {1, 7, 4, 9, 5, 6, 8, 3, 2},
+        {9, 3, 8, 7, 2, 4, 5, 6, 1},
+        {8, 5, 9, 2, 6, 1, 4, 7, 3},
+        {6, 4, 7, 3, 9, 5, 1, 2, 8},
+        {3, 2, 1, 8, 4, 7, 9, 5, 6},
+    };
+
+    Sudoku sudoku("SolvedWithOnlyNakedSingles", input, classicConstraints);
+    sudoku.exportToSvg(std::filesystem::path(OUT_DIR) / "sandbox");
+    CHECK(checkSolution(solution, sudoku.getSolution()));
+  }
 }
 
 // Digits of pi, 16 clues: There's two solutions
