@@ -53,7 +53,7 @@ TEST_CASE("Sudoku") {
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
 
-  SUBCASE("Digits of pi with 32 clues") {
+  SUBCASE("Digits of pi with 32 clues (1)") {
     const std::vector<std::vector<int32_t>> input = {
         {0, 0, 3, 0, 1, 0, 0, 0, 0},
         {4, 1, 5, 0, 0, 0, 0, 9, 0},
@@ -78,7 +78,38 @@ TEST_CASE("Sudoku") {
         {3, 2, 1, 8, 4, 7, 9, 5, 6},
     };
 
-    Sudoku sudoku("DigitsOfPi32Clues", input, classicConstraints);
+    Sudoku sudoku("DigitsOfPi32Clues2", input, classicConstraints);
+    CHECK(checkSolution(solution, sudoku.getSolution()));
+  }
+
+  SUBCASE("Digits of pi with 32 clues (2)") {
+    // Note: The 33rd digit of pi is a 0
+    // 17 clues is the minimum allowed for a classic sudoku to may still have a unique solution
+    const std::vector<std::vector<int32_t>> input = {
+        {0, 0, 0, 0, 0, 3, 0, 1, 4},
+        {0, 0, 0, 0, 0, 1, 5, 9, 2},
+        {0, 0, 0, 0, 6, 5, 0, 0, 3},
+        {0, 0, 0, 0, 5, 8, 9, 0, 7},
+        {0, 0, 9, 0, 0, 0, 3, 2, 0},
+        {0, 3, 8, 4, 0, 0, 0, 0, 6},
+        {2, 6, 0, 0, 0, 4, 0, 3, 0},
+        {0, 0, 0, 0, 3, 0, 0, 8, 0},
+        {0, 0, 3, 2, 7, 9, 0, 0, 5},
+    };
+
+    const std::vector<std::vector<int32_t>> solution = {
+        {5, 9, 7, 8, 2, 3, 6, 1, 4},
+        {3, 8, 6, 7, 4, 1, 5, 9, 2},
+        {1, 4, 2, 9, 6, 5, 8, 7, 3},
+        {6, 2, 1, 3, 5, 8, 9, 4, 7},
+        {4, 5, 9, 6, 1, 7, 3, 2, 8},
+        {7, 3, 8, 4, 9, 2, 1, 5, 6},
+        {2, 6, 5, 1, 8, 4, 7, 3, 9},
+        {9, 7, 4, 5, 3, 6, 2, 8, 1},
+        {8, 1, 3, 2, 7, 9, 4, 6, 5},
+    };
+
+    Sudoku sudoku("DigitsOfPiWith32Clues2", input, classicConstraints);
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
 
@@ -139,7 +170,6 @@ TEST_CASE("Sudoku") {
     };
 
     Sudoku sudoku("SolvedWithOnlyNakedSingles", input, classicConstraints);
-    sudoku.exportToSvg(std::filesystem::path(OUT_DIR) / "sandbox");
     CHECK(checkSolution(solution, sudoku.getSolution()));
   }
 }
