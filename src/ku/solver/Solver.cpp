@@ -57,9 +57,8 @@ bool Solver::isUnique(const std::vector<std::vector<Sudo::Digit>>& field,
 }
 
 SparseCoordinateMatrix
-Solver::getExactCoverMatrix(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-
-  std::vector<std::vector<Sudo::Digit>> board = Sudo::emptyField();
+Solver::getExactCoverMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
+                            const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   return reduceSudokuProblemToExactCoverProblem(board, constraints);
 }
 

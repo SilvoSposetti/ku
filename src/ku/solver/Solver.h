@@ -35,8 +35,14 @@ public:
   static bool isUnique(const std::vector<std::vector<Sudo::Digit>>& field,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
+  /** Retrieves the Exact Cover matrix for a board with a specific set of constraints
+   * @param board The current board
+   * @param constraints The constraints
+   * @return The Exact Cover matrix as a sparse coordinate matrix
+   */
   static SparseCoordinateMatrix
-  getExactCoverMatrix(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  getExactCoverMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
+                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   /** Preliminary check to see if a set of constraints won't produce a solvable Algorithm X problem. E.g. when the
    * columns that they define are all secondary

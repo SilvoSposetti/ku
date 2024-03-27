@@ -135,7 +135,7 @@ void Sudoku::exportDlxMatrixToSvg(const std::filesystem::path& location) {
     constraintsInfo.emplace_back(std::make_pair(constraint->getName(), areColumnsPrimary));
   }
 
-  svgContent += SvgUtilities::dlxMatrix(Solver::getExactCoverMatrix(constraints), constraintsInfo);
+  svgContent += SvgUtilities::dlxMatrix(Solver::getExactCoverMatrix(board->getField(), constraints), constraintsInfo);
 
   // Stream it to file, then save and close
   outfile << svgContent;
@@ -185,9 +185,8 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
   if (clues.size() != Sudo::MAX_DIGIT) {
     return Sudo::emptyField();
   }
-  if (std::any_of(clues.begin(), clues.end(), [&](const std::vector<int32_t>& row) {
-        return row.size() != Sudo::MAX_DIGIT;
-      })) {
+  if (std::any_of(
+          clues.begin(), clues.end(), [&](const std::vector<int32_t>& row) { return row.size() != Sudo::MAX_DIGIT; })) {
     return Sudo::emptyField();
   }
 
