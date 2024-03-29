@@ -20,15 +20,20 @@ public:
    */
   virtual ~AbstractConstraint() = default;
 
+  /** Defines the name of the constraint
+   * @return The name
+   */
+  std::string getName() const;
+
   /** Defines the type of this constraint
    * @return The enum defining this constraint
    */
   virtual ConstraintType getType() const = 0;
 
-  /** Defines the name of the constraint
-   * @return The name
+  /** Retrieves a list of all the columnIds that are non-zero, for each possible row in the Algortithm X's matrix
+   * @return A list in canonical ordering of all the rows, of all the non-zero columnIds
    */
-  std::string getName() const;
+  std::vector<std::vector<int32_t>> getDlxConstraints() const;
 
   /** Defines the description of the constraint
    * @return The description
@@ -57,6 +62,12 @@ public:
    */
   virtual bool isColumnPrimary(int32_t columnId) const;
 
+  /** Computes the result using getDlxConstraintColumnsAmount() and isColumnPrimary()
+   * @return Whether the constraint specifies only secondary columns
+   */
+  bool isSecondaryColumnsOnly() const;
+
+protected:
   /** Defines which cells of a column should have a 1 (true) or a 0 (false) for DLX matrix creation
    * @param digit The digit considered
    * @param i The board row considered
@@ -66,12 +77,6 @@ public:
    */
   virtual bool getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const = 0;
 
-  /** Computes the result using getDlxConstraintColumnsAmount() and isColumnPrimary()
-   * @return Whether the constraint specifies only secondary columns
-   */
-  bool isSecondaryColumnsOnly() const;
-
-protected:
   /** Computes and returns the set of point-point pairs that can be constructed for all cells in a grid according to the
    input pattern. The pattern describes single-cell pairs that need to be built with the central cell (0, 0).
    * @param pattern The pattern for the pairs

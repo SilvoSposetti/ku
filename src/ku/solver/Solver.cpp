@@ -127,6 +127,14 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
     totalColumns += constraint->getDlxConstraintColumnsAmount();
   }
 
+  // Set up constraints cache
+  std::vector<std::vector<std::vector<int32_t>>> constraintsCache{constraints.size()};
+  int32_t constraintCounter = 0;
+  for (const auto& constraint : constraints) {
+    constraintsCache[constraintCounter] = constraint->getDlxConstraints();
+    constraintCounter++;
+  }
+
   // Initialize matrix with correct size
   std::vector<std::vector<bool>> matrix(totalRows, std::vector<bool>(totalColumns, false));
   std::vector<int32_t> rowsData(totalRows, -1);
@@ -136,40 +144,34 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
   const std::vector<Sudo::Digit> digitsSequence = Sudo::SUDO_DIGITS;
 
   int32_t matrixRowCounter = 0;
-  int32_t matrixColumnCounter = 0;
   int32_t setMatrixRowData = -1;
-  for (const auto& boardI : Sudo::INDICES) { // Go through all sudoku rows
-    for (const auto& boardJ : Sudo::INDICES) { // Go through all sudoku columns
-      const Sudo::Digit actualDigit = board[boardI][boardJ];
-      for (const auto& possibleDigit : digitsSequence) { // Go through all possible digits for this cell
-        // Avoid rows where the cell and its possible digits don't create a "1" in the matrix, since the digit
-        // is already given
-        if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
-          for (const auto& constraint : constraints) {
-            for (int32_t columnId = 0; columnId < constraint->getDlxConstraintColumnsAmount(); ++columnId) {
-              if (!constraint->isColumnPrimary(columnId)) {
-                secondaryColumns.insert(matrixColumnCounter);
-              }
-              if (constraint->getDlxConstraint(possibleDigit, boardI, boardJ, columnId)) {
-                // Set cell
-                matrix[matrixRowCounter][matrixColumnCounter] = true;
-                // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
-                if (setMatrixRowData < matrixRowCounter) {
-                  rowsData[matrixRowCounter] = IdPacking::packId(boardI,
-                                                                 boardJ,
-                                                                 static_cast<int32_t>(possibleDigit) - 1,
-                                                                 Sudo::MAX_DIGIT,
-                                                                 Sudo::MAX_DIGIT,
-                                                                 Sudo::MAX_DIGIT);
-                  setMatrixRowData++;
-                }
-              }
-              matrixColumnCounter = (matrixColumnCounter + 1) % totalColumns;
-            }
+
+  for (int32_t optionId = 0; optionId < maximumRows; optionId++) {
+    const auto [boardI, boardJ, unpackedDigit] =
+        IdPacking::unpackId(optionId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+    const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpackedDigit + 1);
+    const Sudo::Digit actualDigit = board[boardI][boardJ];
+    if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
+      int32_t matrixColumnBase = 0;
+      for (int32_t constraintIndex = 0; constraintIndex < constraintsCache.size(); constraintIndex++) {
+        const std::vector<int>& currentCache = constraintsCache[constraintIndex][optionId];
+        for (const auto& itemId : currentCache) {
+          const int matrixColumnId = matrixColumnBase + itemId;
+          if (!constraints[constraintIndex]->isColumnPrimary(itemId)) {
+            secondaryColumns.insert(matrixColumnId);
           }
-          matrixRowCounter++;
+          // Set cell
+          matrix[matrixRowCounter][matrixColumnId] = true;
+          // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
+          if (setMatrixRowData < matrixRowCounter) {
+            rowsData[matrixRowCounter] =
+                IdPacking::packId(boardI, boardJ, unpackedDigit, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+            setMatrixRowData++;
+          }
         }
+        matrixColumnBase += constraints[constraintIndex]->getDlxConstraintColumnsAmount();
       }
+      matrixRowCounter++;
     }
   }
 

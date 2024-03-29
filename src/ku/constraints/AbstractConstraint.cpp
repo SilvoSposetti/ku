@@ -8,6 +8,25 @@ bool AbstractConstraint::isColumnPrimary(int32_t columnId) const {
   return true;
 };
 
+std::vector<std::vector<int32_t>> AbstractConstraint::getDlxConstraints() const {
+  std::vector<std::vector<int32_t>> result(Sudo::INDICES.size() * Sudo::INDICES.size() * Sudo::SUDO_DIGITS.size());
+  const int32_t itemsAmount = getDlxConstraintColumnsAmount();
+  int32_t counter = 0;
+  for (const auto& rowIndex : Sudo::INDICES) {
+    for (const auto& columnIndex : Sudo::INDICES) {
+      for (const auto& digit : Sudo::SUDO_DIGITS) {
+        for (int32_t itemId = 0; itemId < itemsAmount; itemId++) {
+          if (getDlxConstraint(digit, rowIndex, columnIndex, itemId)) {
+            result[counter].push_back(itemId);
+          }
+        }
+        counter++;
+      }
+    }
+  }
+  return result;
+};
+
 std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
 AbstractConstraint::createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus) {
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> set;
