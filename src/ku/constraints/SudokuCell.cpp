@@ -1,12 +1,7 @@
 #include "SudokuCell.h"
 
-ConstraintType SudokuCell::getType() const {
-  return ConstraintType::SUDOKU_CELL;
-}
-
-std::string SudokuCell::getDescription() const {
-  return "Each cell can only contain one integer between 1 and 9.";
-}
+SudokuCell::SudokuCell()
+    : AbstractConstraint("Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}
 
 std::string SudokuCell::getSvgGroup() const {
   // Black border

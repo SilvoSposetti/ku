@@ -1,14 +1,10 @@
 #pragma once
 
-#include "NegativeDiagonal.h"
+#include "AbstractConstraint.h"
 
-class NegativeDiagonalOdd : public NegativeDiagonal {
+class NegativeDiagonalOdd : public AbstractConstraint {
 public:
-  NegativeDiagonalOdd() = default;
-
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
+  NegativeDiagonalOdd();
 
   virtual std::string getSvgGroup() const override;
 

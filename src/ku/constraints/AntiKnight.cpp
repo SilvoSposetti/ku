@@ -3,15 +3,8 @@
 #include <set>
 
 AntiKnight::AntiKnight()
-    : dashVector(createDashVector({{2, -1}, {2, 1}, {1, 2}, {-1, 2}}, false)) {}
-
-ConstraintType AntiKnight::getType() const {
-  return ConstraintType::ANTI_KNIGHT;
-}
-
-std::string AntiKnight::getDescription() const {
-  return "A digit cannot appear at a knight's move away from itself.";
-}
+    : AbstractConstraint("Anti-Knight", "A digit cannot appear at a knight's move away from itself.")
+    , dashVector(createDashVector({{2, -1}, {2, 1}, {1, 2}, {-1, 2}}, false)) {}
 
 std::string AntiKnight::getSvgGroup() const {
   std::string lines;

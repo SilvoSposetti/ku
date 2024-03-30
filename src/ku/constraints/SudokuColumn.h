@@ -4,11 +4,7 @@
 
 class SudokuColumn : public AbstractConstraint {
 public:
-  SudokuColumn() = default;
-
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
+  SudokuColumn();
 
   virtual std::string getSvgGroup() const override;
 

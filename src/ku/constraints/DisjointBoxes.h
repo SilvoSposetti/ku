@@ -4,10 +4,7 @@
 
 class DisjointBoxes : public AbstractConstraint {
 public:
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
-
+  DisjointBoxes();
   virtual std::string getSvgGroup() const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;

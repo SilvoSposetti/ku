@@ -1,12 +1,9 @@
 #include "NegativeDiagonalOdd.h"
 
-ConstraintType NegativeDiagonalOdd::getType() const {
-  return ConstraintType::NEGATIVE_DIAGONAL_ODD;
-}
+#include "ConstraintUtilities.h"
 
-std::string NegativeDiagonalOdd::getDescription() const {
-  return "The negative diagonal contains only odd digits.";
-}
+NegativeDiagonalOdd::NegativeDiagonalOdd()
+    : AbstractConstraint("Negative-Diagonal-Odd", "The negative diagonal contains only odd digits.") {}
 
 std::string NegativeDiagonalOdd::getSvgGroup() const {
   const std::string zigZagLine = SvgUtilities::zigZagLine(0, 0, 1, 1);
@@ -15,7 +12,7 @@ std::string NegativeDiagonalOdd::getSvgGroup() const {
 
 bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   // The board satisfies the constraint if the negative diagonal contains only odd digits
-  const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllNegativeDiagonalIndices();
+  const std::vector<std::pair<int32_t, int32_t>> indexPairs = ConstraintUtilities::getAllNegativeDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
     if (static_cast<int>(board[pair.first][pair.second]) % 2 == 0) {
       return false;

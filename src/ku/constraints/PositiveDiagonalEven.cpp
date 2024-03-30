@@ -1,12 +1,9 @@
 #include "PositiveDiagonalEven.h"
 
-ConstraintType PositiveDiagonalEven::getType() const {
-  return ConstraintType::POSITIVE_DIAGONAL_EVEN;
-}
+#include "ConstraintUtilities.h"
 
-std::string PositiveDiagonalEven::getDescription() const {
-  return "The positive diagonal contains only even digits.";
-}
+PositiveDiagonalEven::PositiveDiagonalEven()
+    : AbstractConstraint("Positive-Diagonal-Even", "The positive diagonal contains only even digits.") {}
 
 std::string PositiveDiagonalEven::getSvgGroup() const {
   const std::string squigglyLine = SvgUtilities::squigglyLine(0, 1, 1, 0);
@@ -15,7 +12,7 @@ std::string PositiveDiagonalEven::getSvgGroup() const {
 
 bool PositiveDiagonalEven::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   // The board satisfies the constraint if the positive diagonal contains only even digits
-  const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllPositiveDiagonalIndices();
+  const std::vector<std::pair<int32_t, int32_t>> indexPairs = ConstraintUtilities::getAllPositiveDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
     if (static_cast<int>(board[pair.first][pair.second]) % 2 != 0) {
       return false;

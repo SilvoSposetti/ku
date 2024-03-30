@@ -6,10 +6,6 @@ class AntiKing : public AbstractConstraint {
 public:
   AntiKing();
 
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
-
   virtual bool isItemPrimary(int32_t columnId) const override;
 
   virtual std::string getSvgGroup() const override;

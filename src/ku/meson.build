@@ -12,6 +12,7 @@ ku_sources = files(
   'constraints/AntiKnightTorus.cpp',
   'constraints/Asterisk.cpp',
   'constraints/ConstraintFactory.cpp',
+  'constraints/ConstraintUtilities.cpp',
   'constraints/DisjointBoxes.cpp',
   'constraints/HyperSudoku.cpp',
   'constraints/NegativeDiagonal.cpp',

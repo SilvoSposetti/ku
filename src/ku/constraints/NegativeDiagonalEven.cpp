@@ -1,12 +1,9 @@
 #include "NegativeDiagonalEven.h"
 
-ConstraintType NegativeDiagonalEven::getType() const {
-  return ConstraintType::NEGATIVE_DIAGONAL_EVEN;
-}
+#include "ConstraintUtilities.h"
 
-std::string NegativeDiagonalEven::getDescription() const {
-  return "The negative diagonal contains only even digits.";
-}
+NegativeDiagonalEven::NegativeDiagonalEven()
+    : AbstractConstraint("Negative-Diagonal-Even", "The negative diagonal contains only even digits.") {}
 
 std::string NegativeDiagonalEven::getSvgGroup() const {
   const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
@@ -15,7 +12,7 @@ std::string NegativeDiagonalEven::getSvgGroup() const {
 
 bool NegativeDiagonalEven::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
   // The board satisfies the constraint if the negative diagonal contains only even digits
-  const std::vector<std::pair<int32_t, int32_t>> indexPairs = getAllNegativeDiagonalIndices();
+  const std::vector<std::pair<int32_t, int32_t>> indexPairs = ConstraintUtilities::getAllNegativeDiagonalIndices();
   for (const std::pair<int32_t, int32_t>& pair : indexPairs) {
     if (static_cast<int>(board[pair.first][pair.second]) % 2 != 0) {
       return false;

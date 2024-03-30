@@ -6,10 +6,6 @@ class HyperSudoku : public AbstractConstraint {
 public:
   HyperSudoku();
 
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
-
   virtual std::string getSvgGroup() const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
@@ -30,5 +26,5 @@ private:
 private:
   /** The four boxes' top-left corner cell indices
    */
-  std::vector<std::pair<int32_t, int32_t>> topLeftCorners;
+  const std::vector<std::pair<int32_t, int32_t>> topLeftCorners;
 };

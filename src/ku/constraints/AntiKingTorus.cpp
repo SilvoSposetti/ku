@@ -3,17 +3,11 @@
 #include <algorithm>
 
 AntiKingTorus::AntiKingTorus()
-    : pattern({{1, -1}, {1, 0}, {1, 1}, {0, 1}})
+    : AbstractConstraint("Anti-King-Torus",
+                         "A digit cannot appear at a king's move away from itself. This restriction also wraps around "
+                         "the edges of the board.")
+    , pattern({{1, -1}, {1, 0}, {1, 1}, {0, 1}})
     , dashVector(createDashVector(pattern, true)) {}
-
-ConstraintType AntiKingTorus::getType() const {
-  return ConstraintType::ANTI_KING_TORUS;
-}
-
-std::string AntiKingTorus::getDescription() const {
-  return "A digit cannot appear at a king's move away from itself. This restriction also wraps around the edges of the "
-         "board.";
-}
 
 std::string AntiKingTorus::getSvgGroup() const {
   std::string lines;

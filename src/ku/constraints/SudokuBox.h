@@ -4,11 +4,7 @@
 
 class SudokuBox : public AbstractConstraint {
 public:
-  SudokuBox() = default;
-
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
+  SudokuBox();
 
   virtual std::string getSvgGroup() const override;
 

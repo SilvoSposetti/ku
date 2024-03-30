@@ -1,12 +1,9 @@
 #include "DisjointBoxes.h"
 
-ConstraintType DisjointBoxes::getType() const {
-  return ConstraintType::DISJOINT_BOXES;
-}
-
-std::string DisjointBoxes::getDescription() const {
-
-  return "Cells in the same relative position within all 3x3 boxes contain all the digits from 1 to 9 exactly once.";
+DisjointBoxes::DisjointBoxes()
+    : AbstractConstraint(
+          "Disjoint-Boxes",
+          "Cells in the same relative position within all 3x3 boxes contain all the digits from 1 to 9 exactly once.") {
 }
 
 std::string DisjointBoxes::getSvgGroup() const {

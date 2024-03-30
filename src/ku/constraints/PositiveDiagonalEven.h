@@ -1,14 +1,10 @@
 #pragma once
 
-#include "PositiveDiagonal.h"
+#include "AbstractConstraint.h"
 
-class PositiveDiagonalEven : public PositiveDiagonal {
+class PositiveDiagonalEven : public AbstractConstraint {
 public:
-  PositiveDiagonalEven() = default;
-
-  virtual ConstraintType getType() const override;
-
-  virtual std::string getDescription() const override;
+  PositiveDiagonalEven();
 
   virtual std::string getSvgGroup() const override;
 

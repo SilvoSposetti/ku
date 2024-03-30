@@ -14,7 +14,7 @@ class AbstractConstraint {
 public:
   /** Default constructor
    */
-  AbstractConstraint() = default;
+  AbstractConstraint(const std::string& name, const std::string& description);
 
   /** Virtual default destructor, otherwise child classes' destructors are not called
    */
@@ -23,17 +23,12 @@ public:
   /** Defines the name of the constraint
    * @return The name
    */
-  std::string getName() const;
-
-  /** Defines the type of this constraint
-   * @return The enum defining this constraint
-   */
-  virtual ConstraintType getType() const = 0;
+  const std::string& getName() const;
 
   /** Defines the description of the constraint
    * @return The description
    */
-  virtual std::string getDescription() const = 0;
+  const std::string& getDescription() const;
 
   /** Retrieves a list of all the item IDs that are non-zero, for each possible row in the Algortithm X's matrix
    * @return A list in canonical ordering of all the rows, of all the non-zero item IDs
@@ -85,4 +80,8 @@ protected:
    */
   static std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
   createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus);
+
+private:
+  const std::string name;
+  const std::string description;
 };

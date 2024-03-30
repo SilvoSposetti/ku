@@ -1,7 +1,15 @@
 #include "AbstractConstraint.h"
 
-std::string AbstractConstraint::getName() const {
-  return Constraint::getConstraintNameString(getType());
+AbstractConstraint::AbstractConstraint(const std::string& name, const std::string& description)
+    : name(name)
+    , description(description) {}
+
+const std::string& AbstractConstraint::getName() const {
+  return name;
+}
+
+const std::string& AbstractConstraint::getDescription() const {
+  return description;
 }
 
 bool AbstractConstraint::isItemPrimary(int32_t itemId) const {

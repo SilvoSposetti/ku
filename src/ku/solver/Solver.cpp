@@ -20,10 +20,7 @@ Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& c
   if (!created) {
     std::string constraintsNames;
     for (const auto& constraint : constraints) {
-      if (constraint->getType() != ConstraintType::SUDOKU_CELL) {
-
-        constraintsNames += constraint->getName() + ", ";
-      }
+      constraintsNames += constraint->getName() + ", ";
     }
     if (!constraintsNames.empty()) {
       constraintsNames = constraintsNames.substr(0, constraintsNames.size() - 2);
