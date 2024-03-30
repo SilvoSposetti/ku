@@ -1,7 +1,8 @@
 #include "SudokuRow.h"
 
 SudokuRow::SudokuRow()
-    : AbstractConstraint("Sudoku-Row", "9x1 rows contain all the digits from 1 to 9 exactly once.") {}
+    : AbstractConstraint(
+          ConstraintType::SUDOKU_ROW, "Sudoku-Row", "9x1 rows contain all the digits from 1 to 9 exactly once.") {}
 
 std::string SudokuRow::getSvgGroup() const {
   std::string horizontalLines;

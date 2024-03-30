@@ -12,13 +12,21 @@
  */
 class AbstractConstraint {
 public:
-  /** Default constructor
+  /** Constructor
+   * @param type The type of constraint
+   * @param name The name of the constraint
+   * @param description The description of the constraint
    */
-  AbstractConstraint(const std::string& name, const std::string& description);
+  AbstractConstraint(ConstraintType type, const std::string& name, const std::string& description);
 
   /** Virtual default destructor, otherwise child classes' destructors are not called
    */
   virtual ~AbstractConstraint() = default;
+
+  /** Defines the type of the constraint
+   * @return The type
+   */
+  const std::string& getType() const;
 
   /** Defines the name of the constraint
    * @return The name
@@ -82,6 +90,13 @@ protected:
   createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus);
 
 private:
+  /** The type of constraint
+   */
+  const ConstraintType type;
+  /** The name of the constraint
+   */
   const std::string name;
+  /** The description of the constraint
+   */
   const std::string description;
 };

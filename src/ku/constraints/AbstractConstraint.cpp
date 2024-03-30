@@ -1,7 +1,8 @@
 #include "AbstractConstraint.h"
 
-AbstractConstraint::AbstractConstraint(const std::string& name, const std::string& description)
-    : name(name)
+AbstractConstraint::AbstractConstraint(ConstraintType type, const std::string& name, const std::string& description)
+    : type(type)
+    , name(name)
     , description(description) {}
 
 const std::string& AbstractConstraint::getName() const {

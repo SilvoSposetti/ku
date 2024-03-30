@@ -3,7 +3,8 @@
 #include "ConstraintUtilities.h"
 
 PositiveDiagonal::PositiveDiagonal()
-    : AbstractConstraint("Positive-Diagonal",
+    : AbstractConstraint(ConstraintType::POSITIVE_DIAGONAL,
+                         "Positive-Diagonal",
                          "The positive diagonal contains all the digits from " + std::to_string(Sudo::MIN_DIGIT) +
                              " to " + std::to_string(Sudo::MAX_DIGIT) + " exactly once.") {}
 

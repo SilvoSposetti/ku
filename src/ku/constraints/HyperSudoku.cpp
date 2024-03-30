@@ -1,7 +1,9 @@
 #include "HyperSudoku.h"
 
 HyperSudoku::HyperSudoku()
-    : AbstractConstraint("Hyper-Sudoku", "Four 3x3 boxes contain all the digits from 1 to 9 exactly once.")
+    : AbstractConstraint(ConstraintType::HYPER_SUDOKU,
+                         "Hyper-Sudoku",
+                         "Four 3x3 boxes contain all the digits from 1 to 9 exactly once.")
     , topLeftCorners({{1, 1}, {5, 1}, {1, 5}, {5, 5}}) {}
 
 std::string HyperSudoku::getSvgGroup() const {

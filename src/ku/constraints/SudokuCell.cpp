@@ -1,7 +1,8 @@
 #include "SudokuCell.h"
 
 SudokuCell::SudokuCell()
-    : AbstractConstraint("Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}
+    : AbstractConstraint(
+          ConstraintType::SUDOKU_CELL, "Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}
 
 std::string SudokuCell::getSvgGroup() const {
   // Black border

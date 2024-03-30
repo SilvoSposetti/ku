@@ -3,7 +3,9 @@
 #include "ConstraintUtilities.h"
 
 PositiveDiagonalOdd::PositiveDiagonalOdd()
-    : AbstractConstraint("Positive-Diagonal-Odd", "The positive diagonal contains only odd digits.") {}
+    : AbstractConstraint(ConstraintType::POSITIVE_DIAGONAL_ODD,
+                         "Positive-Diagonal-Odd",
+                         "The positive diagonal contains only odd digits.") {}
 
 std::string PositiveDiagonalOdd::getSvgGroup() const {
   const std::string zigZagLine = SvgUtilities::zigZagLine(0, 1, 1, 0);

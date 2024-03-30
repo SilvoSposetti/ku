@@ -3,7 +3,9 @@
 #include "ConstraintUtilities.h"
 
 NegativeDiagonalEven::NegativeDiagonalEven()
-    : AbstractConstraint("Negative-Diagonal-Even", "The negative diagonal contains only even digits.") {}
+    : AbstractConstraint(ConstraintType::NEGATIVE_DIAGONAL_EVEN,
+                         "Negative-Diagonal-Even",
+                         "The negative diagonal contains only even digits.") {}
 
 std::string NegativeDiagonalEven::getSvgGroup() const {
   const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);

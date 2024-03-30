@@ -1,7 +1,7 @@
 #include "AntiKing.h"
 
 AntiKing::AntiKing()
-    : AbstractConstraint("Anti-King", "A digit cannot appear at a king's move away from itself.")
+    : AbstractConstraint(ConstraintType::ANTI_KING, "Anti-King", "A digit cannot appear at a king's move away from itself.")
     , dashVector(createDashVector({{1, -1}, {1, 0}, {1, 1}, {0, 1}}, false)) {}
 
 std::string AntiKing::getSvgGroup() const {

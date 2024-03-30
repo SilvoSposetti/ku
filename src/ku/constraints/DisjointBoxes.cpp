@@ -2,6 +2,7 @@
 
 DisjointBoxes::DisjointBoxes()
     : AbstractConstraint(
+          ConstraintType::DISJOINT_BOXES,
           "Disjoint-Boxes",
           "Cells in the same relative position within all 3x3 boxes contain all the digits from 1 to 9 exactly once.") {
 }

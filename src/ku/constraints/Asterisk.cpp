@@ -1,7 +1,8 @@
 #include "Asterisk.h"
 
 Asterisk::Asterisk()
-    : AbstractConstraint("Asterisk",
+    : AbstractConstraint(ConstraintType::ASTERISK,
+                         "Asterisk",
                          "The 9 cells forming an asterisk contain all the digits from 1 to 9 exactly once.") {
   cells = {{1, 4}, {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
 }

@@ -1,7 +1,8 @@
 #include "SudokuBox.h"
 
 SudokuBox::SudokuBox()
-    : AbstractConstraint("Sudoku-Box", "3x3 boxes contain all the digits from 1 to 9 exactly once.") {}
+    : AbstractConstraint(
+          ConstraintType::SUDOKU_BOX, "Sudoku-Box", "3x3 boxes contain all the digits from 1 to 9 exactly once.") {}
 
 std::string SudokuBox::getSvgGroup() const {
   constexpr double oneThird = 1.0 / 3.0;

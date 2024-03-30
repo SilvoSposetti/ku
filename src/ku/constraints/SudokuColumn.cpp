@@ -1,7 +1,9 @@
 #include "SudokuColumn.h"
 
 SudokuColumn::SudokuColumn()
-    : AbstractConstraint("Sudoku-Column", "1x9 columns contain all the digits from 1 to 9 exactly once.") {}
+    : AbstractConstraint(ConstraintType::SUDOKU_COLUMN,
+                         "Sudoku-Column",
+                         "1x9 columns contain all the digits from 1 to 9 exactly once.") {}
 
 std::string SudokuColumn::getSvgGroup() const {
   std::string verticalLines;

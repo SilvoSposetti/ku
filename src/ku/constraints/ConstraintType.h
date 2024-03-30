@@ -6,7 +6,7 @@
 
 enum class ConstraintType : uint64_t {
   NONE = 0,
-  SUDOKU_CELL = 1 << 0, // Activated by default when creating new Sudoku, do not need to specify it
+  SUDOKU_CELL = 1 << 0,
   SUDOKU_ROW = 1 << 1,
   SUDOKU_COLUMN = 1 << 2,
   SUDOKU_BOX = 1 << 3,
@@ -41,44 +41,4 @@ inline ConstraintType getSudokuConstraints() {
          ConstraintType::SUDOKU_BOX;
 }
 
-static inline std::string getConstraintNameString(ConstraintType type) {
-  switch (type) {
-  case ConstraintType::SUDOKU_CELL:
-    return "Sudoku-Cell";
-  case ConstraintType::SUDOKU_ROW:
-    return "Sudoku-Row";
-  case ConstraintType::SUDOKU_COLUMN:
-    return "Sudoku-Column";
-  case ConstraintType::SUDOKU_BOX:
-    return "Sudoku-Box";
-  case ConstraintType::POSITIVE_DIAGONAL:
-    return "Positive-Diagonal";
-  case ConstraintType::POSITIVE_DIAGONAL_EVEN:
-    return "Positive-Diagonal-Even";
-  case ConstraintType::POSITIVE_DIAGONAL_ODD:
-    return "Positive-Diagonal-Odd";
-  case ConstraintType::NEGATIVE_DIAGONAL:
-    return "Negative-Diagonal";
-  case ConstraintType::NEGATIVE_DIAGONAL_EVEN:
-    return "Negative-Diagonal-Even";
-  case ConstraintType::NEGATIVE_DIAGONAL_ODD:
-    return "Negative-Diagonal-Odd";
-  case ConstraintType::ANTI_KING:
-    return "Anti-King";
-  case ConstraintType::ANTI_KING_TORUS:
-    return "Anti-King-Torus";
-  case ConstraintType::ANTI_KNIGHT:
-    return "Anti-Knight";
-  case ConstraintType::ANTI_KNIGHT_TORUS:
-    return "Anti-Knight-Torus";
-  case ConstraintType::DISJOINT_BOXES:
-    return "Disjoint-Boxes";
-  case ConstraintType::ASTERISK:
-    return "Asterisk";
-  case ConstraintType::HYPER_SUDOKU:
-    return "Hyper-Sudoku";
-  default:
-    return "Unknown Constraint";
-  }
-}
 } // namespace Constraint

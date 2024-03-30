@@ -3,7 +3,8 @@
 #include <algorithm>
 
 AntiKnightTorus::AntiKnightTorus()
-    : AbstractConstraint("Anti-Knight-Torus",
+    : AbstractConstraint(ConstraintType::ANTI_KNIGHT_TORUS,
+                         "Anti-Knight-Torus",
                          "A digit cannot appear at a knight's move away from itself. This restriction also wraps "
                          "around the edges of the board.")
     , pattern({{2, -1}, {2, 1}, {1, 2}, {-1, 2}})
