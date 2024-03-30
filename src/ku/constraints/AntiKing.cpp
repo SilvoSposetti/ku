@@ -1,8 +1,11 @@
 #include "AntiKing.h"
 
+#include "ConstraintUtilities.h"
+
 AntiKing::AntiKing()
-    : AbstractConstraint(ConstraintType::ANTI_KING, "Anti-King", "A digit cannot appear at a king's move away from itself.")
-    , dashVector(createDashVector({{1, -1}, {1, 0}, {1, 1}, {0, 1}}, false)) {}
+    : AbstractConstraint(
+          ConstraintType::ANTI_KING, "Anti-King", "A digit cannot appear at a king's move away from itself.")
+    , dashVector(ConstraintUtilities::createDashVector({{1, -1}, {1, 0}, {1, 1}, {0, 1}}, false)) {}
 
 std::string AntiKing::getSvgGroup() const {
   std::string lines;

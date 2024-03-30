@@ -1,5 +1,7 @@
 #include "AntiKnightTorus.h"
 
+#include "ConstraintUtilities.h"
+
 #include <algorithm>
 
 AntiKnightTorus::AntiKnightTorus()
@@ -8,7 +10,7 @@ AntiKnightTorus::AntiKnightTorus()
                          "A digit cannot appear at a knight's move away from itself. This restriction also wraps "
                          "around the edges of the board.")
     , pattern({{2, -1}, {2, 1}, {1, 2}, {-1, 2}})
-    , dashVector(createDashVector(pattern, true)) {}
+    , dashVector(ConstraintUtilities::createDashVector(pattern, true)) {}
 
 std::string AntiKnightTorus::getSvgGroup() const {
   std::string lines;

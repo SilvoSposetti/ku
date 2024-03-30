@@ -38,10 +38,10 @@ public:
    */
   const std::string& getDescription() const;
 
-  /** Retrieves a list of all the item IDs that are non-zero, for each possible row in the Algortithm X's matrix
+  /** Retrieves a list of all the item IDs that are non-zero, for each possible row in the Exact cover matrix
    * @return A list in canonical ordering of all the rows, of all the non-zero item IDs
    */
-  std::vector<std::vector<int32_t>> getDlxConstraints() const;
+  std::vector<std::vector<int32_t>> getItems() const;
 
   /** Defines how the constraint should be drawn on the board
    * @return The svg group that will be drawn
@@ -80,14 +80,7 @@ protected:
    */
   virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const = 0;
 
-  /** Computes and returns the set of point-point pairs that can be constructed for all cells in a grid according to the
-   input pattern. The pattern describes single-cell pairs that need to be built with the central cell (0, 0).
-   * @param pattern The pattern for the pairs
-   * @param doTorus Whether the pattern should wrap around the board
-   * @return The fully-constructed set of all cell pairs according to the pattern, without duplicates
-   */
-  static std::vector<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>>
-  createDashVector(std::set<std::pair<int32_t, int32_t>> pattern, bool doTorus);
+
 
 private:
   /** The type of constraint

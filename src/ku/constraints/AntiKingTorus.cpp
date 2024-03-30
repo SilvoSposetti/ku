@@ -1,5 +1,7 @@
 #include "AntiKingTorus.h"
 
+#include "ConstraintUtilities.h"
+
 #include <algorithm>
 
 AntiKingTorus::AntiKingTorus()
@@ -8,7 +10,7 @@ AntiKingTorus::AntiKingTorus()
                          "A digit cannot appear at a king's move away from itself. This restriction also wraps around "
                          "the edges of the board.")
     , pattern({{1, -1}, {1, 0}, {1, 1}, {0, 1}})
-    , dashVector(createDashVector(pattern, true)) {}
+    , dashVector(ConstraintUtilities::createDashVector(pattern, true)) {}
 
 std::string AntiKingTorus::getSvgGroup() const {
   std::string lines;

@@ -128,7 +128,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
   std::vector<std::vector<std::vector<int32_t>>> constraintsCache{constraints.size()};
   int32_t constraintCounter = 0;
   for (const auto& constraint : constraints) {
-    constraintsCache[constraintCounter] = constraint->getDlxConstraints();
+    constraintsCache[constraintCounter] = constraint->getItems();
     constraintCounter++;
   }
 
@@ -150,7 +150,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
     const Sudo::Digit actualDigit = board[boardI][boardJ];
     if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
       int32_t matrixColumnBase = 0;
-      for (int32_t constraintIndex = 0; constraintIndex < constraintsCache.size(); constraintIndex++) {
+      for (size_t constraintIndex = 0; constraintIndex < constraintsCache.size(); constraintIndex++) {
         const std::vector<int>& currentCache = constraintsCache[constraintIndex][optionId];
         for (const auto& itemId : currentCache) {
           const int matrixColumnId = matrixColumnBase + itemId;
