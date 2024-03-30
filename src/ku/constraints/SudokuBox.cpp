@@ -68,13 +68,13 @@ std::vector<std::vector<std::pair<int32_t, int32_t>>> SudokuBox::getBoxIndices()
   return allBoxIndexPairs;
 }
 
-int32_t SudokuBox::getDlxConstraintColumnsAmount() const {
+int32_t SudokuBox::getItemsAmount() const {
   return 9 * 9; // 9(boxes), 9(possible digits in each box)
 }
 
-bool SudokuBox::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuBox::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
   // columnId encodes the (box id, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(itemId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
   const int32_t boxId = unpacked.first;
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
 

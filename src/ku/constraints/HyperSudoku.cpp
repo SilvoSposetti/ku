@@ -46,7 +46,7 @@ bool HyperSudoku::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) co
   return true;
 }
 
-int32_t HyperSudoku::getDlxConstraintColumnsAmount() const {
+int32_t HyperSudoku::getItemsAmount() const {
   return 4 * Sudo::MAX_DIGIT; // 4 boxes, 9 possible digits for each box
 }
 
@@ -58,9 +58,9 @@ bool HyperSudoku::isCellInBox(int32_t rowIndex, int32_t columnIndex, int32_t box
   return (i <= rowIndex && rowIndex < (i + 3)) && (j <= columnIndex && columnIndex < (j + 3));
 }
 
-bool HyperSudoku::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
-  // columnId encodes the (box id, possible digit) pair
-  const auto [boxId, possibleDigitEncoded] = IdPacking::unpackId(columnId, 4, Sudo::MAX_DIGIT);
+bool HyperSudoku::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const {
+  // itemId encodes the (box id, possible digit) pair
+  const auto [boxId, possibleDigitEncoded] = IdPacking::unpackId(itemId, 4, Sudo::MAX_DIGIT);
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(possibleDigitEncoded + 1);
 
   return isCellInBox(i, j, boxId) && possibleDigit == digit;

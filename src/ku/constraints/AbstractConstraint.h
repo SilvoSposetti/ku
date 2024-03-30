@@ -30,15 +30,15 @@ public:
    */
   virtual ConstraintType getType() const = 0;
 
-  /** Retrieves a list of all the columnIds that are non-zero, for each possible row in the Algortithm X's matrix
-   * @return A list in canonical ordering of all the rows, of all the non-zero columnIds
-   */
-  std::vector<std::vector<int32_t>> getDlxConstraints() const;
-
   /** Defines the description of the constraint
    * @return The description
    */
   virtual std::string getDescription() const = 0;
+
+  /** Retrieves a list of all the item IDs that are non-zero, for each possible row in the Algortithm X's matrix
+   * @return A list in canonical ordering of all the rows, of all the non-zero item IDs
+   */
+  std::vector<std::vector<int32_t>> getDlxConstraints() const;
 
   /** Defines how the constraint should be drawn on the board
    * @return The svg group that will be drawn
@@ -51,31 +51,31 @@ public:
    */
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const = 0;
 
-  /** Defines the amount of columns that this constraint prescribes for DLX
-   * @return The amount of columns required
+  /** Defines the amount of items that this constraint prescribes for the Exact Cover problem
+   * @return The amount of items
    */
-  virtual int32_t getDlxConstraintColumnsAmount() const = 0;
+  virtual int32_t getItemsAmount() const = 0;
 
-  /** Defines the type of column according to its ID
-   * @param columnId The ID of the column
-   * @return Whether the column is secondary
+  /** Defines the type of item
+   * @param itemId The ID of the item
+   * @return Whether the item is secondary
    */
-  virtual bool isColumnPrimary(int32_t columnId) const;
+  virtual bool isItemPrimary(int32_t itemId) const;
 
-  /** Computes the result using getDlxConstraintColumnsAmount() and isColumnPrimary()
-   * @return Whether the constraint specifies only secondary columns
+  /** Computes whether the constraint specifies only secondary items
+   * @return Whether the constraint specifies only secondary itmes
    */
-  bool isSecondaryColumnsOnly() const;
+  bool isSecondaryItemsOnly() const;
 
 protected:
-  /** Defines which cells of a column should have a 1 (true) or a 0 (false) for DLX matrix creation
+  /** Defines which cells of a item should be set or not for the Algorithm X's matrix
    * @param digit The digit considered
    * @param i The board row considered
    * @param j The column row considered
-   * @param columnId The DLX-matrix column considered
-   * @return Whether the specific cell defined by the inputs should be a 0 or a 1 for DLX
+   * @param itemId The item ID
+   * @return Whether the cell defined by the inputs should be set Algorithm X's matrix
    */
-  virtual bool getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const = 0;
+  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const = 0;
 
   /** Computes and returns the set of point-point pairs that can be constructed for all cells in a grid according to the
    input pattern. The pattern describes single-cell pairs that need to be built with the central cell (0, 0).

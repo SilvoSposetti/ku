@@ -69,17 +69,17 @@ bool AntiKnightTorus::satisfy(const std::vector<std::vector<Sudo::Digit>>& board
   return true;
 }
 
-int32_t AntiKnightTorus::getDlxConstraintColumnsAmount() const {
+int32_t AntiKnightTorus::getItemsAmount() const {
   int32_t amount = dashVector.size();
   return amount * Sudo::MAX_DIGIT;
 }
 
-bool AntiKnightTorus::isColumnPrimary(int32_t columnId) const {
+bool AntiKnightTorus::isItemPrimary(int32_t itemId) const {
   // All columns are secondary
   return false;
 }
 
-bool AntiKnightTorus::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
+bool AntiKnightTorus::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), Sudo::MAX_DIGIT);
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;

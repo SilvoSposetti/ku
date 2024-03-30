@@ -14,9 +14,9 @@ public:
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 
-  virtual int32_t getDlxConstraintColumnsAmount() const override;
+  virtual int32_t getItemsAmount() const override;
 
-  virtual bool getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const override;
+  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const override;
 
 private:
   /** Computes the "box" index of a cell, given its rowIndex and columnIndex in the grid

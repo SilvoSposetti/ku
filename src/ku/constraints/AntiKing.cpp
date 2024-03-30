@@ -45,18 +45,18 @@ bool AntiKing::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const
   return true;
 }
 
-int32_t AntiKing::getDlxConstraintColumnsAmount() const {
+int32_t AntiKing::getItemsAmount() const {
   int32_t amount = dashVector.size();
   return amount * Sudo::MAX_DIGIT;
 }
 
-bool AntiKing::isColumnPrimary(int32_t columnId) const {
-  // All columns are secondary
+bool AntiKing::isItemPrimary(int32_t itemId) const {
+  // All items are secondary
   return false;
 }
 
-bool AntiKing::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
-  const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), Sudo::MAX_DIGIT);
+bool AntiKing::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const {
+  const auto [dashId, digitIndex] = IdPacking::unpackId(itemId, dashVector.size(), Sudo::MAX_DIGIT);
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;
 

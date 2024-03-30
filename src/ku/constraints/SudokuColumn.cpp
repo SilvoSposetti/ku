@@ -36,14 +36,14 @@ bool SudokuColumn::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) c
   return true;
 }
 
-int32_t SudokuColumn::getDlxConstraintColumnsAmount() const {
+int32_t SudokuColumn::getItemsAmount() const {
   return Sudo::MAX_DIGIT * Sudo::MAX_DIGIT; // 9(columns) * 9(possible digits in each column)
 }
 
-bool SudokuColumn::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool SudokuColumn::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
 
   // columnId encodes the (column, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(itemId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
   const int32_t column = unpacked.first;
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
 

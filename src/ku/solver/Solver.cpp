@@ -65,7 +65,7 @@ Solver::getExactCoverMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
 bool Solver::isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   bool isSecondaryColumnsOnly = true;
   for (const auto& constraint : constraints) {
-    isSecondaryColumnsOnly &= constraint->isSecondaryColumnsOnly();
+    isSecondaryColumnsOnly &= constraint->isSecondaryItemsOnly();
   }
   return isSecondaryColumnsOnly;
 }
@@ -124,7 +124,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
 
   int32_t totalColumns = 0;
   for (const auto& constraint : constraints) {
-    totalColumns += constraint->getDlxConstraintColumnsAmount();
+    totalColumns += constraint->getItemsAmount();
   }
 
   // Set up constraints cache
@@ -157,7 +157,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
         const std::vector<int>& currentCache = constraintsCache[constraintIndex][optionId];
         for (const auto& itemId : currentCache) {
           const int matrixColumnId = matrixColumnBase + itemId;
-          if (!constraints[constraintIndex]->isColumnPrimary(itemId)) {
+          if (!constraints[constraintIndex]->isItemPrimary(itemId)) {
             secondaryColumns.insert(matrixColumnId);
           }
           // Set cell
@@ -169,7 +169,7 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
             setMatrixRowData++;
           }
         }
-        matrixColumnBase += constraints[constraintIndex]->getDlxConstraintColumnsAmount();
+        matrixColumnBase += constraints[constraintIndex]->getItemsAmount();
       }
       matrixRowCounter++;
     }

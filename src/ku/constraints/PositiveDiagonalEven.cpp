@@ -24,14 +24,14 @@ bool PositiveDiagonalEven::satisfy(const std::vector<std::vector<Sudo::Digit>>& 
   return true;
 }
 
-int32_t PositiveDiagonalEven::getDlxConstraintColumnsAmount() const {
+int32_t PositiveDiagonalEven::getItemsAmount() const {
   return Sudo::MAX_DIGIT; // There are 9 cells in the positive diagonal
 }
 
-bool PositiveDiagonalEven::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool PositiveDiagonalEven::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
   // columnId maps to a cell in the diagonal
-  const int32_t row = columnId;
-  const int32_t column = Sudo::MAX_INDEX - columnId;
+  const int32_t row = itemId;
+  const int32_t column = Sudo::MAX_INDEX - itemId;
   const bool isEvenDigit = (static_cast<int>(digit)) % 2 == 0;
   return i == row && j == column && isEvenDigit;
 }

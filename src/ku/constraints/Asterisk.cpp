@@ -40,11 +40,11 @@ bool Asterisk::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const
   return true;
 }
 
-int32_t Asterisk::getDlxConstraintColumnsAmount() const {
+int32_t Asterisk::getItemsAmount() const {
   return Sudo::MAX_DIGIT;
 }
 
-bool Asterisk::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
+bool Asterisk::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [cellId, digitIndex] = IdPacking::unpackId(columnId, cells.size(), Sudo::MAX_DIGIT);
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
   const bool isSame = possibleDigit == digit;

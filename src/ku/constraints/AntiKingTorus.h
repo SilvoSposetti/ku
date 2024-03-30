@@ -10,15 +10,15 @@ public:
 
   virtual std::string getDescription() const override;
 
-  virtual bool isColumnPrimary(int32_t columnId) const override;
+  virtual bool isItemPrimary(int32_t itemId) const override;
 
   virtual std::string getSvgGroup() const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 
-  virtual int32_t getDlxConstraintColumnsAmount() const override;
+  virtual int32_t getItemsAmount() const override;
 
-  virtual bool getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const override;
+  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const override;
 
 private:
   /** The pattern for the dashVector, couples the middle cell (0, 0) with those defined by the pattern

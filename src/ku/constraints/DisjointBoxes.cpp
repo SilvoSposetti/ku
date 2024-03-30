@@ -49,13 +49,13 @@ bool DisjointBoxes::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) 
   return true;
 }
 
-int32_t DisjointBoxes::getDlxConstraintColumnsAmount() const {
+int32_t DisjointBoxes::getItemsAmount() const {
   return 9 * Sudo::MAX_DIGIT; // 9(places within each box), 9(possible digits in each box)
 }
 
-bool DisjointBoxes::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
-  // columnId encodes the (cell ID within a box, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(columnId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+bool DisjointBoxes::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const {
+  // itemId encodes the (cell ID within a box, possible digit) pair
+  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(itemId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
   const int32_t cellIdWithinBox = unpacked.first;
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
 

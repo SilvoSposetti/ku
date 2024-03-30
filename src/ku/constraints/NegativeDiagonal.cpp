@@ -31,14 +31,14 @@ bool NegativeDiagonal::satisfy(const std::vector<std::vector<Sudo::Digit>>& boar
   return true;
 }
 
-int32_t NegativeDiagonal::getDlxConstraintColumnsAmount() const {
+int32_t NegativeDiagonal::getItemsAmount() const {
   return Sudo::MAX_DIGIT;
 }
 
-bool NegativeDiagonal::getDlxConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t columnId) const {
+bool NegativeDiagonal::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
 
-  // columnId maps directly to a cell on the positive diagonal
-  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(columnId + 1);
+  // itemId maps directly to a cell on the positive diagonal
+  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(itemId + 1);
   return isOnNegativeDiagonal(i, j) && possibleDigit == digit;
 }
 
