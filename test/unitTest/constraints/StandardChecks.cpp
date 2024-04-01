@@ -69,7 +69,6 @@ TEST_SUITE("Constraints: Standard Checks") {
         });
       }));
     }
-    std::cout << "ASDASDASD" << std::endl;
   }
 
   // Invocations
