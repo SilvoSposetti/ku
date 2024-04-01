@@ -66,16 +66,6 @@ bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) 
   return true;
 }
 
-int32_t AntiKingTorus::getItemsAmount() const {
-  int32_t amount = dashVector.size();
-  return amount * Sudo::MAX_DIGIT;
-}
-
-bool AntiKingTorus::isItemPrimary(int32_t itemId) const {
-  // All columns are secondary
-  return false;
-}
-
 bool AntiKingTorus::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t columnId) const {
   const auto [dashId, digitIndex] = IdPacking::unpackId(columnId, dashVector.size(), Sudo::MAX_DIGIT);
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(digitIndex + 1);
@@ -87,4 +77,31 @@ bool AntiKingTorus::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, i
     return isSame;
   }
   return false;
+}
+
+int32_t AntiKingTorus::getPrimaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> AntiKingTorus::getPrimaryItems() const {
+  return {};
+}
+
+int32_t AntiKingTorus::getSecondaryItemsAmount() const {
+  return dashVector.size() * Sudo::MAX_DIGIT;
+}
+
+std::vector<std::vector<int32_t>> AntiKingTorus::getSecondaryItems() const {
+  std::vector<std::vector<int32_t>> secondaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getSecondaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    secondaryItems.push_back(items);
+  }
+  return secondaryItems;
 }

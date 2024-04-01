@@ -24,10 +24,6 @@ bool SudokuCell::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) con
   return true;
 }
 
-int32_t SudokuCell::getItemsAmount() const {
-  return Sudo::TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
-}
-
 bool SudokuCell::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
 
   // columnId encodes the location (row, column) pair of a digit on the board
@@ -36,4 +32,31 @@ bool SudokuCell::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, cons
   const int32_t column = unpacked.second;
 
   return row == i && column == j;
+}
+
+int32_t SudokuCell::getPrimaryItemsAmount() const {
+  return Sudo::TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
+}
+
+std::vector<std::vector<int32_t>> SudokuCell::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t SudokuCell::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> SudokuCell::getSecondaryItems() const {
+  return {};
 }

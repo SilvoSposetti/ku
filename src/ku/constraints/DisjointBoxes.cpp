@@ -47,10 +47,6 @@ bool DisjointBoxes::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) 
   return true;
 }
 
-int32_t DisjointBoxes::getItemsAmount() const {
-  return 9 * Sudo::MAX_DIGIT; // 9(places within each box), 9(possible digits in each box)
-}
-
 bool DisjointBoxes::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const {
   // itemId encodes the (cell ID within a box, possible digit) pair
   const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(itemId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
@@ -61,4 +57,31 @@ bool DisjointBoxes::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, i
   const bool isOnSameBoxColumn = j % 3 == cellIdWithinBox % 3;
 
   return isOnSameBoxRow && isOnSameBoxColumn && possibleDigit == digit;
+}
+
+int32_t DisjointBoxes::getPrimaryItemsAmount() const {
+  return 9 * Sudo::MAX_DIGIT; // 9(places within each box), 9(possible digits in each box)
+}
+
+std::vector<std::vector<int32_t>> DisjointBoxes::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t DisjointBoxes::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> DisjointBoxes::getSecondaryItems() const {
+  return {};
 }

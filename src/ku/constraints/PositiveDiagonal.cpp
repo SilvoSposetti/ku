@@ -30,13 +30,36 @@ bool PositiveDiagonal::satisfy(const std::vector<std::vector<Sudo::Digit>>& boar
   return true;
 }
 
-int32_t PositiveDiagonal::getItemsAmount() const {
-  return Sudo::MAX_DIGIT;
-}
-
 bool PositiveDiagonal::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
 
   // columnId maps directly to a cell on the negative diagonal
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(itemId + 1);
   return ConstraintUtilities::isOnPositiveDiagonal(i, j) && possibleDigit == digit;
+}
+
+int32_t PositiveDiagonal::getPrimaryItemsAmount() const {
+  return Sudo::MAX_DIGIT;
+}
+
+std::vector<std::vector<int32_t>> PositiveDiagonal::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t PositiveDiagonal::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> PositiveDiagonal::getSecondaryItems() const {
+  return{};
 }

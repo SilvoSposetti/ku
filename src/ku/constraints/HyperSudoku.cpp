@@ -39,10 +39,6 @@ bool HyperSudoku::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) co
   return true;
 }
 
-int32_t HyperSudoku::getItemsAmount() const {
-  return 4 * Sudo::MAX_DIGIT; // 4 boxes, 9 possible digits for each box
-}
-
 bool HyperSudoku::isCellInBox(int32_t rowIndex, int32_t columnIndex, int32_t boxId) const {
   // // Use integer division to floor results
   // return static_cast<int32_t>(columnIndex / 3 + 3 * (rowIndex / 3));
@@ -57,4 +53,32 @@ bool HyperSudoku::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(possibleDigitEncoded + 1);
 
   return isCellInBox(i, j, boxId) && possibleDigit == digit;
+}
+
+
+int32_t HyperSudoku::getPrimaryItemsAmount() const {
+  return 4 * Sudo::MAX_DIGIT; // 4 boxes, 9 possible digits for each box
+}
+
+std::vector<std::vector<int32_t>> HyperSudoku::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t HyperSudoku::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> HyperSudoku::getSecondaryItems() const {
+  return{};
 }

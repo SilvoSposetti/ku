@@ -26,7 +26,7 @@ public:
   /** Defines the type of the constraint
    * @return The type
    */
-  const std::string& getType() const;
+  const ConstraintType getType() const;
 
   /** Defines the name of the constraint
    * @return The name
@@ -37,11 +37,6 @@ public:
    * @return The description
    */
   const std::string& getDescription() const;
-
-  /** Retrieves a list of all the item IDs that are non-zero, for each possible row in the Exact cover matrix
-   * @return A list in canonical ordering of all the rows, of all the non-zero item IDs
-   */
-  std::vector<std::vector<int32_t>> getItems() const;
 
   /** Defines how the constraint should be drawn on the board
    * @return The svg group that will be drawn
@@ -54,21 +49,25 @@ public:
    */
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const = 0;
 
-  /** Defines the amount of items that this constraint prescribes for the Exact Cover problem
-   * @return The amount of items
+  /** Defines the amount of primary items for the constraint
+   * @return The amount of primary items
    */
-  virtual int32_t getItemsAmount() const = 0;
+  virtual int32_t getPrimaryItemsAmount() const = 0;
 
-  /** Defines the type of item
-   * @param itemId The ID of the item
-   * @return Whether the item is secondary
+  /** Defines the item indices of all the primary items for options in canonical order
+   * @return The list of primary item indices
    */
-  virtual bool isItemPrimary(int32_t itemId) const;
+  virtual std::vector<std::vector<int32_t>> getPrimaryItems() const = 0;
 
-  /** Computes whether the constraint specifies only secondary items
-   * @return Whether the constraint specifies only secondary itmes
+  /** Defines the amount of secondary items for the constraint
+   * @return The amount of secondary items
    */
-  bool isSecondaryItemsOnly() const;
+  virtual int32_t getSecondaryItemsAmount() const = 0;
+
+  /** Defines the item indices of all the secondary items for options in canonical order
+   * @return The list of secondary item indices
+   */
+  virtual std::vector<std::vector<int32_t>> getSecondaryItems() const = 0;
 
 protected:
   /** Defines which cells of a item should be set or not for the Algorithm X's matrix
@@ -80,7 +79,10 @@ protected:
    */
   virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const = 0;
 
-
+  /** Helper to retrieve the canonical ordering of options
+   * @return The list of (rowIndex, columnIndex, digit).
+   */
+  static std::vector<std::tuple<int32_t, int32_t, Sudo::Digit>> optionsOrdered();
 
 private:
   /** The type of constraint

@@ -23,14 +23,37 @@ bool PositiveDiagonalOdd::satisfy(const std::vector<std::vector<Sudo::Digit>>& b
   return true;
 }
 
-int32_t PositiveDiagonalOdd::getItemsAmount() const {
-  return Sudo::MAX_DIGIT; // There are 9 cells in the positive diagonal
-}
-
 bool PositiveDiagonalOdd::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
   // columnId maps to a cell in the diagonal
   const int32_t row = itemId;
   const int32_t column = Sudo::MAX_INDEX - itemId;
   const bool isOddDigit = (static_cast<int>(digit)) % 2 != 0;
   return i == row && j == column && isOddDigit;
+}
+
+int32_t PositiveDiagonalOdd::getPrimaryItemsAmount() const {
+  return Sudo::MAX_DIGIT; // There are 9 cells in the positive diagonal
+}
+
+std::vector<std::vector<int32_t>> PositiveDiagonalOdd::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t PositiveDiagonalOdd::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> PositiveDiagonalOdd::getSecondaryItems() const {
+  return{};
 }

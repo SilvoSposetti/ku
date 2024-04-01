@@ -60,11 +60,12 @@ Solver::getExactCoverMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
 }
 
 bool Solver::isSolvable(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  bool isSecondaryColumnsOnly = true;
   for (const auto& constraint : constraints) {
-    isSecondaryColumnsOnly &= constraint->isSecondaryItemsOnly();
+    if (constraint->getPrimaryItemsAmount() > 0) {
+      return true;
+    }
   }
-  return isSecondaryColumnsOnly;
+  return false;
 }
 
 bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
@@ -121,15 +122,24 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
 
   int32_t totalColumns = 0;
   for (const auto& constraint : constraints) {
-    totalColumns += constraint->getItemsAmount();
+    totalColumns += constraint->getPrimaryItemsAmount() + constraint->getSecondaryItemsAmount();
   }
 
-  // Set up constraints cache
-  std::vector<std::vector<std::vector<int32_t>>> constraintsCache{constraints.size()};
-  int32_t constraintCounter = 0;
-  for (const auto& constraint : constraints) {
-    constraintsCache[constraintCounter] = constraint->getItems();
-    constraintCounter++;
+  // Set up constraints cache, containing first primary items amount and then the items, then secondary items amount and
+  // then the items
+  std::vector<std::pair<int32_t, std::vector<std::vector<int32_t>>>> primaryCache{constraints.size()};
+  std::vector<std::pair<int32_t, std::vector<std::vector<int32_t>>>> secondaryCache{constraints.size()};
+  {
+    int32_t constraintCounter = 0;
+    // First primary items
+    for (const auto& constraint : constraints) {
+      primaryCache[constraintCounter] =
+          std::make_pair(constraint->getPrimaryItemsAmount(), constraint->getPrimaryItems());
+      secondaryCache[constraintCounter] =
+          std::make_pair(constraint->getSecondaryItemsAmount(), constraint->getSecondaryItems());
+      ;
+      constraintCounter++;
+    }
   }
 
   // Initialize matrix with correct size
@@ -150,23 +160,41 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
     const Sudo::Digit actualDigit = board[boardI][boardJ];
     if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
       int32_t matrixColumnBase = 0;
-      for (size_t constraintIndex = 0; constraintIndex < constraintsCache.size(); constraintIndex++) {
-        const std::vector<int>& currentCache = constraintsCache[constraintIndex][optionId];
-        for (const auto& itemId : currentCache) {
-          const int matrixColumnId = matrixColumnBase + itemId;
-          if (!constraints[constraintIndex]->isItemPrimary(itemId)) {
-            secondaryColumns.insert(matrixColumnId);
-          }
-          // Set cell
-          matrix[matrixRowCounter][matrixColumnId] = true;
-          // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
-          if (setMatrixRowData < matrixRowCounter) {
-            rowsData[matrixRowCounter] =
-                IdPacking::packId(boardI, boardJ, unpackedDigit, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
-            setMatrixRowData++;
+      // First: primary items
+      for (const auto& [primaryAmount, primaryItems] : primaryCache) {
+        if (primaryAmount > 0) {
+          for (const auto& itemId : primaryItems[optionId]) {
+            const int matrixColumnId = matrixColumnBase + itemId;
+            // Set cell
+            matrix[matrixRowCounter][matrixColumnId] = true;
+            // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
+            if (setMatrixRowData < matrixRowCounter) {
+              rowsData[matrixRowCounter] =
+                  IdPacking::packId(boardI, boardJ, unpackedDigit, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+              setMatrixRowData++;
+            }
           }
         }
-        matrixColumnBase += constraints[constraintIndex]->getItemsAmount();
+        matrixColumnBase += primaryAmount;
+      }
+      // Then, secondary
+      for (const auto& [secondaryAmount, secondaryItems] : secondaryCache) {
+        if (secondaryAmount > 0) {
+
+          for (const auto& itemId : secondaryItems[optionId]) {
+            const int matrixColumnId = matrixColumnBase + itemId;
+            // Set cell
+            matrix[matrixRowCounter][matrixColumnId] = true;
+            secondaryColumns.insert(matrixColumnId);
+            // Store row data in the matrix, this is used to reduce Exact Cover to Sudoku later
+            if (setMatrixRowData < matrixRowCounter) {
+              rowsData[matrixRowCounter] =
+                  IdPacking::packId(boardI, boardJ, unpackedDigit, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
+              setMatrixRowData++;
+            }
+          }
+        }
+        matrixColumnBase += secondaryAmount;
       }
       matrixRowCounter++;
     }

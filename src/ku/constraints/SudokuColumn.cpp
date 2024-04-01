@@ -33,10 +33,6 @@ bool SudokuColumn::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) c
   return true;
 }
 
-int32_t SudokuColumn::getItemsAmount() const {
-  return Sudo::MAX_DIGIT * Sudo::MAX_DIGIT; // 9(columns) * 9(possible digits in each column)
-}
-
 bool SudokuColumn::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
 
   // columnId encodes the (column, possible digit) pair
@@ -45,4 +41,31 @@ bool SudokuColumn::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, co
   const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
 
   return column == j && possibleDigit == digit;
+}
+
+int32_t SudokuColumn::getPrimaryItemsAmount() const {
+  return Sudo::MAX_DIGIT * Sudo::MAX_DIGIT; // 9(columns) * 9(possible digits in each column)
+}
+
+std::vector<std::vector<int32_t>> SudokuColumn::getPrimaryItems() const {
+  std::vector<std::vector<int32_t>> primaryItems;
+
+  for (const auto& [i, j, digit] : optionsOrdered()) {
+    std::vector<int32_t> items;
+    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
+      if (computeConstraint(digit, i, j, itemId)) {
+        items.emplace_back(itemId);
+      }
+    }
+    primaryItems.push_back(items);
+  }
+  return primaryItems;
+}
+
+int32_t SudokuColumn::getSecondaryItemsAmount() const {
+  return 0;
+}
+
+std::vector<std::vector<int32_t>> SudokuColumn::getSecondaryItems() const {
+  return{};
 }
