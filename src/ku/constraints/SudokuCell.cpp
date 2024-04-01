@@ -32,8 +32,8 @@ std::vector<std::vector<int32_t>> SudokuCell::getPrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems(optionsOrdered().size());
 
   int32_t counter = 0;
-  for (const auto& [i, j, digit] : optionsOrdered()) {
-    primaryItems[counter] = {(i * Sudo::MAX_DIGIT + j) % Sudo::TOTAL_DIGITS};
+  for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
+    primaryItems[counter] = {(rowIndex * Sudo::MAX_DIGIT + columnIndex) % Sudo::TOTAL_DIGITS};
     counter++;
   }
   return primaryItems;

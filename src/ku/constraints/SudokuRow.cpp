@@ -32,30 +32,16 @@ bool SudokuRow::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) cons
   return true;
 }
 
-bool SudokuRow::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const {
-  // itemId encodes the (row, possible digit) pair
-  const std::pair<int32_t, int32_t> unpacked = IdPacking::unpackId(itemId, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
-  const int32_t row = unpacked.first;
-  const Sudo::Digit possibleDigit = static_cast<Sudo::Digit>(unpacked.second + 1);
-
-  return row == i && possibleDigit == digit;
-}
-
 int32_t SudokuRow::getPrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT * Sudo::MAX_DIGIT; // 9(rows) * 9(possible digits in each row)
 }
 
 std::vector<std::vector<int32_t>> SudokuRow::getPrimaryItems() const {
-  std::vector<std::vector<int32_t>> primaryItems;
-
-  for (const auto& [i, j, digit] : optionsOrdered()) {
-    std::vector<int32_t> items;
-    for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
-      if (computeConstraint(digit, i, j, itemId)) {
-        items.emplace_back(itemId);
-      }
-    }
-    primaryItems.push_back(items);
+  std::vector<std::vector<int32_t>> primaryItems(optionsOrdered().size());
+  int32_t counter = 0;
+  for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
+    primaryItems[counter] = {(rowIndex * Sudo::MAX_DIGIT + (static_cast<int32_t>(digit) - 1)) % Sudo::TOTAL_DIGITS};
+    counter++;
   }
   return primaryItems;
 }
