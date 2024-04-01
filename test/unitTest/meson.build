@@ -1,5 +1,6 @@
 unit_test_sources = files(
   'AlgorithmXTest.cpp',
+  'constraints/StandardChecks.cpp',
   'IdPackingTest.cpp',
   'main.cpp',
   'RandomGeneratorTest.cpp',
