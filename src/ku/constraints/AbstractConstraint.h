@@ -70,15 +70,6 @@ public:
   virtual std::vector<std::vector<int32_t>> getSecondaryItems() const = 0;
 
 protected:
-  /** Defines which cells of a item should be set or not for the Algorithm X's matrix
-   * @param digit The digit considered
-   * @param i The board row considered
-   * @param j The column row considered
-   * @param itemId The item ID
-   * @return Whether the cell defined by the inputs should be set Algorithm X's matrix
-   */
-  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_t itemId) const = 0;
-
   /** Helper to retrieve the canonical ordering of options
    * @return The list of (rowIndex, columnIndex, digit).
    */
