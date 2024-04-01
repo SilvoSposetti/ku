@@ -94,10 +94,10 @@ int32_t AntiKnightTorus::getSecondaryItemsAmount() const {
 std::vector<std::vector<int32_t>> AntiKnightTorus::getSecondaryItems() const {
   std::vector<std::vector<int32_t>> secondaryItems;
 
-  for (const auto& [i, j, digit] : optionsOrdered()) {
+  for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
     std::vector<int32_t> items;
     for (int32_t itemId = 0; itemId < getSecondaryItemsAmount(); itemId++) {
-      if (computeConstraint(digit, i, j, itemId)) {
+      if (computeConstraint(digit, rowIndex, columnIndex, itemId)) {
         items.emplace_back(itemId);
       }
     }

@@ -63,10 +63,10 @@ int32_t HyperSudoku::getPrimaryItemsAmount() const {
 std::vector<std::vector<int32_t>> HyperSudoku::getPrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
-  for (const auto& [i, j, digit] : optionsOrdered()) {
+  for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
     std::vector<int32_t> items;
     for (int32_t itemId = 0; itemId < getPrimaryItemsAmount(); itemId++) {
-      if (computeConstraint(digit, i, j, itemId)) {
+      if (computeConstraint(digit, rowIndex, columnIndex, itemId)) {
         items.emplace_back(itemId);
       }
     }
