@@ -30,9 +30,9 @@ jobs:
         with:
           name: lib-and-executables
           path: |
-            /bin/Release/libku.so
-            /bin/Release/ku_unit_test
-            /bin/Release/ku_performance_test
+            libku.so
+            ku_unit_test
+            ku_performance_test
           retention-days: 30
 
   test:
