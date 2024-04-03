@@ -1,9 +1,9 @@
 name: Build and Test
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
-  Explore-GitHub-Actions:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Download and cache the meson dependencies
@@ -25,13 +25,39 @@ jobs:
           cd bin/Release
           meson compile --verbose
 
+      - name: Archive lib and executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: lib-and-executables
+          path: |
+            /bin/Release/libku.so
+            /bin/Release/ku_unit_test
+            /bin/Release/ku_performance_test
+          retention-days: 30
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download lib and executables
+        uses: actions/download-artifact@v4
+        with:
+          name: lib-and-executables
+
       - name: Run unit tests
         run: |
-          ./bin/Release/ku_unit_test
+          ./ku_unit_test --reporters=xml --out=ku_unit_test_report.xml
+
+      - name: Archive unit test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            ku_unit_test_report.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: |
-            /bin/Release/ku_unit_test_report.xml
+            ku_unit_test_report.xml
