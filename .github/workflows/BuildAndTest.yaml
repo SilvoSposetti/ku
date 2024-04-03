@@ -23,26 +23,35 @@ jobs:
         run: |
           meson setup --buildtype=release bin/Release
           cd bin/Release
-          meson compile --verbose
+          meson compile --clean --verbose
 
-      - name: Archive lib and executables
+      - name: Archive ku library
         uses: actions/upload-artifact@v4
         with:
-          name: lib-and-executables
-          path: |
-            libku.so
-            ku_unit_test
-            ku_performance_test
+          name: ku-library
+          path: bin/Release/libku.so
+          retention-days: 30
+
+      - name: Archive unit test executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku-unit-test
+          path: bin/Release/ku_unit_test
           retention-days: 30
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download lib and executables
+      - name: Download library
         uses: actions/download-artifact@v4
         with:
-          name: lib-and-executables
+          name: ku-library
+          
+      - name: Download unit test executable
+        uses: actions/download-artifact@v4
+        with:
+          name: ku-unit-test
 
       - name: Run unit tests
         run: |
