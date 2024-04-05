@@ -13,7 +13,7 @@ projectVersion=`meson introspect --projectinfo ${binariesSourceDirectory} | jq -
 destinationDirectory="${destinationBaseDirectory}/ku-${projectVersion}.${commitCount}.${shortSha}"
 
 # Create directory to package everything into
-echo ${destinationDirectory}
+echo Package Destination directory: ${destinationDirectory}
 mkdir -p ${destinationDirectory}
 
 # Copy necessary files

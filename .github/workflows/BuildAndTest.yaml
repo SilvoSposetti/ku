@@ -21,10 +21,13 @@ jobs:
         run: |
           meson setup --buildtype=release bin/Release
           cd bin/Release
-          meson compile --clean --verbose
+          meson compile --verbose
 
       - name: Package files that have been built
         run: bash createPackage.sh
+
+      - name: List all the files that will be archived
+        run: ls -R out
 
       - name: Archive package
         uses: actions/upload-artifact@v4
