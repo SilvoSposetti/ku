@@ -1,4 +1,4 @@
-name: Build and Run Unit-Tests
+name: Build and Run Unit Tests
 
 on: [push, workflow_dispatch]
 
@@ -12,7 +12,7 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: python3 python3-pip python3-setuptools python3-wheel meson ninja-build
-          version: 1.1
+          version: 1.0
 
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
           path: out
 
   run-unit-tests:
-    name: Run Unit-Tests
+    name: Run Unit Tests
     needs: build
     runs-on: ubuntu-latest
 
@@ -48,9 +48,8 @@ jobs:
 
       - name: Run unit tests
         run: |
-          cd library-and-executables
           cd *ku-*
-          ./ku_unit_test --reporters=xml --out=../../ku_unit_test_report.xml
+          ./ku_unit_test --reporters=xml --out=../ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
