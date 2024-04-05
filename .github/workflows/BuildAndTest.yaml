@@ -48,7 +48,9 @@ jobs:
 
       - name: Run unit tests
         run: |
+          ls
           cd *ku-*
+          ls
           sudo ./ku_unit_test --reporters=xml --out=../ku_unit_test_report.xml
 
       - name: Archive unit test results
