@@ -47,7 +47,10 @@ jobs:
           name: library-and-executables
 
       - name: Run unit tests
-        run: ./library-and-executables/ku_unit_test --reporters=xml --out=ku_unit_test_report.xml
+        run: |
+          cd library-and-executables
+          cd *ku-*
+          ./ku_unit_test --reporters=xml --out=../../ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
