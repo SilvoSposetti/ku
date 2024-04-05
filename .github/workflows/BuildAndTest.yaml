@@ -1,72 +1,59 @@
-name: Build and Test
+name: Build and Run Unit-Tests
 
 on: [push, workflow_dispatch]
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Download and cache the meson dependencies
+      - name: Download and cache meson and its dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: python3 python3-pip python3-setuptools python3-wheel ninja-build
-          version: 1.0
-
-      - name: Install meson
-        run: |
-          pip3 install meson
+          packages: python3 python3-pip python3-setuptools python3-wheel meson ninja-build
+          version: 1.1
 
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Meson commands
+      - name: Build using Meson
         run: |
           meson setup --buildtype=release bin/Release
           cd bin/Release
           meson compile --clean --verbose
 
-      - name: Archive ku library
+      - name: Package files that have been built
+        run: bash createPackage.sh
+
+      - name: Archive package
         uses: actions/upload-artifact@v4
         with:
-          name: ku-library
-          path: bin/Release/libku.so
-          retention-days: 30
+          name: library-and-executables
+          path: out
 
-      - name: Archive unit test executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: ku-unit-test
-          path: bin/Release/ku_unit_test
-          retention-days: 30
-
-  test:
+  run-unit-tests:
+    name: Run Unit-Tests
     needs: build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Download library
+      - name: Download lib and executables
         uses: actions/download-artifact@v4
         with:
-          name: ku-library
-          
-      - name: Download unit test executable
-        uses: actions/download-artifact@v4
-        with:
-          name: ku-unit-test
+          name: library-and-executables
 
       - name: Run unit tests
-        run: |
-          ./ku_unit_test --reporters=xml --out=ku_unit_test_report.xml
+        run: ./library-and-executables/ku_unit_test --reporters=xml --out=ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: |
-            ku_unit_test_report.xml
+          path: ku_unit_test_report.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: |
-            ku_unit_test_report.xml
+          files: ku_unit_test_report.xml
