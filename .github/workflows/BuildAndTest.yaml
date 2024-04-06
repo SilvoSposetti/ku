@@ -51,7 +51,8 @@ jobs:
           ls
           cd *ku-*
           ls
-          sudo ./ku_unit_test --reporters=xml --out=../ku_unit_test_report.xml
+          chmod +x ku_unit_test
+          ./ku_unit_test --reporters=xml --out=../ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
