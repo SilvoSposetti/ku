@@ -62,6 +62,5 @@ jobs:
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
         with:
-          files: ku_unit_test_report.xml
+          files: /*_report.xml
