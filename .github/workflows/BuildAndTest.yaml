@@ -48,19 +48,18 @@ jobs:
 
       - name: Run unit tests
         run: |
-          ls
+          mkdir reports
           cd *ku-*
-          ls
           chmod +x ku_unit_test
-          ./ku_unit_test --reporters=xml --out=../ku_unit_test_report.xml
+          ./ku_unit_test --reporters=xml --out=../reports/ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: ku_unit_test_report.xml
+          path: reports/*.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: /*_report.xml
+          files: reports/*_report.xml
