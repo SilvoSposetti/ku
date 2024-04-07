@@ -1,5 +1,7 @@
-# ku
+# ku 
 A lightweight C++ library to generate, solve, and export Sudoku puzzles with varying constraints.
+
+![BuildAndTest Status](https://img.shields.io/github/actions/workflow/status/SilvoSposetti/ku/BuildAndTest.yaml)
 
 ## Description
 The library handles any supported constraint through the following steps:
@@ -12,9 +14,13 @@ The Exact Cover problem may be built with both primary and secondary items, depe
 - __Secondary__ items must be covered __at most__ once.
 
 Generated Sudokus can be exported to svg, where each constraint provides its own way of being drawn on the board.
-The matrix-like Dancing Links data structure used by Algorithm X can also be exported to svg for visual debugging.
+The matrix-likedata structure used by Algorithm X can also be exported to svg for visual debugging.
 
-The project consists of the `ku` library, a `ku_sandbox` executable, a `ku_unit_test` executable, and a (Release-built only) `ku_performance_test` executable.
+The project consists of:
+- A `ku` library
+- A `ku_sandbox` executable
+- A `ku_unit_test` executable
+- And a `ku_performance_test` executable (Enabled only for Release builds) 
 
 ### Available Constraints
 These are the classic sudoku constraints that are supported:
