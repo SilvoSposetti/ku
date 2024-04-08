@@ -1,7 +1,6 @@
 #include "solver/AlgorithmX.h"
 
 #include "doctest.h"
-#include "solver/SparseCoordinateMatrix.h"
 
 #include <algorithm>
 
@@ -49,7 +48,7 @@ TEST_CASE("Algorithm X") {
     };
     for (const auto& seed : seeds) {
       for (const auto& unsolvableMatrix : unsolvableMatrices) {
-        SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
+        DataStructure sparseMatrix(unsolvableMatrix);
         // Theoretically solvable, but no solutions can be found
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(sparseMatrix);
@@ -127,7 +126,7 @@ TEST_CASE("Algorithm X") {
     };
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
+        DataStructure sparseMatrix(exactCoverMatrix);
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
         // AlgorithmX::printDataStructure(sparseMatrix);
         CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
@@ -142,8 +141,7 @@ TEST_CASE("Algorithm X") {
   }
 
   SUBCASE("Single solution, primary and secondary items") {
-    const std::vector<
-        std::tuple<std::vector<std::vector<bool>>, std::unordered_set<int32_t>, std::unordered_set<int32_t>>>
+    const std::vector<std::tuple<std::vector<std::vector<bool>>, int32_t, std::unordered_set<int32_t>>>
         exactCoverMatrices = {
             {
                 // Example 1
@@ -156,7 +154,7 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 1, 0, 0, 1, 0}, // Part of solution 1
                     {0, 0, 0, 1, 0, 0, 1}, // Part of solution 1
                 },
-                {4, 5, 6}, // Indices of the items that are secondary
+                3, // Amount of secondary items placed at the end
                 {0, 1, 5, 6}, // Solution 1
             },
             {
@@ -169,49 +167,36 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 1, 1}, // Part of solution 2
                     {1, 0, 0, 1},
                 },
-                {3}, // Indices of the items that are secondary
+                {1}, // Amount of secondary items placed at the end
                 {1, 2, 4}, // Solution 2
             },
             {
-                // Example 3 (like Example 2, but with the secondary colum moved)
+                // Example 3 (empty secondary items)
                 {
-                    {1, 0, 1, 0},
-                    {0, 0, 1, 0}, // Part of solution 3
-                    {0, 1, 0, 0}, // Part of solution 3
-                    {0, 0, 0, 0},
-                    {1, 0, 0, 1}, // Part of solution 3
-                    {1, 1, 0, 0},
-                },
-                {0}, // Indices of the items that are secondary
-                {1, 2, 4}, // Solution 2
-            },
-            {
-                // Example 4 (empty secondary items)
-                {
-                    {1, 0, 0, 0, 0, 0}, // Part of solution 4
+                    {1, 0, 0, 0, 0, 0}, // Part of solution 3
                     {0, 0, 1, 0, 0, 0},
-                    {0, 0, 0, 1, 0, 0}, // Part of solution 4
+                    {0, 0, 0, 1, 0, 0}, // Part of solution 3
                     {0, 0, 1, 1, 0, 0},
-                    {0, 1, 1, 0, 0, 0}, // Part of solution 4
+                    {0, 1, 1, 0, 0, 0}, // Part of solution 3
                 },
-                {4, 5}, // Indices of the items that are secondary
-                {0, 2, 4}, // Solution 4
+                2, // Indices of the items that are secondary
+                {0, 2, 4}, // Solution 3
             },
             {
-                // Example 5
+                // Example 4
                 {
                     {0, 0, 0, 1, 0}, //  No primary items! This solution is not selected
-                    {1, 0, 1, 0, 0}, //  Part of solution 5
+                    {1, 0, 1, 0, 0}, //  Part of solution 4
                     {0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 1}, //  Part of solution 5
+                    {0, 1, 0, 0, 1}, //  Part of solution 4
                 },
-                {2, 3, 4}, // Indices of the items that are secondary
-                {1, 3}, // Solution 5
+                3, // Amount of secondary items placed at the end
+                {1, 3}, // Solution 4
             },
         };
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolution] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
+        DataStructure sparseMatrix(exactCoverMatrix, secondaryItemIndices);
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(sparseMatrix);
         CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
@@ -322,7 +307,7 @@ TEST_CASE("Algorithm X") {
         };
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
+        DataStructure sparseMatrix(exactCoverMatrix);
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(sparseMatrix);
         CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
@@ -341,9 +326,7 @@ TEST_CASE("Algorithm X") {
   }
 
   SUBCASE("Multiple solutions, primary and secondary items") {
-    const std::vector<std::tuple<std::vector<std::vector<bool>>,
-                                 std::unordered_set<int32_t>,
-                                 std::vector<std::unordered_set<int32_t>>>>
+    const std::vector<std::tuple<std::vector<std::vector<bool>>, int32_t, std::vector<std::unordered_set<int32_t>>>>
         exactCoverMatrices = {
             {
                 // Example 1
@@ -355,7 +338,7 @@ TEST_CASE("Algorithm X") {
                     {0, 1, 0, 0, 0, 0, 1}, // Part of solution 1.A
                     {0, 0, 0, 1, 1, 0, 1},
                 },
-                {4, 5, 6}, // Indices of the items that are secondary
+                3, // Amount of secondary items placed at the end
                 {
                     {0, 3, 4}, // Solution 1.A
                     {1, 2}, // Solution 1.B
@@ -370,48 +353,33 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 0, 0},
                     {1, 1, 0, 0}, // Part of solution 2.A
                 },
-                {3}, // Indices of the items that are secondary
+                1, // Amount of secondary items placed at the end
                 {
                     {0, 4}, // Solution 2.A
                     {1, 2}, // Solution 2.B
                 },
             },
             {
-                // Example 3 (like Example 2, but with the secondary colum moved)
+                // Example 3
                 {
-                    {0, 0, 0, 1}, // Part of solution 3.A
-                    {1, 1, 0, 0}, // Part of solution 3.B
-                    {0, 0, 1, 1}, // Part of solution 3.B
-                    {0, 0, 0, 0},
-                    {1, 0, 1, 0}, // Part of solution 3.A
-                },
-                {1}, // Indices of the items that are secondary
-                {
-                    {0, 4}, // Solution 3.A
-                    {1, 2}, // Solution 3.B
-                },
-            },
-            {
-                // Example 4
-                {
-                    {0, 1, 0, 0, 0}, //  Part of solution 4.A
-                    {1, 0, 1, 0, 1}, //  Part of solution 4.A | 4.B | 4.C
+                    {0, 1, 0, 0, 0}, //  Part of solution 3.A
+                    {1, 0, 1, 0, 1}, //  Part of solution 3.A | 3.B | 3.C
                     {0, 0, 0, 0, 0},
                     {0, 1, 0, 1, 1},
-                    {0, 1, 0, 1, 0}, //  Part of solution 4.B
-                    {0, 1, 0, 0, 0}, //  Part of solution 4.C
+                    {0, 1, 0, 1, 0}, //  Part of solution 3.B
+                    {0, 1, 0, 0, 0}, //  Part of solution 3.C
                 },
-                {3, 4}, // Indices of the items that are secondary
+                2, // Amount of secondary items placed at the end
                 {
-                    {0, 1}, // Solution 4.A
-                    {1, 4}, // Solution 4.B
-                    {1, 5}, // Solution 4.C
+                    {0, 1}, // Solution 3.A
+                    {1, 4}, // Solution 3.B
+                    {1, 5}, // Solution 3.C
                 },
             },
         };
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolutions] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
+        DataStructure sparseMatrix(exactCoverMatrix, secondaryItemIndices);
         REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(sparseMatrix);
         CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));

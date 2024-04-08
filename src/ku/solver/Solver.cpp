@@ -2,11 +2,9 @@
 
 #include "../Sudo.h"
 #include "../Validator.h"
-#include "../randomGenerator/RandomGenerator.h"
 #include "../utilities/IdPacking.h"
 #include "AlgorithmX.h"
 
-#include <map>
 
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
@@ -72,31 +70,30 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                    bool checkForUniqueness,
                    std::optional<int32_t> seed) {
+
+  // // TODO: Check that the constraints create a valid matrix
+  // if (!matrix.isSolvableByAlgorithmX()) {
+  //   return false;
+  // }
+
   // Reduce problem: Sudoku -> Exact Cover
-  SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints);
-
-  // Preprocess the matrix to get it ready for Algorithm X
-  // matrix.preprocess(randomGenerator);
-
-  // Check that the matrix is valid
-  if (!matrix.isSolvableByAlgorithmX()) {
-    return false;
-  }
+  // SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints);
+  DataStructure dataStructure = DataStructure(board, constraints);
 
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {
-    return AlgorithmX::hasUniqueSolution(matrix, seed);
+    return AlgorithmX::hasUniqueSolution(dataStructure, seed);
   }
   // AlgorithmX::printDataStructure(matrix);
 
   // Find a possible solution
-  std::unordered_set<int32_t> solution = AlgorithmX::findOneSolution(matrix, seed);
+  std::unordered_set<int32_t> solution = AlgorithmX::findOneSolution(dataStructure, seed);
 
   // Use first solution out of all those that are found
   // This solution should have 81 elements, one for each cell piked
   if (solution.size() == Sudo::TOTAL_DIGITS) {
     // Reduce solution: Exact Cover -> Sudoku
-    reduceExactCoverSolutionToSudokuSolution(board, matrix, solution);
+    reduceExactCoverSolutionToSudokuSolution(board, dataStructure, solution);
 
     return true;
   }
@@ -205,14 +202,12 @@ Solver::reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sud
 }
 
 void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                      const SparseCoordinateMatrix& matrix,
+                                                      const DataStructure& dataStructure,
                                                       const std::unordered_set<int32_t>& solutionRows) {
+
+  const auto& optionsData = dataStructure.getOptionsData();
   for (const auto& rowIndex : solutionRows) {
-    int32_t packedData = matrix.getRowData(rowIndex);
-    // Uses the same method used to identify the cells of the SUDOKU_CELL constraint, but the process here is reversed.
-    // This was set when reducing Sudoku to Exact Cover
-    const auto [boardRow, boardColumn, digit] =
-        IdPacking::unpackId(packedData, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT, Sudo::MAX_DIGIT);
-    board[boardRow][boardColumn] = static_cast<Sudo::Digit>(digit + 1);
+    const auto& OptionData = optionsData[rowIndex];
+    board[OptionData.indexI][OptionData.indexJ] = OptionData.digit;
   }
 }

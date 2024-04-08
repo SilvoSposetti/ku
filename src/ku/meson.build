@@ -30,6 +30,8 @@ ku_sources = files(
   'solver/SparseCoordinateMatrix.cpp',
   'solver/AlgorithmX.cpp',
   'solver/AlgorithmXNode.cpp',
+  'solver/DataStructure.cpp',
+  'solver/Node.cpp',
   'utilities/IdPacking.cpp',
   'utilities/Timer.cpp',
 )

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../constraints/AbstractConstraint.h"
-#include "SparseCoordinateMatrix.h"
+#include "DataStructure.h"
 
 #include <memory>
 #include <optional>
@@ -80,6 +80,6 @@ private:
    * @return A Sudoku board constructed with the solution provided
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                       const SparseCoordinateMatrix& matrix,
-                                                       const std::unordered_set<int32_t>& solutionRows);
+                                                      const DataStructure& dataStructure,
+                                                      const std::unordered_set<int32_t>& solutionRows);
 };
