@@ -79,19 +79,19 @@ bool AntiKingTorus::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, i
   return false;
 }
 
-int32_t AntiKingTorus::getPrimaryItemsAmount() const {
+int32_t AntiKingTorus::definePrimaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> AntiKingTorus::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> AntiKingTorus::definePrimaryItems() const {
   return {};
 }
 
-int32_t AntiKingTorus::getSecondaryItemsAmount() const {
+int32_t AntiKingTorus::defineSecondaryItemsAmount() const {
   return dashVector.size() * Sudo::MAX_DIGIT;
 }
 
-std::vector<std::vector<int32_t>> AntiKingTorus::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> AntiKingTorus::defineSecondaryItems() const {
   std::vector<std::vector<int32_t>> secondaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {

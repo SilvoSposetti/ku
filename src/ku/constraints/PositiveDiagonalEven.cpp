@@ -31,11 +31,11 @@ bool PositiveDiagonalEven::computeConstraint(Sudo::Digit digit, int32_t i, int32
   return i == row && j == column && isEvenDigit;
 }
 
-int32_t PositiveDiagonalEven::getPrimaryItemsAmount() const {
+int32_t PositiveDiagonalEven::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT; // There are 9 cells in the positive diagonal
 }
 
-std::vector<std::vector<int32_t>> PositiveDiagonalEven::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> PositiveDiagonalEven::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -50,10 +50,10 @@ std::vector<std::vector<int32_t>> PositiveDiagonalEven::getPrimaryItems() const 
   return primaryItems;
 }
 
-int32_t PositiveDiagonalEven::getSecondaryItemsAmount() const {
+int32_t PositiveDiagonalEven::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> PositiveDiagonalEven::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> PositiveDiagonalEven::defineSecondaryItems() const {
   return {};
 }

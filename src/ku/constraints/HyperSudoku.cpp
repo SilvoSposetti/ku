@@ -56,11 +56,11 @@ bool HyperSudoku::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int
 }
 
 
-int32_t HyperSudoku::getPrimaryItemsAmount() const {
+int32_t HyperSudoku::definePrimaryItemsAmount() const {
   return 4 * Sudo::MAX_DIGIT; // 4 boxes, 9 possible digits for each box
 }
 
-std::vector<std::vector<int32_t>> HyperSudoku::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> HyperSudoku::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -75,10 +75,10 @@ std::vector<std::vector<int32_t>> HyperSudoku::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t HyperSudoku::getSecondaryItemsAmount() const {
+int32_t HyperSudoku::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> HyperSudoku::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> HyperSudoku::defineSecondaryItems() const {
   return{};
 }

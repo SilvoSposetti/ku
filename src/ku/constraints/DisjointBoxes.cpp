@@ -59,11 +59,11 @@ bool DisjointBoxes::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, i
   return isOnSameBoxRow && isOnSameBoxColumn && possibleDigit == digit;
 }
 
-int32_t DisjointBoxes::getPrimaryItemsAmount() const {
+int32_t DisjointBoxes::definePrimaryItemsAmount() const {
   return 9 * Sudo::MAX_DIGIT; // 9(places within each box), 9(possible digits in each box)
 }
 
-std::vector<std::vector<int32_t>> DisjointBoxes::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> DisjointBoxes::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -78,10 +78,10 @@ std::vector<std::vector<int32_t>> DisjointBoxes::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t DisjointBoxes::getSecondaryItemsAmount() const {
+int32_t DisjointBoxes::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> DisjointBoxes::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> DisjointBoxes::defineSecondaryItems() const {
   return {};
 }

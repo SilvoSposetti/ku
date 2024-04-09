@@ -54,19 +54,19 @@ bool AntiKing::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_
   return false;
 }
 
-int32_t AntiKing::getPrimaryItemsAmount() const {
+int32_t AntiKing::definePrimaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> AntiKing::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> AntiKing::definePrimaryItems() const {
   return {};
 }
 
-int32_t AntiKing::getSecondaryItemsAmount() const {
+int32_t AntiKing::defineSecondaryItemsAmount() const {
   return dashVector.size() * Sudo::MAX_DIGIT;
 }
 
-std::vector<std::vector<int32_t>> AntiKing::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> AntiKing::defineSecondaryItems() const {
   std::vector<std::vector<int32_t>> secondaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {

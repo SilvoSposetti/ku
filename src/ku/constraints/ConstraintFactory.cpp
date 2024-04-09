@@ -19,42 +19,63 @@
 #include "SudokuRow.h"
 
 std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(ConstraintType constraintType) {
+  std::unique_ptr<AbstractConstraint> constraint;
   switch (constraintType) {
   case ConstraintType::SUDOKU_CELL:
-    return std::make_unique<SudokuCell>();
+    constraint = std::make_unique<SudokuCell>();
+    break;
   case ConstraintType::SUDOKU_BOX:
-    return std::make_unique<SudokuBox>();
+    constraint = std::make_unique<SudokuBox>();
+    break;
   case ConstraintType::SUDOKU_ROW:
-    return std::make_unique<SudokuRow>();
+    constraint = std::make_unique<SudokuRow>();
+    break;
   case ConstraintType::SUDOKU_COLUMN:
-    return std::make_unique<SudokuColumn>();
+    constraint = std::make_unique<SudokuColumn>();
+    break;
   case ConstraintType::POSITIVE_DIAGONAL:
-    return std::make_unique<PositiveDiagonal>();
+    constraint = std::make_unique<PositiveDiagonal>();
+    break;
   case ConstraintType::POSITIVE_DIAGONAL_EVEN:
-    return std::make_unique<PositiveDiagonalEven>();
+    constraint = std::make_unique<PositiveDiagonalEven>();
+    break;
   case ConstraintType::POSITIVE_DIAGONAL_ODD:
-    return std::make_unique<PositiveDiagonalOdd>();
+    constraint = std::make_unique<PositiveDiagonalOdd>();
+    break;
   case ConstraintType::NEGATIVE_DIAGONAL:
-    return std::make_unique<NegativeDiagonal>();
+    constraint = std::make_unique<NegativeDiagonal>();
+    break;
   case ConstraintType::NEGATIVE_DIAGONAL_EVEN:
-    return std::make_unique<NegativeDiagonalEven>();
+    constraint = std::make_unique<NegativeDiagonalEven>();
+    break;
   case ConstraintType::NEGATIVE_DIAGONAL_ODD:
-    return std::make_unique<NegativeDiagonalOdd>();
+    constraint = std::make_unique<NegativeDiagonalOdd>();
+    break;
   case ConstraintType::ANTI_KING:
-    return std::make_unique<AntiKing>();
+    constraint = std::make_unique<AntiKing>();
+    break;
   case ConstraintType::ANTI_KING_TORUS:
-    return std::make_unique<AntiKingTorus>();
+    constraint = std::make_unique<AntiKingTorus>();
+    break;
   case ConstraintType::ANTI_KNIGHT:
-    return std::make_unique<AntiKnight>();
+    constraint = std::make_unique<AntiKnight>();
+    break;
   case ConstraintType::ANTI_KNIGHT_TORUS:
-    return std::make_unique<AntiKnightTorus>();
+    constraint = std::make_unique<AntiKnightTorus>();
+    break;
   case ConstraintType::DISJOINT_BOXES:
-    return std::make_unique<DisjointBoxes>();
+    constraint = std::make_unique<DisjointBoxes>();
+    break;
   case ConstraintType::ASTERISK:
-    return std::make_unique<Asterisk>();
+    constraint = std::make_unique<Asterisk>();
+    break;
   case ConstraintType::HYPER_SUDOKU:
-    return std::make_unique<HyperSudoku>();
+    constraint = std::make_unique<HyperSudoku>();
+    break;
   default:
-    return std::make_unique<SudokuCell>();
+    constraint = std::make_unique<SudokuCell>();
+    break;
   }
+  constraint->initialize();
+  return constraint;
 }

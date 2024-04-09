@@ -5,6 +5,14 @@ AbstractConstraint::AbstractConstraint(ConstraintType type, const std::string& n
     , name(name)
     , description(description) {}
 
+void AbstractConstraint::initialize() {
+  primaryItemsAmount = definePrimaryItemsAmount();
+  secondaryItemsAmount = defineSecondaryItemsAmount();
+  primaryItems = definePrimaryItems();
+  secondaryItems = defineSecondaryItems();
+  isInitialized = true;
+}
+
 const ConstraintType AbstractConstraint::getType() const {
   return type;
 }
@@ -15,6 +23,22 @@ const std::string& AbstractConstraint::getName() const {
 
 const std::string& AbstractConstraint::getDescription() const {
   return description;
+}
+
+int32_t AbstractConstraint::getPrimaryItemsAmount() const {
+  return primaryItemsAmount;
+}
+
+const std::vector<std::vector<int32_t>>& AbstractConstraint::getPrimaryItems() const {
+  return primaryItems;
+}
+
+int32_t AbstractConstraint::getSecondaryItemsAmount() const {
+  return secondaryItemsAmount;
+}
+
+const std::vector<std::vector<int32_t>>& AbstractConstraint::getSecondaryItems() const {
+  return secondaryItems;
 }
 
 std::vector<std::tuple<int32_t, int32_t, Sudo::Digit>> AbstractConstraint::optionsOrdered() {
@@ -31,4 +55,3 @@ std::vector<std::tuple<int32_t, int32_t, Sudo::Digit>> AbstractConstraint::optio
   }
   return result;
 }
-

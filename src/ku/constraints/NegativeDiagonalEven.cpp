@@ -31,11 +31,11 @@ bool NegativeDiagonalEven::computeConstraint(Sudo::Digit digit, int32_t i, int32
   return i == row && j == column && isEvenDigit;
 }
 
-int32_t NegativeDiagonalEven::getPrimaryItemsAmount() const {
+int32_t NegativeDiagonalEven::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT; // There are 9 cells on the negative diagonal
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonalEven::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonalEven::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -50,10 +50,10 @@ std::vector<std::vector<int32_t>> NegativeDiagonalEven::getPrimaryItems() const 
   return primaryItems;
 }
 
-int32_t NegativeDiagonalEven::getSecondaryItemsAmount() const {
+int32_t NegativeDiagonalEven::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonalEven::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonalEven::defineSecondaryItems() const {
   return {};
 }
