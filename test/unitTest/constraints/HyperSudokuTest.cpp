@@ -5,8 +5,9 @@
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Hyper-Sudoku") {
-    const auto constraint = HyperSudoku();
-    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
+    auto constraint = HyperSudoku();
+    constraint.initialize();
+const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
         {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},
         {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},
         {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},

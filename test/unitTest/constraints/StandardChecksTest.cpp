@@ -23,7 +23,8 @@
 TEST_SUITE("Constraints: Standard Checks") {
   TEST_CASE_TEMPLATE_DEFINE("Standard Checks ", T, checks) {
     const int32_t optionsAmount = Sudo::INDICES.size() * Sudo::INDICES.size() * Sudo::SUDO_DIGITS.size();
-    const auto constraint = T();
+    auto constraint = T();
+    constraint.initialize();
     const int32_t primaryItemsAmount = constraint.getPrimaryItemsAmount();
     const auto primaryItems = constraint.getPrimaryItems();
     const int32_t secondaryItemsAmount = constraint.getSecondaryItemsAmount();

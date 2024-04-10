@@ -5,8 +5,9 @@
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Anti-King-Torus") {
-    const auto constraint = AntiKingTorus();
-    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {};
+    auto constraint = AntiKingTorus();
+    constraint.initialize();
+const std::vector<std::vector<int32_t>> expectedPrimaryItems = {};
     const std::vector<std::vector<int32_t>> expectedSecondaryItems = {
         {0, 9, 18, 27, 288, 2592, 2628, 2880},
         {1, 10, 19, 28, 289, 2593, 2629, 2881},
