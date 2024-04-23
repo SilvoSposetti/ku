@@ -2,34 +2,10 @@
 #include "../Sudo.h"
 #include "../constraints/AbstractConstraint.h"
 #include "Node.h"
+#include "ItemData.h"
+#include "OptionData.h"
 
 #include <vector>
-
-struct ItemData {
-  ItemData() = default;
-
-  ItemData(const std::string& name, bool isPrimary, int32_t itemId)
-      : name(name)
-      , isPrimary(isPrimary)
-      , itemId(itemId) {}
-
-  std::string name;
-  bool isPrimary = true;
-  int32_t itemId = -1;
-};
-
-struct OptionData {
-  OptionData() = default;
-
-  OptionData(int32_t indexI, int32_t indexJ, Sudo::Digit digit)
-      : indexI(indexI)
-      , indexJ(indexJ)
-      , digit(digit) {}
-
-  int32_t indexI = -1;
-  int32_t indexJ = -1;
-  Sudo::Digit digit = Sudo::Digit::NONE;
-};
 
 class DataStructure {
 public:
