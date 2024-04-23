@@ -5,7 +5,6 @@
 #include "../utilities/IdPacking.h"
 #include "AlgorithmX.h"
 
-
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                        std::optional<int32_t> seed) {
@@ -71,14 +70,12 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    bool checkForUniqueness,
                    std::optional<int32_t> seed) {
 
-  // // TODO: Check that the constraints create a valid matrix
-  // if (!matrix.isSolvableByAlgorithmX()) {
-  //   return false;
-  // }
-
   // Reduce problem: Sudoku -> Exact Cover
-  // SparseCoordinateMatrix matrix = reduceSudokuProblemToExactCoverProblem(board, constraints);
   DataStructure dataStructure = DataStructure(board, constraints);
+
+  if (!dataStructure.isSolvableByAlgorithmX()) {
+    return false;
+  }
 
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {

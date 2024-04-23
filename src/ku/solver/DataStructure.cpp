@@ -286,6 +286,25 @@ const std::vector<OptionData>& DataStructure::getOptionsData() const {
 }
 
 bool DataStructure::isSolvableByAlgorithmX() const {
+  if (structure.empty() || itemsData.empty() || optionsData.empty()) {
+    return true;
+  }
+
+  // Not solvable if all items are secondary
+  if (std::all_of(itemsData.begin(), itemsData.end(), [](const ItemData& itemData) { return !itemData.isPrimary; })) {
+    std::cout << "Structure not solvable: all items are secondary" << std::endl;
+    return false;
+  }
+
+  // Not solvable if any of the primary items is empty
+  for (int32_t itemIndex = 0; itemIndex < itemsData.size(); itemIndex++) {
+    if (itemsData[itemIndex].isPrimary && structure[itemIndex].down == itemIndex) { // Header->down is the header itself
+      std::cout << "Structure not solvable: item " << itemsData[itemIndex].itemId << " of constraint "
+                << itemsData[itemIndex].name << " is primary and empty" << std::endl;
+      return false;
+    }
+  }
+
   return true;
 }
 
