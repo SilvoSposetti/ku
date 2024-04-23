@@ -169,24 +169,8 @@ std::vector<Node> DataStructure::createStructure(const std::vector<ItemData>& it
                                                  const std::vector<std::vector<int32_t>>& optionsCache,
                                                  int32_t nonZeroElementsAmount) {
 
-  // Nodes contain "pointers" to other elements in the structure in the form of integer indices.
-  // The structure is composed of multiple sections packed into a single vector of Nodes.
-  // 1. A root node.
-  // 2. A list of header nodes. A header is given to every item.
-  //    - Header nodes make a circular doubly linked-list together with the root node.
-  //    - Header nodes have a length attribute that keeps track of how many elements are contained within the item.
-  // 3. A list of all the valid spare coordinate matrix entries in row-major order. Different rows are separated by
-  //    spacer nodes. These spacer nodes appear at both ends of these entries as well.
-  //    And additionally:
-  //    - Every node of the sparse coordinate matrix composes a 2-dimensional doubly-linked list because it holds
-  //    pointers to its left-right- and to its up-down-neighbors in the original sparse matrix.
-  //    - Every node also holds a pointer to its header.
-  // In particular, a spacer node N has:
-  // - An up-link to the first node in the option before N.
-  // - An down-link to the last node in the option after N.
-
   // One root, plus as many headers as there are items, plus one regular node for each non-zero element, plus one spacer
-  // in fron to each option, plus one spacer at the end
+  // in front of each option, plus one spacer at the end
   const int32_t totalNodesAmount = 1 + items.size() + nonZeroElementsAmount + options.size() + 1;
   // Initialize structure with correct size
   std::vector<Node> structure = std::vector<Node>(totalNodesAmount);
@@ -285,7 +269,7 @@ const std::vector<OptionData>& DataStructure::getOptionsData() const {
   return optionsData;
 }
 
-bool DataStructure::isSolvableByAlgorithmX() const {
+bool DataStructure::isPotentiallySolvableByAlgorithmX() const {
   if (structure.empty() || itemsData.empty() || optionsData.empty()) {
     return true;
   }
@@ -297,10 +281,11 @@ bool DataStructure::isSolvableByAlgorithmX() const {
   }
 
   // Not solvable if any of the primary items is empty
-  for (int32_t itemIndex = 0; itemIndex < itemsData.size(); itemIndex++) {
+  const int32_t itemsAmount = getItemsAmount();
+  for (int32_t itemIndex = 0; itemIndex < itemsAmount; itemIndex++) {
     if (itemsData[itemIndex].isPrimary && structure[itemIndex].down == itemIndex) { // Header->down is the header itself
       std::cout << "Structure not solvable: item " << itemsData[itemIndex].itemId << " of constraint "
-                << itemsData[itemIndex].name << " is primary and empty" << std::endl;
+                << itemsData[itemIndex].constraintName << " is primary and empty" << std::endl;
       return false;
     }
   }

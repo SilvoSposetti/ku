@@ -73,7 +73,7 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
   // Reduce problem: Sudoku -> Exact Cover
   DataStructure dataStructure = DataStructure(board, constraints);
 
-  if (!dataStructure.isSolvableByAlgorithmX()) {
+  if (!dataStructure.isPotentiallySolvableByAlgorithmX()) {
     return false;
   }
 

@@ -50,7 +50,7 @@ TEST_CASE("Algorithm X") {
       for (const auto& unsolvableDataStructure : unsolvableDataStructures) {
         DataStructure dataStructure(unsolvableDataStructure);
         // Theoretically solvable, but no solutions can be found
-        REQUIRE(dataStructure.isSolvableByAlgorithmX());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(dataStructure);
         CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
         CHECK(AlgorithmX::findAllSolutions(dataStructure, seed).empty());
@@ -128,7 +128,7 @@ TEST_CASE("Algorithm X") {
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverDataStructure, exactCoverSolution] : exactCoverDataStructures) {
         DataStructure dataStructure(exactCoverDataStructure);
-        REQUIRE(dataStructure.isSolvableByAlgorithmX());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
         // AlgorithmX::printDataStructure(dataStructure);
         CHECK(AlgorithmX::hasUniqueSolution(dataStructure, seed));
         const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
@@ -198,7 +198,7 @@ TEST_CASE("Algorithm X") {
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverDataStructure, secondaryItemIndices, exactCoverSolution] : exactCoverDataStructures) {
         DataStructure dataStructure(exactCoverDataStructure, secondaryItemIndices);
-        REQUIRE(dataStructure.isSolvableByAlgorithmX());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(dataStructure);
         CHECK(AlgorithmX::hasUniqueSolution(dataStructure, seed));
         const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
@@ -309,7 +309,7 @@ TEST_CASE("Algorithm X") {
     for (const auto& seed : seeds) {
       for (const auto& [exactCoverDataStructure, exactCoverSolutions] : exactCoverDataStructures) {
         DataStructure dataStructure(exactCoverDataStructure);
-        REQUIRE(dataStructure.isSolvableByAlgorithmX());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(dataStructure);
         CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
         const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
@@ -382,7 +382,7 @@ TEST_CASE("Algorithm X") {
       for (const auto& [exactCoverDataStructure, secondaryItemIndices, exactCoverSolutions] :
            exactCoverDataStructures) {
         DataStructure dataStructure(exactCoverDataStructure, secondaryItemIndices);
-        REQUIRE(dataStructure.isSolvableByAlgorithmX());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(dataStructure);
         CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
         const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
@@ -414,13 +414,13 @@ TEST_CASE("Algorithm X") {
     SUBCASE("Solvable") {
       // Nothing out of the ordinary
       DataStructure dataStructure(matrix);
-      CHECK(dataStructure.isSolvableByAlgorithmX());
+      CHECK(dataStructure.isPotentiallySolvableByAlgorithmX());
     }
 
     SUBCASE("All columns secondary") {
       // Sparse matrix is not solvable by Algorithm X if all columns are secondary
       DataStructure allSecondaryColumnsDataStructure(matrix, columns);
-      CHECK_FALSE(allSecondaryColumnsDataStructure.isSolvableByAlgorithmX());
+      CHECK_FALSE(allSecondaryColumnsDataStructure.isPotentiallySolvableByAlgorithmX());
     }
 
     SUBCASE("Empty primary columns") {
@@ -437,7 +437,7 @@ TEST_CASE("Algorithm X") {
 
         DataStructure unsolvableDataStructure(invalidMatrix);
         // Matrix is unsolvable, since a primary column is empty
-        CHECK_FALSE(unsolvableDataStructure.isSolvableByAlgorithmX());
+        CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
       }
 
       {
@@ -453,16 +453,16 @@ TEST_CASE("Algorithm X") {
 
         DataStructure unsolvableDataStructure(invalidMatrix);
         // Now matrix is unsolvable, since a primary column is empty
-        CHECK_FALSE(unsolvableDataStructure.isSolvableByAlgorithmX());
+        CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
 
         // But if the last empty columns are set to be secondary the matrix becomes solvable
         DataStructure solvableDataStructure(invalidMatrix, 2);
-        CHECK(solvableDataStructure.isSolvableByAlgorithmX());
+        CHECK(solvableDataStructure.isPotentiallySolvableByAlgorithmX());
       }
     }
 
     // Empty matrix is solvable
     const DataStructure empty({});
-    CHECK(empty.isSolvableByAlgorithmX());
+    CHECK(empty.isPotentiallySolvableByAlgorithmX());
   }
 }

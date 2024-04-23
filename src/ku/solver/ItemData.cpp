@@ -1,6 +1,6 @@
 #include "ItemData.h"
 
-ItemData::ItemData(const std::string& name, bool isPrimary, int32_t itemId)
-    : name(name)
+ItemData::ItemData(const std::string& constraintName, bool isPrimary, int32_t itemId)
+    : constraintName(constraintName)
     , isPrimary(isPrimary)
     , itemId(itemId) {}
