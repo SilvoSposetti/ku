@@ -4,6 +4,7 @@
 #include "ConstraintType.h"
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 /** Base class for all constraints.
