@@ -1,7 +1,6 @@
 #include "solver/AlgorithmX.h"
 
 #include "doctest.h"
-#include "solver/SparseCoordinateMatrix.h"
 
 #include <algorithm>
 
@@ -10,7 +9,7 @@ TEST_CASE("Algorithm X") {
   const std::vector<std::optional<int32_t>> seeds = {std::nullopt, 0, 1, -566, 9845};
 
   SUBCASE("No solutions") {
-    const std::vector<std::vector<std::vector<bool>>> unsolvableMatrices = {
+    const std::vector<std::vector<std::vector<bool>>> unsolvableDataStructures = {
         {
             // Empty matrix
         },
@@ -48,93 +47,94 @@ TEST_CASE("Algorithm X") {
         },
     };
     for (const auto& seed : seeds) {
-      for (const auto& unsolvableMatrix : unsolvableMatrices) {
-        SparseCoordinateMatrix sparseMatrix(unsolvableMatrix);
+      for (const auto& unsolvableDataStructure : unsolvableDataStructures) {
+        DataStructure dataStructure(unsolvableDataStructure);
         // Theoretically solvable, but no solutions can be found
-        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        //   AlgorithmX::printDataStructure(sparseMatrix);
-        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
-        CHECK(AlgorithmX::findAllSolutions(sparseMatrix, seed).empty());
-        CHECK(AlgorithmX::findOneSolution(sparseMatrix, seed).empty());
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(dataStructure);
+        CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
+        CHECK(AlgorithmX::findAllSolutions(dataStructure, seed).empty());
+        CHECK(AlgorithmX::findOneSolution(dataStructure, seed).empty());
       }
     }
   }
 
   SUBCASE("Single solution, primary items only") {
-    const std::vector<std::pair<std::vector<std::vector<bool>>, std::unordered_set<int32_t>>> exactCoverMatrices = {
+    const std::vector<std::pair<std::vector<std::vector<bool>>, std::unordered_set<int32_t>>> exactCoverDataStructures =
         {
-            // Example 1
             {
-                {0, 0, 1, 0, 1, 0, 0}, // Part of solution 1
-                {1, 0, 0, 1, 0, 0, 1},
-                {0, 1, 1, 0, 0, 1, 0},
-                {1, 0, 0, 1, 0, 1, 0}, // Part of solution 1
-                {0, 1, 0, 0, 0, 0, 1}, // Part of solution 1
-                {0, 0, 0, 1, 1, 0, 1},
+                // Example 1
+                {
+                    {0, 0, 1, 0, 1, 0, 0}, // Part of solution 1
+                    {1, 0, 0, 1, 0, 0, 1},
+                    {0, 1, 1, 0, 0, 1, 0},
+                    {1, 0, 0, 1, 0, 1, 0}, // Part of solution 1
+                    {0, 1, 0, 0, 0, 0, 1}, // Part of solution 1
+                    {0, 0, 0, 1, 1, 0, 1},
+                },
+                {0, 3, 4}, // Solution 1
             },
-            {0, 3, 4}, // Solution 1
-        },
-        {
-            // Example 2
             {
-                {1, 0, 0, 1, 0, 0, 1},
-                {1, 0, 0, 1, 0, 0, 0}, // Part of solution 2
-                {0, 0, 0, 1, 1, 0, 1},
-                {0, 0, 1, 0, 1, 1, 0}, // Part of solution 2
-                {0, 1, 1, 0, 0, 1, 1},
-                {0, 1, 0, 0, 0, 0, 1}, // Part of solution 2
-                {0, 0, 0, 0, 0, 0, 0}, // Empty option
+                // Example 2
+                {
+                    {1, 0, 0, 1, 0, 0, 1},
+                    {1, 0, 0, 1, 0, 0, 0}, // Part of solution 2
+                    {0, 0, 0, 1, 1, 0, 1},
+                    {0, 0, 1, 0, 1, 1, 0}, // Part of solution 2
+                    {0, 1, 1, 0, 0, 1, 1},
+                    {0, 1, 0, 0, 0, 0, 1}, // Part of solution 2
+                    {0, 0, 0, 0, 0, 0, 0}, // Empty option
 
+                },
+                {1, 3, 5}, // Solution 2
             },
-            {1, 3, 5}, // Solution 2
-        },
-        {
-            // Example 3
             {
-                {1, 1, 0, 0, 0, 0}, // Part of solution 3
-                {0, 0, 0, 0, 1, 1}, // Part of solution 3
-                {0, 0, 0, 1, 1, 0},
-                {1, 0, 1, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0}, // Empty option
-                {0, 0, 1, 0, 0, 0}, // Part of solution 3
-                {0, 0, 0, 1, 0, 0}, // Part of solution 3
-                {1, 0, 1, 0, 0, 1},
+                // Example 3
+                {
+                    {1, 1, 0, 0, 0, 0}, // Part of solution 3
+                    {0, 0, 0, 0, 1, 1}, // Part of solution 3
+                    {0, 0, 0, 1, 1, 0},
+                    {1, 0, 1, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0}, // Empty option
+                    {0, 0, 1, 0, 0, 0}, // Part of solution 3
+                    {0, 0, 0, 1, 0, 0}, // Part of solution 3
+                    {1, 0, 1, 0, 0, 1},
+                },
+                {0, 1, 5, 6}, // Solution 3
             },
-            {0, 1, 5, 6}, // Solution 3
-        },
-        {
-            // Example 4
             {
-                {0, 0, 0, 0, 0, 0}, // Empty option
-                {1, 1, 1, 1, 1, 1}, // Single option containing all items
+                // Example 4
+                {
+                    {0, 0, 0, 0, 0, 0}, // Empty option
+                    {1, 1, 1, 1, 1, 1}, // Single option containing all items
+                },
+                {1}, // Solution 4
             },
-            {1}, // Solution 4
-        },
-        {
-            // Example 5
             {
-                {1},
+                // Example 5
+                {
+                    {1},
+                },
+                {0}, // Solution 5
             },
-            {0}, // Solution 5
-        },
-        {
-            // Example 6
             {
-                {1, 1},
+                // Example 6
+                {
+                    {1, 1},
+                },
+                {0} // Solution 6
             },
-            {0} // Solution 6
-        },
-    };
+        };
     for (const auto& seed : seeds) {
-      for (const auto& [exactCoverMatrix, exactCoverSolution] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        // AlgorithmX::printDataStructure(sparseMatrix);
-        CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
-        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+      for (const auto& [exactCoverDataStructure, exactCoverSolution] : exactCoverDataStructures) {
+        DataStructure dataStructure(exactCoverDataStructure);
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
+        // AlgorithmX::printDataStructure(dataStructure);
+        CHECK(AlgorithmX::hasUniqueSolution(dataStructure, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
         CHECK(allSolutions.size() == 1);
         CHECK(allSolutions.at(0) == exactCoverSolution);
-        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(dataStructure, seed);
         CHECK(!oneSolution.empty());
         CHECK(oneSolution == exactCoverSolution);
       }
@@ -142,9 +142,8 @@ TEST_CASE("Algorithm X") {
   }
 
   SUBCASE("Single solution, primary and secondary items") {
-    const std::vector<
-        std::tuple<std::vector<std::vector<bool>>, std::unordered_set<int32_t>, std::unordered_set<int32_t>>>
-        exactCoverMatrices = {
+    const std::vector<std::tuple<std::vector<std::vector<bool>>, int32_t, std::unordered_set<int32_t>>>
+        exactCoverDataStructures = {
             {
                 // Example 1
                 {
@@ -156,7 +155,7 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 1, 0, 0, 1, 0}, // Part of solution 1
                     {0, 0, 0, 1, 0, 0, 1}, // Part of solution 1
                 },
-                {4, 5, 6}, // Indices of the items that are secondary
+                3, // Amount of secondary items placed at the end
                 {0, 1, 5, 6}, // Solution 1
             },
             {
@@ -169,56 +168,43 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 1, 1}, // Part of solution 2
                     {1, 0, 0, 1},
                 },
-                {3}, // Indices of the items that are secondary
+                {1}, // Amount of secondary items placed at the end
                 {1, 2, 4}, // Solution 2
             },
             {
-                // Example 3 (like Example 2, but with the secondary colum moved)
+                // Example 3 (empty secondary items)
                 {
-                    {1, 0, 1, 0},
-                    {0, 0, 1, 0}, // Part of solution 3
-                    {0, 1, 0, 0}, // Part of solution 3
-                    {0, 0, 0, 0},
-                    {1, 0, 0, 1}, // Part of solution 3
-                    {1, 1, 0, 0},
-                },
-                {0}, // Indices of the items that are secondary
-                {1, 2, 4}, // Solution 2
-            },
-            {
-                // Example 4 (empty secondary items)
-                {
-                    {1, 0, 0, 0, 0, 0}, // Part of solution 4
+                    {1, 0, 0, 0, 0, 0}, // Part of solution 3
                     {0, 0, 1, 0, 0, 0},
-                    {0, 0, 0, 1, 0, 0}, // Part of solution 4
+                    {0, 0, 0, 1, 0, 0}, // Part of solution 3
                     {0, 0, 1, 1, 0, 0},
-                    {0, 1, 1, 0, 0, 0}, // Part of solution 4
+                    {0, 1, 1, 0, 0, 0}, // Part of solution 3
                 },
-                {4, 5}, // Indices of the items that are secondary
-                {0, 2, 4}, // Solution 4
+                2, // Indices of the items that are secondary
+                {0, 2, 4}, // Solution 3
             },
             {
-                // Example 5
+                // Example 4
                 {
                     {0, 0, 0, 1, 0}, //  No primary items! This solution is not selected
-                    {1, 0, 1, 0, 0}, //  Part of solution 5
+                    {1, 0, 1, 0, 0}, //  Part of solution 4
                     {0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 1}, //  Part of solution 5
+                    {0, 1, 0, 0, 1}, //  Part of solution 4
                 },
-                {2, 3, 4}, // Indices of the items that are secondary
-                {1, 3}, // Solution 5
+                3, // Amount of secondary items placed at the end
+                {1, 3}, // Solution 4
             },
         };
     for (const auto& seed : seeds) {
-      for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolution] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
-        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        //   AlgorithmX::printDataStructure(sparseMatrix);
-        CHECK(AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
-        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+      for (const auto& [exactCoverDataStructure, secondaryItemIndices, exactCoverSolution] : exactCoverDataStructures) {
+        DataStructure dataStructure(exactCoverDataStructure, secondaryItemIndices);
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(dataStructure);
+        CHECK(AlgorithmX::hasUniqueSolution(dataStructure, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
         CHECK(allSolutions.size() == 1);
         CHECK(allSolutions.at(0) == exactCoverSolution);
-        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(dataStructure, seed);
         CHECK(!oneSolution.empty());
         CHECK(oneSolution == exactCoverSolution);
       }
@@ -227,7 +213,7 @@ TEST_CASE("Algorithm X") {
 
   SUBCASE("Multiple solutions, primary items only") {
     const std::vector<std::pair<std::vector<std::vector<bool>>, std::vector<std::unordered_set<int32_t>>>>
-        exactCoverMatrices = {
+        exactCoverDataStructures = {
             {
                 // Example 1
                 {
@@ -321,19 +307,19 @@ TEST_CASE("Algorithm X") {
             },
         };
     for (const auto& seed : seeds) {
-      for (const auto& [exactCoverMatrix, exactCoverSolutions] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix);
-        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        //   AlgorithmX::printDataStructure(sparseMatrix);
-        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
-        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+      for (const auto& [exactCoverDataStructure, exactCoverSolutions] : exactCoverDataStructures) {
+        DataStructure dataStructure(exactCoverDataStructure);
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(dataStructure);
+        CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
         // Check that every solution found appears in the list of the ones provided
         CHECK(allSolutions.size() == exactCoverSolutions.size());
         for (const auto& solution : allSolutions) {
           CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
         }
         // Check that the one solution found appears in the list of the ones provided
-        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(dataStructure, seed);
         CHECK(!oneSolution.empty());
         CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
       }
@@ -341,10 +327,8 @@ TEST_CASE("Algorithm X") {
   }
 
   SUBCASE("Multiple solutions, primary and secondary items") {
-    const std::vector<std::tuple<std::vector<std::vector<bool>>,
-                                 std::unordered_set<int32_t>,
-                                 std::vector<std::unordered_set<int32_t>>>>
-        exactCoverMatrices = {
+    const std::vector<std::tuple<std::vector<std::vector<bool>>, int32_t, std::vector<std::unordered_set<int32_t>>>>
+        exactCoverDataStructures = {
             {
                 // Example 1
                 {
@@ -355,7 +339,7 @@ TEST_CASE("Algorithm X") {
                     {0, 1, 0, 0, 0, 0, 1}, // Part of solution 1.A
                     {0, 0, 0, 1, 1, 0, 1},
                 },
-                {4, 5, 6}, // Indices of the items that are secondary
+                3, // Amount of secondary items placed at the end
                 {
                     {0, 3, 4}, // Solution 1.A
                     {1, 2}, // Solution 1.B
@@ -370,62 +354,115 @@ TEST_CASE("Algorithm X") {
                     {0, 0, 0, 0},
                     {1, 1, 0, 0}, // Part of solution 2.A
                 },
-                {3}, // Indices of the items that are secondary
+                1, // Amount of secondary items placed at the end
                 {
                     {0, 4}, // Solution 2.A
                     {1, 2}, // Solution 2.B
                 },
             },
             {
-                // Example 3 (like Example 2, but with the secondary colum moved)
+                // Example 3
                 {
-                    {0, 0, 0, 1}, // Part of solution 3.A
-                    {1, 1, 0, 0}, // Part of solution 3.B
-                    {0, 0, 1, 1}, // Part of solution 3.B
-                    {0, 0, 0, 0},
-                    {1, 0, 1, 0}, // Part of solution 3.A
-                },
-                {1}, // Indices of the items that are secondary
-                {
-                    {0, 4}, // Solution 3.A
-                    {1, 2}, // Solution 3.B
-                },
-            },
-            {
-                // Example 4
-                {
-                    {0, 1, 0, 0, 0}, //  Part of solution 4.A
-                    {1, 0, 1, 0, 1}, //  Part of solution 4.A | 4.B | 4.C
+                    {0, 1, 0, 0, 0}, //  Part of solution 3.A
+                    {1, 0, 1, 0, 1}, //  Part of solution 3.A | 3.B | 3.C
                     {0, 0, 0, 0, 0},
                     {0, 1, 0, 1, 1},
-                    {0, 1, 0, 1, 0}, //  Part of solution 4.B
-                    {0, 1, 0, 0, 0}, //  Part of solution 4.C
+                    {0, 1, 0, 1, 0}, //  Part of solution 3.B
+                    {0, 1, 0, 0, 0}, //  Part of solution 3.C
                 },
-                {3, 4}, // Indices of the items that are secondary
+                2, // Amount of secondary items placed at the end
                 {
-                    {0, 1}, // Solution 4.A
-                    {1, 4}, // Solution 4.B
-                    {1, 5}, // Solution 4.C
+                    {0, 1}, // Solution 3.A
+                    {1, 4}, // Solution 3.B
+                    {1, 5}, // Solution 3.C
                 },
             },
         };
     for (const auto& seed : seeds) {
-      for (const auto& [exactCoverMatrix, secondaryItemIndices, exactCoverSolutions] : exactCoverMatrices) {
-        SparseCoordinateMatrix sparseMatrix(exactCoverMatrix, secondaryItemIndices);
-        REQUIRE(sparseMatrix.isSolvableByAlgorithmX());
-        //   AlgorithmX::printDataStructure(sparseMatrix);
-        CHECK(!AlgorithmX::hasUniqueSolution(sparseMatrix, seed));
-        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(sparseMatrix, seed);
+      for (const auto& [exactCoverDataStructure, secondaryItemIndices, exactCoverSolutions] :
+           exactCoverDataStructures) {
+        DataStructure dataStructure(exactCoverDataStructure, secondaryItemIndices);
+        REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(dataStructure);
+        CHECK(!AlgorithmX::hasUniqueSolution(dataStructure, seed));
+        const std::vector<std::unordered_set<int32_t>> allSolutions = AlgorithmX::findAllSolutions(dataStructure, seed);
         // Check that every solution found appears in the list of the ones provided
         CHECK(allSolutions.size() == exactCoverSolutions.size());
         for (const auto& solution : allSolutions) {
           CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), solution) == 1);
         }
         // Check that the one solution found appears in the list of the ones provided
-        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(sparseMatrix, seed);
+        const std::unordered_set<int32_t> oneSolution = AlgorithmX::findOneSolution(dataStructure, seed);
         CHECK(!oneSolution.empty());
         CHECK(std::count(exactCoverSolutions.begin(), exactCoverSolutions.end(), oneSolution) == 1);
       }
     }
+  }
+
+  SUBCASE("Algorithm X Solvability") {
+    // Create & fill. Note that there's no column with all cells unset
+    const std::vector<std::vector<bool>> matrix = {
+        {1, 0, 1, 0, 0, 0},
+        {1, 1, 0, 1, 0, 0},
+        {0, 1, 1, 0, 1, 0},
+        {0, 0, 1, 1, 0, 1},
+        {0, 0, 0, 0, 0, 0},
+        {1, 1, 0, 0, 0, 1},
+    };
+    const int32_t columns = matrix.at(0).size();
+
+    SUBCASE("Solvable") {
+      // Nothing out of the ordinary
+      DataStructure dataStructure(matrix);
+      CHECK(dataStructure.isPotentiallySolvableByAlgorithmX());
+    }
+
+    SUBCASE("All columns secondary") {
+      // Sparse matrix is not solvable by Algorithm X if all columns are secondary
+      DataStructure allSecondaryColumnsDataStructure(matrix, columns);
+      CHECK_FALSE(allSecondaryColumnsDataStructure.isPotentiallySolvableByAlgorithmX());
+    }
+
+    SUBCASE("Empty primary columns") {
+      {
+        // Matrix with an all-zeroes primary column in the middle
+        const std::vector<std::vector<bool>> invalidMatrix = {
+            {1, 0, 1, 0, 0, 0},
+            {1, 1, 0, 0, 1, 0},
+            {0, 1, 1, 0, 0, 0},
+            {0, 0, 1, 0, 1, 1},
+            {0, 0, 0, 0, 0, 0},
+            {1, 1, 0, 0, 0, 1},
+        };
+
+        DataStructure unsolvableDataStructure(invalidMatrix);
+        // Matrix is unsolvable, since a primary column is empty
+        CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
+      }
+
+      {
+        // Matrix with two all-zeroes columns at the end
+        const std::vector<std::vector<bool>> invalidMatrix = {
+            {1, 0, 1, 0, 0, 0, 0},
+            {1, 1, 0, 1, 0, 0, 0},
+            {0, 1, 1, 0, 0, 0, 0},
+            {0, 0, 1, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0},
+            {1, 1, 0, 0, 1, 0, 0},
+        };
+
+        DataStructure unsolvableDataStructure(invalidMatrix);
+        // Now matrix is unsolvable, since a primary column is empty
+        CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
+
+        // But if the last empty columns are set to be secondary the matrix becomes solvable
+        DataStructure solvableDataStructure(invalidMatrix, 2);
+        CHECK(solvableDataStructure.isPotentiallySolvableByAlgorithmX());
+      }
+    }
+
+    // Empty matrix is solvable
+    const DataStructure empty({});
+    CHECK(empty.isPotentiallySolvableByAlgorithmX());
   }
 }

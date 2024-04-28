@@ -5,8 +5,9 @@
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Positive-Diagonal") {
-    const auto constraint = PositiveDiagonal();
-    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
+    auto constraint = PositiveDiagonal();
+    constraint.initialize();
+const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
         {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
         {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
         {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},

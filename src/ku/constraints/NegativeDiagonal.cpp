@@ -37,11 +37,11 @@ bool NegativeDiagonal::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j
   return ConstraintUtilities::isOnNegativeDiagonal(i, j) && possibleDigit == digit;
 }
 
-int32_t NegativeDiagonal::getPrimaryItemsAmount() const {
+int32_t NegativeDiagonal::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT;
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonal::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonal::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -56,10 +56,10 @@ std::vector<std::vector<int32_t>> NegativeDiagonal::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t NegativeDiagonal::getSecondaryItemsAmount() const {
+int32_t NegativeDiagonal::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonal::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonal::defineSecondaryItems() const {
   return {};
 }

@@ -31,11 +31,11 @@ bool NegativeDiagonalOdd::computeConstraint(Sudo::Digit digit, int32_t i, int32_
   return i == row && j == column && isOddDigit;
 }
 
-int32_t NegativeDiagonalOdd::getPrimaryItemsAmount() const {
+int32_t NegativeDiagonalOdd::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT; // There are 9 cells in the negative diagonal
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonalOdd::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonalOdd::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -50,10 +50,10 @@ std::vector<std::vector<int32_t>> NegativeDiagonalOdd::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t NegativeDiagonalOdd::getSecondaryItemsAmount() const {
+int32_t NegativeDiagonalOdd::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> NegativeDiagonalOdd::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> NegativeDiagonalOdd::defineSecondaryItems() const {
   return {};
 }

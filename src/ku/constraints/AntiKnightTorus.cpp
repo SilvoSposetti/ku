@@ -79,19 +79,19 @@ bool AntiKnightTorus::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j,
   return false;
 }
 
-int32_t AntiKnightTorus::getPrimaryItemsAmount() const {
+int32_t AntiKnightTorus::definePrimaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> AntiKnightTorus::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> AntiKnightTorus::definePrimaryItems() const {
   return {};
 }
 
-int32_t AntiKnightTorus::getSecondaryItemsAmount() const {
+int32_t AntiKnightTorus::defineSecondaryItemsAmount() const {
   return dashVector.size() * Sudo::MAX_DIGIT;
 }
 
-std::vector<std::vector<int32_t>> AntiKnightTorus::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> AntiKnightTorus::defineSecondaryItems() const {
   std::vector<std::vector<int32_t>> secondaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {

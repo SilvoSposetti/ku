@@ -1,10 +1,8 @@
 #include "AlgorithmX.h"
 
 #include "../randomGenerator/RandomGenerator.h"
-#include "AlgorithmXNode.h"
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
 
 /** Helper functions for Algorithm X have been put here in an unnamed namespace such that they are only accessible by
@@ -12,120 +10,12 @@
  */
 namespace {
 
-/** Constructs the data structure that will be used internally by Algorithm X.
- * @param sparseMatrix The sparse matrix used for construction
- * @return The data structure of nodes
- */
-std::vector<AlgorithmXNode> createDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
-  int32_t itemsAmount = sparseMatrix.getColumnsAmount();
-  int32_t optionsAmount = sparseMatrix.getRowsAmount();
-  int32_t validElements = sparseMatrix.getValidElementsAmount();
-  if (itemsAmount == 0 || optionsAmount == 0 || validElements == 0) {
-    return {};
-  }
-
-  // AlgorithmXNodes contain "pointers" to other elements in the structure in the form of integer indices.
-  // The structure is composed of multiple sections packed into a single vector of AlgorithmXNodes.
-  // 1. A root node.
-  // 2. A list of header nodes. A header is given to every item.
-  //    - Header nodes make a circular doubly linked-list together with the root node.
-  //    - Header nodes have a length attribute that keeps track of how many elements are contained within the item.
-  // 3. A list of all the valid spare coordinate matrix entries in row-major order. Different rows are separated by
-  //    spacer nodes. These spacer nodes appear at both ends of these entries as well.
-  //    And additionally:
-  //    - Every node of the sparse coordinate matrix composes a 2-dimensional doubly-linked list because it holds
-  //    pointers to its left-right- and to its up-down-neighbors in the original sparse matrix.
-  //    - Every node also holds a pointer to its header.
-  // In particular, a spacer node X has:
-  // - An up-link to the first node in the option before X.
-  // - An down-link to the last node in the option after X.
-
-  constexpr int32_t rootNodesAmount = 1; // One root
-  const int32_t headerNodesAmount = itemsAmount; // As many header as there are items
-  const int32_t regularNodesAmount = validElements; // One regular node for each non-zero elements in the matrix
-  const int32_t spacerNodesAmount = optionsAmount + 1; // One spacer in front of each option + one spacer at the end
-  const int32_t totalNodesAmount = rootNodesAmount + headerNodesAmount + regularNodesAmount + spacerNodesAmount;
-  std::vector<AlgorithmXNode> structure(totalNodesAmount);
-
-  // Set the root node
-  structure[0].type = AlgorithmXNodeType::Root;
-
-  // I1: Read the first line
-  int32_t N_1 = -1;
-  int32_t i = 0;
-
-  for (int itemId = 0; itemId < itemsAmount; itemId++) {
-    i++;
-    structure[i].type = AlgorithmXNodeType::Header;
-    // structure[i].name = std::to_string(itemId);
-    structure[i].left = i - 1;
-    structure[i - 1].right = i;
-    if (!sparseMatrix.isColumnPrimary(itemId) && N_1 <= 0) {
-      N_1 = i - 1;
-    }
-  }
-
-  // I2:  Finish the horizontal list
-  int32_t N = i;
-  if (N_1 <= 0) {
-    // There were no secondary items
-    N_1 = N;
-  }
-  // The active secondary items (if any) are accessible from the node at index N+1
-  structure[N + 1].left = N;
-  structure[N].right = N + 1;
-  structure[N_1 + 1].left = N + 1;
-  structure[N + 1].right = N_1 + 1;
-  structure[0].left = N_1;
-  structure[N_1].right = 0;
-
-  // I3: Prepare for options
-  for (int32_t j = 1; j <= N; j++) {
-    structure[j].length = 0;
-    structure[j].up = j;
-    structure[j].down = j;
-  }
-  int32_t M = 0;
-  int32_t p = N + 1;
-  // At this moment, p is the first spacer
-  structure[p].type = AlgorithmXNodeType::Spacer;
-  structure[p].header = -1;
-
-  for (int32_t optionId = 0; optionId < optionsAmount; optionId++) {
-    int32_t j = 0;
-    for (const auto& i_j_index : sparseMatrix.getRowElements(optionId)) {
-      const int32_t i_j = i_j_index + 1;
-      j++;
-      // I4: Read an option
-      structure[p + j].type = AlgorithmXNodeType::Node;
-      structure[i_j].length++;
-      // p + j is the index of the current node, just added to the structure
-      const int32_t q = structure[i_j].up; // q is the bottom-est node under header i_j
-      structure[q].down = p + j; // Set the down of q to the current
-      structure[p + j].up = q; // Set q as the top node of the current
-      structure[p + j].down = i_j; // Set the down of the current node, which is now the bottom-est
-      structure[p + j].header = i_j; // Set the header of the current node
-      structure[i_j].up = p + j; // Set the up of the header to the
-    }
-    // I5: Finish an option
-    const int32_t k = j;
-    M = M + 1;
-    structure[p].down = p + k;
-    p = p + k + 1;
-    structure[p].type = AlgorithmXNodeType::Spacer;
-    structure[p].header = -M;
-    structure[p].up = p - k;
-  }
-
-  return structure;
-};
-
 /** Computes the index of the item with smallest length in the active list of the data structure. If there are
  * multiple elements with the same smallest length, it returns the first one.
  * @param structure A reference to the structure currently being used
  * @return The index to the first smallest item in the data structure
  */
-int32_t pickUsingMrvHeuristic(const std::vector<AlgorithmXNode>& structure, RandomGenerator& randomGenerator) {
+int32_t pickUsingMrvHeuristic(const std::vector<Node>& structure, RandomGenerator& randomGenerator) {
   // This follows the MRV (Minimum Remaining Values) heuristic.
   int32_t minimumLength = std::numeric_limits<int32_t>::max();
   int32_t node = structure[0].right;
@@ -157,14 +47,14 @@ int32_t pickUsingMrvHeuristic(const std::vector<AlgorithmXNode>& structure, Rand
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param optionIndex The index of a node that is part of the option to be hidden
  */
-void hideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
+void hideOption(std::vector<Node>& structure, int32_t optionNode) {
   // Hide all nodes of the option that contains node p
   int32_t nextNode = optionNode + 1;
   while (nextNode != optionNode) {
     const int32_t x = structure[nextNode].header;
     const int32_t u = structure[nextNode].up;
     const int32_t d = structure[nextNode].down;
-    if (structure[nextNode].type == AlgorithmXNodeType::Spacer) { // Q is a spacer
+    if (structure[nextNode].type == NodeType::Spacer) { // Q is a spacer
       nextNode = u; // up link of a spacer points to the first node of the previous option
     } else {
       structure[u].down = d;
@@ -180,14 +70,14 @@ void hideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param optionIndex The index of a node that is part of the option to be unhidden
  */
-void unhideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
+void unhideOption(std::vector<Node>& structure, int32_t optionNode) {
   // Unhide all nodes of the option that contains p
   int32_t previousNode = optionNode - 1;
   while (previousNode != optionNode) {
     const int32_t x = structure[previousNode].header;
     const int32_t u = structure[previousNode].up;
     const int32_t d = structure[previousNode].down;
-    if (structure[previousNode].type == AlgorithmXNodeType::Spacer) { // Q is a spacer
+    if (structure[previousNode].type == NodeType::Spacer) { // Q is a spacer
       previousNode = d; // down link of a spacer points to the last node of the following option
     } else {
       structure[u].down = previousNode;
@@ -203,7 +93,7 @@ void unhideOption(std::vector<AlgorithmXNode>& structure, int32_t optionNode) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param itemIndex The index of the item that needs to be covered
  */
-void coverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
+void coverItem(std::vector<Node>& structure, int32_t itemIndex) {
   // Hide all options that contain a node for the item
   int32_t optionIndex = structure[itemIndex].down;
   while (optionIndex != itemIndex) {
@@ -222,7 +112,7 @@ void coverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
  * @param structure A reference to the structure currently being used. This gets modified by this function
  * @param itemIndex The index of the item that needs to be uncovered
  */
-void uncoverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
+void uncoverItem(std::vector<Node>& structure, int32_t itemIndex) {
   // "Re-link" the header by using its un-modified links
   int32_t l = structure[itemIndex].left;
   int32_t r = structure[itemIndex].right;
@@ -237,12 +127,12 @@ void uncoverItem(std::vector<AlgorithmXNode>& structure, int32_t itemIndex) {
   }
 };
 
-/** Computes sets of option indices (SparseMatrix's rows) from sets of node indices in the structure
+/** Computes sets of option indices (structure's rows) from sets of node indices in the structure
  * @param structure The structure that was used by Algorithm X
  * @param nodeIndicesSets The sets of node indices that describe Algorithm X's solutions
  */
 std::vector<std::unordered_set<int32_t>>
-retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
+retrieveOptionIndices(const std::vector<Node>& structure,
                       const std::vector<std::unordered_set<int32_t>>& nodeIndicesSets) {
   // Find out which options indices are the ones that the solution describes
   std::vector<std::unordered_set<int32_t>> optionIdsVector;
@@ -251,8 +141,8 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
     for (const auto& nodeId : nodeIndices) {
       // Count how many spacers are in front of the node
       const int32_t spacersAmount =
-          std::count_if(structure.begin(), structure.begin() + nodeId, [&](const AlgorithmXNode& node) -> bool {
-            return node.type == AlgorithmXNodeType::Spacer;
+          std::count_if(structure.begin(), structure.begin() + nodeId, [&](const Node& node) -> bool {
+            return node.type == NodeType::Spacer;
           });
       optionIds.insert(spacersAmount - 1);
     }
@@ -266,21 +156,23 @@ retrieveOptionIndices(const std::vector<AlgorithmXNode>& structure,
  * one is found
  * @param checkForUniqueness Whether confirming a unique solution is required. When true this offers early exit
  * if more than one solution is found.
- * @param sparseMatrix The sparse matrix that defines an Exact Cover problem
+ * @param dataStructure The sparse matrix that defines an Exact Cover problem
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMatrix& sparseMatrix,
+std::vector<std::unordered_set<int32_t>> runAlgorithmX(const DataStructure& dataStructure,
                                                        bool findFirstSolution,
                                                        bool checkForUniqueness,
                                                        const std::optional<int32_t>& seed) {
 
-  // Don't run Algorithm X on an empty sparse matrix
-  std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
+  // Get a copy of the structure to work on
+  std::vector<Node> structure = dataStructure.getStructureCopy();
+
+  // Don't run Algorithm X on an empty structure
   if (structure.empty()) {
     return {};
   };
-  const int32_t optionsAmount = sparseMatrix.getColumnsAmount();
+  const int32_t optionsAmount = dataStructure.getOptionsAmount();
 
   // x is the list of all options currently selected, this is used for backtracking
   // an option in this case is represented by the index of a node that is contained by the option
@@ -305,7 +197,7 @@ std::vector<std::unordered_set<int32_t>> runAlgorithmX(const SparseCoordinateMat
   int32_t nodeIndex = 0;
   int32_t otherItemIndex = 0;
 
-X2 : // Enter the current level
+X2: // Enter the current level
 {
   if (structure[0].right == 0) {
     // The list of currently selected options x contains a valid solution! Store it.
@@ -318,7 +210,7 @@ X2 : // Enter the current level
   coverItem(structure, itemIndex);
   x[level] = structure[itemIndex].down;
 }
-X5 : // Try x[level]
+X5: // Try x[level]
 {
   if (x[level] == itemIndex) {
     // Tried all options for the chosen item, need to backtrack
@@ -327,7 +219,7 @@ X5 : // Try x[level]
   int32_t nextNodeIndex = x[level] + 1;
   while (nextNodeIndex != x[level]) {
     int32_t nextNodeHeaderIndex = structure[nextNodeIndex].header;
-    if (structure[nextNodeIndex].type == AlgorithmXNodeType::Spacer) { // nextNode is a spacer
+    if (structure[nextNodeIndex].type == NodeType::Spacer) { // nextNode is a spacer
       // Follow nextNode's up to get the first node of the previous option
       nextNodeIndex = structure[nextNodeIndex].up;
     } else {
@@ -341,12 +233,12 @@ X5 : // Try x[level]
   goto X2;
 }
 
-X6 : // Try again
+X6: // Try again
 {
   nodeIndex = x[level] - 1;
   while (nodeIndex != x[level]) {
     otherItemIndex = structure[nodeIndex].header;
-    if (structure[nodeIndex].type == AlgorithmXNodeType::Spacer) { // current node is a spacer
+    if (structure[nodeIndex].type == NodeType::Spacer) { // current node is a spacer
       // Follow current node's down to get the last node of the following option
       nodeIndex = structure[nodeIndex].down;
     } else {
@@ -360,12 +252,12 @@ X6 : // Try again
   goto X5;
 }
 
-X7 : // Backtrack
+X7: // Backtrack
 {
   uncoverItem(structure, itemIndex);
 }
 
-X8 : // Leave level l
+X8: // Leave level l
 {
   // Exit early if checking for uniqueness and more than one solution is found
   const bool uniquenessEarlyExit = checkForUniqueness && solutions.size() >= 2;
@@ -382,59 +274,27 @@ X8 : // Leave level l
   }
 }
 
-END : { return retrieveOptionIndices(structure, solutions); }
+END: { return retrieveOptionIndices(structure, solutions); }
 };
 
 } // namespace
 
-std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const SparseCoordinateMatrix& sparseMatrix,
+std::vector<std::unordered_set<int32_t>> AlgorithmX::findAllSolutions(const DataStructure& dataStructure,
                                                                       const std::optional<int32_t>& seed) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  return runAlgorithmX(sparseMatrix, false, false, seed);
+  return runAlgorithmX(dataStructure, false, false, seed);
 }
 
-std::unordered_set<int32_t> AlgorithmX::findOneSolution(const SparseCoordinateMatrix& sparseMatrix,
+std::unordered_set<int32_t> AlgorithmX::findOneSolution(const DataStructure& dataStructure,
                                                         const std::optional<int32_t>& seed) {
   // Algorithm x returns a list of node indices. These are the first nodes of the options which describe the solution
-  const auto solutions = runAlgorithmX(sparseMatrix, true, false, seed);
+  const auto solutions = runAlgorithmX(dataStructure, true, false, seed);
   if (solutions.size() >= 1) {
     return solutions[0];
   }
   return {};
 }
 
-bool AlgorithmX::hasUniqueSolution(const SparseCoordinateMatrix& sparseMatrix, const std::optional<int32_t>& seed) {
-  return runAlgorithmX(sparseMatrix, false, true, seed).size() == 1;
-}
-
-void AlgorithmX::printDataStructure(const SparseCoordinateMatrix& sparseMatrix) {
-  const std::vector<AlgorithmXNode> structure = createDataStructure(sparseMatrix);
-
-  // Helper function
-  const auto getInfo = [&](const std::string& inName, int32_t value) -> std::string {
-    if (value >= 0) {
-      std::string valueString = std::to_string(value);
-      while (valueString.size() < 2) {
-        valueString = " " + valueString;
-      }
-      return inName + ": " + valueString + "   ";
-    }
-    return "";
-  };
-
-  int32_t counter = 0;
-  for (const auto& node : structure) {
-    std::string s;
-    s += getInfo("ID", counter);
-    s += node.getTypeString() + "  ";
-    s += getInfo("H", node.header);
-    s += getInfo("U", node.up);
-    s += getInfo("D", node.down);
-    s += getInfo("L", node.left);
-    s += getInfo("R", node.right);
-    s += getInfo("LEN", node.length);
-    std::cout << s << std::endl;
-    counter++;
-  }
-  std::cout << std::endl;
+bool AlgorithmX::hasUniqueSolution(const DataStructure& dataStructure, const std::optional<int32_t>& seed) {
+  return runAlgorithmX(dataStructure, false, true, seed).size() == 1;
 }

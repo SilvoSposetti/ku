@@ -5,8 +5,9 @@
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Negative-Diagonal-Even") {
-    const auto constraint = NegativeDiagonalEven();
-    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
+    auto constraint = NegativeDiagonalEven();
+    constraint.initialize();
+const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
         {}, {0}, {}, {0}, {}, {0}, {}, {0}, {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},
         {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},
         {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},

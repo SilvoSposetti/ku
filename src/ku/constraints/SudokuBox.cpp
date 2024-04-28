@@ -64,11 +64,11 @@ std::vector<std::vector<std::pair<int32_t, int32_t>>> SudokuBox::getBoxIndices()
   return allBoxIndexPairs;
 }
 
-int32_t SudokuBox::getPrimaryItemsAmount() const {
+int32_t SudokuBox::definePrimaryItemsAmount() const {
   return 9 * 9; // 9(boxes), 9(possible digits in each box)
 }
 
-std::vector<std::vector<int32_t>> SudokuBox::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> SudokuBox::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems(optionsOrdered().size());
 
   int32_t counter = 0;
@@ -80,10 +80,10 @@ std::vector<std::vector<int32_t>> SudokuBox::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t SudokuBox::getSecondaryItemsAmount() const {
+int32_t SudokuBox::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> SudokuBox::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> SudokuBox::defineSecondaryItems() const {
   return {};
 }

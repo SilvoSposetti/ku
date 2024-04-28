@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "constraints/AbstractConstraint.h"
 #include "randomGenerator/RandomGenerator.h"
+#include "solver/DataStructure.h"
 
 #include <filesystem>
 
@@ -66,10 +67,10 @@ public:
    */
   void exportToSvg(const std::filesystem::path& location);
 
-  /** Generates and stores the DLX matrix of this Sudoku to an SVG file in the /out directory
+  /** Generates and stores the Exact Cover matrix of this Sudoku to an SVG file in the /out directory
    * @param location Where the file should be stored
    */
-  void exportDlxMatrixToSvg(const std::filesystem::path& location);
+  void exportExactCoverMatrixToSvg(const std::filesystem::path& location);
 
   /** Logs sudoku's info to stdout
    */
@@ -96,6 +97,12 @@ private:
    * @return The transformed matrix
    */
   static std::vector<std::vector<Sudo::Digit>> transformClues(const std::vector<std::vector<int32_t>>& clues);
+
+  /** Creates the svg contents of the exact cover matrix that represents this sudoku
+   * @param dataStructure The data structure constructed with the current constraints and field
+   * @return The svg string
+   */
+  static std::string createExactCoverMatrixSvgContents(const DataStructure& dataStructure);
 
 private:
   /// The name

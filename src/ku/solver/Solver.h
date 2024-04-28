@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../constraints/AbstractConstraint.h"
-#include "SparseCoordinateMatrix.h"
+#include "DataStructure.h"
 
 #include <memory>
 #include <optional>
@@ -35,15 +35,6 @@ public:
   static bool isUnique(const std::vector<std::vector<Sudo::Digit>>& field,
                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
-  /** Retrieves the Exact Cover matrix for a board with a specific set of constraints
-   * @param board The current board
-   * @param constraints The constraints
-   * @return The Exact Cover matrix as a sparse coordinate matrix
-   */
-  static SparseCoordinateMatrix
-  getExactCoverMatrix(const std::vector<std::vector<Sudo::Digit>>& board,
-                      const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-
   /** Preliminary check to see if a set of constraints won't produce a solvable Algorithm X problem. E.g. when the
    * columns that they define are all secondary
    * @param constraints The set of constraints
@@ -64,22 +55,12 @@ private:
                     bool checkForUniqueness,
                     std::optional<int32_t> seed);
 
-  /** Creates and returns the sparse matrix of integers which could be used for Algorithm X
-   * @param board A (partial) board
-   * @param constraints The set of constraints
-   * @param randomGenerator The random number generator instance used to draw random numbers
-   * @return A sparse matrix representation of the one used by Algorithm X
-   */
-  static SparseCoordinateMatrix
-  reduceSudokuProblemToExactCoverProblem(const std::vector<std::vector<Sudo::Digit>>& board,
-                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-
   /** Creates a Sudoku board from an Exact Cover matrix and one of its (possibly many) solutions
-   * @param matrix The Exact Cover problem's sparse matrix
-   * @param rowIndicesSet A set of matrix rows that solve the Exact Cover problem in the matrix
-   * @return A Sudoku board constructed with the solution provided
+   * @param board The Sudoku problem's board to be solved
+   * @param dataStructure The data structure used during solving of the Exact Cover problem
+   * @param solutionOptions A of option indices that solve the Exact Cover problem
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                       const SparseCoordinateMatrix& matrix,
-                                                       const std::unordered_set<int32_t>& solutionRows);
+                                                      const DataStructure& dataStructure,
+                                                      const std::unordered_set<int32_t>& solutionOptions);
 };

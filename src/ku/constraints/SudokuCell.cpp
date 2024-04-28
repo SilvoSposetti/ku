@@ -24,11 +24,11 @@ bool SudokuCell::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) con
   return true;
 }
 
-int32_t SudokuCell::getPrimaryItemsAmount() const {
+int32_t SudokuCell::definePrimaryItemsAmount() const {
   return Sudo::TOTAL_DIGITS; // 9 * 9 = 81 single places in which a digit could go
 }
 
-std::vector<std::vector<int32_t>> SudokuCell::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> SudokuCell::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems(optionsOrdered().size());
 
   int32_t counter = 0;
@@ -39,10 +39,10 @@ std::vector<std::vector<int32_t>> SudokuCell::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t SudokuCell::getSecondaryItemsAmount() const {
+int32_t SudokuCell::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> SudokuCell::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> SudokuCell::defineSecondaryItems() const {
   return {};
 }

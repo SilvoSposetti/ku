@@ -45,11 +45,11 @@ bool Asterisk::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int32_
   return isInCellsSet && isSame;
 }
 
-int32_t Asterisk::getPrimaryItemsAmount() const {
+int32_t Asterisk::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT;
 }
 
-std::vector<std::vector<int32_t>> Asterisk::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> Asterisk::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -64,10 +64,10 @@ std::vector<std::vector<int32_t>> Asterisk::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t Asterisk::getSecondaryItemsAmount() const {
+int32_t Asterisk::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> Asterisk::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> Asterisk::defineSecondaryItems() const {
   return{};
 }

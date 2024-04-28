@@ -10,10 +10,11 @@ public:
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 
-  virtual int32_t getPrimaryItemsAmount() const override;
-  virtual std::vector<std::vector<int32_t>> getPrimaryItems() const override;
-  virtual int32_t getSecondaryItemsAmount() const override;
-  virtual std::vector<std::vector<int32_t>> getSecondaryItems() const override;
+protected:
+  virtual int32_t definePrimaryItemsAmount() const override;
+  virtual std::vector<std::vector<int32_t>> definePrimaryItems() const override;
+  virtual int32_t defineSecondaryItemsAmount() const override;
+  virtual std::vector<std::vector<int32_t>> defineSecondaryItems() const override;
 
 private:
   /** Computes the "box" index of a cell, given its rowIndex and columnIndex in the grid

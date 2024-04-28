@@ -32,11 +32,11 @@ bool SudokuRow::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) cons
   return true;
 }
 
-int32_t SudokuRow::getPrimaryItemsAmount() const {
+int32_t SudokuRow::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT * Sudo::MAX_DIGIT; // 9(rows) * 9(possible digits in each row)
 }
 
-std::vector<std::vector<int32_t>> SudokuRow::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> SudokuRow::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems(optionsOrdered().size());
   int32_t counter = 0;
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -46,10 +46,10 @@ std::vector<std::vector<int32_t>> SudokuRow::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t SudokuRow::getSecondaryItemsAmount() const {
+int32_t SudokuRow::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> SudokuRow::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> SudokuRow::defineSecondaryItems() const {
   return{};
 }

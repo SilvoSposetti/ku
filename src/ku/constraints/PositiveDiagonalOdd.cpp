@@ -31,11 +31,11 @@ bool PositiveDiagonalOdd::computeConstraint(Sudo::Digit digit, int32_t i, int32_
   return i == row && j == column && isOddDigit;
 }
 
-int32_t PositiveDiagonalOdd::getPrimaryItemsAmount() const {
+int32_t PositiveDiagonalOdd::definePrimaryItemsAmount() const {
   return Sudo::MAX_DIGIT; // There are 9 cells in the positive diagonal
 }
 
-std::vector<std::vector<int32_t>> PositiveDiagonalOdd::getPrimaryItems() const {
+std::vector<std::vector<int32_t>> PositiveDiagonalOdd::definePrimaryItems() const {
   std::vector<std::vector<int32_t>> primaryItems;
 
   for (const auto& [rowIndex, columnIndex, digit] : optionsOrdered()) {
@@ -50,10 +50,10 @@ std::vector<std::vector<int32_t>> PositiveDiagonalOdd::getPrimaryItems() const {
   return primaryItems;
 }
 
-int32_t PositiveDiagonalOdd::getSecondaryItemsAmount() const {
+int32_t PositiveDiagonalOdd::defineSecondaryItemsAmount() const {
   return 0;
 }
 
-std::vector<std::vector<int32_t>> PositiveDiagonalOdd::getSecondaryItems() const {
+std::vector<std::vector<int32_t>> PositiveDiagonalOdd::defineSecondaryItems() const {
   return {};
 }
