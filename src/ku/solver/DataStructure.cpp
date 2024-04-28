@@ -1,8 +1,5 @@
 #include "DataStructure.h"
 
-#include "../Sudo.h"
-#include "Node.h"
-
 #include <algorithm>
 #include <iostream>
 

@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../Sudo.h"
 #include "../constraints/AbstractConstraint.h"
 #include "DataStructure.h"
 
 #include <memory>
 #include <optional>
 #include <unordered_set>
+#include <vector>
 
 class Solver {
 public:

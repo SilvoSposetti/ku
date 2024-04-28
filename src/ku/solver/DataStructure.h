@@ -5,8 +5,8 @@
 #include "Node.h"
 #include "OptionData.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 /** Data structure used by Algorithm X.
  *It is essentially two-dimensional doubly-linked-list whose elements sit into a single, linearized vector of nodes.
