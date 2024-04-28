@@ -56,11 +56,11 @@ private:
                     std::optional<int32_t> seed);
 
   /** Creates a Sudoku board from an Exact Cover matrix and one of its (possibly many) solutions
-   * @param matrix The Exact Cover problem's sparse matrix
-   * @param rowIndicesSet A set of matrix rows that solve the Exact Cover problem in the matrix
-   * @return A Sudoku board constructed with the solution provided
+   * @param board The Sudoku problem's board to be solved
+   * @param dataStructure The data structure used during solving of the Exact Cover problem
+   * @param solutionOptions A of option indices that solve the Exact Cover problem
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
                                                       const DataStructure& dataStructure,
-                                                      const std::unordered_set<int32_t>& solutionRows);
+                                                      const std::unordered_set<int32_t>& solutionOptions);
 };

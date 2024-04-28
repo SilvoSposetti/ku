@@ -93,11 +93,11 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
 
 void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
                                                       const DataStructure& dataStructure,
-                                                      const std::unordered_set<int32_t>& solutionRows) {
+                                                      const std::unordered_set<int32_t>& solutionOptions) {
 
   const auto& optionsData = dataStructure.getOptionsData();
-  for (const auto& rowIndex : solutionRows) {
-    const auto& OptionData = optionsData[rowIndex];
+  for (const auto& optionIndex : solutionOptions) {
+    const auto& OptionData = optionsData[optionIndex];
     board[OptionData.indexI][OptionData.indexJ] = OptionData.digit;
   }
 }

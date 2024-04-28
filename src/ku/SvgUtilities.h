@@ -8,7 +8,6 @@ const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(Sudo::MAX_DIGIT);
 const double boardMargin = cellSize * 1.5;
 const double totalBoardSize = boardSize + 2 * boardMargin;
-const double dlxMatrixHeight = boardSize * 1.2;
 const double infoHeight = 0.4 * boardSize;
 
 const int givenPatternCellSize = boardSize / 50;

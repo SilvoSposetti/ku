@@ -67,7 +67,7 @@ public:
    */
   void exportToSvg(const std::filesystem::path& location);
 
-  /** Generates and stores the DLX matrix of this Sudoku to an SVG file in the /out directory
+  /** Generates and stores the Exact Cover matrix of this Sudoku to an SVG file in the /out directory
    * @param location Where the file should be stored
    */
   void exportExactCoverMatrixToSvg(const std::filesystem::path& location);
