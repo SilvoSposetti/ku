@@ -1,5 +1,7 @@
 #include "SudokuCell.h"
 
+#include "../SvgUtilities.h"
+
 SudokuCell::SudokuCell()
     : AbstractConstraint(
           ConstraintType::SUDOKU_CELL, "Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}

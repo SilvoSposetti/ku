@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <tuple>
-#include <utility>
 
 namespace IdPacking {
 

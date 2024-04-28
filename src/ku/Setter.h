@@ -5,6 +5,8 @@
 #include "randomGenerator/RandomGenerator.h"
 
 #include <memory>
+#include <optional>
+#include <vector>
 
 namespace Setter {
 

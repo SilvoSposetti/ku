@@ -3,8 +3,6 @@
 #include "Sudo.h"
 #include "doctest.h"
 
-#include <algorithm>
-
 TEST_CASE("Sudoku") {
   ConstraintType classicConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
                                       ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;

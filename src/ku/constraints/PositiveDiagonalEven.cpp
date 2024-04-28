@@ -1,5 +1,6 @@
 #include "PositiveDiagonalEven.h"
 
+#include "../SvgUtilities.h"
 #include "ConstraintUtilities.h"
 
 PositiveDiagonalEven::PositiveDiagonalEven()

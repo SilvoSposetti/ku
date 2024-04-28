@@ -2,6 +2,7 @@
 
 #include "DataStructure.h"
 
+#include <cstdint>
 #include <optional>
 #include <unordered_set>
 #include <vector>
@@ -24,8 +25,7 @@ std::vector<std::unordered_set<int32_t>> findAllSolutions(const DataStructure& d
  * @param seed The seed for the random number generator. Uses a random seed if not available.
  * @return Returns potentially zero, one or many sets of options (matrix-rows) indices that solve the matrix's problem
  */
-std::unordered_set<int32_t> findOneSolution(const DataStructure& dataStructure,
-                                            const std::optional<int32_t>& seed);
+std::unordered_set<int32_t> findOneSolution(const DataStructure& dataStructure, const std::optional<int32_t>& seed);
 
 /** Computes whether the Exact Cover problem has exactly one solution. Has a potential early exit with respect to run()
  * since it returns false as soon as it finds 2 solutions.

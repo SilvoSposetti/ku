@@ -1,7 +1,10 @@
 #include "AntiKnight.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
 
+#include <cmath>
 #include <set>
 
 AntiKnight::AntiKnight()

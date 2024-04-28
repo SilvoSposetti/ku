@@ -1,5 +1,6 @@
 #include "NegativeDiagonal.h"
 
+#include "../SvgUtilities.h"
 #include "ConstraintUtilities.h"
 
 NegativeDiagonal::NegativeDiagonal()

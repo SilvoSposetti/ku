@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Board.h"
+#include "Sudo.h"
 #include "constraints/AbstractConstraint.h"
-#include "randomGenerator/RandomGenerator.h"
+#include "constraints/ConstraintType.h"
 #include "solver/DataStructure.h"
 
 #include <filesystem>
+#include <optional>
+#include <vector>
 
 /** Main class that stores Sudokus
  */

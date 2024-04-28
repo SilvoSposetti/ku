@@ -3,6 +3,8 @@
 #include "solver/Solver.h"
 #include "utilities/Timer.h"
 
+#include <iostream>
+
 std::unique_ptr<Board> Setter::generate(int32_t totalDigits,
                                         const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,
                                         std::optional<int32_t> seed) {

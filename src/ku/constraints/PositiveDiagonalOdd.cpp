@@ -1,5 +1,6 @@
 #include "PositiveDiagonalOdd.h"
 
+#include "../SvgUtilities.h"
 #include "ConstraintUtilities.h"
 
 PositiveDiagonalOdd::PositiveDiagonalOdd()

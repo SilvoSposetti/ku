@@ -1,5 +1,7 @@
 #include "SudokuRow.h"
 
+#include "../SvgUtilities.h"
+
 SudokuRow::SudokuRow()
     : AbstractConstraint(
           ConstraintType::SUDOKU_ROW, "Sudoku-Row", "9x1 rows contain all the digits from 1 to 9 exactly once.") {}
@@ -51,5 +53,5 @@ int32_t SudokuRow::defineSecondaryItemsAmount() const {
 }
 
 std::vector<std::vector<int32_t>> SudokuRow::defineSecondaryItems() const {
-  return{};
+  return {};
 }

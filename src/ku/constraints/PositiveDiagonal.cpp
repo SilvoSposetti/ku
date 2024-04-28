@@ -1,5 +1,6 @@
 #include "PositiveDiagonal.h"
 
+#include "../SvgUtilities.h"
 #include "ConstraintUtilities.h"
 
 PositiveDiagonal::PositiveDiagonal()
@@ -61,5 +62,5 @@ int32_t PositiveDiagonal::defineSecondaryItemsAmount() const {
 }
 
 std::vector<std::vector<int32_t>> PositiveDiagonal::defineSecondaryItems() const {
-  return{};
+  return {};
 }

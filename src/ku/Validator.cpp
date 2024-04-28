@@ -1,5 +1,7 @@
 #include "Validator.h"
 
+#include <iostream>
+
 bool Validator::checkSolution(const std::vector<std::vector<Sudo::Digit>>& board,
                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   // There is no blank cell

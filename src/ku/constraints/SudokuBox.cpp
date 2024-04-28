@@ -1,5 +1,7 @@
 #include "SudokuBox.h"
 
+#include "../SvgUtilities.h"
+
 SudokuBox::SudokuBox()
     : AbstractConstraint(
           ConstraintType::SUDOKU_BOX, "Sudoku-Box", "3x3 boxes contain all the digits from 1 to 9 exactly once.") {}

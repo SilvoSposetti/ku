@@ -1,9 +1,7 @@
 #include "DataStructure.h"
 
-#include "../Sudo.h"
-#include "Node.h"
-
 #include <algorithm>
+#include <iostream>
 
 DataStructure::DataStructure(const std::vector<std::vector<Sudo::Digit>>& board,
                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {

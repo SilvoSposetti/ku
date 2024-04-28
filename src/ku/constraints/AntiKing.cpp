@@ -1,6 +1,10 @@
 #include "AntiKing.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
+
+#include <cmath>
 
 AntiKing::AntiKing()
     : AbstractConstraint(

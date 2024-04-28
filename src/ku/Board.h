@@ -2,7 +2,7 @@
 
 #include "Sudo.h"
 
-#include <string>
+#include <vector>
 
 /** Stores the board of a Sudoku
  */
@@ -13,7 +13,7 @@ public:
    * @param givenMask The given Mask
    */
   Board(const std::vector<std::vector<Sudo::Digit>>& solution, const std::vector<std::vector<bool>>& givenMask);
-  
+
   /** Prints the given pattern of this board to console
    */
   void printGivenPattern() const;

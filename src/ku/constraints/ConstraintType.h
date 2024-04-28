@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
-#include <unordered_set>
 
 enum class ConstraintType : uint64_t {
   NONE = 0,
