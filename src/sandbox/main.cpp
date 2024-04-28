@@ -1,9 +1,6 @@
-#include "Sudo.h"
 #include "Sudoku.h"
 
-#include <iostream>
 #include <string>
-#include <vector>
 
 int main() {
   ConstraintType constraints = ConstraintType::SUDOKU_CELL;

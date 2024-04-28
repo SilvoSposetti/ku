@@ -1,5 +1,8 @@
 #include "HyperSudoku.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
+
 HyperSudoku::HyperSudoku()
     : AbstractConstraint(ConstraintType::HYPER_SUDOKU,
                          "Hyper-Sudoku",
@@ -55,7 +58,6 @@ bool HyperSudoku::computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, int
   return isCellInBox(i, j, boxId) && possibleDigit == digit;
 }
 
-
 int32_t HyperSudoku::definePrimaryItemsAmount() const {
   return 4 * Sudo::MAX_DIGIT; // 4 boxes, 9 possible digits for each box
 }
@@ -80,5 +82,5 @@ int32_t HyperSudoku::defineSecondaryItemsAmount() const {
 }
 
 std::vector<std::vector<int32_t>> HyperSudoku::defineSecondaryItems() const {
-  return{};
+  return {};
 }

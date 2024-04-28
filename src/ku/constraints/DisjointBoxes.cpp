@@ -1,5 +1,11 @@
 #include "DisjointBoxes.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
+
+#include <iostream>
+#include <numbers>
+
 DisjointBoxes::DisjointBoxes()
     : AbstractConstraint(
           ConstraintType::DISJOINT_BOXES,
@@ -18,7 +24,7 @@ std::string DisjointBoxes::getSvgGroup() const {
       const double positionX = cellSize * (i + .5) + squareOffset * ((i % 3) - 1);
       const double positionY = cellSize * (j + .5) + squareOffset * ((j % 3) - 1);
 
-      result += SvgUtilities::rotatedRect(positionX, positionY, squareSize, squareSize, M_PI / 4);
+      result += SvgUtilities::rotatedRect(positionX, positionY, squareSize, squareSize, std::numbers::pi / 4);
     }
   }
 

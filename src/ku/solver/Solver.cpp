@@ -2,8 +2,9 @@
 
 #include "../Sudo.h"
 #include "../Validator.h"
-#include "../utilities/IdPacking.h"
 #include "AlgorithmX.h"
+
+#include <iostream>
 
 std::vector<std::vector<Sudo::Digit>>
 Solver::createNewBoard(const std::vector<std::unique_ptr<AbstractConstraint>>& constraints,

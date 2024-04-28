@@ -1,5 +1,7 @@
 #include "SudokuColumn.h"
 
+#include "../SvgUtilities.h"
+
 SudokuColumn::SudokuColumn()
     : AbstractConstraint(ConstraintType::SUDOKU_COLUMN,
                          "Sudoku-Column",

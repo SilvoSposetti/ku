@@ -1,8 +1,11 @@
 #include "AntiKingTorus.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
 
 #include <algorithm>
+#include <cmath>
 
 AntiKingTorus::AntiKingTorus()
     : AbstractConstraint(ConstraintType::ANTI_KING_TORUS,

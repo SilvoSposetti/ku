@@ -2,6 +2,8 @@
 
 #include "AbstractConstraint.h"
 
+#include <set>
+
 class AntiKingTorus : public AbstractConstraint {
 public:
   AntiKingTorus();

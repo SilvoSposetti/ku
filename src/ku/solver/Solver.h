@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <unordered_set>
 
 class Solver {
 public:
@@ -61,6 +62,6 @@ private:
    * @param solutionOptions A of option indices that solve the Exact Cover problem
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                      const DataStructure& dataStructure,
-                                                      const std::unordered_set<int32_t>& solutionOptions);
+                                                       const DataStructure& dataStructure,
+                                                       const std::unordered_set<int32_t>& solutionOptions);
 };

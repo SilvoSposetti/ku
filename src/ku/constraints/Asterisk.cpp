@@ -1,5 +1,8 @@
 #include "Asterisk.h"
 
+#include "../SvgUtilities.h"
+#include "../utilities/IdPacking.h"
+
 Asterisk::Asterisk()
     : AbstractConstraint(ConstraintType::ASTERISK,
                          "Asterisk",
@@ -69,5 +72,5 @@ int32_t Asterisk::defineSecondaryItemsAmount() const {
 }
 
 std::vector<std::vector<int32_t>> Asterisk::defineSecondaryItems() const {
-  return{};
+  return {};
 }

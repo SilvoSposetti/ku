@@ -1,12 +1,10 @@
 #pragma once
 
-#include "../SvgUtilities.h"
-#include "../utilities/IdPacking.h"
+#include "../Sudo.h"
 #include "ConstraintType.h"
 
-#include <cmath>
-#include <iostream>
-#include <set>
+#include <string>
+#include <vector>
 
 /** Base class for all constraints.
  */
@@ -121,7 +119,7 @@ private:
   /** The primary items
    */
   std::vector<std::vector<int32_t>> primaryItems;
-  
+
   /** The secondary items
    */
   std::vector<std::vector<int32_t>> secondaryItems;

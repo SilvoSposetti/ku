@@ -7,6 +7,7 @@
 #include "src/ku/Sudo.h"
 
 #include <fstream>
+#include <iostream>
 
 Sudoku::Sudoku(const std::string& name,
                ConstraintType constraintTypes,

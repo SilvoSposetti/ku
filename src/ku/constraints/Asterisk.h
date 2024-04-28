@@ -2,6 +2,8 @@
 
 #include "AbstractConstraint.h"
 
+#include <set>
+
 class Asterisk : public AbstractConstraint {
 public:
   Asterisk();
