@@ -86,6 +86,8 @@ DataStructure::DataStructure(const std::vector<std::vector<Sudo::Digit>>& board,
                 }
                 baseItemId += primaryItemsAmount;
               }
+            }
+            for (const auto& constraint : constraints) {
               // Secondary items
               const int32_t secondaryItemsAmount = constraint->getSecondaryItemsAmount();
               if (secondaryItemsAmount > 0) {
