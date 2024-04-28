@@ -175,149 +175,6 @@ std::string SvgUtilities::givenPatternBorder() {
   return paperUnitsRect(x, y, size, size, getNoFillStroke(thinLine));
 }
 
-std::string SvgUtilities::dlxMatrix(const SparseCoordinateMatrix& matrix,
-                                    const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo) {
-
-  int32_t columnsAmount = matrix.getColumnsAmount();
-  const int32_t rowsAmount = matrix.getRowsAmount();
-
-  const double originX = 0;
-  const double originY = 0;
-
-  const int32_t constraintSeparationAmount = std::max(0.0, static_cast<double>(constraintsInfo.size() - 1));
-  const double constraintSeparationCellMultiplier = static_cast<double>(Sudo::MAX_DIGIT);
-
-  const double verticalCellSize = boardSize / rowsAmount;
-  const double horizontalCellSize =
-      boardSize / (columnsAmount + constraintSeparationAmount * constraintSeparationCellMultiplier);
-  const double dlxCellSize = std::min(verticalCellSize, horizontalCellSize);
-
-  const int32_t textSize = boardSize / 100;
-  const int32_t textDistance = dlxCellSize * Sudo::MAX_DIGIT * 2;
-  const double constraintSeparation = dlxCellSize * constraintSeparationCellMultiplier;
-
-  const double namesBuffer = boardSize * 0.15;
-  const double actualHeight = dlxCellSize * rowsAmount + namesBuffer;
-  const double actualWidth = dlxCellSize * columnsAmount + constraintSeparation * constraintSeparationAmount;
-
-  // Keep track of which columns have already been considered
-  int32_t columnsCounter = 0;
-  int32_t constraintCounter = 0;
-
-  std::string names;
-  std::string backgrounds;
-  std::string optionalConstraintsBackgrounds;
-  std::string cells;
-  for (const auto& constraintInfo : constraintsInfo) {
-    const double constraintOriginX = originX + columnsCounter * dlxCellSize + constraintCounter * constraintSeparation;
-    const std::string name = constraintInfo.first;
-    const int32_t constraintColumns = constraintInfo.second.size();
-
-    // Name
-    double textPositionX = constraintOriginX + (constraintColumns * 0.5) * dlxCellSize;
-    double textPositionY = originY + rowsAmount * dlxCellSize + textDistance;
-    std::string constraintText =
-        text(textPositionX, textPositionY, name, getRotatedTextStyle(textPositionX, textPositionY, textSize));
-
-    // Background
-    std::string constraintBackground = paperUnitsRect(
-        constraintOriginX, originY, dlxCellSize * constraintColumns, dlxCellSize * rowsAmount, whiteRectStyle);
-
-    // Optional constraints
-    int32_t optionalColumnsCounter = 0;
-    std::string optionalConstraintsBackground;
-    double boardHeight = dlxCellSize * rowsAmount;
-
-    if (std::all_of(constraintInfo.second.begin(), constraintInfo.second.end(), [](bool v) { return !v; })) {
-      // All columns are optional for this constraint. Do one big rectangle for this constraint
-      optionalConstraintsBackground +=
-          paperUnitsRect(constraintOriginX, boardHeight, constraintColumns * dlxCellSize, textDistance);
-    } else {
-      // Some columns are optionals, some are not. Do multiple small rectangle to show which ones
-      for (const auto& isColumnPrimary : constraintInfo.second) {
-        if (!isColumnPrimary) {
-          double leftX = (columnsCounter + optionalColumnsCounter + constraintCounter * Sudo::MAX_DIGIT) * dlxCellSize;
-          double rightX = dlxCellSize;
-          optionalConstraintsBackground += paperUnitsRect(leftX, boardHeight, rightX, textDistance);
-        }
-        optionalColumnsCounter++;
-      }
-    }
-
-    optionalConstraintsBackground =
-        createGroup("DLX-" + name + "-Optional-Constraints", optionalConstraintsBackground, middleGreyRectStyle);
-
-    // Cells
-    const int32_t startColumn = columnsCounter;
-    const int32_t endColumn = columnsCounter + constraintColumns;
-    std::string constraintCells;
-    for (int32_t i = 0; i < rowsAmount; i++) {
-      for (int32_t j = startColumn; j < endColumn; j++) {
-        if (matrix.isCellSet(i, j)) {
-          const double posX = originX + constraintCounter * constraintSeparation + j * dlxCellSize;
-          const double posY = originY + i * dlxCellSize;
-          constraintCells += paperUnitsRect(posX, posY, dlxCellSize, dlxCellSize);
-        }
-      }
-    }
-    constraintCells = createGroup("DLX-" + name + "-Cells", constraintCells, darkRectStyle);
-
-    names += constraintText;
-    backgrounds += constraintBackground;
-    optionalConstraintsBackgrounds += optionalConstraintsBackground;
-    cells += constraintCells;
-    columnsCounter += constraintColumns;
-    constraintCounter++;
-  }
-  names = createGroup("DLX-Names", names);
-  backgrounds = createGroup("DLX-Backgrounds", backgrounds, whiteRectStyle);
-  optionalConstraintsBackgrounds =
-      createGroup("DLX-OptionalConstraintsBackgrounds", optionalConstraintsBackgrounds, whiteRectStyle);
-  cells = createGroup("DLX-Cells", cells, darkRectStyle);
-
-  // Grid
-  double lineThickness = dlxCellSize / 5.0;
-  // Horizontal lines
-  std::string horizontalLines;
-  double startX = originX;
-  double endX = actualWidth;
-  int32_t currentColumn = 0;
-
-  for (int32_t i = 0; i < rowsAmount; i++) {
-    if (matrix.isCellSet(i, currentColumn) && currentColumn < columnsAmount) {
-      const double y = originY + dlxCellSize * i;
-      horizontalLines += paperUnitsLine(startX, y, endX, y);
-      currentColumn++;
-    }
-  }
-  horizontalLines += paperUnitsLine(startX, dlxCellSize * rowsAmount, endX, dlxCellSize * rowsAmount);
-  horizontalLines = createGroup("DLX-Horizontal-Lines", horizontalLines, getNoFillStroke(lineThickness));
-
-  // Vertical lines
-  std::string verticalLines;
-  int32_t verticalLinesAmount = matrix.getColumnsAmount() + constraintCounter * Sudo::MAX_DIGIT - 1;
-  double startY = originY;
-  double endY = originY + rowsAmount * dlxCellSize;
-  for (int32_t i = 0; i <= verticalLinesAmount; i++) {
-    if (i % Sudo::MAX_DIGIT == 0) {
-      const double x = originX + dlxCellSize * i;
-      verticalLines += paperUnitsLine(x, startY, x, endY);
-    }
-  }
-  verticalLines = createGroup("DLX-Vertical-Lines", verticalLines, getNoFillStroke(lineThickness));
-
-  // Header
-  const std::string header = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"" + toString(0) + " " + toString(0) +
-                             " " + toString(actualWidth) + " " + toString(actualHeight) + "\" >\n";
-
-  const std::string background = paperUnitsRect(0, 0, actualWidth, actualHeight, lightRectStyle);
-  // Footer
-  const std::string footer = getSvgFooter();
-
-  return header + background + names + backgrounds + optionalConstraintsBackgrounds + cells + horizontalLines +
-         verticalLines + footer;
-}
-
 std::string SvgUtilities::toString(double input) {
   constexpr int decimals = 2;
   std::stringstream s;
@@ -325,8 +182,8 @@ std::string SvgUtilities::toString(double input) {
   return s.str();
 }
 
-std::string SvgUtilities::getFontSize(int fontSize) {
-  return " font-size=\"" + std::to_string(fontSize) + "\"";
+std::string SvgUtilities::getFontSize(double fontSize) {
+  return " font-size=\"" + toString(fontSize) + "\"";
 }
 
 std::string SvgUtilities::paperUnitsRect(double x, double y, double width, double height, const std::string& style) {
@@ -339,9 +196,13 @@ std::string SvgUtilities::paperUnitsLine(double x1, double y1, double x2, double
          toString(y2) + "\"" + style + "/>\n";
 }
 
-std::string SvgUtilities::getRotatedTextStyle(double x, double y, int32_t fontSize) {
-  return getFontSize(fontSize) + " text-anchor=\"start\" dominant-baseline=\"central\" transform=\"rotate(90, " +
+std::string SvgUtilities::getRotatedTextStyle(double x, double y, double fontSize) {
+  return getFontSize(fontSize) + " text-anchor=\"end\" dominant-baseline=\"central\" transform=\"rotate(270, " +
          toString(x) + ", " + toString(y) + ")\"";
+}
+
+std::string SvgUtilities::getTextStyle(double fontSize) {
+  return getFontSize(fontSize) + " text-anchor=\"start\" dominant-baseline=\"central\"";
 }
 
 std::string SvgUtilities::getNoFillStroke(double strokeWidth) {
@@ -422,4 +283,15 @@ std::string SvgUtilities::squigglyLine(double x1, double y1, double x2, double y
 
 std::string SvgUtilities::getPointString(std::pair<double, double> point) {
   return toString(point.first) + "," + toString(point.second);
+}
+
+std::string SvgUtilities::padLeft(const std::string& input, char character, int32_t n) {
+  // return std::string(n - std::min(static_cast<size_t>(n), input.length()), character) + input;
+
+  if (n > input.size()) {
+    std::string output = input;
+    output.insert(0, n - input.size(), character);
+    return output;
+  }
+  return input;
 }

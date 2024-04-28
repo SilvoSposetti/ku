@@ -117,25 +117,14 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
   outfile.close();
 }
 
-void Sudoku::exportDlxMatrixToSvg(const std::filesystem::path& location) {
+void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
   if (!std::filesystem::exists(location)) {
     std::filesystem::create_directories(location);
   }
-  const std::filesystem::path outputFilePath = location / (name + "-DLX.svg");
+  const std::filesystem::path outputFilePath = location / (name + "-ExactCover.svg");
   std::ofstream outfile(outputFilePath);
 
-  // DLX Matrix
-  std::string svgContent;
-  std::vector<std::pair<std::string, std::vector<bool>>> constraintsInfo;
-  for (const auto& constraint : constraints) {
-
-    std::vector<bool> areColumnsPrimary(constraint->getPrimaryItemsAmount(), true);
-    std::vector<bool> secondaryColumns(constraint->getSecondaryItemsAmount(), false);
-    areColumnsPrimary.insert(areColumnsPrimary.end(), secondaryColumns.begin(), secondaryColumns.end());
-    constraintsInfo.emplace_back(std::make_pair(constraint->getName(), areColumnsPrimary));
-  }
-
-  svgContent += SvgUtilities::dlxMatrix(Solver::getExactCoverMatrix(board->getField(), constraints), constraintsInfo);
+  std::string svgContent = createExactCoverMatrixSvgContents(DataStructure(board->getField(), constraints));
 
   // Stream it to file, then save and close
   outfile << svgContent;
@@ -197,4 +186,160 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
     transformedClues.emplace_back(transformedRow);
   }
   return transformedClues;
+}
+
+std::string Sudoku::createExactCoverMatrixSvgContents(const DataStructure& dataStructure) {
+  std::string svg;
+
+  const int32_t columnsAmount = dataStructure.getItemsAmount();
+  const int32_t rowsAmount = dataStructure.getOptionsAmount();
+
+  const double boardSize = 1000; // Both in X and Y
+  const double originX = 0;
+  const double originY = 0;
+
+  const double verticalCellSize = boardSize / rowsAmount;
+  const double horizontalCellSize = boardSize / columnsAmount;
+  const double cellSize = std::min(verticalCellSize, horizontalCellSize);
+  const double margin = cellSize * 10;
+
+  const double textSize = cellSize * 1;
+
+  const double namesBuffer = cellSize * 20;
+  // const double namesBuffer = 0;
+  const double actualHeight = cellSize * rowsAmount + namesBuffer;
+  const double actualWidth = cellSize * columnsAmount + namesBuffer;
+
+  const double primaryLineWidth = cellSize / 5.0;
+  const double secondaryLineWidth = cellSize / 20.0;
+
+  const auto structure = dataStructure.getStructureCopy();
+  // Header
+  {
+    const std::string header =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"" + SvgUtilities::toString(originX - margin) + " " +
+        SvgUtilities::toString(originY - margin) + " " + SvgUtilities::toString(actualWidth + 2.0 * margin) + " " +
+        SvgUtilities::toString(actualHeight + 2.0 * margin) + "\" >\n";
+    svg += header;
+  }
+
+  // Background
+  {
+    const std::string background = SvgUtilities::paperUnitsRect(
+        0 - margin, 0 - margin, actualWidth + 2.0 * margin, actualHeight + 2.0 * margin, lightRectStyle);
+    svg += background;
+  }
+
+  // Cells
+  {
+    std::string cells;
+
+    int32_t currentOption = -1;
+    for (const auto& node : structure) {
+      if (node.type == NodeType::Spacer) {
+        // go to next option
+        currentOption++;
+      }
+      if (node.type == NodeType::Node) {
+        // Compute coordinates of square
+        const int32_t itemIndex = node.header - 1;
+        cells += SvgUtilities::paperUnitsRect(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize);
+      }
+    }
+    svg += SvgUtilities::createGroup("Cells", cells, darkRectStyle);
+  }
+
+  // Vertical Lines
+  {
+    std::string primaryLines;
+    std::string secondaryLines;
+
+    std::string currentName;
+    int32_t currentIndex = 0;
+    for (const auto& itemData : dataStructure.getItemsData()) {
+      const double x = currentIndex * cellSize;
+      if (currentName != itemData.constraintName) {
+        // Add primary vertical line
+        primaryLines += SvgUtilities::paperUnitsLine(x, 0, x, actualHeight);
+
+        currentName = itemData.constraintName;
+      } else {
+        // Add secondary vertical line
+        secondaryLines += SvgUtilities::paperUnitsLine(x, 0, x, actualHeight);
+      }
+      currentIndex++;
+    }
+    primaryLines += SvgUtilities::paperUnitsLine(currentIndex * cellSize, 0, currentIndex * cellSize, actualHeight);
+    primaryLines += SvgUtilities::paperUnitsLine(actualWidth, 0, actualWidth, cellSize * rowsAmount);
+
+    svg += SvgUtilities::createGroup(
+        "Primary Vertical Lines", primaryLines, SvgUtilities::getNoFillStroke(primaryLineWidth));
+    svg += SvgUtilities::createGroup(
+        "Secondary Vertical Lines", secondaryLines, SvgUtilities::getNoFillStroke(secondaryLineWidth));
+  }
+
+  // Horizontal Lines
+  {
+    std::string primaryLines;
+    std::string secondaryLines;
+    std::pair<int32_t, int32_t> previousCell{-1, -1};
+    int32_t counter = 0;
+    for (const auto& optionData : dataStructure.getOptionsData()) {
+      const double y = cellSize * counter;
+      std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
+      if (previousCell != currentCell) {
+        primaryLines += SvgUtilities::paperUnitsLine(0, y, actualWidth, y);
+        previousCell = currentCell;
+      } else {
+        secondaryLines += SvgUtilities::paperUnitsLine(0, y, actualWidth, y);
+      }
+      counter++;
+    }
+    primaryLines += SvgUtilities::paperUnitsLine(0, cellSize * counter, actualWidth, cellSize * counter);
+    primaryLines += SvgUtilities::paperUnitsLine(0, actualHeight, cellSize * columnsAmount, actualHeight);
+
+    svg += SvgUtilities::createGroup(
+        "Primary Horizontal Lines", primaryLines, SvgUtilities::getNoFillStroke(primaryLineWidth));
+    svg += SvgUtilities::createGroup(
+        "Secondary Horizontal Lines", secondaryLines, SvgUtilities::getNoFillStroke(secondaryLineWidth));
+  }
+
+  // Text
+  {
+    // Bottom Text
+    {
+      std::string bottomText;
+      int32_t counter = 0;
+      for (const auto& itemData : dataStructure.getItemsData()) {
+        std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
+                               SvgUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+        double x = (static_cast<double>(counter) + 0.5) * cellSize;
+        double y = cellSize * rowsAmount;
+        bottomText += SvgUtilities::text(x, y, itemName, SvgUtilities::getRotatedTextStyle(x, y, textSize));
+        counter++;
+      }
+      svg += SvgUtilities::createGroup("Text", bottomText);
+    }
+    // Right Text
+    {
+      std::string rightText;
+      int32_t counter = 0;
+      for (const auto& optionData : dataStructure.getOptionsData()) {
+        std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
+                                 std::to_string(optionData.indexJ) + ", Digit " +
+                                 std::to_string(static_cast<int32_t>(optionData.digit));
+        double x = cellSize * columnsAmount;
+        double y = (static_cast<double>(counter) + 0.5) * cellSize;
+        rightText += SvgUtilities::text(x, y, optionName, SvgUtilities::getTextStyle(textSize));
+        counter++;
+      }
+      svg += SvgUtilities::createGroup("Text", rightText);
+    }
+  }
+  // Footer
+  {
+    const std::string footer = SvgUtilities::getSvgFooter();
+    svg += footer;
+  }
+  return svg;
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Sudo.h"
-#include "solver/SparseCoordinateMatrix.h"
 
 #include <string>
 
@@ -65,10 +64,7 @@ public:
 
   static std::string givenPatternBorder();
 
-  static std::string getFontSize(int fontSize);
-
-  static std::string dlxMatrix(const SparseCoordinateMatrix& dlxMatrix,
-                               const std::vector<std::pair<std::string, std::vector<bool>>>& constraintsInfo);
+  static std::string getFontSize(double fontSize);
 
   static std::string getNoFillStroke(double strokeWidth);
 
@@ -82,14 +78,17 @@ public:
 
   static std::string squigglyLine(double x1, double y1, double x2, double y2, double size = 0.005);
 
-private:
+  static std::string toString(double input);
+
   static std::string paperUnitsRect(double x, double y, double width, double height, const std::string& style = "");
 
   static std::string paperUnitsLine(double x1, double y1, double x2, double y2, const std::string& style = "");
 
-  static std::string toString(double input);
+  static std::string getRotatedTextStyle(double x, double y, double fontSize);
 
-  static std::string getRotatedTextStyle(double x, double y, int32_t fontSize);
+  static std::string getTextStyle(double fontSize);
 
   static std::string getPointString(std::pair<double, double> point);
+
+  static std::string padLeft(const std::string& input, char character, int32_t n);
 };

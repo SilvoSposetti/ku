@@ -2,6 +2,7 @@
 
 #include "../constraints/AbstractConstraint.h"
 #include "DataStructure.h"
+#include "SparseCoordinateMatrix.h"
 
 #include <memory>
 #include <optional>
