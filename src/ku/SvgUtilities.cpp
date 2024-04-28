@@ -1,6 +1,5 @@
 #include "SvgUtilities.h"
 
-#include <algorithm>
 #include <cmath>
 #include <iomanip>
 
@@ -80,8 +79,8 @@ std::string SvgUtilities::rotatedRect(
   const double BRX = width * .5;
   const double BRY = height * .5;
 
-  const double c = cos(rotationAngle);
-  const double s = sin(rotationAngle);
+  const double c = std::cos(rotationAngle);
+  const double s = std::sin(rotationAngle);
   const double topLeftX = ((TLX * c - TLY * s) + x) * boardSize;
   const double topLeftY = ((TLX * s + TLY * c) + y) * boardSize;
   const double topRightX = ((TRX * c - TRY * s) + x) * boardSize;

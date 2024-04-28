@@ -3,6 +3,7 @@
 #include "Sudo.h"
 
 #include <string>
+#include <vector>
 
 const double boardSize = 1000;
 const double cellSize = boardSize / static_cast<double>(Sudo::MAX_DIGIT);
