@@ -28,7 +28,6 @@ ku_sources = files(
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
   'solver/AlgorithmX.cpp',
-  'solver/AlgorithmXNode.cpp',
   'solver/DataStructure.cpp',
   'solver/ItemData.cpp',
   'solver/Node.cpp',
