@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <optional>
 #include <random>
 
@@ -24,16 +23,6 @@ public:
    * @return A random float in the range
    */
   float uniformFloat(float min, float max);
-
-  /** Returns a copy of the original vector, whose elements are randomly shuffled
-   * @param input The original vector
-   * @return The shuffled copy
-   */
-  template <typename T> std::vector<T> randomShuffle(const std::vector<T>& input) {
-    std::vector<T> output = input;
-    std::shuffle(output.begin(), output.end(), generator);
-    return output;
-  }
 
 private:
   /// The generator

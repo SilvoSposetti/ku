@@ -127,38 +127,6 @@ TEST_CASE("Random Generator") {
     }
   }
 
-  SUBCASE("Shuffle") {
-    std::vector<int32_t> vector(amount);
-    std::iota(vector.begin(), vector.end(), 0);
-
-    SUBCASE("Random Seed") {
-      RandomGenerator generator1;
-      RandomGenerator generator2;
-      const std::vector<int32_t> vector1 = generator1.randomShuffle(vector);
-      const std::vector<int32_t> vector2 = generator2.randomShuffle(vector);
-      CHECK(vector1 != vector2);
-    }
-
-    SUBCASE("Different Seed") {
-      const int32_t seed1 = 0;
-      const int32_t seed2 = 1;
-      RandomGenerator generator1(seed1);
-      RandomGenerator generator2(seed2);
-      const std::vector<int32_t> vector1 = generator1.randomShuffle(vector);
-      const std::vector<int32_t> vector2 = generator2.randomShuffle(vector);
-      CHECK(vector1 != vector2);
-    }
-
-    SUBCASE("Same Seed") {
-      const int32_t seed = 0;
-      RandomGenerator generator1(seed);
-      RandomGenerator generator2(seed);
-      const std::vector<int32_t> vector1 = generator1.randomShuffle(vector);
-      const std::vector<int32_t> vector2 = generator2.randomShuffle(vector);
-      CHECK(vector1 == vector2);
-    }
-  }
-
   SUBCASE("Sudoku") {
     const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
                                                  ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;

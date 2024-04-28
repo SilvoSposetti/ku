@@ -6,6 +6,7 @@
 #include "solver/Solver.h"
 #include "src/ku/Sudo.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 
