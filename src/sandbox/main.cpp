@@ -30,7 +30,7 @@ int main() {
     sudoku.printInfo();
     sudoku.printBoard();
     sudoku.exportToSvg(location);
-    sudoku.exportDlxMatrixToSvg(location);
+    sudoku.exportExactCoverMatrixToSvg(location);
   }
 
   return EXIT_SUCCESS;
