@@ -21,7 +21,6 @@ unit_test_sources = files(
   'IdPackingTest.cpp',
   'main.cpp',
   'RandomGeneratorTest.cpp',
-  'SparseCoordinateMatrixTest.cpp',
   'SudokuTest.cpp',
   'TimerTest.cpp',
 )

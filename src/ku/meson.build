@@ -27,7 +27,6 @@ ku_sources = files(
   'constraints/SudokuRow.cpp',
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
-  'solver/SparseCoordinateMatrix.cpp',
   'solver/AlgorithmX.cpp',
   'solver/AlgorithmXNode.cpp',
   'solver/DataStructure.cpp',
