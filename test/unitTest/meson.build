@@ -18,6 +18,8 @@ unit_test_sources = files(
   'constraints/SudokuCellTest.cpp',
   'constraints/SudokuColumnTest.cpp',
   'constraints/SudokuRowTest.cpp',
+  'drawing/ElementTest.cpp',
+  'drawing/DocumentTest.cpp',
   'IdPackingTest.cpp',
   'main.cpp',
   'RandomGeneratorTest.cpp',

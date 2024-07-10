@@ -1,5 +1,11 @@
 ku_sources = files(
   'Board.cpp',
+  'drawing/Circle.cpp',
+  'drawing/Document.cpp',
+  'drawing/Element.cpp',
+  'drawing/Group.cpp',
+  'drawing/Line.cpp',
+  'drawing/Rect.cpp',
   'Setter.cpp',
   'Sudo.cpp',
   'Sudoku.cpp',
