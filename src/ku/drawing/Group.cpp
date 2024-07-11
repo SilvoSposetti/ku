@@ -1,7 +1,6 @@
 #include "Group.h"
 
 Group::Group(const std::string& name,
-             std::vector<std::unique_ptr<Element>>& entities,
              const std::optional<const std::string>& fill,
              const std::optional<const std::string>& stroke,
              const std::optional<double>& strokeWidth)
@@ -9,11 +8,7 @@ Group::Group(const std::string& name,
     , name(name)
     , fill(fill)
     , stroke(stroke)
-    , strokeWidth(strokeWidth) {
-  for (auto& entity : entities) {
-    add(std::move(entity));
-  }
-}
+    , strokeWidth(strokeWidth) {}
 
 std::string Group::string() const {
   std::string result = "<" + tagName + " id=\"" + name + "\"";

@@ -34,24 +34,22 @@ TEST_CASE("Document") {
     // Border
     document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
     // Group
-    std::vector<std::unique_ptr<Element>> group;
+    std::unique_ptr<Group> group = std::make_unique<Group>("Group", "blue", "grey", 2);
     constexpr float size = 8;
     for (int32_t i = 0; i < 5; i++) {
       // Rect
-      group.emplace_back(std::make_unique<Rect>(
+      group->add(std::make_unique<Rect>(
           90 - i * size - size / 2, 10 + i * size - size / 2, size, size, std::nullopt, std::nullopt, i));
       // Line
       const float x1 = std::max((i - 2) * size, 0.0f);
       const float y1 = std::max((-i + 2) * size, 0.0f);
       const float x2 = std::min(100 - (i - 2) * size, 100.0f);
       const float y2 = std::min(100 - (-i + 2) * size, 100.0f);
-      group.emplace_back(std::make_unique<Line>(x1, y1, x2, y2, "green", std::nullopt));
+      group->add(std::make_unique<Line>(x1, y1, x2, y2, "green", std::nullopt));
       // Circle
-      group.emplace_back(std::make_unique<Circle>(10 + i * size, 90 - i * size, size / 2, "red", "black", i));
+      group->add(std::make_unique<Circle>(10 + i * size, 90 - i * size, size / 2, "red", "black", i));
     }
-const auto x = std::make_unique<Group>("Group", group, "blue", "grey", 2);
-  x->string();
-    document.add(std::make_unique<Group>("Group", group, "blue", "grey", 2));
+    document.add(std::move(group));
 
     const std::string expected =
         "<?xml version=\"1.0\"?>\n"
