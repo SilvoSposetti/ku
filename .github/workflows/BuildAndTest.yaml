@@ -5,7 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Download and cache meson and its dependencies
@@ -38,7 +38,7 @@ jobs:
   run-unit-tests:
     name: Run Unit Tests
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Download lib and executables
