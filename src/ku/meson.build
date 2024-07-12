@@ -6,6 +6,7 @@ ku_sources = files(
   'drawing/Group.cpp',
   'drawing/Line.cpp',
   'drawing/Rect.cpp',
+  'drawing/Text.cpp',
   'Setter.cpp',
   'Sudo.cpp',
   'Sudoku.cpp',
