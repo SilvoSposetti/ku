@@ -28,6 +28,9 @@ std::string Document::string() const {
 }
 
 void Document::writeToFile(const std::filesystem::path& directory) const {
+  if (!std::filesystem::exists(directory)) {
+    std::filesystem::create_directories(directory);
+  }
   const std::filesystem::path outputFilePath = directory / (name + ".svg");
   std::ofstream outfile(outputFilePath);
   outfile << string();

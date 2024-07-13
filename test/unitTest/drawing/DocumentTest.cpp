@@ -10,12 +10,15 @@
 #include <fstream>
 
 std::string readFromFile(const std::filesystem::path path) {
+  if (!std::filesystem::exists(path)) {
+    return "Path " + path.string() + " doesn't exist";
+  }
   std::ifstream inputFileStream(path.string());
   return std::string((std::istreambuf_iterator<char>(inputFileStream)), (std::istreambuf_iterator<char>()));
 };
 
 TEST_CASE("Document") {
-
+  const std::filesystem::path path = std::filesystem::path(OUT_DIR) / "Test" / "Document";
   SUBCASE("Empty") {
     Document document("Empty", 11, 12, 5);
     const std::string expected =
@@ -24,8 +27,8 @@ TEST_CASE("Document") {
         "</svg>";
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(OUT_DIR);
-    CHECK_EQ(expected, readFromFile(std::filesystem::path(OUT_DIR) / "Empty.svg"));
+    document.writeToFile(path);
+    CHECK_EQ(expected, readFromFile(path / "Empty.svg"));
   }
 
   SUBCASE("Shapes") {
@@ -78,8 +81,8 @@ TEST_CASE("Document") {
         "</svg>";
     CHECK_EQ(expected, document.string());
 
-    CHECK_EQ(expected, readFromFile(std::filesystem::path(OUT_DIR) / "Shapes.svg"));
-    document.writeToFile(OUT_DIR);
+    document.writeToFile(path);
+    CHECK_EQ(expected, readFromFile(path / "Shapes.svg"));
   }
 
   SUBCASE("Text") {
@@ -122,81 +125,81 @@ TEST_CASE("Document") {
     }
 
     const std::string expected =
-        "<?xml version=\"1.0\"?>"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-5 -5 210 210\">"
-        "<rect x=\"-5\" y=\"-5\" width=\"210\" height=\"210\" fill=\"white\"/>"
+        "<?xml version=\"1.0\"?>\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-5 -5 210 210\">\n"
+        "<rect x=\"-5\" y=\"-5\" width=\"210\" height=\"210\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"200\" height=\"200\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
-        "stroke-width=\"1\"/>"
-        "<line x1=\"66.667\" y1=\"0\" x2=\"66.667\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<line x1=\"133.333\" y1=\"0\" x2=\"133.333\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<line x1=\"0\" y1=\"11.111\" x2=\"200\" y2=\"11.111\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"11.111\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"11.111\" r=\"1\" fill=\"red\"/>"
+        "stroke-width=\"1\"/>\n"
+        "<line x1=\"66.667\" y1=\"0\" x2=\"66.667\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<line x1=\"133.333\" y1=\"0\" x2=\"133.333\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<line x1=\"0\" y1=\"11.111\" x2=\"200\" y2=\"11.111\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"11.111\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"11.111\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"11.111\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
-        "fill=\"red\">AaBbCc</text>"
+        "fill=\"red\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"11.111\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"text-bottom\">0</text>"
-        "<line x1=\"0\" y1=\"33.333\" x2=\"200\" y2=\"33.333\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"33.333\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"33.333\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"text-bottom\">0</text>\n"
+        "<line x1=\"0\" y1=\"33.333\" x2=\"200\" y2=\"33.333\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"33.333\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"33.333\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"33.333\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"central\" "
-        "fill=\"green\">AaBbCc</text>"
+        "fill=\"green\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"33.333\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"central\">1</text>"
-        "<line x1=\"0\" y1=\"55.556\" x2=\"200\" y2=\"55.556\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"55.556\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"55.556\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"central\">1</text>\n"
+        "<line x1=\"0\" y1=\"55.556\" x2=\"200\" y2=\"55.556\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"55.556\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"55.556\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"55.556\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
-        "fill=\"blue\">AaBbCc</text>"
+        "fill=\"blue\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"55.556\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"hanging\">2</text>"
-        "<line x1=\"0\" y1=\"77.778\" x2=\"200\" y2=\"77.778\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"77.778\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"77.778\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"hanging\">2</text>\n"
+        "<line x1=\"0\" y1=\"77.778\" x2=\"200\" y2=\"77.778\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"77.778\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"77.778\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"77.778\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"text-bottom\" fill=\"cyan\">AaBbCc</text>"
+        "alignment-baseline=\"text-bottom\" fill=\"cyan\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"77.778\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"text-bottom\">3</text>"
-        "<line x1=\"0\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"100\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"100\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"text-bottom\">3</text>\n"
+        "<line x1=\"0\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"100\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"100\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"100\" font-size=\"11.111\" text-anchor=\"middle\" alignment-baseline=\"central\" "
-        "fill=\"yellow\">AaBbCc</text>"
+        "fill=\"yellow\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"100\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"central\">4</text>"
-        "<line x1=\"0\" y1=\"122.222\" x2=\"200\" y2=\"122.222\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"122.222\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"122.222\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"central\">4</text>\n"
+        "<line x1=\"0\" y1=\"122.222\" x2=\"200\" y2=\"122.222\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"122.222\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"122.222\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"122.222\" font-size=\"11.111\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
-        "fill=\"magenta\">AaBbCc</text>"
+        "fill=\"magenta\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"122.222\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"hanging\">5</text>"
-        "<line x1=\"0\" y1=\"144.444\" x2=\"200\" y2=\"144.444\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"144.444\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"144.444\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"hanging\">5</text>\n"
+        "<line x1=\"0\" y1=\"144.444\" x2=\"200\" y2=\"144.444\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
-        "fill=\"lightgrey\">AaBbCc</text>"
+        "fill=\"lightgrey\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"text-bottom\">6</text>"
-        "<line x1=\"0\" y1=\"166.667\" x2=\"200\" y2=\"166.667\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"166.667\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"166.667\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"text-bottom\">6</text>\n"
+        "<line x1=\"0\" y1=\"166.667\" x2=\"200\" y2=\"166.667\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"central\" "
-        "fill=\"darkgrey\">AaBbCc</text>"
+        "fill=\"darkgrey\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"central\">7</text>"
-        "<line x1=\"0\" y1=\"188.889\" x2=\"200\" y2=\"188.889\" stroke=\"black\" stroke-width=\"0.1\"/>"
-        "<circle cx=\"66.667\" cy=\"188.889\" r=\"1\" fill=\"red\"/>"
-        "<circle cx=\"133.333\" cy=\"188.889\" r=\"1\" fill=\"red\"/>"
+        "alignment-baseline=\"central\">7</text>\n"
+        "<line x1=\"0\" y1=\"188.889\" x2=\"200\" y2=\"188.889\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<circle cx=\"66.667\" cy=\"188.889\" r=\"1\" fill=\"red\"/>\n"
+        "<circle cx=\"133.333\" cy=\"188.889\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"188.889\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
-        "fill=\"black\">AaBbCc</text>"
+        "fill=\"black\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"188.889\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"hanging\">8</text>"
+        "alignment-baseline=\"hanging\">8</text>\n"
         "</svg>";
 
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(OUT_DIR);
-    CHECK_EQ(expected, readFromFile(std::filesystem::path(OUT_DIR) / "Text.svg"));
+    document.writeToFile(path);
+    CHECK_EQ(expected, readFromFile(std::filesystem::path(path) / "Text.svg"));
   }
 }
