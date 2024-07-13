@@ -51,7 +51,7 @@ jobs:
           mkdir reports
           cd *ku-*
           chmod +x ku_unit_test
-          ./ku_unit_test --reporters=junit --out=../reports/ku_unit_test_report.xml
+          ./ku_unit_test --success=true --reporters=junit --out=../reports/ku_unit_test_report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
