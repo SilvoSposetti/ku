@@ -24,5 +24,6 @@ unit_test_sources = files(
   'main.cpp',
   'RandomGeneratorTest.cpp',
   'SudokuTest.cpp',
+  'TemporaryDirectoryTest.cpp',
   'TimerTest.cpp',
 )

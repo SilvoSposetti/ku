@@ -40,5 +40,6 @@ ku_sources = files(
   'solver/Node.cpp',
   'solver/OptionData.cpp',
   'utilities/IdPacking.cpp',
+  'utilities/TemporaryDirectory.cpp',
   'utilities/Timer.cpp',
 )

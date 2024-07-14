@@ -6,6 +6,7 @@
 #include "drawing/Line.h"
 #include "drawing/Rect.h"
 #include "drawing/Text.h"
+#include "utilities/TemporaryDirectory.h"
 
 #include <fstream>
 
@@ -18,7 +19,9 @@ std::string readFromFile(const std::filesystem::path path) {
 };
 
 TEST_CASE("Document") {
-  const std::filesystem::path path = std::filesystem::path(OUT_DIR) / "Test" / "Document";
+  TemporaryDirectory temporaryDirectory;
+  const std::filesystem::path path = temporaryDirectory.path() / "Test" / "Document";
+
   SUBCASE("Empty") {
     Document document("Empty", 11, 12, 5);
     const std::string expected =
