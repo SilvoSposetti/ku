@@ -14,5 +14,9 @@ TEST_CASE("Element") {
     CHECK_EQ(Element::number(-5.06), "-5.06");
     CHECK_EQ(Element::number(3.1456), "3.146");
     CHECK_EQ(Element::number(-99.12233), "-99.122");
+    CHECK_EQ(Element::number(39.999999), "40");
+    CHECK_EQ(Element::number(0.0000001), "0");
+    CHECK_EQ(Element::number(-0.0000001), "0");
+    CHECK_EQ(Element::number(-1.999999), "-2");
   }
 }

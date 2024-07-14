@@ -17,8 +17,17 @@ std::string Element::number(double number) {
   if (trunc(number) == number) {
     return std::to_string(static_cast<int32_t>(number));
   }
-
+  // Format with the necessary precision
   std::string formatted = std::format("{:.3f}", number);
+  // Erase all trailing zeroes
   formatted.erase(formatted.find_last_not_of('0') + 1, std::string::npos);
+  // Remove the dot if the number has been rounded to an integer
+  if (formatted.ends_with(".")) {
+    formatted.pop_back();
+  }
+  // Remove the "negative zero" result, as this is simply zero
+  if (formatted == "-0") {
+    return "0";
+  }
   return formatted;
 }
