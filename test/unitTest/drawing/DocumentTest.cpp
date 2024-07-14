@@ -4,11 +4,13 @@
 #include "drawing/Circle.h"
 #include "drawing/Group.h"
 #include "drawing/Line.h"
+#include "drawing/Polyline.h"
 #include "drawing/Rect.h"
 #include "drawing/Text.h"
 #include "utilities/TemporaryDirectory.h"
 
 #include <fstream>
+#include <numbers>
 
 std::string readFromFile(const std::filesystem::path path) {
   if (!std::filesystem::exists(path)) {
@@ -41,7 +43,7 @@ TEST_CASE("Document") {
     // Border
     document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
     // Group
-    std::unique_ptr<Group> group = std::make_unique<Group>("Group", "blue", "grey", 2);
+    std::unique_ptr<Group> group = std::make_unique<Group>("Group", "blue", "gray", 2);
     constexpr float size = 8;
     for (int32_t i = 0; i < 5; i++) {
       // Rect
@@ -64,7 +66,7 @@ TEST_CASE("Document") {
         "<rect x=\"-20\" y=\"-20\" width=\"140\" height=\"140\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
-        "<g id=\"Group\" fill=\"blue\" stroke=\"grey\" stroke-width=\"2\">\n"
+        "<g id=\"Group\" fill=\"blue\" stroke=\"gray\" stroke-width=\"2\">\n"
         "<rect x=\"86\" y=\"6\" width=\"8\" height=\"8\" stroke-width=\"0\"/>\n"
         "<line x1=\"0\" y1=\"16\" x2=\"100\" y2=\"84\" stroke=\"green\"/>\n"
         "<circle cx=\"10\" cy=\"90\" r=\"4\" fill=\"red\" stroke=\"black\" stroke-width=\"0\"/>\n"
@@ -105,8 +107,8 @@ TEST_CASE("Document") {
         {TextAnchor::Middle, TextBaseline::Bottom, "cyan"},
         {TextAnchor::Middle, TextBaseline::Central, "yellow"},
         {TextAnchor::Middle, TextBaseline::Hanging, "magenta"},
-        {TextAnchor::End, TextBaseline::Bottom, "lightgrey"},
-        {TextAnchor::End, TextBaseline::Central, "darkgrey"},
+        {TextAnchor::End, TextBaseline::Bottom, "lightgray"},
+        {TextAnchor::End, TextBaseline::Central, "darkgray"},
         {TextAnchor::End, TextBaseline::Hanging, "black"},
     };
     const double offset = documentSize / static_cast<double>(options.size());
@@ -181,14 +183,14 @@ TEST_CASE("Document") {
         "<circle cx=\"66.667\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
         "<circle cx=\"133.333\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
-        "fill=\"lightgrey\">AaBbCc</text>\n"
+        "fill=\"lightgray\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" "
         "alignment-baseline=\"text-bottom\">6</text>\n"
         "<line x1=\"0\" y1=\"166.667\" x2=\"200\" y2=\"166.667\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
         "<circle cx=\"66.667\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
         "<circle cx=\"133.333\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
         "<text x=\"66.667\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"central\" "
-        "fill=\"darkgrey\">AaBbCc</text>\n"
+        "fill=\"darkgray\">AaBbCc</text>\n"
         "<text x=\"133.333\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" "
         "alignment-baseline=\"central\">7</text>\n"
         "<line x1=\"0\" y1=\"188.889\" x2=\"200\" y2=\"188.889\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
@@ -204,5 +206,66 @@ TEST_CASE("Document") {
 
     document.writeToFile(path);
     CHECK_EQ(expected, readFromFile(std::filesystem::path(path) / "Text.svg"));
+  }
+
+  SUBCASE("Polyline") {
+    constexpr double size = 100;
+    constexpr double margin = 10;
+
+    Document document("Polyline", size, size, margin);
+    // Background
+    document.add(std::make_unique<Rect>(-20, -20, 140, 140, "white", std::nullopt, std::nullopt));
+    // Border
+    document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
+
+    std::vector<std::tuple<double,
+                           double,
+                           int32_t,
+                           double,
+                           double,
+                           bool,
+                           std::optional<std::string>,
+                           std::optional<std::string>,
+                           std::optional<int32_t>>>
+        polylineSpecs = {
+            {25, 25, 5, 8, 20, false, std::nullopt, std::nullopt, std::nullopt},
+            {75, 25, 2, 5, 15, false, "rgba(0,0,0,0)", "magenta", 1},
+            {25, 75, 7, 15, 17, true, "gray", "lightgray", 1},
+            {75, 75, 3, 15, 7, false, "cyan", "yellow", 5},
+        };
+    for (const auto& [centerX, centerY, spikes, innerRadius, outerRadius, close, fill, stroke, strokeWidth] :
+         polylineSpecs) {
+      const double angleStep = (2.0 * std::numbers::pi) / static_cast<double>(spikes * 2);
+      std::vector<std::pair<double, double>> pointsList;
+      for (int32_t i = 0; i < spikes * 2; i++) {
+        const double angle = i * angleStep;
+        const double radius = i % 2 == 0 ? innerRadius : outerRadius;
+        const double x = centerX + radius * std::cos(angle);
+        const double y = centerY - radius * std::sin(angle);
+        pointsList.emplace_back(std::make_pair(x, y));
+      }
+      document.add(std::make_unique<Polyline>(pointsList, close, fill, stroke, strokeWidth));
+    }
+
+    const std::string expected =
+        "<?xml version=\"1.0\"?>\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-10 -10 120 120\">\n"
+        "<rect x=\"-20\" y=\"-20\" width=\"140\" height=\"140\" fill=\"white\"/>\n"
+        "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
+        "stroke-width=\"1\"/>\n"
+        "<polyline points=\"33,25 41.18,13.244 27.472,17.392 18.82,5.979 18.528,20.298 5,25 18.528,29.702 18.82,44.021 "
+        "27.472,32.608 41.18,36.756\"/>\n"
+        "<polyline points=\"80,25 75,10 70,25 75,40\" fill=\"rgba(0,0,0,0)\" stroke=\"magenta\" stroke-width=\"1\"/>\n"
+        "<polygon points=\"40,75 40.316,67.624 34.352,63.273 28.783,58.426 21.662,60.376 14.401,61.709 11.485,68.492 "
+        "8,75 11.485,81.508 14.401,88.291 21.662,89.624 28.783,91.574 34.352,86.727 40.316,82.376 40,75\" "
+        "fill=\"gray\" stroke=\"lightgray\" stroke-width=\"1\"/>\n"
+        "<polyline points=\"90,75 78.5,68.938 67.5,62.01 68,75 67.5,87.99 78.5,81.062\" fill=\"cyan\" "
+        "stroke=\"yellow\" stroke-width=\"5\"/>\n"
+        "</svg>";
+
+    CHECK_EQ(expected, document.string());
+
+    document.writeToFile(path);
+    CHECK_EQ(expected, readFromFile(path / "Polyline.svg"));
   }
 }

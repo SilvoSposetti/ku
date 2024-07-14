@@ -5,6 +5,7 @@ ku_sources = files(
   'drawing/Element.cpp',
   'drawing/Group.cpp',
   'drawing/Line.cpp',
+  'drawing/Polyline.cpp',
   'drawing/Rect.cpp',
   'drawing/Text.cpp',
   'Setter.cpp',
