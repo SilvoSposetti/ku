@@ -283,14 +283,3 @@ std::string SvgUtilities::squigglyLine(double x1, double y1, double x2, double y
 std::string SvgUtilities::getPointString(std::pair<double, double> point) {
   return toString(point.first) + "," + toString(point.second);
 }
-
-std::string SvgUtilities::padLeft(const std::string& input, char character, int32_t n) {
-  // return std::string(n - std::min(static_cast<size_t>(n), input.length()), character) + input;
-
-  if (static_cast<size_t>(n) > input.size()) {
-    std::string output = input;
-    output.insert(0, n - input.size(), character);
-    return output;
-  }
-  return input;
-}

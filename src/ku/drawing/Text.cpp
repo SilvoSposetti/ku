@@ -6,7 +6,8 @@ Text::Text(double x,
            const std::optional<double>& fontSize,
            const std::optional<TextAnchor>& anchor,
            const std::optional<TextBaseline>& baseline,
-           const std::optional<const std::string>& fill)
+           const std::optional<std::string>& fill,
+           const std::optional<double>& rotationAngle)
     : Element("text", false)
     , x(x)
     , y(y)
@@ -14,7 +15,8 @@ Text::Text(double x,
     , fontSize(fontSize)
     , anchor(anchor)
     , baseline(baseline)
-    , fill(fill) {}
+    , fill(fill)
+    , rotationAngle(rotationAngle) {}
 
 std::string Text::string() const {
   std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\"";
@@ -59,6 +61,11 @@ std::string Text::string() const {
   if (fill) {
     result += " ";
     result += "fill=\"" + fill.value() + "\"";
+  }
+  if (rotationAngle) {
+    result += " ";
+    result += "transform=\"rotate(" + Element::number(rotationAngle.value()) + ", " + Element::number(x) + ", " +
+              Element::number(y) + ")\"";
   }
   result += ">" + text + "</" + tagName + ">";
   return result;

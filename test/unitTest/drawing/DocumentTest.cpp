@@ -111,21 +111,30 @@ TEST_CASE("Document") {
         {TextAnchor::End, TextBaseline::Central, "darkgray"},
         {TextAnchor::End, TextBaseline::Hanging, "black"},
     };
-    const double offset = documentSize / static_cast<double>(options.size());
+    const double offset = documentSize / static_cast<double>(options.size() + 1);
     int32_t i = 0;
-    const double leftCenter = documentSize / 3.0;
-    const double rightCenter = leftCenter * 2.0;
+    const double leftCenter = documentSize / 4.0;
+    const double middleCenter = leftCenter * 2.0;
+    const double rightCenter = leftCenter * 3.0;
     const double fontSize = offset / 2;
+
+    const int32_t angleCount = 3;
+    const double angleIncrement = 360.0 / angleCount;
     document.add(std::make_unique<Line>(leftCenter, 0, leftCenter, documentSize, "black", 0.1));
+    document.add(std::make_unique<Line>(middleCenter, 0, middleCenter, documentSize, "black", 0.1));
     document.add(std::make_unique<Line>(rightCenter, 0, rightCenter, documentSize, "black", 0.1));
     for (const auto& [anchor, baseline, fill] : options) {
       const double centerHeight = (static_cast<double>(i) + 0.5) * offset;
       document.add(std::make_unique<Line>(0, centerHeight, documentSize, centerHeight, "black", 0.1));
-      document.add(std::make_unique<Circle>(leftCenter, centerHeight, 1, "red", std::nullopt, std::nullopt));
-      document.add(std::make_unique<Circle>(rightCenter, centerHeight, 1, "red", std::nullopt, std::nullopt));
-      document.add(std::make_unique<Text>(leftCenter, centerHeight, "AaBbCc", fontSize, anchor, baseline, fill));
+      document.add(
+          std::make_unique<Text>(leftCenter, centerHeight, "AaBbCc", fontSize, anchor, baseline, fill, std::nullopt));
       document.add(std::make_unique<Text>(
-          rightCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline, std::nullopt));
+          middleCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline, std::nullopt, std::nullopt));
+      for (int32_t j = 0; j < angleCount; j++) {
+        const auto angle = j * angleIncrement;
+        document.add(std::make_unique<Text>(
+            rightCenter, centerHeight, Element::number(angle) + "deg", fontSize / 3, anchor, baseline, fill, angle));
+      }
       i++;
     }
 
@@ -135,71 +144,99 @@ TEST_CASE("Document") {
         "<rect x=\"-5\" y=\"-5\" width=\"210\" height=\"210\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"200\" height=\"200\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
-        "<line x1=\"66.667\" y1=\"0\" x2=\"66.667\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<line x1=\"133.333\" y1=\"0\" x2=\"133.333\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<line x1=\"0\" y1=\"11.111\" x2=\"200\" y2=\"11.111\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"11.111\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"11.111\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"11.111\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
+        "<line x1=\"50\" y1=\"0\" x2=\"50\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<line x1=\"100\" y1=\"0\" x2=\"100\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<line x1=\"150\" y1=\"0\" x2=\"150\" y2=\"200\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<line x1=\"0\" y1=\"10\" x2=\"200\" y2=\"10\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"10\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
         "fill=\"red\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"11.111\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"text-bottom\">0</text>\n"
-        "<line x1=\"0\" y1=\"33.333\" x2=\"200\" y2=\"33.333\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"33.333\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"33.333\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"33.333\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"central\" "
+        "<text x=\"100\" y=\"10\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"text-bottom\">0</text>\n"
+        "<text x=\"150\" y=\"10\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
+        "fill=\"red\" transform=\"rotate(0, 150, 10)\">0deg</text>\n"
+        "<text x=\"150\" y=\"10\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
+        "fill=\"red\" transform=\"rotate(120, 150, 10)\">120deg</text>\n"
+        "<text x=\"150\" y=\"10\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"text-bottom\" "
+        "fill=\"red\" transform=\"rotate(240, 150, 10)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"30\" x2=\"200\" y2=\"30\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"30\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"central\" "
         "fill=\"green\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"33.333\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"central\">1</text>\n"
-        "<line x1=\"0\" y1=\"55.556\" x2=\"200\" y2=\"55.556\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"55.556\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"55.556\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"55.556\" font-size=\"11.111\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
+        "<text x=\"100\" y=\"30\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"central\">1</text>\n"
+        "<text x=\"150\" y=\"30\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"central\" "
+        "fill=\"green\" transform=\"rotate(0, 150, 30)\">0deg</text>\n"
+        "<text x=\"150\" y=\"30\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"central\" "
+        "fill=\"green\" transform=\"rotate(120, 150, 30)\">120deg</text>\n"
+        "<text x=\"150\" y=\"30\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"central\" "
+        "fill=\"green\" transform=\"rotate(240, 150, 30)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"50\" x2=\"200\" y2=\"50\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"50\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
         "fill=\"blue\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"55.556\" font-size=\"11.111\" text-anchor=\"start\" "
-        "alignment-baseline=\"hanging\">2</text>\n"
-        "<line x1=\"0\" y1=\"77.778\" x2=\"200\" y2=\"77.778\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"77.778\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"77.778\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"77.778\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"text-bottom\" fill=\"cyan\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"77.778\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"text-bottom\">3</text>\n"
-        "<line x1=\"0\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"100\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"100\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"100\" font-size=\"11.111\" text-anchor=\"middle\" alignment-baseline=\"central\" "
+        "<text x=\"100\" y=\"50\" font-size=\"10\" text-anchor=\"start\" alignment-baseline=\"hanging\">2</text>\n"
+        "<text x=\"150\" y=\"50\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
+        "fill=\"blue\" transform=\"rotate(0, 150, 50)\">0deg</text>\n"
+        "<text x=\"150\" y=\"50\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
+        "fill=\"blue\" transform=\"rotate(120, 150, 50)\">120deg</text>\n"
+        "<text x=\"150\" y=\"50\" font-size=\"3.333\" text-anchor=\"start\" alignment-baseline=\"hanging\" "
+        "fill=\"blue\" transform=\"rotate(240, 150, 50)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"70\" x2=\"200\" y2=\"70\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"70\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"text-bottom\" "
+        "fill=\"cyan\">AaBbCc</text>\n"
+        "<text x=\"100\" y=\"70\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"text-bottom\">3</text>\n"
+        "<text x=\"150\" y=\"70\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"text-bottom\" "
+        "fill=\"cyan\" transform=\"rotate(0, 150, 70)\">0deg</text>\n"
+        "<text x=\"150\" y=\"70\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"text-bottom\" "
+        "fill=\"cyan\" transform=\"rotate(120, 150, 70)\">120deg</text>\n"
+        "<text x=\"150\" y=\"70\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"text-bottom\" "
+        "fill=\"cyan\" transform=\"rotate(240, 150, 70)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"90\" x2=\"200\" y2=\"90\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"90\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"central\" "
         "fill=\"yellow\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"100\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"central\">4</text>\n"
-        "<line x1=\"0\" y1=\"122.222\" x2=\"200\" y2=\"122.222\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"122.222\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"122.222\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"122.222\" font-size=\"11.111\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
+        "<text x=\"100\" y=\"90\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"central\">4</text>\n"
+        "<text x=\"150\" y=\"90\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"central\" "
+        "fill=\"yellow\" transform=\"rotate(0, 150, 90)\">0deg</text>\n"
+        "<text x=\"150\" y=\"90\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"central\" "
+        "fill=\"yellow\" transform=\"rotate(120, 150, 90)\">120deg</text>\n"
+        "<text x=\"150\" y=\"90\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"central\" "
+        "fill=\"yellow\" transform=\"rotate(240, 150, 90)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"110\" x2=\"200\" y2=\"110\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"110\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
         "fill=\"magenta\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"122.222\" font-size=\"11.111\" text-anchor=\"middle\" "
-        "alignment-baseline=\"hanging\">5</text>\n"
-        "<line x1=\"0\" y1=\"144.444\" x2=\"200\" y2=\"144.444\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"144.444\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
+        "<text x=\"100\" y=\"110\" font-size=\"10\" text-anchor=\"middle\" alignment-baseline=\"hanging\">5</text>\n"
+        "<text x=\"150\" y=\"110\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
+        "fill=\"magenta\" transform=\"rotate(0, 150, 110)\">0deg</text>\n"
+        "<text x=\"150\" y=\"110\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
+        "fill=\"magenta\" transform=\"rotate(120, 150, 110)\">120deg</text>\n"
+        "<text x=\"150\" y=\"110\" font-size=\"3.333\" text-anchor=\"middle\" alignment-baseline=\"hanging\" "
+        "fill=\"magenta\" transform=\"rotate(240, 150, 110)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"130\" x2=\"200\" y2=\"130\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"130\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
         "fill=\"lightgray\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"144.444\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"text-bottom\">6</text>\n"
-        "<line x1=\"0\" y1=\"166.667\" x2=\"200\" y2=\"166.667\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"166.667\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"central\" "
+        "<text x=\"100\" y=\"130\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"text-bottom\">6</text>\n"
+        "<text x=\"150\" y=\"130\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
+        "fill=\"lightgray\" transform=\"rotate(0, 150, 130)\">0deg</text>\n"
+        "<text x=\"150\" y=\"130\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
+        "fill=\"lightgray\" transform=\"rotate(120, 150, 130)\">120deg</text>\n"
+        "<text x=\"150\" y=\"130\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"text-bottom\" "
+        "fill=\"lightgray\" transform=\"rotate(240, 150, 130)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"150\" x2=\"200\" y2=\"150\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"150\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"central\" "
         "fill=\"darkgray\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"166.667\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"central\">7</text>\n"
-        "<line x1=\"0\" y1=\"188.889\" x2=\"200\" y2=\"188.889\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
-        "<circle cx=\"66.667\" cy=\"188.889\" r=\"1\" fill=\"red\"/>\n"
-        "<circle cx=\"133.333\" cy=\"188.889\" r=\"1\" fill=\"red\"/>\n"
-        "<text x=\"66.667\" y=\"188.889\" font-size=\"11.111\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
+        "<text x=\"100\" y=\"150\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"central\">7</text>\n"
+        "<text x=\"150\" y=\"150\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"central\" "
+        "fill=\"darkgray\" transform=\"rotate(0, 150, 150)\">0deg</text>\n"
+        "<text x=\"150\" y=\"150\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"central\" "
+        "fill=\"darkgray\" transform=\"rotate(120, 150, 150)\">120deg</text>\n"
+        "<text x=\"150\" y=\"150\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"central\" "
+        "fill=\"darkgray\" transform=\"rotate(240, 150, 150)\">240deg</text>\n"
+        "<line x1=\"0\" y1=\"170\" x2=\"200\" y2=\"170\" stroke=\"black\" stroke-width=\"0.1\"/>\n"
+        "<text x=\"50\" y=\"170\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
         "fill=\"black\">AaBbCc</text>\n"
-        "<text x=\"133.333\" y=\"188.889\" font-size=\"11.111\" text-anchor=\"end\" "
-        "alignment-baseline=\"hanging\">8</text>\n"
+        "<text x=\"100\" y=\"170\" font-size=\"10\" text-anchor=\"end\" alignment-baseline=\"hanging\">8</text>\n"
+        "<text x=\"150\" y=\"170\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
+        "fill=\"black\" transform=\"rotate(0, 150, 170)\">0deg</text>\n"
+        "<text x=\"150\" y=\"170\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
+        "fill=\"black\" transform=\"rotate(120, 150, 170)\">120deg</text>\n"
+        "<text x=\"150\" y=\"170\" font-size=\"3.333\" text-anchor=\"end\" alignment-baseline=\"hanging\" "
+        "fill=\"black\" transform=\"rotate(240, 150, 170)\">240deg</text>\n"
         "</svg>";
 
     CHECK_EQ(expected, document.string());

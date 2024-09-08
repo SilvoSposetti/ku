@@ -31,3 +31,12 @@ std::string Element::number(double number) {
   }
   return formatted;
 }
+
+std::string Element::padLeft(const std::string& input, char character, int32_t n) {
+  if (static_cast<size_t>(n) > input.size()) {
+    std::string output = input;
+    output.insert(0, n - input.size(), character);
+    return output;
+  }
+  return input;
+}

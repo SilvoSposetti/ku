@@ -19,4 +19,14 @@ TEST_CASE("Element") {
     CHECK_EQ(Element::number(-0.0000001), "0");
     CHECK_EQ(Element::number(-1.999999), "-2");
   }
+
+  SUBCASE("Pad left") {
+    CHECK_EQ("", Element::padLeft("", ' ', 0));
+    CHECK_EQ("0", Element::padLeft("", '0', 1));
+    CHECK_EQ("a", Element::padLeft("a", '0', 1));
+    CHECK_EQ("0a", Element::padLeft("a", '0', 2));
+    CHECK_EQ("00", Element::padLeft("", '0', 2));
+    CHECK_EQ("0000a", Element::padLeft("a", '0', 5));
+    CHECK_EQ("ABCDEF", Element::padLeft("ABCDEF", '0', 2));
+  }
 }

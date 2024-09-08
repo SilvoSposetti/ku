@@ -34,6 +34,14 @@ public:
    */
   static std::string number(double number);
 
+  /** Prefixes a string with the provided characters such that the returend one is at least n characters long
+   * @param input The input string
+   * @param character the character to be used for padding
+   * @param n The total amount of characters required
+   * @return The input padded on the left
+   */
+  static std::string padLeft(const std::string& input, char character, int32_t n);
+
 protected:
   /** The name of the tag
    */

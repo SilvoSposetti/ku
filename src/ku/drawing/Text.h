@@ -19,6 +19,7 @@ public:
    * @param anchor An optional anchor
    * @param baseline An optional baseline
    * @param fill An optional fill color
+   * @param double An optional rotation angle in degrees, rotating around the (anchor/baseline) point
    */
   Text(double x,
        double y,
@@ -26,7 +27,8 @@ public:
        const std::optional<double>& fontSize,
        const std::optional<TextAnchor>& anchor,
        const std::optional<TextBaseline>& baseline,
-       const std::optional<const std::string>& fill);
+       const std::optional<std::string>& fill,
+       const std::optional<double>& rotationAngle);
 
   virtual std::string string() const override;
 
@@ -38,4 +40,5 @@ private:
   const std::optional<TextAnchor> anchor;
   const std::optional<TextBaseline> baseline;
   const std::optional<const std::string> fill;
+  const std::optional<double> rotationAngle;
 };

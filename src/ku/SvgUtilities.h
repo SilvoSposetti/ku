@@ -89,6 +89,4 @@ public:
   static std::string getTextStyle(double fontSize);
 
   static std::string getPointString(std::pair<double, double> point);
-
-  static std::string padLeft(const std::string& input, char character, int32_t n);
 };
