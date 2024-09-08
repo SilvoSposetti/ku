@@ -39,7 +39,7 @@ TEST_CASE("Document") {
   SUBCASE("Shapes") {
     Document document("Shapes", 100, 100, 20);
     // Background
-    document.add(std::make_unique<Rect>(-20, -20, 140, 140, "white", std::nullopt, std::nullopt));
+    document.addBackground("white");
     // Border
     document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
     // Group
@@ -95,8 +95,7 @@ TEST_CASE("Document") {
     constexpr double margin = 5;
     Document document("Text", documentSize, documentSize, margin);
     // Background
-    document.add(std::make_unique<Rect>(
-        -margin, -margin, documentSize + margin * 2, documentSize + margin * 2, "white", std::nullopt, std::nullopt));
+    document.addBackground("white");
     // Border
     document.add(std::make_unique<Rect>(0, 0, documentSize, documentSize, "rgba(0,0,0,0)", "black", 1));
 
@@ -251,7 +250,7 @@ TEST_CASE("Document") {
 
     Document document("Polyline", size, size, margin);
     // Background
-    document.add(std::make_unique<Rect>(-20, -20, 140, 140, "white", std::nullopt, std::nullopt));
+    document.addBackground("white");
     // Border
     document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
 
@@ -287,7 +286,7 @@ TEST_CASE("Document") {
     const std::string expected =
         "<?xml version=\"1.0\"?>\n"
         "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-10 -10 120 120\">\n"
-        "<rect x=\"-20\" y=\"-20\" width=\"140\" height=\"140\" fill=\"white\"/>\n"
+        "<rect x=\"-10\" y=\"-10\" width=\"120\" height=\"120\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
         "<polyline points=\"33,25 41.18,13.244 27.472,17.392 18.82,5.979 18.528,20.298 5,25 18.528,29.702 18.82,44.021 "

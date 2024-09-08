@@ -1,5 +1,7 @@
 #include "Document.h"
 
+#include "Rect.h"
+
 #include <fstream>
 
 Document::Document(const std::string& name, double width, double height, double margin)
@@ -25,6 +27,11 @@ std::string Document::string() const {
 
   result += "</" + tagName + ">";
   return result;
+}
+
+void Document::addBackground(const std::string& fill) {
+  add(std::make_unique<Rect>(
+      -margin, -margin, width + margin * 2, height + margin * 2, fill, std::nullopt, std::nullopt));
 }
 
 void Document::writeToFile(const std::filesystem::path& directory) const {

@@ -18,6 +18,11 @@ public:
 
   virtual std::string string() const override;
 
+  /** Adds a background that covers the whole viewport of the document
+   * @param fill The fill for the background
+   */
+  void addBackground(const std::string& fill);
+
   /** Writes the document's string to a file specified. Filename will be the {name}.svg
    * @param path The directory into which to write the document.
    */
