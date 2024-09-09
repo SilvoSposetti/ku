@@ -18,7 +18,7 @@ std::string Document::string() const {
   result += "xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\"";
   result += " ";
   result += "viewBox=\"" + number(-margin) + " " + number(-margin) + " " + number(width + 2 * margin) + " " +
-            number(height + 2 * margin) + "\"";
+            number(height + 2 * margin) + "\" font-family=\"Open Sans\"";
   result += ">\n";
 
   for (const auto& childElement : childElements) {

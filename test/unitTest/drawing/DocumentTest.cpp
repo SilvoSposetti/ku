@@ -26,10 +26,10 @@ TEST_CASE("Document") {
 
   SUBCASE("Empty") {
     Document document("Empty", 11, 12, 5);
-    const std::string expected =
-        "<?xml version=\"1.0\"?>\n"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-5 -5 21 22\">\n"
-        "</svg>";
+    const std::string expected = "<?xml version=\"1.0\"?>\n"
+                                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" "
+                                 "viewBox=\"-5 -5 21 22\" font-family=\"Open Sans\">\n"
+                                 "</svg>";
     CHECK_EQ(expected, document.string());
 
     document.writeToFile(path);
@@ -62,7 +62,8 @@ TEST_CASE("Document") {
 
     const std::string expected =
         "<?xml version=\"1.0\"?>\n"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-20 -20 140 140\">\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-20 -20 140 140\" "
+        "font-family=\"Open Sans\">\n"
         "<rect x=\"-20\" y=\"-20\" width=\"140\" height=\"140\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
@@ -139,7 +140,8 @@ TEST_CASE("Document") {
 
     const std::string expected =
         "<?xml version=\"1.0\"?>\n"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-5 -5 210 210\">\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-5 -5 210 210\" "
+        "font-family=\"Open Sans\">\n"
         "<rect x=\"-5\" y=\"-5\" width=\"210\" height=\"210\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"200\" height=\"200\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
@@ -285,7 +287,8 @@ TEST_CASE("Document") {
 
     const std::string expected =
         "<?xml version=\"1.0\"?>\n"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-10 -10 120 120\">\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"-10 -10 120 120\" "
+        "font-family=\"Open Sans\">\n"
         "<rect x=\"-10\" y=\"-10\" width=\"120\" height=\"120\" fill=\"white\"/>\n"
         "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"rgba(0,0,0,0)\" stroke=\"black\" "
         "stroke-width=\"1\"/>\n"
