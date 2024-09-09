@@ -6,17 +6,17 @@
 
 /** Base class for any SVG element
  */
-class Element {
+class SvgElement {
 public:
   /** Constructor
    * @param tagName The name of the tag
    * @param canHaveChildElements Whether child elements are allowed
    */
-  Element(const std::string& tagName, bool canHaveChildElements);
+  SvgElement(const std::string& tagName, bool canHaveChildElements);
 
   /** Destructor
    */
-  virtual ~Element() = default;
+  virtual ~SvgElement() = default;
 
   /** Computes the current element's string representation
    * @return The string representation of a valid SVG element
@@ -26,7 +26,7 @@ public:
   /** Adds another entity as a child of this one. Will only add the entity if allowed, otherwise does nothing.
    * @param entity The other entity
    */
-  void add(std::unique_ptr<Element> entity);
+  void add(std::unique_ptr<SvgElement> entity);
 
   /** Utility to transform numbers to string, rounding them to some digits after the comma
    * @param number A number
@@ -53,5 +53,5 @@ protected:
 
   /** A list of all the child elements
    */
-  std::vector<std::unique_ptr<Element>> childElements;
+  std::vector<std::unique_ptr<SvgElement>> childElements;
 };

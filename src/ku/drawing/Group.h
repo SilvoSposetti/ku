@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
 /** SVG group
  */
-class Group : public Element {
+class Group : public SvgElement {
 public:
   /** Constructor
    * @param name The name of the group

@@ -3,7 +3,7 @@ ku_sources = files(
   'drawing/Circle.cpp',
   'drawing/Document.cpp',
   'drawing/DrawingOptions.cpp',
-  'drawing/Element.cpp',
+  'drawing/SvgElement.cpp',
   'drawing/Group.cpp',
   'drawing/Line.cpp',
   'drawing/Polyline.cpp',

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
@@ -9,7 +9,7 @@ enum class TextBaseline { Bottom, Central, Hanging };
 
 /** SVG Text
  */
-class Text : public Element {
+class Text : public SvgElement {
 public:
   /** Constructor
    * @param x The X-coordinate of the text

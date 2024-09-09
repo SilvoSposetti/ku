@@ -4,7 +4,7 @@ Group::Group(const std::string& name,
              const std::optional<const std::string>& fill,
              const std::optional<const std::string>& stroke,
              const std::optional<double>& strokeWidth)
-    : Element("g", true)
+    : SvgElement("g", true)
     , name(name)
     , fill(fill)
     , stroke(stroke)

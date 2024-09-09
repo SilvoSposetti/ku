@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
 /** SVG Polyline
  */
-class Polyline : public Element {
+class Polyline : public SvgElement {
 public:
   /** Constructor
    * @param points The list of XY-coordinates that makes up the polyline

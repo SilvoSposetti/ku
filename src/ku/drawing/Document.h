@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <filesystem>
 
 /** SVG Document
  */
-class Document : public Element {
+class Document : public SvgElement {
 public:
   /** Constructor
    * @param mame The name of the document

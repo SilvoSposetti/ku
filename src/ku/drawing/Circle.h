@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
 /** SVG Circle
  */
-class Circle : public Element {
+class Circle : public SvgElement {
 public:
   /** Constructor
    * @param cx The x-coordinate of the circle's center

@@ -6,7 +6,7 @@ Circle::Circle(double cx,
                const std::optional<const std::string>& fill,
                const std::optional<const std::string>& stroke,
                const std::optional<double>& strokeWidth)
-    : Element("circle", false)
+    : SvgElement("circle", false)
     , cx(cx)
     , cy(cy)
     , r(r)

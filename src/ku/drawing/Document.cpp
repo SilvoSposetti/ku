@@ -5,7 +5,7 @@
 #include <fstream>
 
 Document::Document(const std::string& name, double width, double height, double margin)
-    : Element("svg", true)
+    : SvgElement("svg", true)
     , name(name)
     , width(width)
     , height(height)

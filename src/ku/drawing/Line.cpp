@@ -6,7 +6,7 @@ Line::Line(double x1,
            double y2,
            const std::optional<const std::string>& stroke,
            const std::optional<double>& strokeWidth)
-    : Element("line", false)
+    : SvgElement("line", false)
     , x1(x1)
     , y1(y1)
     , x2(x2)

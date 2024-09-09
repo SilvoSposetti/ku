@@ -8,7 +8,7 @@ Text::Text(double x,
            const std::optional<TextBaseline>& baseline,
            const std::optional<std::string>& fill,
            const std::optional<double>& rotationAngle)
-    : Element("text", false)
+    : SvgElement("text", false)
     , x(x)
     , y(y)
     , text(text)
@@ -64,8 +64,8 @@ std::string Text::string() const {
   }
   if (rotationAngle) {
     result += " ";
-    result += "transform=\"rotate(" + Element::number(rotationAngle.value()) + ", " + Element::number(x) + ", " +
-              Element::number(y) + ")\"";
+    result += "transform=\"rotate(" + SvgElement::number(rotationAngle.value()) + ", " + SvgElement::number(x) + ", " +
+              SvgElement::number(y) + ")\"";
   }
   result += ">" + text + "</" + tagName + ">";
   return result;

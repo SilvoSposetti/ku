@@ -5,7 +5,7 @@ Polyline::Polyline(const std::vector<std::pair<double, double>>& points,
                    const std::optional<const std::string>& fill,
                    const std::optional<const std::string>& stroke,
                    const std::optional<double>& strokeWidth)
-    : Element("polyline", false)
+    : SvgElement("polyline", false)
     , points(points)
     , closeLoop(closeLoop)
     , fill(fill)

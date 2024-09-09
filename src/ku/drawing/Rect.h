@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
 /** SVG Rectangle
  */
-class Rect : public Element {
+class Rect : public SvgElement {
 public:
   /** Constructor
    * @param x The top-left X-coordinate of the rectangle

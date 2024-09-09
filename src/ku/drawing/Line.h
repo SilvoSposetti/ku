@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <optional>
 
 /** SVG Line
  */
-class Line : public Element {
+class Line : public SvgElement {
 public:
   /** Constructor
    * @param x1 The start X-coordinate of the line

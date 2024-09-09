@@ -1,19 +1,19 @@
-#include "Element.h"
+#include "SvgElement.h"
 
 #include <cmath>
 #include <format>
 
-Element::Element(const std::string& tagName, bool canHaveChildElements)
+SvgElement::SvgElement(const std::string& tagName, bool canHaveChildElements)
     : tagName(tagName)
     , canHaveChildElements(canHaveChildElements) {}
 
-void Element::add(std::unique_ptr<Element> entity) {
+void SvgElement::add(std::unique_ptr<SvgElement> entity) {
   if (canHaveChildElements) {
     childElements.push_back(std::move(entity));
   }
 }
 
-std::string Element::number(double number) {
+std::string SvgElement::number(double number) {
   if (trunc(number) == number) {
     return std::to_string(static_cast<int32_t>(number));
   }
@@ -32,7 +32,7 @@ std::string Element::number(double number) {
   return formatted;
 }
 
-std::string Element::padLeft(const std::string& input, char character, int32_t n) {
+std::string SvgElement::padLeft(const std::string& input, char character, int32_t n) {
   if (static_cast<size_t>(n) > input.size()) {
     std::string output = input;
     output.insert(0, n - input.size(), character);

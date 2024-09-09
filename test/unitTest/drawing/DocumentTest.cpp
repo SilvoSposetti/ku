@@ -133,7 +133,7 @@ TEST_CASE("Document") {
       for (int32_t j = 0; j < angleCount; j++) {
         const auto angle = j * angleIncrement;
         document.add(std::make_unique<Text>(
-            rightCenter, centerHeight, Element::number(angle) + "deg", fontSize / 3, anchor, baseline, fill, angle));
+            rightCenter, centerHeight, SvgElement::number(angle) + "deg", fontSize / 3, anchor, baseline, fill, angle));
       }
       i++;
     }

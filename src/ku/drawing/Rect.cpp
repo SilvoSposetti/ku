@@ -7,7 +7,7 @@ Rect::Rect(double x,
            const std::optional<const std::string>& fill,
            const std::optional<const std::string>& stroke,
            const std::optional<double>& strokeWidth)
-    : Element("rect", false)
+    : SvgElement("rect", false)
     , x(x)
     , y(y)
     , width(width)

@@ -370,7 +370,7 @@ std::unique_ptr<Document> Sudoku::createExactCoverDocument(const std::string& na
       int32_t counter = 0;
       for (const auto& itemData : dataStructure.getItemsData()) {
         const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     Element::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+                                     SvgElement::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
         double y = cellSize * rowsCount;
         bottomTextGroup->add(std::make_unique<Text>(
