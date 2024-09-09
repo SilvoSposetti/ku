@@ -1,10 +1,10 @@
-#include "Polyline.h"
+#include "SvgPolyline.h"
 
-Polyline::Polyline(const std::vector<std::pair<double, double>>& points,
-                   bool closeLoop,
-                   const std::optional<const std::string>& fill,
-                   const std::optional<const std::string>& stroke,
-                   const std::optional<double>& strokeWidth)
+SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points,
+                         bool closeLoop,
+                         const std::optional<const std::string>& fill,
+                         const std::optional<const std::string>& stroke,
+                         const std::optional<double>& strokeWidth)
     : SvgElement("polyline", false)
     , points(points)
     , closeLoop(closeLoop)
@@ -12,7 +12,7 @@ Polyline::Polyline(const std::vector<std::pair<double, double>>& points,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
-std::string Polyline::string() const {
+std::string SvgPolyline::string() const {
 
   std::string polylineString;
   for (const auto& point : points) {

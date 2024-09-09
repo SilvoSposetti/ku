@@ -1,12 +1,12 @@
-#include "Rect.h"
+#include "SvgRect.h"
 
-Rect::Rect(double x,
-           double y,
-           double width,
-           double height,
-           const std::optional<const std::string>& fill,
-           const std::optional<const std::string>& stroke,
-           const std::optional<double>& strokeWidth)
+SvgRect::SvgRect(double x,
+                 double y,
+                 double width,
+                 double height,
+                 const std::optional<const std::string>& fill,
+                 const std::optional<const std::string>& stroke,
+                 const std::optional<double>& strokeWidth)
     : SvgElement("rect", false)
     , x(x)
     , y(y)
@@ -16,7 +16,7 @@ Rect::Rect(double x,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
-std::string Rect::string() const {
+std::string SvgRect::string() const {
   std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\" width=\"" + number(width) +
                        "\" height=\"" + number(height) + "\"";
   if (fill) {

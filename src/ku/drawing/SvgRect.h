@@ -6,7 +6,7 @@
 
 /** SVG Rectangle
  */
-class Rect : public SvgElement {
+class SvgRect : public SvgElement {
 public:
   /** Constructor
    * @param x The top-left X-coordinate of the rectangle
@@ -17,7 +17,7 @@ public:
    * @param stroke An optional stroke color
    * @param strokeWidth An optional stroke width
    */
-  Rect(double x,
+  SvgRect(double x,
        double y,
        double width,
        double height,

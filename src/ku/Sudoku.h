@@ -4,7 +4,7 @@
 #include "Sudo.h"
 #include "constraints/AbstractConstraint.h"
 #include "constraints/ConstraintType.h"
-#include "drawing/Document.h"
+#include "drawing/SvgDocument.h"
 #include "solver/DataStructure.h"
 
 #include <filesystem>
@@ -107,7 +107,7 @@ private:
    * @param dataStructure The data structure constructed with the current constraints and field
    * @return The svg document
    */
-  static std::unique_ptr<Document> createExactCoverDocument(const std::string& name,
+  static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
                                                             const DataStructure& dataStructure);
 
 private:

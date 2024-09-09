@@ -2,7 +2,7 @@
 
 #include "../Sudo.h"
 #include "ConstraintType.h"
-#include "../drawing/Group.h"
+#include "../drawing/SvgGroup.h"
 #include "../drawing/DrawingOptions.h"
 #include <string>
 #include <tuple>
@@ -65,7 +65,7 @@ public:
   /** Defines how the constraint should be drawn on the board
    * @return The svg group that will be drawn
    */
-  virtual std::unique_ptr<Group> getSvgGroup(const DrawingOptions& options) const = 0;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const = 0;
 
   /** Defines whether a given board satisfies the constraint
    * @param board A given board to check for validity

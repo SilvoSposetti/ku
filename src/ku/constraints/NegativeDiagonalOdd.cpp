@@ -8,10 +8,10 @@ NegativeDiagonalOdd::NegativeDiagonalOdd()
                          "Negative-Diagonal-Odd",
                          "The negative diagonal contains only odd digits.") {}
 
-std::unique_ptr<Group> NegativeDiagonalOdd::getSvgGroup(const DrawingOptions& options) const {
+std::unique_ptr<SvgGroup> NegativeDiagonalOdd::getSvgGroup(const DrawingOptions& options) const {
   // const std::string zigZagLine = SvgUtilities::zigZagLine(0, 0, 1, 1);
   // return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
-  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   return group;
 }
 

@@ -9,7 +9,7 @@ enum class TextBaseline { Bottom, Central, Hanging };
 
 /** SVG Text
  */
-class Text : public SvgElement {
+class SvgText : public SvgElement {
 public:
   /** Constructor
    * @param x The X-coordinate of the text
@@ -21,7 +21,7 @@ public:
    * @param fill An optional fill color
    * @param double An optional rotation angle in degrees, rotating around the (anchor/baseline) point
    */
-  Text(double x,
+  SvgText(double x,
        double y,
        const std::string& text,
        const std::optional<double>& fontSize,

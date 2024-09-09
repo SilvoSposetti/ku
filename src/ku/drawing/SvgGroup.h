@@ -6,7 +6,7 @@
 
 /** SVG group
  */
-class Group : public SvgElement {
+class SvgGroup : public SvgElement {
 public:
   /** Constructor
    * @param name The name of the group
@@ -14,7 +14,7 @@ public:
    * @param stroke An optional stroke color
    * @param strokeWidth An optional stroke width
    */
-  Group(const std::string& name,
+  SvgGroup(const std::string& name,
         const std::optional<const std::string>& fill,
         const std::optional<const std::string>& stroke,
         const std::optional<double>& strokeWidth);

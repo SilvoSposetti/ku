@@ -1,11 +1,11 @@
-#include "Circle.h"
+#include "SvgCircle.h"
 
-Circle::Circle(double cx,
-               double cy,
-               double r,
-               const std::optional<const std::string>& fill,
-               const std::optional<const std::string>& stroke,
-               const std::optional<double>& strokeWidth)
+SvgCircle::SvgCircle(double cx,
+                     double cy,
+                     double r,
+                     const std::optional<const std::string>& fill,
+                     const std::optional<const std::string>& stroke,
+                     const std::optional<double>& strokeWidth)
     : SvgElement("circle", false)
     , cx(cx)
     , cy(cy)
@@ -14,7 +14,7 @@ Circle::Circle(double cx,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
-std::string Circle::string() const {
+std::string SvgCircle::string() const {
   std::string result = "<" + tagName + " cx=\"" + number(cx) + "\" cy=\"" + number(cy) + "\" r=\"" + number(r) + "\"";
   if (fill) {
     result += " ";

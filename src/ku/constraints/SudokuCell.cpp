@@ -1,14 +1,14 @@
 #include "SudokuCell.h"
 
-#include "../drawing/Rect.h"
+#include "../drawing/SvgRect.h"
 
 SudokuCell::SudokuCell()
     : AbstractConstraint(
           ConstraintType::SUDOKU_CELL, "Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}
 
-std::unique_ptr<Group> SudokuCell::getSvgGroup(const DrawingOptions& options) const {
-  auto group = std::make_unique<Group>(getName(), "transparent", "black", options.thickLine);
-  group->add(std::make_unique<Rect>(0.0, 0.0, options.size, options.size, std::nullopt, std::nullopt, std::nullopt));
+std::unique_ptr<SvgGroup> SudokuCell::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.thickLine);
+  group->add(std::make_unique<SvgRect>(0.0, 0.0, options.size, options.size, std::nullopt, std::nullopt, std::nullopt));
   return group;
 }
 

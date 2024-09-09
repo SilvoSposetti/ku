@@ -6,7 +6,7 @@
 
 /** SVG Document
  */
-class Document : public SvgElement {
+class SvgDocument : public SvgElement {
 public:
   /** Constructor
    * @param mame The name of the document
@@ -14,7 +14,7 @@ public:
    * @param width The height. The document will then span from [0, height] in the Y-direction
    * @param margin A margin to be applied in all directions
    */
-  Document(const std::string& name, double width, double height, double margin);
+  SvgDocument(const std::string& name, double width, double height, double margin);
 
   virtual std::string string() const override;
 

@@ -1,16 +1,16 @@
 #include "SudokuRow.h"
 
-#include "../drawing/Line.h"
+#include "../drawing/SvgLine.h"
 
 SudokuRow::SudokuRow()
     : AbstractConstraint(
           ConstraintType::SUDOKU_ROW, "Sudoku-Row", "9x1 rows contain all the digits from 1 to 9 exactly once.") {}
 
-std::unique_ptr<Group> SudokuRow::getSvgGroup(const DrawingOptions& options) const {
-  auto group = std::make_unique<Group>(getName(), std::nullopt, "black", options.thinLine);
+std::unique_ptr<SvgGroup> SudokuRow::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
   for (int32_t i = 0; i < Sudo::MAX_DIGIT; i++) {
     const double y = options.cellSize * i;
-    group->add(std::make_unique<Line>(0, y, options.size, y, std::nullopt, std::nullopt));
+    group->add(std::make_unique<SvgLine>(0, y, options.size, y, std::nullopt, std::nullopt));
   }
   return group;
 }

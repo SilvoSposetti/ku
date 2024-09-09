@@ -1,12 +1,11 @@
-#include "drawing/Document.h"
-
 #include "doctest.h"
-#include "drawing/Circle.h"
-#include "drawing/Group.h"
-#include "drawing/Line.h"
-#include "drawing/Polyline.h"
-#include "drawing/Rect.h"
-#include "drawing/Text.h"
+#include "drawing/SvgCircle.h"
+#include "drawing/SvgDocument.h"
+#include "drawing/SvgGroup.h"
+#include "drawing/SvgLine.h"
+#include "drawing/SvgPolyline.h"
+#include "drawing/SvgRect.h"
+#include "drawing/SvgText.h"
 #include "utilities/TemporaryDirectory.h"
 
 #include <fstream>
@@ -25,7 +24,7 @@ TEST_CASE("Document") {
   const std::filesystem::path path = temporaryDirectory.path() / "Test" / "Document";
 
   SUBCASE("Empty") {
-    Document document("Empty", 11, 12, 5);
+    SvgDocument document("Empty", 11, 12, 5);
     const std::string expected = "<?xml version=\"1.0\"?>\n"
                                  "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" "
                                  "viewBox=\"-5 -5 21 22\" font-family=\"Open Sans\">\n"
@@ -37,26 +36,26 @@ TEST_CASE("Document") {
   }
 
   SUBCASE("Shapes") {
-    Document document("Shapes", 100, 100, 20);
+    SvgDocument document("Shapes", 100, 100, 20);
     // Background
     document.addBackground("white");
     // Border
-    document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
+    document.add(std::make_unique<SvgRect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
     // Group
-    std::unique_ptr<Group> group = std::make_unique<Group>("Group", "blue", "gray", 2);
+    std::unique_ptr<SvgGroup> group = std::make_unique<SvgGroup>("Group", "blue", "gray", 2);
     constexpr float size = 8;
     for (int32_t i = 0; i < 5; i++) {
       // Rect
-      group->add(std::make_unique<Rect>(
+      group->add(std::make_unique<SvgRect>(
           90 - i * size - size / 2, 10 + i * size - size / 2, size, size, std::nullopt, std::nullopt, i));
       // Line
       const float x1 = std::max((i - 2) * size, 0.0f);
       const float y1 = std::max((-i + 2) * size, 0.0f);
       const float x2 = std::min(100 - (i - 2) * size, 100.0f);
       const float y2 = std::min(100 - (-i + 2) * size, 100.0f);
-      group->add(std::make_unique<Line>(x1, y1, x2, y2, "green", std::nullopt));
+      group->add(std::make_unique<SvgLine>(x1, y1, x2, y2, "green", std::nullopt));
       // Circle
-      group->add(std::make_unique<Circle>(10 + i * size, 90 - i * size, size / 2, "red", "black", i));
+      group->add(std::make_unique<SvgCircle>(10 + i * size, 90 - i * size, size / 2, "red", "black", i));
     }
     document.add(std::move(group));
 
@@ -94,11 +93,11 @@ TEST_CASE("Document") {
   SUBCASE("Text") {
     constexpr double documentSize = 200;
     constexpr double margin = 5;
-    Document document("Text", documentSize, documentSize, margin);
+    SvgDocument document("Text", documentSize, documentSize, margin);
     // Background
     document.addBackground("white");
     // Border
-    document.add(std::make_unique<Rect>(0, 0, documentSize, documentSize, "rgba(0,0,0,0)", "black", 1));
+    document.add(std::make_unique<SvgRect>(0, 0, documentSize, documentSize, "rgba(0,0,0,0)", "black", 1));
 
     std::vector<std::tuple<TextAnchor, TextBaseline, std::string>> options = {
         {TextAnchor::Start, TextBaseline::Bottom, "red"},
@@ -120,19 +119,19 @@ TEST_CASE("Document") {
 
     const int32_t angleCount = 3;
     const double angleIncrement = 360.0 / angleCount;
-    document.add(std::make_unique<Line>(leftCenter, 0, leftCenter, documentSize, "black", 0.1));
-    document.add(std::make_unique<Line>(middleCenter, 0, middleCenter, documentSize, "black", 0.1));
-    document.add(std::make_unique<Line>(rightCenter, 0, rightCenter, documentSize, "black", 0.1));
+    document.add(std::make_unique<SvgLine>(leftCenter, 0, leftCenter, documentSize, "black", 0.1));
+    document.add(std::make_unique<SvgLine>(middleCenter, 0, middleCenter, documentSize, "black", 0.1));
+    document.add(std::make_unique<SvgLine>(rightCenter, 0, rightCenter, documentSize, "black", 0.1));
     for (const auto& [anchor, baseline, fill] : options) {
       const double centerHeight = (static_cast<double>(i) + 0.5) * offset;
-      document.add(std::make_unique<Line>(0, centerHeight, documentSize, centerHeight, "black", 0.1));
-      document.add(
-          std::make_unique<Text>(leftCenter, centerHeight, "AaBbCc", fontSize, anchor, baseline, fill, std::nullopt));
-      document.add(std::make_unique<Text>(
+      document.add(std::make_unique<SvgLine>(0, centerHeight, documentSize, centerHeight, "black", 0.1));
+      document.add(std::make_unique<SvgText>(
+          leftCenter, centerHeight, "AaBbCc", fontSize, anchor, baseline, fill, std::nullopt));
+      document.add(std::make_unique<SvgText>(
           middleCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline, std::nullopt, std::nullopt));
       for (int32_t j = 0; j < angleCount; j++) {
         const auto angle = j * angleIncrement;
-        document.add(std::make_unique<Text>(
+        document.add(std::make_unique<SvgText>(
             rightCenter, centerHeight, SvgElement::number(angle) + "deg", fontSize / 3, anchor, baseline, fill, angle));
       }
       i++;
@@ -250,11 +249,11 @@ TEST_CASE("Document") {
     constexpr double size = 100;
     constexpr double margin = 10;
 
-    Document document("Polyline", size, size, margin);
+    SvgDocument document("Polyline", size, size, margin);
     // Background
     document.addBackground("white");
     // Border
-    document.add(std::make_unique<Rect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
+    document.add(std::make_unique<SvgRect>(0, 0, 100, 100, "rgba(0,0,0,0)", "black", 1));
 
     std::vector<std::tuple<double,
                            double,
@@ -282,7 +281,7 @@ TEST_CASE("Document") {
         const double y = centerY - radius * std::sin(angle);
         pointsList.emplace_back(std::make_pair(x, y));
       }
-      document.add(std::make_unique<Polyline>(pointsList, close, fill, stroke, strokeWidth));
+      document.add(std::make_unique<SvgPolyline>(pointsList, close, fill, stroke, strokeWidth));
     }
 
     const std::string expected =

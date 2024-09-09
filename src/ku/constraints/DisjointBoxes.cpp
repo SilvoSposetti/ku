@@ -13,7 +13,7 @@ DisjointBoxes::DisjointBoxes()
           "Cells in the same relative position within all 3x3 boxes contain all the digits from 1 to 9 exactly once.") {
 }
 
-std::unique_ptr<Group> DisjointBoxes::getSvgGroup(const DrawingOptions& options) const {
+std::unique_ptr<SvgGroup> DisjointBoxes::getSvgGroup(const DrawingOptions& options) const {
   // constexpr double squareSize = 1.0 / 168.0;
   // constexpr double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
   // constexpr double squareOffset = cellSize * 0.5 * .8;
@@ -29,7 +29,7 @@ std::unique_ptr<Group> DisjointBoxes::getSvgGroup(const DrawingOptions& options)
   // }
 
   // return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(thinLine));
-  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   return group;
 }
 

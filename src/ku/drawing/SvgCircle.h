@@ -6,7 +6,7 @@
 
 /** SVG Circle
  */
-class Circle : public SvgElement {
+class SvgCircle : public SvgElement {
 public:
   /** Constructor
    * @param cx The x-coordinate of the circle's center
@@ -16,7 +16,7 @@ public:
    * @param stroke An optional stroke color
    * @param strokeWidth An optional stroke width
    */
-  Circle(double cx,
+  SvgCircle(double cx,
          double cy,
          double r,
          const std::optional<const std::string>& fill,

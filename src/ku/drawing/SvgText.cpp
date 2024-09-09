@@ -1,6 +1,6 @@
-#include "Text.h"
+#include "SvgText.h"
 
-Text::Text(double x,
+SvgText::SvgText(double x,
            double y,
            const std::string& text,
            const std::optional<double>& fontSize,
@@ -18,7 +18,7 @@ Text::Text(double x,
     , fill(fill)
     , rotationAngle(rotationAngle) {}
 
-std::string Text::string() const {
+std::string SvgText::string() const {
   std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\"";
   if (fontSize) {
     result += " ";

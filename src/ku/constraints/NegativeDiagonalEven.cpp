@@ -8,10 +8,10 @@ NegativeDiagonalEven::NegativeDiagonalEven()
                          "Negative-Diagonal-Even",
                          "The negative diagonal contains only even digits.") {}
 
-std::unique_ptr<Group> NegativeDiagonalEven::getSvgGroup(const DrawingOptions& options) const {
+std::unique_ptr<SvgGroup> NegativeDiagonalEven::getSvgGroup(const DrawingOptions& options) const {
   // const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
   // return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
-  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   return group;
 }
 

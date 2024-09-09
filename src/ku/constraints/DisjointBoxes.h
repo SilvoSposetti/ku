@@ -5,7 +5,7 @@
 class DisjointBoxes : public AbstractConstraint {
 public:
   DisjointBoxes();
-  virtual std::unique_ptr<Group> getSvgGroup(const DrawingOptions& options) const override;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 

@@ -1,16 +1,16 @@
-#include "Group.h"
+#include "SvgGroup.h"
 
-Group::Group(const std::string& name,
-             const std::optional<const std::string>& fill,
-             const std::optional<const std::string>& stroke,
-             const std::optional<double>& strokeWidth)
+SvgGroup::SvgGroup(const std::string& name,
+                   const std::optional<const std::string>& fill,
+                   const std::optional<const std::string>& stroke,
+                   const std::optional<double>& strokeWidth)
     : SvgElement("g", true)
     , name(name)
     , fill(fill)
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
-std::string Group::string() const {
+std::string SvgGroup::string() const {
   std::string result = "<" + tagName + " id=\"" + name + "\"";
   if (fill) {
     result += " ";

@@ -6,7 +6,7 @@
 
 /** SVG Line
  */
-class Line : public SvgElement {
+class SvgLine : public SvgElement {
 public:
   /** Constructor
    * @param x1 The start X-coordinate of the line
@@ -16,7 +16,7 @@ public:
    * @param stroke An optional stroke color
    * @param strokeWidth An optional stroke width
    */
-  Line(double x1,
+  SvgLine(double x1,
        double y1,
        double x2,
        double y2,

@@ -15,7 +15,7 @@ AntiKnightTorus::AntiKnightTorus()
     , pattern({{2, -1}, {2, 1}, {1, 2}, {-1, 2}})
     , dashVector(ConstraintUtilities::createDashVector(pattern, true)) {}
 
-std::unique_ptr<Group> AntiKnightTorus::getSvgGroup(const DrawingOptions& options) const {
+std::unique_ptr<SvgGroup> AntiKnightTorus::getSvgGroup(const DrawingOptions& options) const {
   // std::string lines;
   // const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
   // const double distanceFromCenterAxis = (1 - .618) * cellSize;
@@ -58,7 +58,7 @@ std::unique_ptr<Group> AntiKnightTorus::getSvgGroup(const DrawingOptions& option
   //   lines += SvgUtilities::line(startX, startY, endX, endY);
   // }
   // return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
-  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   return group;
 }
 

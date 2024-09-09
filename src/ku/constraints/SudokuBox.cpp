@@ -1,45 +1,30 @@
 #include "SudokuBox.h"
 
-#include "../drawing/Rect.h"
+#include "../drawing/SvgRect.h"
 
 SudokuBox::SudokuBox()
     : AbstractConstraint(
           ConstraintType::SUDOKU_BOX, "Sudoku-Box", "3x3 boxes contain all the digits from 1 to 9 exactly once.") {}
 
-std::unique_ptr<Group> SudokuBox::getSvgGroup(const DrawingOptions& options) const {
-  // constexpr double oneThird = 1.0 / 3.0;
-  // constexpr double twoThirds = 2.0 / 3.0;
-
-  // std::string result;
-  // result += SvgUtilities::rect(0, 0, oneThird, oneThird);
-  // result += SvgUtilities::rect(oneThird, 0, oneThird, oneThird);
-  // result += SvgUtilities::rect(twoThirds, 0, oneThird, oneThird);
-
-  // result += SvgUtilities::rect(0, oneThird, oneThird, oneThird);
-  // result += SvgUtilities::rect(oneThird, oneThird, oneThird, oneThird);
-  // result += SvgUtilities::rect(twoThirds, oneThird, oneThird, oneThird);
-
-  // result += SvgUtilities::rect(0, 0, twoThirds, oneThird);
-  // result += SvgUtilities::rect(oneThird, twoThirds, oneThird, oneThird);
-  // result += SvgUtilities::rect(twoThirds, twoThirds, oneThird, oneThird);
-
-  // return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(mediumLine));
-
+std::unique_ptr<SvgGroup> SudokuBox::getSvgGroup(const DrawingOptions& options) const {
   const double oneThird = options.size / 3.0;
   const double twoThirds = oneThird * 2.0;
-  auto group = std::make_unique<Group>(getName(), "transparent", "black", options.mediumLine);
-  group->add(std::make_unique<Rect>(0, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
-  group->add(std::make_unique<Rect>(oneThird, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
-  group->add(std::make_unique<Rect>(twoThirds, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.mediumLine);
+  group->add(std::make_unique<SvgRect>(0, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(std::make_unique<SvgRect>(oneThird, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(std::make_unique<SvgRect>(twoThirds, 0, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
 
-  group->add(std::make_unique<Rect>(0, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
-  group->add(std::make_unique<Rect>(oneThird, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
-  group->add(std::make_unique<Rect>(twoThirds, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
-
-  group->add(std::make_unique<Rect>(0, 0, twoThirds, oneThird, std::nullopt, std::nullopt, std::nullopt));
-  group->add(std::make_unique<Rect>(oneThird, twoThirds, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(std::make_unique<SvgRect>(0, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
   group->add(
-      std::make_unique<Rect>(twoThirds, twoThirds, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+      std::make_unique<SvgRect>(oneThird, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(
+      std::make_unique<SvgRect>(twoThirds, oneThird, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+
+  group->add(std::make_unique<SvgRect>(0, 0, twoThirds, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(
+      std::make_unique<SvgRect>(oneThird, twoThirds, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
+  group->add(
+      std::make_unique<SvgRect>(twoThirds, twoThirds, oneThird, oneThird, std::nullopt, std::nullopt, std::nullopt));
   return group;
 }
 

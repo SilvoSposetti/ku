@@ -6,7 +6,7 @@
 
 /** SVG Polyline
  */
-class Polyline : public SvgElement {
+class SvgPolyline : public SvgElement {
 public:
   /** Constructor
    * @param points The list of XY-coordinates that makes up the polyline
@@ -15,7 +15,7 @@ public:
    * @param stroke An optional stroke color
    * @param strokeWidth An optional stroke width
    */
-  Polyline(const std::vector<std::pair<double, double>>& points,
+  SvgPolyline(const std::vector<std::pair<double, double>>& points,
            bool closeLoop,
            const std::optional<const std::string>& fill,
            const std::optional<const std::string>& stroke,
