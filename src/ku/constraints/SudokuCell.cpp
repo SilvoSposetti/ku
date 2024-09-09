@@ -8,7 +8,7 @@ SudokuCell::SudokuCell()
 
 std::unique_ptr<SvgGroup> SudokuCell::getSvgGroup(const DrawingOptions& options) const {
   auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.thickLine);
-  group->add(std::make_unique<SvgRect>(0.0, 0.0, options.size, options.size, std::nullopt, std::nullopt, std::nullopt));
+  group->add(std::make_unique<SvgRect>(0.0, 0.0, options.size, options.size));
   return group;
 }
 

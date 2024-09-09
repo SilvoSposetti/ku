@@ -18,12 +18,20 @@ public:
    * @param strokeWidth An optional stroke width
    */
   SvgRect(double x,
-       double y,
-       double width,
-       double height,
-       const std::optional<const std::string>& fill,
-       const std::optional<const std::string>& stroke,
-       const std::optional<double>& strokeWidth);
+          double y,
+          double width,
+          double height,
+          const std::optional<const std::string>& fill,
+          const std::optional<const std::string>& stroke,
+          const std::optional<double>& strokeWidth);
+
+  /** Constructor
+   * @param x The top-left X-coordinate of the rectangle
+   * @param y The top-left Y-coordinatge of the rectangle
+   * @param width The width of the rectangle
+   * @param height The height for the rectangle
+   */
+  SvgRect(double x, double y, double width, double height);
 
   virtual std::string string() const override;
 

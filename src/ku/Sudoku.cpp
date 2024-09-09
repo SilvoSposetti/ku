@@ -260,13 +260,7 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       if (node.type == NodeType::Node) {
         // Compute coordinates of square
         const int32_t itemIndex = node.header - 1;
-        cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex,
-                                                  cellSize * currentOption,
-                                                  cellSize,
-                                                  cellSize,
-                                                  std::nullopt,
-                                                  std::nullopt,
-                                                  std::nullopt));
+        cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
       }
     }
     document->add(std::move(cellsGroup));

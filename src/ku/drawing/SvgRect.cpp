@@ -16,6 +16,9 @@ SvgRect::SvgRect(double x,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
+SvgRect::SvgRect(double x, double y, double width, double height)
+    : SvgRect(x, y, width, height, std::nullopt, std::nullopt, std::nullopt) {}
+
 std::string SvgRect::string() const {
   std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\" width=\"" + number(width) +
                        "\" height=\"" + number(height) + "\"";
