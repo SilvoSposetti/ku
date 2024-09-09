@@ -1,13 +1,13 @@
 #include "SvgText.h"
 
 SvgText::SvgText(double x,
-           double y,
-           const std::string& text,
-           const std::optional<double>& fontSize,
-           const std::optional<TextAnchor>& anchor,
-           const std::optional<TextBaseline>& baseline,
-           const std::optional<std::string>& fill,
-           const std::optional<double>& rotationAngle)
+                 double y,
+                 const std::string& text,
+                 const std::optional<double>& fontSize,
+                 const std::optional<TextAnchor>& anchor,
+                 const std::optional<TextBaseline>& baseline,
+                 const std::optional<std::string>& fill,
+                 const std::optional<double>& rotationAngle)
     : SvgElement("text", false)
     , x(x)
     , y(y)
@@ -17,6 +17,14 @@ SvgText::SvgText(double x,
     , baseline(baseline)
     , fill(fill)
     , rotationAngle(rotationAngle) {}
+
+SvgText::SvgText(double x,
+                 double y,
+                 const std::string& text,
+                 const std::optional<double>& fontSize,
+                 const std::optional<TextAnchor>& anchor,
+                 const std::optional<TextBaseline>& baseline)
+    : SvgText(x, y, text, fontSize, anchor, baseline, std::nullopt, std::nullopt) {}
 
 std::string SvgText::string() const {
   std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\"";

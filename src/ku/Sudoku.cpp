@@ -95,44 +95,28 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
   {
     auto titleAndDescriptionsGroup =
         std::make_unique<SvgGroup>("Title And Descriptions", "black", std::nullopt, std::nullopt);
-    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(0,
-                                                          options.titleBaseHeight,
-                                                          name,
-                                                          options.titleFontSize,
-                                                          TextAnchor::Start,
-                                                          TextBaseline::Bottom,
-                                                          std::nullopt,
-                                                          std::nullopt));
-    titleAndDescriptionsGroup->add(
-        std::make_unique<SvgText>(options.size,
-                               options.titleBaseHeight,
-                               std::to_string(getGivenDigitsAmount()) + " (-" +
-                                   std::to_string(Sudo::TOTAL_DIGITS - getGivenDigitsAmount()) + ")",
-                               options.infoFontSize,
-                               TextAnchor::End,
-                               TextBaseline::Bottom,
-                               std::nullopt,
-                               std::nullopt));
+    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
+        0, options.titleBaseHeight, name, options.titleFontSize, TextAnchor::Start, TextBaseline::Bottom));
+    const std::string infoDescription = std::to_string(getGivenDigitsAmount()) + " (-" +
+                                        std::to_string(Sudo::TOTAL_DIGITS - getGivenDigitsAmount()) + ")";
+    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+                                                             options.titleBaseHeight,
+                                                             infoDescription,
+                                                             options.infoFontSize,
+                                                             TextAnchor::End,
+                                                             TextBaseline::Bottom));
     int32_t constraintCount = 0;
     for (const auto& constraint : constraints) {
-      titleAndDescriptionsGroup->add(
-          std::make_unique<SvgText>(0,
-                                 options.infoBaseHeight + constraintCount * options.infoLineHeight,
-                                 constraint->getName(),
-                                 options.infoFontSize,
-                                 TextAnchor::Start,
-                                 TextBaseline::Bottom,
-                                 std::nullopt,
-                                 std::nullopt));
-      titleAndDescriptionsGroup->add(
-          std::make_unique<SvgText>(options.size,
-                                 options.infoBaseHeight + constraintCount * options.infoLineHeight,
-                                 constraint->getDescription(),
-                                 options.infoFontSize,
-                                 TextAnchor::End,
-                                 TextBaseline::Bottom,
-                                 std::nullopt,
-                                 std::nullopt));
+      const double infoHeight = options.infoBaseHeight + constraintCount * options.infoLineHeight;
+      const std::string constraintName = constraint->getName();
+      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
+          0, infoHeight, constraintName, options.infoFontSize, TextAnchor::Start, TextBaseline::Bottom));
+      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+                                                               infoHeight,
+                                                               constraint->getDescription(),
+                                                               options.infoFontSize,
+                                                               TextAnchor::End,
+                                                               TextBaseline::Bottom));
       constraintCount++;
     }
     document->add(std::move(titleAndDescriptionsGroup));
@@ -152,23 +136,11 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
         const double y = (i + 0.5) * options.cellSize;
         const std::string digitString = std::to_string(static_cast<int32_t>(digit));
         if (givenMask[i][j]) {
-          givenDigitsGroup->add(std::make_unique<SvgText>(x,
-                                                       y,
-                                                       digitString,
-                                                       options.givenDigitsFontSize,
-                                                       TextAnchor::Middle,
-                                                       TextBaseline::Central,
-                                                       "black",
-                                                       std::nullopt));
+          givenDigitsGroup->add(std::make_unique<SvgText>(
+              x, y, digitString, options.givenDigitsFontSize, TextAnchor::Middle, TextBaseline::Central));
         } else {
-          otherDigitsGroup->add(std::make_unique<SvgText>(x,
-                                                       y,
-                                                       digitString,
-                                                       options.nonGivenDigitsFontSize,
-                                                       TextAnchor::Middle,
-                                                       TextBaseline::Central,
-                                                       "black",
-                                                       std::nullopt));
+          otherDigitsGroup->add(std::make_unique<SvgText>(
+              x, y, digitString, options.nonGivenDigitsFontSize, TextAnchor::Middle, TextBaseline::Central));
         }
         j++;
       }
@@ -248,7 +220,7 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
 }
 
 std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string& name,
-                                                           const DataStructure& dataStructure) {
+                                                              const DataStructure& dataStructure) {
   const int32_t columnsCount = dataStructure.getItemsAmount();
   const int32_t rowsCount = dataStructure.getOptionsAmount();
 
@@ -289,12 +261,12 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
         // Compute coordinates of square
         const int32_t itemIndex = node.header - 1;
         cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex,
-                                               cellSize * currentOption,
-                                               cellSize,
-                                               cellSize,
-                                               std::nullopt,
-                                               std::nullopt,
-                                               std::nullopt));
+                                                  cellSize * currentOption,
+                                                  cellSize,
+                                                  cellSize,
+                                                  std::nullopt,
+                                                  std::nullopt,
+                                                  std::nullopt));
       }
     }
     document->add(std::move(cellsGroup));
@@ -324,7 +296,8 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
     }
     primaryLinesGroup->add(std::make_unique<SvgLine>(
         currentIndex * cellSize, 0, currentIndex * cellSize, height, std::nullopt, std::nullopt));
-    primaryLinesGroup->add(std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount, std::nullopt, std::nullopt));
+    primaryLinesGroup->add(
+        std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount, std::nullopt, std::nullopt));
 
     document->add(std::move(primaryLinesGroup));
     document->add(std::move(secondaryLinesGroup));
@@ -390,8 +363,8 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
                                        std::to_string(static_cast<int32_t>(optionData.digit));
         double x = cellSize * columnsCount;
         double y = (static_cast<double>(counter) + 0.5) * cellSize;
-        rightTextGroup->add(std::make_unique<SvgText>(
-            x, y, optionName, textSize, TextAnchor::Start, TextBaseline::Central, std::nullopt, std::nullopt));
+        rightTextGroup->add(
+            std::make_unique<SvgText>(x, y, optionName, textSize, TextAnchor::Start, TextBaseline::Central));
         counter++;
       }
       textGroup->add(std::move(rightTextGroup));

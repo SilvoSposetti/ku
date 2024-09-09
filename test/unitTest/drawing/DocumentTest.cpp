@@ -128,7 +128,7 @@ TEST_CASE("Document") {
       document.add(std::make_unique<SvgText>(
           leftCenter, centerHeight, "AaBbCc", fontSize, anchor, baseline, fill, std::nullopt));
       document.add(std::make_unique<SvgText>(
-          middleCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline, std::nullopt, std::nullopt));
+          middleCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline));
       for (int32_t j = 0; j < angleCount; j++) {
         const auto angle = j * angleIncrement;
         document.add(std::make_unique<SvgText>(
