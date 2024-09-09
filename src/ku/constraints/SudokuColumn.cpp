@@ -11,7 +11,7 @@ std::unique_ptr<SvgGroup> SudokuColumn::getSvgGroup(const DrawingOptions& option
   auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
   for (int32_t i = 0; i < Sudo::MAX_DIGIT; i++) {
     const double x = options.cellSize * i;
-    group->add(std::make_unique<SvgLine>(x, 0.0, x, options.size, std::nullopt, std::nullopt));
+    group->add(std::make_unique<SvgLine>(x, 0.0, x, options.size));
   }
   return group;
 }

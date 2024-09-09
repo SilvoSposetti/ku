@@ -10,7 +10,7 @@ std::unique_ptr<SvgGroup> SudokuRow::getSvgGroup(const DrawingOptions& options) 
   auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
   for (int32_t i = 0; i < Sudo::MAX_DIGIT; i++) {
     const double y = options.cellSize * i;
-    group->add(std::make_unique<SvgLine>(0, y, options.size, y, std::nullopt, std::nullopt));
+    group->add(std::make_unique<SvgLine>(0, y, options.size, y));
   }
   return group;
 }

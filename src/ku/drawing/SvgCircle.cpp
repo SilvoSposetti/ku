@@ -14,6 +14,9 @@ SvgCircle::SvgCircle(double cx,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
+SvgCircle::SvgCircle(double cx, double cy, double r)
+    : SvgCircle(cx, cy, r, std::nullopt, std::nullopt, std::nullopt) {}
+
 std::string SvgCircle::string() const {
   std::string result = "<" + tagName + " cx=\"" + number(cx) + "\" cy=\"" + number(cy) + "\" r=\"" + number(r) + "\"";
   if (fill) {

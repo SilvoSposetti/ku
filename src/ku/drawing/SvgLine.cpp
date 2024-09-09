@@ -14,6 +14,9 @@ SvgLine::SvgLine(double x1,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
+SvgLine::SvgLine(double x1, double y1, double x2, double y2)
+    : SvgLine(x1, y1, x2, y2, std::nullopt, std::nullopt) {}
+
 std::string SvgLine::string() const {
   std::string result = "<" + tagName + " x1=\"" + number(x1) + "\" y1=\"" + number(y1) + "\" x2=\"" + number(x2) +
                        "\" y2=\"" + number(y2) + "\"";

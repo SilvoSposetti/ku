@@ -16,10 +16,16 @@ public:
    * @param strokeWidth An optional stroke width
    */
   SvgPolyline(const std::vector<std::pair<double, double>>& points,
-           bool closeLoop,
-           const std::optional<const std::string>& fill,
-           const std::optional<const std::string>& stroke,
-           const std::optional<double>& strokeWidth);
+              bool closeLoop,
+              const std::optional<const std::string>& fill,
+              const std::optional<const std::string>& stroke,
+              const std::optional<double>& strokeWidth);
+
+  /** Constructor
+   * @param points The list of XY-coordinates that makes up the polyline
+   * @param close Whether the polyline should be closed and for a loop (connect first and last points)
+   */
+  SvgPolyline(const std::vector<std::pair<double, double>>& points, bool closeLoop);
 
   virtual std::string string() const override;
 

@@ -12,6 +12,9 @@ SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points,
     , stroke(stroke)
     , strokeWidth(strokeWidth) {}
 
+SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points, bool closeLoop)
+    : SvgPolyline(points, closeLoop, std::nullopt, std::nullopt, std::nullopt) {}
+
 std::string SvgPolyline::string() const {
 
   std::string polylineString;

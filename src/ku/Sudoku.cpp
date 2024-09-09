@@ -279,19 +279,17 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       const double x = currentIndex * cellSize;
       if (currentName != itemData.constraintName) {
         // Add primary vertical line
-        primaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height, std::nullopt, std::nullopt));
+        primaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
 
         currentName = itemData.constraintName;
       } else {
         // Add secondary vertical line
-        secondaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height, std::nullopt, std::nullopt));
+        secondaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
       }
       currentIndex++;
     }
-    primaryLinesGroup->add(std::make_unique<SvgLine>(
-        currentIndex * cellSize, 0, currentIndex * cellSize, height, std::nullopt, std::nullopt));
-    primaryLinesGroup->add(
-        std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount, std::nullopt, std::nullopt));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(currentIndex * cellSize, 0, currentIndex * cellSize, height));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount));
 
     document->add(std::move(primaryLinesGroup));
     document->add(std::move(secondaryLinesGroup));
@@ -311,17 +309,15 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
       if (previousCell != currentCell) {
 
-        primaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y, std::nullopt, std::nullopt));
+        primaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
         previousCell = currentCell;
       } else {
-        secondaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y, std::nullopt, std::nullopt));
+        secondaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
       }
       counter++;
     }
-    primaryLinesGroup->add(
-        std::make_unique<SvgLine>(0, cellSize * counter, width, cellSize * counter, std::nullopt, std::nullopt));
-    primaryLinesGroup->add(
-        std::make_unique<SvgLine>(0, height, cellSize * columnsCount, height, std::nullopt, std::nullopt));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(0, cellSize * counter, width, cellSize * counter));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(0, height, cellSize * columnsCount, height));
 
     document->add(std::move(primaryLinesGroup));
     document->add(std::move(secondaryLinesGroup));
