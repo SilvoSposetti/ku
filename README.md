@@ -45,16 +45,22 @@ The following are the non-classic constraints supported:
 - __Positive Diagonal Odd__
 
 ## Getting Started
-This project uses the Meson build system to configure and generate builds.
-Since the `bin` directory is gitignored, the easiest way to generate debug and release builds is to run the following commands in the cloned repository:
+- Download and install [Meson](https://mesonbuild.com/), the build system used in this project.
+- Make sure you have a `C++23`-capable compiler.
+
+The `/bin` directory is gitignored, the easiest way to generate a `Debug` build is to run the following:
+
 ```
 meson setup bin/Debug
+meson compile -C bin/Debug
 ```
+Or, for a `Release` build:
 ```
 meson setup --buildtype=release bin/Release
+meson compile -C bin/Release
 ```
 
 ### Dependencies
-- C++20
-- [Meson](https://mesonbuild.com/)
-- [doctest](https://github.com/doctest/doctest)
+- `C++23`
+- [Meson](https://mesonbuild.com/) `1.4.1+`
+- [doctest](https://github.com/doctest/doctest) `2.4.11+`
