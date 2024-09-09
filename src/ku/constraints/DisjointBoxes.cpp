@@ -13,22 +13,24 @@ DisjointBoxes::DisjointBoxes()
           "Cells in the same relative position within all 3x3 boxes contain all the digits from 1 to 9 exactly once.") {
 }
 
-std::string DisjointBoxes::getSvgGroup() const {
-  constexpr double squareSize = 1.0 / 168.0;
-  constexpr double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  constexpr double squareOffset = cellSize * 0.5 * .8;
+std::unique_ptr<Group> DisjointBoxes::getSvgGroup(const DrawingOptions& options) const {
+  // constexpr double squareSize = 1.0 / 168.0;
+  // constexpr double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+  // constexpr double squareOffset = cellSize * 0.5 * .8;
 
-  std::string result;
-  for (int i = 0; i <= Sudo::MAX_INDEX; i++) {
-    for (int j = 0; j <= Sudo::MAX_INDEX; j++) {
-      const double positionX = cellSize * (i + .5) + squareOffset * ((i % 3) - 1);
-      const double positionY = cellSize * (j + .5) + squareOffset * ((j % 3) - 1);
+  // std::string result;
+  // for (int i = 0; i <= Sudo::MAX_INDEX; i++) {
+  //   for (int j = 0; j <= Sudo::MAX_INDEX; j++) {
+  //     const double positionX = cellSize * (i + .5) + squareOffset * ((i % 3) - 1);
+  //     const double positionY = cellSize * (j + .5) + squareOffset * ((j % 3) - 1);
 
-      result += SvgUtilities::rotatedRect(positionX, positionY, squareSize, squareSize, std::numbers::pi / 4);
-    }
-  }
+  //     result += SvgUtilities::rotatedRect(positionX, positionY, squareSize, squareSize, std::numbers::pi / 4);
+  //   }
+  // }
 
-  return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(thinLine));
+  // return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(thinLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool DisjointBoxes::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

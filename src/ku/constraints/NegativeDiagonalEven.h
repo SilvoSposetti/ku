@@ -6,7 +6,7 @@ class NegativeDiagonalEven : public AbstractConstraint {
 public:
   NegativeDiagonalEven();
 
-  virtual std::string getSvgGroup() const override;
+  virtual std::unique_ptr<Group> getSvgGroup(const DrawingOptions& options) const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 

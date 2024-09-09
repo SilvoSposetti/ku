@@ -2,6 +2,7 @@ ku_sources = files(
   'Board.cpp',
   'drawing/Circle.cpp',
   'drawing/Document.cpp',
+  'drawing/DrawingOptions.cpp',
   'drawing/Element.cpp',
   'drawing/Group.cpp',
   'drawing/Line.cpp',

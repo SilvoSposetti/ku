@@ -10,17 +10,19 @@ Asterisk::Asterisk()
   cells = {{1, 4}, {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
 }
 
-std::string Asterisk::getSvgGroup() const {
-  std::string squares;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+std::unique_ptr<Group> Asterisk::getSvgGroup(const DrawingOptions& options) const {
+  // std::string squares;
+  // const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
 
-  for (const auto& [i, j] : cells) {
-    const double topLeftX = i * cellSize;
-    const double topLeftY = j * cellSize;
+  // for (const auto& [i, j] : cells) {
+  //   const double topLeftX = i * cellSize;
+  //   const double topLeftY = j * cellSize;
 
-    squares += SvgUtilities::rect(topLeftX, topLeftY, cellSize, cellSize);
-  }
-  return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  //   squares += SvgUtilities::rect(topLeftX, topLeftY, cellSize, cellSize);
+  // }
+  // return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool Asterisk::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

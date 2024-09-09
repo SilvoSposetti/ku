@@ -8,9 +8,11 @@ NegativeDiagonalEven::NegativeDiagonalEven()
                          "Negative-Diagonal-Even",
                          "The negative diagonal contains only even digits.") {}
 
-std::string NegativeDiagonalEven::getSvgGroup() const {
-  const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
+std::unique_ptr<Group> NegativeDiagonalEven::getSvgGroup(const DrawingOptions& options) const {
+  // const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
+  // return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool NegativeDiagonalEven::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

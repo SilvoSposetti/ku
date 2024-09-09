@@ -8,9 +8,11 @@ PositiveDiagonalOdd::PositiveDiagonalOdd()
                          "Positive-Diagonal-Odd",
                          "The positive diagonal contains only odd digits.") {}
 
-std::string PositiveDiagonalOdd::getSvgGroup() const {
-  const std::string zigZagLine = SvgUtilities::zigZagLine(0, 1, 1, 0);
-  return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
+std::unique_ptr<Group> PositiveDiagonalOdd::getSvgGroup(const DrawingOptions& options) const {
+  // const std::string zigZagLine = SvgUtilities::zigZagLine(0, 1, 1, 0);
+  // return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool PositiveDiagonalOdd::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

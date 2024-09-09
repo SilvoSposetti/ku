@@ -9,17 +9,19 @@ HyperSudoku::HyperSudoku()
                          "Four 3x3 boxes contain all the digits from 1 to 9 exactly once.")
     , topLeftCorners({{1, 1}, {5, 1}, {1, 5}, {5, 5}}) {}
 
-std::string HyperSudoku::getSvgGroup() const {
-  std::string squares;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+std::unique_ptr<Group> HyperSudoku::getSvgGroup(const DrawingOptions& options) const {
+  // std::string squares;
+  // const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
 
-  for (const auto& [i, j] : topLeftCorners) {
-    const double topLeftX = i * cellSize;
-    const double topLeftY = j * cellSize;
+  // for (const auto& [i, j] : topLeftCorners) {
+  //   const double topLeftX = i * cellSize;
+  //   const double topLeftY = j * cellSize;
 
-    squares += SvgUtilities::rect(topLeftX, topLeftY, 3 * cellSize, 3 * cellSize);
-  }
-  return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  //   squares += SvgUtilities::rect(topLeftX, topLeftY, 3 * cellSize, 3 * cellSize);
+  // }
+  // return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool HyperSudoku::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

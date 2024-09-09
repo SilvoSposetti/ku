@@ -9,9 +9,11 @@ NegativeDiagonal::NegativeDiagonal()
                          "The negative diagonal contains all the digits from " + std::to_string(Sudo::MIN_DIGIT) +
                              " to " + std::to_string(Sudo::MAX_DIGIT) + " exactly once.") {}
 
-std::string NegativeDiagonal::getSvgGroup() const {
-  const std::string line = SvgUtilities::line(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
+std::unique_ptr<Group> NegativeDiagonal::getSvgGroup(const DrawingOptions& options) const {
+  // const std::string line = SvgUtilities::line(0, 0, 1, 1);
+  // return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
+  auto group = std::make_unique<Group>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  return group;
 }
 
 bool NegativeDiagonal::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

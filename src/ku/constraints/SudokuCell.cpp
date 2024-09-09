@@ -1,25 +1,15 @@
 #include "SudokuCell.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/Rect.h"
 
 SudokuCell::SudokuCell()
     : AbstractConstraint(
           ConstraintType::SUDOKU_CELL, "Sudoku-Cell", "Each cell can only contain a single integer between 1 and 9.") {}
 
-std::string SudokuCell::getSvgGroup() const {
-  // Black border
-  std::string border = SvgUtilities::rect(0, 0, 1, 1, SvgUtilities::getNoFillStroke(thickLine));
-
-  // dashed-lines grid
-  std::string grid;
-  const double cellSize = 1.0 / Sudo::MAX_DIGIT;
-  for (int i = 1; i <= Sudo::MAX_INDEX; i++) {
-    const double position = cellSize * i;
-    grid += SvgUtilities::line(position, 0, position, 1);
-    grid += SvgUtilities::line(0, position, 1, position);
-  }
-  grid = SvgUtilities::createGroup(getName() + "-Grid", grid, SvgUtilities::getNoFillDashedStroke(thinnestLine, 3, 6));
-  return SvgUtilities::createGroup(getName(), border + grid);
+std::unique_ptr<Group> SudokuCell::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<Group>(getName(), "transparent", "black", options.thickLine);
+  group->add(std::make_unique<Rect>(0.0, 0.0, options.size, options.size, std::nullopt, std::nullopt, std::nullopt));
+  return group;
 }
 
 bool SudokuCell::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

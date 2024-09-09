@@ -1,19 +1,18 @@
 #include "SudokuRow.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/Line.h"
 
 SudokuRow::SudokuRow()
     : AbstractConstraint(
           ConstraintType::SUDOKU_ROW, "Sudoku-Row", "9x1 rows contain all the digits from 1 to 9 exactly once.") {}
 
-std::string SudokuRow::getSvgGroup() const {
-  std::string horizontalLines;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  for (int i = 0; i < Sudo::MAX_DIGIT; i++) {
-    const double yPosition = cellSize * i;
-    horizontalLines += SvgUtilities::line(0, yPosition, 1, yPosition);
+std::unique_ptr<Group> SudokuRow::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<Group>(getName(), std::nullopt, "black", options.thinLine);
+  for (int32_t i = 0; i < Sudo::MAX_DIGIT; i++) {
+    const double y = options.cellSize * i;
+    group->add(std::make_unique<Line>(0, y, options.size, y, std::nullopt, std::nullopt));
   }
-  return SvgUtilities::createGroup(getName(), horizontalLines, SvgUtilities::getNoFillStroke(thinLine));
+  return group;
 }
 
 bool SudokuRow::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

@@ -1,8 +1,8 @@
 #include "Sudoku.h"
 
 #include "Setter.h"
-#include "SvgUtilities.h"
 #include "constraints/ConstraintFactory.h"
+#include "drawing/DrawingOptions.h"
 #include "drawing/Group.h"
 #include "drawing/Line.h"
 #include "drawing/Rect.h"
@@ -10,7 +10,6 @@
 #include "solver/Solver.h"
 
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 
 Sudoku::Sudoku(const std::string& name,
@@ -86,40 +85,104 @@ std::vector<std::vector<bool>> Sudoku::getGivenMask() {
 }
 
 void Sudoku::exportToSvg(const std::filesystem::path& location) {
-  if (!std::filesystem::exists(location)) {
-    std::filesystem::create_directories(location);
-  }
-  const std::filesystem::path outputFilePath = location / (name + ".svg");
-  std::ofstream outfile(outputFilePath);
-
-  // Get SVG string
-  std::string svgContent;
-  svgContent += SvgUtilities::getSvgHeader();
+  DrawingOptions options(1000, 100, constraints.size());
+  auto document = std::make_unique<Document>(name, options.size, options.totalHeight, options.margin);
 
   // Background
-  svgContent += SvgUtilities::background();
+  document->addBackground("white");
 
   // Title and description
-  std::vector<std::string> constraintDescriptions;
-  for (const auto& constraint : constraints) {
-    constraintDescriptions.emplace_back(constraint->getName() + " | " + constraint->getDescription());
+  {
+    auto titleAndDescriptionsGroup =
+        std::make_unique<Group>("Title And Descriptions", "black", std::nullopt, std::nullopt);
+    titleAndDescriptionsGroup->add(std::make_unique<Text>(0,
+                                                          options.titleBaseHeight,
+                                                          name,
+                                                          options.titleFontSize,
+                                                          TextAnchor::Start,
+                                                          TextBaseline::Bottom,
+                                                          std::nullopt,
+                                                          std::nullopt));
+    titleAndDescriptionsGroup->add(
+        std::make_unique<Text>(options.size,
+                               options.titleBaseHeight,
+                               std::to_string(getGivenDigitsAmount()) + " (-" +
+                                   std::to_string(Sudo::TOTAL_DIGITS - getGivenDigitsAmount()) + ")",
+                               options.infoFontSize,
+                               TextAnchor::End,
+                               TextBaseline::Bottom,
+                               std::nullopt,
+                               std::nullopt));
+    int32_t constraintCount = 0;
+    for (const auto& constraint : constraints) {
+      titleAndDescriptionsGroup->add(
+          std::make_unique<Text>(0,
+                                 options.infoBaseHeight + constraintCount * options.infoLineHeight,
+                                 constraint->getName(),
+                                 options.infoFontSize,
+                                 TextAnchor::Start,
+                                 TextBaseline::Bottom,
+                                 std::nullopt,
+                                 std::nullopt));
+      titleAndDescriptionsGroup->add(
+          std::make_unique<Text>(options.size,
+                                 options.infoBaseHeight + constraintCount * options.infoLineHeight,
+                                 constraint->getDescription(),
+                                 options.infoFontSize,
+                                 TextAnchor::End,
+                                 TextBaseline::Bottom,
+                                 std::nullopt,
+                                 std::nullopt));
+      constraintCount++;
+    }
+    document->add(std::move(titleAndDescriptionsGroup));
   }
-  svgContent += SvgUtilities::titleAndDescription(name, constraintDescriptions);
 
-  // Constraints visual elements
-  for (const auto& constraint : constraints) {
-    svgContent += constraint->getSvgGroup();
+  // Digits
+  {
+    const auto solution = board->getSolution();
+    const auto givenMask = board->getGivenMask();
+    auto givenDigitsGroup = std::make_unique<Group>("Given Digits", "black", std::nullopt, std::nullopt);
+    auto otherDigitsGroup = std::make_unique<Group>("Other Digits", "black", std::nullopt, std::nullopt);
+    int32_t i = 0;
+    for (const auto& row : solution) {
+      int32_t j = 0;
+      for (const auto& digit : row) {
+        const double x = (j + 0.5) * options.cellSize;
+        const double y = (i + 0.5) * options.cellSize;
+        const std::string digitString = std::to_string(static_cast<int32_t>(digit));
+        if (givenMask[i][j]) {
+          givenDigitsGroup->add(std::make_unique<Text>(x,
+                                                       y,
+                                                       digitString,
+                                                       options.givenDigitsFontSize,
+                                                       TextAnchor::Middle,
+                                                       TextBaseline::Central,
+                                                       "black",
+                                                       std::nullopt));
+        } else {
+          otherDigitsGroup->add(std::make_unique<Text>(x,
+                                                       y,
+                                                       digitString,
+                                                       options.nonGivenDigitsFontSize,
+                                                       TextAnchor::Middle,
+                                                       TextBaseline::Central,
+                                                       "black",
+                                                       std::nullopt));
+        }
+        j++;
+      }
+      i++;
+    }
+    document->add(std::move(givenDigitsGroup));
+    document->add(std::move(otherDigitsGroup));
   }
 
-  // Given digits
-  svgContent += SvgUtilities::givenDigits(board->getSolution(), board->getGivenMask());
+  for (const auto& constraint : constraints) {
+    document->add(constraint->getSvgGroup(options));
+  }
 
-  // Footer
-  svgContent += SvgUtilities::getSvgFooter();
-
-  // Stream it to file, then save and close
-  outfile << svgContent;
-  outfile.close();
+  document->writeToFile(location);
 }
 
 void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
