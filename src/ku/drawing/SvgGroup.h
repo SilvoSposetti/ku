@@ -15,9 +15,9 @@ public:
    * @param strokeWidth An optional stroke width
    */
   SvgGroup(const std::string& name,
-        const std::optional<const std::string>& fill,
-        const std::optional<const std::string>& stroke,
-        const std::optional<double>& strokeWidth);
+           const std::optional<const std::string>& fill,
+           const std::optional<const std::string>& stroke,
+           const std::optional<double>& strokeWidth);
 
   virtual std::string string() const override;
 

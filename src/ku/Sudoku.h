@@ -108,7 +108,7 @@ private:
    * @return The svg document
    */
   static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
-                                                            const DataStructure& dataStructure);
+                                                               const DataStructure& dataStructure);
 
 private:
   /// The name

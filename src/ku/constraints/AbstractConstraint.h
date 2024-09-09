@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../Sudo.h"
-#include "ConstraintType.h"
-#include "../drawing/SvgGroup.h"
 #include "../drawing/DrawingOptions.h"
+#include "../drawing/SvgGroup.h"
+#include "ConstraintType.h"
+
 #include <string>
 #include <tuple>
 #include <vector>
