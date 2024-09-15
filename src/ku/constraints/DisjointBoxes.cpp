@@ -1,10 +1,9 @@
 #include "DisjointBoxes.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgCircle.h"
 #include "../utilities/IdPacking.h"
 
 #include <iostream>
-#include <numbers>
 
 DisjointBoxes::DisjointBoxes()
     : AbstractConstraint(
@@ -14,22 +13,19 @@ DisjointBoxes::DisjointBoxes()
 }
 
 std::unique_ptr<SvgGroup> DisjointBoxes::getSvgGroup(const DrawingOptions& options) const {
-  // constexpr double squareSize = 1.0 / 168.0;
-  // constexpr double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  // constexpr double squareOffset = cellSize * 0.5 * .8;
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.thinLine);
+  const double circleRadius = options.cellSize / 20.0;
+  const double squareOffset = (options.cellSize / 2.0) * 0.7;
 
-  // std::string result;
-  // for (int i = 0; i <= Sudo::MAX_INDEX; i++) {
-  //   for (int j = 0; j <= Sudo::MAX_INDEX; j++) {
-  //     const double positionX = cellSize * (i + .5) + squareOffset * ((i % 3) - 1);
-  //     const double positionY = cellSize * (j + .5) + squareOffset * ((j % 3) - 1);
+  for (int i = 0; i <= Sudo::MAX_INDEX; i++) {
+    for (int j = 0; j <= Sudo::MAX_INDEX; j++) {
+      const double positionX = options.cellSize * (i + .5) + squareOffset * ((i % 3) - 1);
+      const double positionY = options.cellSize * (j + .5) + squareOffset * ((j % 3) - 1);
 
-  //     result += SvgUtilities::rotatedRect(positionX, positionY, squareSize, squareSize, std::numbers::pi / 4);
-  //   }
-  // }
+      group->add(std::make_unique<SvgCircle>(positionX, positionY, circleRadius));
+    }
+  }
 
-  // return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(thinLine));
-  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   return group;
 }
 

@@ -1,6 +1,6 @@
 #include "Asterisk.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgRect.h"
 #include "../utilities/IdPacking.h"
 
 Asterisk::Asterisk()
@@ -11,17 +11,14 @@ Asterisk::Asterisk()
 }
 
 std::unique_ptr<SvgGroup> Asterisk::getSvgGroup(const DrawingOptions& options) const {
-  // std::string squares;
-  // const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.mediumLine);
 
-  // for (const auto& [i, j] : cells) {
-  //   const double topLeftX = i * cellSize;
-  //   const double topLeftY = j * cellSize;
+  for (const auto& [i, j] : cells) {
+    const double topLeftX = i * options.cellSize;
+    const double topLeftY = j * options.cellSize;
 
-  //   squares += SvgUtilities::rect(topLeftX, topLeftY, cellSize, cellSize);
-  // }
-  // return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
-  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
+    group->add(std::make_unique<SvgRect>(topLeftX, topLeftY, options.cellSize, options.cellSize));
+  }
   return group;
 }
 

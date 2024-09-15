@@ -85,7 +85,7 @@ std::vector<std::vector<bool>> Sudoku::getGivenMask() {
 }
 
 void Sudoku::exportToSvg(const std::filesystem::path& location) {
-  DrawingOptions options(1000, 100, constraints.size());
+  DrawingOptions options(1000, 150, constraints.size());
   auto document = std::make_unique<SvgDocument>(name, options.size, options.totalHeight, options.margin);
 
   // Background
