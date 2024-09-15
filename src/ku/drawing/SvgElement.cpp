@@ -40,3 +40,7 @@ std::string SvgElement::padLeft(const std::string& input, char character, int32_
   }
   return input;
 }
+
+std::string SvgElement::getPointString(const std::pair<double, double>& point) {
+  return SvgElement::number(point.first) + "," + SvgElement::number(point.second);
+}

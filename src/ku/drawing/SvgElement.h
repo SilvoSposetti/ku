@@ -42,6 +42,12 @@ public:
    */
   static std::string padLeft(const std::string& input, char character, int32_t n);
 
+  /** Utility to transform points to string
+   * @param point The point
+   * @return The string representation of the point
+   */
+  static std::string getPointString(const std::pair<double, double>& point);
+
 protected:
   /** The name of the tag
    */

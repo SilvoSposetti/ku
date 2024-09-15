@@ -7,6 +7,7 @@ ku_sources = files(
   'drawing/SvgGroup.cpp',
   'drawing/SvgLine.cpp',
   'drawing/SvgPolyline.cpp',
+  'drawing/SvgSquigglyLine.cpp',
   'drawing/SvgRect.cpp',
   'drawing/SvgText.cpp',
   'Setter.cpp',
