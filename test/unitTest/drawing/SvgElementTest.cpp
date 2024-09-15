@@ -37,5 +37,6 @@ TEST_CASE("SvgElement") {
     CHECK_EQ("5.6,-1.8", SvgElement::getPointString(std::make_pair(5.6, -1.8)));
     CHECK_EQ("-1,0", SvgElement::getPointString(std::make_pair(-1, 0)));
     CHECK_EQ("-9999.9,12", SvgElement::getPointString(std::make_pair(-9999.9, 12)));
+    CHECK_EQ("12.345,0.001", SvgElement::getPointString(std::make_pair(12.345, 0.001)));
   }
 }

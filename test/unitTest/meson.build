@@ -18,7 +18,7 @@ unit_test_sources = files(
   'constraints/SudokuCellTest.cpp',
   'constraints/SudokuColumnTest.cpp',
   'constraints/SudokuRowTest.cpp',
-  'drawing/DocumentTest.cpp',
+  'drawing/SvgDocumentTest.cpp',
   'drawing/SvgElementTest.cpp',
   'FileIoTest.cpp',
   'IdPackingTest.cpp',

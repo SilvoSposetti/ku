@@ -1,25 +1,18 @@
+#include "drawing/SvgDocument.h"
+
 #include "doctest.h"
 #include "drawing/SvgCircle.h"
-#include "drawing/SvgDocument.h"
 #include "drawing/SvgGroup.h"
 #include "drawing/SvgLine.h"
 #include "drawing/SvgPolyline.h"
 #include "drawing/SvgRect.h"
 #include "drawing/SvgText.h"
+#include "utilities/FileIo.h"
 #include "utilities/TemporaryDirectory.h"
 
-#include <fstream>
 #include <numbers>
 
-std::string readFromFile(const std::filesystem::path path) {
-  if (!std::filesystem::exists(path)) {
-    return "Path " + path.string() + " doesn't exist";
-  }
-  std::ifstream inputFileStream(path.string());
-  return std::string((std::istreambuf_iterator<char>(inputFileStream)), (std::istreambuf_iterator<char>()));
-};
-
-TEST_CASE("Document") {
+TEST_CASE("SvgDocument") {
   TemporaryDirectory temporaryDirectory;
   const std::filesystem::path path = temporaryDirectory.path() / "Test" / "Document";
 
@@ -31,8 +24,13 @@ TEST_CASE("Document") {
                                  "</svg>";
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(path);
-    CHECK_EQ(expected, readFromFile(path / "Empty.svg"));
+    CHECK(document.writeToFile(path));
+
+    auto readText = FileIo::read(path / "Empty.svg");
+    CHECK(readText.has_value());
+    if (readText.has_value()) {
+      CHECK_EQ(expected, readText.value());
+    }
   }
 
   SUBCASE("Shapes") {
@@ -86,8 +84,13 @@ TEST_CASE("Document") {
         "</svg>";
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(path);
-    CHECK_EQ(expected, readFromFile(path / "Shapes.svg"));
+    CHECK(document.writeToFile(path));
+
+    auto readText = FileIo::read(path / "Shapes.svg");
+    CHECK(readText.has_value());
+    if (readText.has_value()) {
+      CHECK_EQ(expected, readText.value());
+    }
   }
 
   SUBCASE("Text") {
@@ -241,8 +244,13 @@ TEST_CASE("Document") {
 
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(path);
-    CHECK_EQ(expected, readFromFile(std::filesystem::path(path) / "Text.svg"));
+    CHECK(document.writeToFile(path));
+
+    auto readText = FileIo::read(path / "Text.svg");
+    CHECK(readText.has_value());
+    if (readText.has_value()) {
+      CHECK_EQ(expected, readText.value());
+    }
   }
 
   SUBCASE("Polyline") {
@@ -303,7 +311,12 @@ TEST_CASE("Document") {
 
     CHECK_EQ(expected, document.string());
 
-    document.writeToFile(path);
-    CHECK_EQ(expected, readFromFile(path / "Polyline.svg"));
+    CHECK(document.writeToFile(path));
+    
+    auto readText = FileIo::read(path / "Polyline.svg");
+    CHECK(readText.has_value());
+    if (readText.has_value()) {
+      CHECK_EQ(expected, readText.value());
+    }
   }
 }
