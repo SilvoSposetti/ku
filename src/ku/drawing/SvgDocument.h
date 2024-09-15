@@ -23,10 +23,11 @@ public:
    */
   void addBackground(const std::string& fill);
 
-  /** Writes the document's string to a file specified. Filename will be the {name}.svg
-   * @param path The directory into which to write the document.
+  /** Writes the document's string to a file in the path specified. Filename will be the {name}.svg
+   * @param path The directory into which to write the document
+   * @return Wether writing to file was successful
    */
-  void writeToFile(const std::filesystem::path& path) const;
+  bool writeToFile(const std::filesystem::path& path) const;
 
 private:
   const std::string name;

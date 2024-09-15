@@ -1,8 +1,7 @@
 #include "SvgDocument.h"
 
+#include "../utilities/FileIo.h"
 #include "SvgRect.h"
-
-#include <fstream>
 
 SvgDocument::SvgDocument(const std::string& name, double width, double height, double margin)
     : SvgElement("svg", true)
@@ -34,12 +33,6 @@ void SvgDocument::addBackground(const std::string& fill) {
       -margin, -margin, width + margin * 2, height + margin * 2, fill, std::nullopt, std::nullopt));
 }
 
-void SvgDocument::writeToFile(const std::filesystem::path& directory) const {
-  if (!std::filesystem::exists(directory)) {
-    std::filesystem::create_directories(directory);
-  }
-  const std::filesystem::path outputFilePath = directory / (name + ".svg");
-  std::ofstream outfile(outputFilePath);
-  outfile << string();
-  outfile.close();
+bool SvgDocument::writeToFile(const std::filesystem::path& directory) const {
+  return FileIo::write(directory / (name + ".svg"), string());
 }
