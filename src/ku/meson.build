@@ -15,7 +15,6 @@ ku_sources = files(
   'Setter.cpp',
   'Sudo.cpp',
   'Sudoku.cpp',
-  'SvgUtilities.cpp',
   'Validator.cpp',
   'constraints/AbstractConstraint.cpp',
   'constraints/AntiKing.cpp',
