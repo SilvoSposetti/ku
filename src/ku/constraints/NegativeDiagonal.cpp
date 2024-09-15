@@ -1,6 +1,6 @@
 #include "NegativeDiagonal.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgLine.h"
 #include "ConstraintUtilities.h"
 
 NegativeDiagonal::NegativeDiagonal()
@@ -10,9 +10,8 @@ NegativeDiagonal::NegativeDiagonal()
                              " to " + std::to_string(Sudo::MAX_DIGIT) + " exactly once.") {}
 
 std::unique_ptr<SvgGroup> NegativeDiagonal::getSvgGroup(const DrawingOptions& options) const {
-  // const std::string line = SvgUtilities::line(0, 0, 1, 1);
-  // return SvgUtilities::createGroup(getName(), line, SvgUtilities::getNoFillStroke(thinLine));
-  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  group->add(std::make_unique<SvgLine>(0, 0, options.size, options.size));
   return group;
 }
 
