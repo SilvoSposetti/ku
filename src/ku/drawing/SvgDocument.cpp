@@ -1,6 +1,7 @@
 #include "SvgDocument.h"
 
 #include "../utilities/FileIo.h"
+#include "DrawingUtilities.h"
 #include "SvgRect.h"
 
 SvgDocument::SvgDocument(const std::string& name, double width, double height, double margin)
@@ -16,8 +17,9 @@ std::string SvgDocument::string() const {
   result += " ";
   result += "xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\"";
   result += " ";
-  result += "viewBox=\"" + number(-margin) + " " + number(-margin) + " " + number(width + 2 * margin) + " " +
-            number(height + 2 * margin) + "\" font-family=\"Open Sans\"";
+  result += "viewBox=\"" + DrawingUtilities::number(-margin) + " " + DrawingUtilities::number(-margin) + " " +
+            DrawingUtilities::number(width + 2 * margin) + " " + DrawingUtilities::number(height + 2 * margin) +
+            "\" font-family=\"Open Sans\"";
   result += ">\n";
 
   for (const auto& childElement : childElements) {

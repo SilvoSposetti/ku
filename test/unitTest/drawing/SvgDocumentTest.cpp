@@ -1,6 +1,7 @@
 #include "drawing/SvgDocument.h"
 
 #include "doctest.h"
+#include "drawing/DrawingUtilities.h"
 #include "drawing/SvgCircle.h"
 #include "drawing/SvgGroup.h"
 #include "drawing/SvgLine.h"
@@ -12,11 +13,11 @@
 
 #include <numbers>
 
-TEST_CASE("SvgDocument") {
+TEST_SUITE("Drawing") {
   TemporaryDirectory temporaryDirectory;
   const std::filesystem::path path = temporaryDirectory.path() / "Test" / "Document";
 
-  SUBCASE("Empty") {
+  TEST_CASE("Empty Document") {
     SvgDocument document("Empty", 11, 12, 5);
     const std::string expected = "<?xml version=\"1.0\"?>\n"
                                  "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" "
@@ -33,7 +34,7 @@ TEST_CASE("SvgDocument") {
     }
   }
 
-  SUBCASE("Shapes") {
+  TEST_CASE("Shapes") {
     SvgDocument document("Shapes", 100, 100, 20);
     // Background
     document.addBackground("white");
@@ -93,7 +94,7 @@ TEST_CASE("SvgDocument") {
     }
   }
 
-  SUBCASE("Text") {
+  TEST_CASE("Text") {
     constexpr double documentSize = 200;
     constexpr double margin = 5;
     SvgDocument document("Text", documentSize, documentSize, margin);
@@ -134,8 +135,14 @@ TEST_CASE("SvgDocument") {
           std::make_unique<SvgText>(middleCenter, centerHeight, std::to_string(i), fontSize, anchor, baseline));
       for (int32_t j = 0; j < angleCount; j++) {
         const auto angle = j * angleIncrement;
-        document.add(std::make_unique<SvgText>(
-            rightCenter, centerHeight, SvgElement::number(angle) + "deg", fontSize / 3, anchor, baseline, fill, angle));
+        document.add(std::make_unique<SvgText>(rightCenter,
+                                               centerHeight,
+                                               DrawingUtilities::number(angle) + "deg",
+                                               fontSize / 3,
+                                               anchor,
+                                               baseline,
+                                               fill,
+                                               angle));
       }
       i++;
     }
@@ -253,7 +260,7 @@ TEST_CASE("SvgDocument") {
     }
   }
 
-  SUBCASE("Polyline") {
+  TEST_CASE("Polyline") {
     constexpr double size = 100;
     constexpr double margin = 10;
 
@@ -312,7 +319,7 @@ TEST_CASE("SvgDocument") {
     CHECK_EQ(expected, document.string());
 
     CHECK(document.writeToFile(path));
-    
+
     auto readText = FileIo::read(path / "Polyline.svg");
     CHECK(readText.has_value());
     if (readText.has_value()) {

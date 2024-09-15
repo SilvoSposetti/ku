@@ -1,5 +1,7 @@
 #include "SvgCircle.h"
 
+#include "DrawingUtilities.h"
+
 SvgCircle::SvgCircle(double cx,
                      double cy,
                      double r,
@@ -18,7 +20,8 @@ SvgCircle::SvgCircle(double cx, double cy, double r)
     : SvgCircle(cx, cy, r, std::nullopt, std::nullopt, std::nullopt) {}
 
 std::string SvgCircle::string() const {
-  std::string result = "<" + tagName + " cx=\"" + number(cx) + "\" cy=\"" + number(cy) + "\" r=\"" + number(r) + "\"";
+  std::string result = "<" + tagName + " cx=\"" + DrawingUtilities::number(cx) + "\" cy=\"" +
+                       DrawingUtilities::number(cy) + "\" r=\"" + DrawingUtilities::number(r) + "\"";
   if (fill) {
     result += " ";
     result += "fill=\"" + fill.value() + "\"";
@@ -29,7 +32,7 @@ std::string SvgCircle::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += "/>";
   return result;

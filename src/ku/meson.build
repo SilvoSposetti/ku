@@ -1,6 +1,7 @@
 ku_sources = files(
   'Board.cpp',
   'drawing/DrawingOptions.cpp',
+  'drawing/DrawingUtilities.cpp',
   'drawing/SvgCircle.cpp',
   'drawing/SvgDocument.cpp',
   'drawing/SvgElement.cpp',

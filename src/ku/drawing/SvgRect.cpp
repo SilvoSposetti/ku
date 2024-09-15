@@ -1,5 +1,7 @@
 #include "SvgRect.h"
 
+#include "DrawingUtilities.h"
+
 SvgRect::SvgRect(double x,
                  double y,
                  double width,
@@ -20,8 +22,9 @@ SvgRect::SvgRect(double x, double y, double width, double height)
     : SvgRect(x, y, width, height, std::nullopt, std::nullopt, std::nullopt) {}
 
 std::string SvgRect::string() const {
-  std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\" width=\"" + number(width) +
-                       "\" height=\"" + number(height) + "\"";
+  std::string result = "<" + tagName + " x=\"" + DrawingUtilities::number(x) + "\" y=\"" + DrawingUtilities::number(y) +
+                       "\" width=\"" + DrawingUtilities::number(width) + "\" height=\"" +
+                       DrawingUtilities::number(height) + "\"";
   if (fill) {
     result += " ";
     result += "fill=\"" + fill.value() + "\"";
@@ -32,7 +35,7 @@ std::string SvgRect::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += "/>";
   return result;

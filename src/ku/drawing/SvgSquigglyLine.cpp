@@ -1,5 +1,7 @@
 #include "SvgSquigglyLine.h"
 
+#include "DrawingUtilities.h"
+
 #include <cmath>
 
 SvgSquigglyLine::SvgSquigglyLine(double x1,
@@ -50,18 +52,18 @@ std::string SvgSquigglyLine::string() const {
     };
 
     // First point
-    squigglyLineString = "M " + SvgElement::getPointString({x1, y1});
+    squigglyLineString = "M " + DrawingUtilities::getPointString({x1, y1});
 
     // First curve, define both control points
     double side = 1;
-    squigglyLineString += " C " + SvgElement::getPointString(computeControl(1, side)) + " " +
-                          SvgElement::getPointString(computeControl(1, side)) + " " +
-                          SvgElement::getPointString(computePoint(1));
+    squigglyLineString += " C " + DrawingUtilities::getPointString(computeControl(1, side)) + " " +
+                          DrawingUtilities::getPointString(computeControl(1, side)) + " " +
+                          DrawingUtilities::getPointString(computePoint(1));
     side = -side;
     for (int32_t i = 1; i < segmentsAmount; i++) {
 
-      squigglyLineString += " S " + SvgElement::getPointString(computeControl(i+1, side)) + " " +
-                            SvgElement::getPointString(computePoint(i+1));
+      squigglyLineString += " S " + DrawingUtilities::getPointString(computeControl(i + 1, side)) + " " +
+                            DrawingUtilities::getPointString(computePoint(i + 1));
       side = -side;
     }
   }
@@ -76,7 +78,7 @@ std::string SvgSquigglyLine::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += "/>";
   return result;

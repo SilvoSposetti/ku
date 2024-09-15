@@ -3,6 +3,7 @@
 #include "Setter.h"
 #include "constraints/ConstraintFactory.h"
 #include "drawing/DrawingOptions.h"
+#include "drawing/DrawingUtilities.h"
 #include "drawing/SvgGroup.h"
 #include "drawing/SvgLine.h"
 #include "drawing/SvgRect.h"
@@ -333,7 +334,7 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       int32_t counter = 0;
       for (const auto& itemData : dataStructure.getItemsData()) {
         const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     SvgElement::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+                                     DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
         double y = cellSize * rowsCount;
         bottomTextGroup->add(std::make_unique<SvgText>(

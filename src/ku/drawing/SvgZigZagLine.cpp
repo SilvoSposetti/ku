@@ -1,5 +1,7 @@
 #include "SvgZigZagLine.h"
 
+#include "DrawingUtilities.h"
+
 #include <cmath>
 
 SvgZigZagLine::SvgZigZagLine(double x1,
@@ -45,20 +47,20 @@ std::string SvgZigZagLine::string() const {
     };
 
     // First point
-    zigZagLineString = "M " + SvgElement::getPointString({x1, y1});
+    zigZagLineString = "M " + DrawingUtilities::getPointString({x1, y1});
 
     // Second point
     double side = 1;
-    zigZagLineString += " L " + SvgElement::getPointString(computePoint(1, side));
+    zigZagLineString += " L " + DrawingUtilities::getPointString(computePoint(1, side));
     side = -side;
 
     // All other point segments
     for (int32_t i = 1; i < segmentsAmount; i++) {
-      zigZagLineString += " L " + SvgElement::getPointString(computePoint(i + 1, side));
+      zigZagLineString += " L " + DrawingUtilities::getPointString(computePoint(i + 1, side));
       side = -side;
     }
     // Add last point
-    zigZagLineString += " L " + SvgElement::getPointString({x2, y2});
+    zigZagLineString += " L " + DrawingUtilities::getPointString({x2, y2});
   }
 
   // Switch to polygon element if polyline needs to be closed
@@ -71,7 +73,7 @@ std::string SvgZigZagLine::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += "/>";
   return result;

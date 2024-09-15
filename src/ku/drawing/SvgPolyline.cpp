@@ -1,5 +1,7 @@
 #include "SvgPolyline.h"
 
+#include "DrawingUtilities.h"
+
 SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points,
                          bool closeLoop,
                          const std::optional<const std::string>& fill,
@@ -19,7 +21,7 @@ std::string SvgPolyline::string() const {
 
   std::string polylineString;
   for (const auto& point : points) {
-    polylineString += number(point.first) + "," + number(point.second);
+    polylineString += DrawingUtilities::number(point.first) + "," + DrawingUtilities::number(point.second);
     if (&point != &points.back()) {
       polylineString += " ";
     }
@@ -27,7 +29,8 @@ std::string SvgPolyline::string() const {
 
   if (closeLoop && !points.empty()) {
     const auto& firstPoint = points.front();
-    polylineString += " " + number(firstPoint.first) + "," + number(firstPoint.second);
+    polylineString +=
+        " " + DrawingUtilities::number(firstPoint.first) + "," + DrawingUtilities::number(firstPoint.second);
   }
 
   // Switch to polygon element if polyline needs to be closed
@@ -43,7 +46,7 @@ std::string SvgPolyline::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += "/>";
   return result;

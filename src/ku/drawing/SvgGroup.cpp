@@ -1,5 +1,7 @@
 #include "SvgGroup.h"
 
+#include "DrawingUtilities.h"
+
 SvgGroup::SvgGroup(const std::string& name,
                    const std::optional<const std::string>& fill,
                    const std::optional<const std::string>& stroke,
@@ -22,7 +24,7 @@ std::string SvgGroup::string() const {
   }
   if (strokeWidth) {
     result += " ";
-    result += "stroke-width=\"" + number(strokeWidth.value()) + "\"";
+    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
   }
   result += ">\n";
   for (const auto& childElement : childElements) {

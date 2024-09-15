@@ -1,5 +1,7 @@
 #include "SvgText.h"
 
+#include "DrawingUtilities.h"
+
 SvgText::SvgText(double x,
                  double y,
                  const std::string& text,
@@ -27,10 +29,11 @@ SvgText::SvgText(double x,
     : SvgText(x, y, text, fontSize, anchor, baseline, std::nullopt, std::nullopt) {}
 
 std::string SvgText::string() const {
-  std::string result = "<" + tagName + " x=\"" + number(x) + "\" y=\"" + number(y) + "\"";
+  std::string result =
+      "<" + tagName + " x=\"" + DrawingUtilities::number(x) + "\" y=\"" + DrawingUtilities::number(y) + "\"";
   if (fontSize) {
     result += " ";
-    result += "font-size=\"" + number(fontSize.value()) + "\"";
+    result += "font-size=\"" + DrawingUtilities::number(fontSize.value()) + "\"";
   }
   if (anchor) {
     std::string anchorText;
@@ -72,8 +75,8 @@ std::string SvgText::string() const {
   }
   if (rotationAngle) {
     result += " ";
-    result += "transform=\"rotate(" + SvgElement::number(rotationAngle.value()) + ", " + SvgElement::number(x) + ", " +
-              SvgElement::number(y) + ")\"";
+    result += "transform=\"rotate(" + DrawingUtilities::number(rotationAngle.value()) + ", " +
+              DrawingUtilities::number(x) + ", " + DrawingUtilities::number(y) + ")\"";
   }
   result += ">" + text + "</" + tagName + ">";
   return result;
