@@ -1,6 +1,6 @@
 #include "NegativeDiagonalEven.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgSquigglyLine.h"
 #include "ConstraintUtilities.h"
 
 NegativeDiagonalEven::NegativeDiagonalEven()
@@ -9,9 +9,8 @@ NegativeDiagonalEven::NegativeDiagonalEven()
                          "The negative diagonal contains only even digits.") {}
 
 std::unique_ptr<SvgGroup> NegativeDiagonalEven::getSvgGroup(const DrawingOptions& options) const {
-  // const std::string squigglyLine = SvgUtilities::squigglyLine(0, 0, 1, 1);
-  // return SvgUtilities::createGroup(getName(), squigglyLine, SvgUtilities::getNoFillStroke(thinnestLine));
-  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  group->add(std::make_unique<SvgSquigglyLine>(0, 0, options.size, options.size, options.cellSize / 10.0));
   return group;
 }
 
