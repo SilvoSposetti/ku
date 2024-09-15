@@ -1,6 +1,6 @@
 #include "NegativeDiagonalOdd.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgZigZagLine.h"
 #include "ConstraintUtilities.h"
 
 NegativeDiagonalOdd::NegativeDiagonalOdd()
@@ -8,9 +8,10 @@ NegativeDiagonalOdd::NegativeDiagonalOdd()
                          "Negative-Diagonal-Odd",
                          "The negative diagonal contains only odd digits.") {}
 
-std::string NegativeDiagonalOdd::getSvgGroup() const {
-  const std::string zigZagLine = SvgUtilities::zigZagLine(0, 0, 1, 1);
-  return SvgUtilities::createGroup(getName(), zigZagLine, SvgUtilities::getNoFillStroke(thinnestLine));
+std::unique_ptr<SvgGroup> NegativeDiagonalOdd::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  group->add(std::make_unique<SvgZigZagLine>(0, 0, options.size, options.size, options.cellSize / 10.0));
+  return group;
 }
 
 bool NegativeDiagonalOdd::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

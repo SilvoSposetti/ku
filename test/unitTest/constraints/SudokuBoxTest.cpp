@@ -7,7 +7,7 @@ TEST_SUITE("Constraints: Output") {
   TEST_CASE("Sudoku-Box") {
     auto constraint = SudokuBox();
     constraint.initialize();
-const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
+    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
         {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},  {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},
         {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},  {9},  {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17},
         {9},  {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {9},  {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17},

@@ -1,6 +1,6 @@
 #include "HyperSudoku.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgRect.h"
 #include "../utilities/IdPacking.h"
 
 HyperSudoku::HyperSudoku()
@@ -9,17 +9,16 @@ HyperSudoku::HyperSudoku()
                          "Four 3x3 boxes contain all the digits from 1 to 9 exactly once.")
     , topLeftCorners({{1, 1}, {5, 1}, {1, 5}, {5, 5}}) {}
 
-std::string HyperSudoku::getSvgGroup() const {
-  std::string squares;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+std::unique_ptr<SvgGroup> HyperSudoku::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.mediumLine);
 
   for (const auto& [i, j] : topLeftCorners) {
-    const double topLeftX = i * cellSize;
-    const double topLeftY = j * cellSize;
+    const double topLeftX = i * options.cellSize;
+    const double topLeftY = j * options.cellSize;
 
-    squares += SvgUtilities::rect(topLeftX, topLeftY, 3 * cellSize, 3 * cellSize);
+    group->add(std::make_unique<SvgRect>(topLeftX, topLeftY, 3 * options.cellSize, 3 * options.cellSize));
   }
-  return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  return group;
 }
 
 bool HyperSudoku::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
@@ -43,9 +42,6 @@ bool HyperSudoku::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) co
 }
 
 bool HyperSudoku::isCellInBox(int32_t rowIndex, int32_t columnIndex, int32_t boxId) const {
-  // // Use integer division to floor results
-  // return static_cast<int32_t>(columnIndex / 3 + 3 * (rowIndex / 3));
-
   const auto& [i, j] = topLeftCorners[boxId];
   return (i <= rowIndex && rowIndex < (i + 3)) && (j <= columnIndex && columnIndex < (j + 3));
 }

@@ -1,6 +1,6 @@
 #include "Asterisk.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgRect.h"
 #include "../utilities/IdPacking.h"
 
 Asterisk::Asterisk()
@@ -10,17 +10,16 @@ Asterisk::Asterisk()
   cells = {{1, 4}, {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
 }
 
-std::string Asterisk::getSvgGroup() const {
-  std::string squares;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
+std::unique_ptr<SvgGroup> Asterisk::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.mediumLine);
 
   for (const auto& [i, j] : cells) {
-    const double topLeftX = i * cellSize;
-    const double topLeftY = j * cellSize;
+    const double topLeftX = i * options.cellSize;
+    const double topLeftY = j * options.cellSize;
 
-    squares += SvgUtilities::rect(topLeftX, topLeftY, cellSize, cellSize);
+    group->add(std::make_unique<SvgRect>(topLeftX, topLeftY, options.cellSize, options.cellSize));
   }
-  return SvgUtilities::createGroup(getName(), squares, SvgUtilities::getNoFillStroke(mediumLine));
+  return group;
 }
 
 bool Asterisk::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

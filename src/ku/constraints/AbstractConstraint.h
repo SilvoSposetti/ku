@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../Sudo.h"
+#include "../drawing/DrawingOptions.h"
+#include "../drawing/SvgGroup.h"
 #include "ConstraintType.h"
 
 #include <string>
@@ -64,7 +66,7 @@ public:
   /** Defines how the constraint should be drawn on the board
    * @return The svg group that will be drawn
    */
-  virtual std::string getSvgGroup() const = 0;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const = 0;
 
   /** Defines whether a given board satisfies the constraint
    * @param board A given board to check for validity

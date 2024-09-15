@@ -1,6 +1,6 @@
 #include "AntiKingTorus.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgLine.h"
 #include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
 
@@ -15,10 +15,9 @@ AntiKingTorus::AntiKingTorus()
     , pattern({{1, -1}, {1, 0}, {1, 1}, {0, 1}})
     , dashVector(ConstraintUtilities::createDashVector(pattern, true)) {}
 
-std::string AntiKingTorus::getSvgGroup() const {
-  std::string lines;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  const double distanceFromCenterAxis = (1 - .618) * cellSize;
+std::unique_ptr<SvgGroup> AntiKingTorus::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  const double distanceFromCenterAxis = (1 - .618) * options.cellSize;
 
   // Create set of all point pairs to draw
   std::set<std::pair<std::pair<int32_t, int32_t>, std::pair<int32_t, int32_t>>> dashSet;
@@ -41,11 +40,11 @@ std::string AntiKingTorus::getSvgGroup() const {
 
   // Draw all dashes in the set
   for (const auto& [pairA, pairB] : dashSet) {
-    const double abX = cellSize * pairB.first - cellSize * pairA.first;
-    const double abY = cellSize * pairB.second - cellSize * pairA.second;
+    const double abX = options.cellSize * pairB.first - options.cellSize * pairA.first;
+    const double abY = options.cellSize * pairB.second - options.cellSize * pairA.second;
     const double norm = (1. / std::sqrt(abX * abX + abY * abY));
-    const double centerAX = cellSize * pairA.first + cellSize * 0.5;
-    const double centerAY = cellSize * pairA.second + cellSize * 0.5;
+    const double centerAX = options.cellSize * pairA.first + options.cellSize * 0.5;
+    const double centerAY = options.cellSize * pairA.second + options.cellSize * 0.5;
     const double centerBX = centerAX + abX;
     const double centerBY = centerAY + abY;
     const double abNormalizedX = abX * norm;
@@ -55,9 +54,9 @@ std::string AntiKingTorus::getSvgGroup() const {
     const double endX = centerBX - distanceFromCenterAxis * abNormalizedX;
     const double endY = centerBY - distanceFromCenterAxis * abNormalizedY;
 
-    lines += SvgUtilities::line(startX, startY, endX, endY);
+    group->add(std::make_unique<SvgLine>(startX, startY, endX, endY));
   }
-  return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
+  return group;
 }
 
 bool AntiKingTorus::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

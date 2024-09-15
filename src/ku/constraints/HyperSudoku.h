@@ -8,7 +8,7 @@ class HyperSudoku : public AbstractConstraint {
 public:
   HyperSudoku();
 
-  virtual std::string getSvgGroup() const override;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 

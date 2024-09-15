@@ -7,7 +7,7 @@ TEST_SUITE("Constraints: Output") {
   TEST_CASE("Negative-Diagonal-Odd") {
     auto constraint = NegativeDiagonalOdd();
     constraint.initialize();
-const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
+    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {
         {0}, {}, {0}, {}, {0}, {}, {0}, {}, {0}, {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {},
         {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {},
         {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {},

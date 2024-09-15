@@ -4,6 +4,7 @@
 #include "Sudo.h"
 #include "constraints/AbstractConstraint.h"
 #include "constraints/ConstraintType.h"
+#include "drawing/SvgDocument.h"
 #include "solver/DataStructure.h"
 
 #include <filesystem>
@@ -101,11 +102,13 @@ private:
    */
   static std::vector<std::vector<Sudo::Digit>> transformClues(const std::vector<std::vector<int32_t>>& clues);
 
-  /** Creates the svg contents of the exact cover matrix that represents this sudoku
+  /** Creates an svg document graphically showing the exact cover matrix that represents this sudoku
+   * @param name The name of the document that is created
    * @param dataStructure The data structure constructed with the current constraints and field
-   * @return The svg string
+   * @return The svg document
    */
-  static std::string createExactCoverMatrixSvgContents(const DataStructure& dataStructure);
+  static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
+                                                               const DataStructure& dataStructure);
 
 private:
   /// The name

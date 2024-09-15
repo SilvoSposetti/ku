@@ -6,11 +6,11 @@ class PositiveDiagonal : public AbstractConstraint {
 public:
   PositiveDiagonal();
 
-  virtual std::string getSvgGroup() const override;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const override;
 
   virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 
-  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const ;
+  virtual bool computeConstraint(Sudo::Digit digit, int32_t i, int32_t j, const int32_t itemId) const;
 
 protected:
   virtual int32_t definePrimaryItemsAmount() const override;

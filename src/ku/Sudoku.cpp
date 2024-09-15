@@ -1,12 +1,16 @@
 #include "Sudoku.h"
 
 #include "Setter.h"
-#include "SvgUtilities.h"
 #include "constraints/ConstraintFactory.h"
+#include "drawing/DrawingOptions.h"
+#include "drawing/DrawingUtilities.h"
+#include "drawing/SvgGroup.h"
+#include "drawing/SvgLine.h"
+#include "drawing/SvgRect.h"
+#include "drawing/SvgText.h"
 #include "solver/Solver.h"
 
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 
 Sudoku::Sudoku(const std::string& name,
@@ -82,54 +86,81 @@ std::vector<std::vector<bool>> Sudoku::getGivenMask() {
 }
 
 void Sudoku::exportToSvg(const std::filesystem::path& location) {
-  if (!std::filesystem::exists(location)) {
-    std::filesystem::create_directories(location);
-  }
-  const std::filesystem::path outputFilePath = location / (name + ".svg");
-  std::ofstream outfile(outputFilePath);
-
-  // Get SVG string
-  std::string svgContent;
-  svgContent += SvgUtilities::getSvgHeader();
+  DrawingOptions options(1000, 150, constraints.size());
+  auto document = std::make_unique<SvgDocument>(name, options.size, options.totalHeight, options.margin);
 
   // Background
-  svgContent += SvgUtilities::background();
+  document->addBackground("white");
 
   // Title and description
-  std::vector<std::string> constraintDescriptions;
-  for (const auto& constraint : constraints) {
-    constraintDescriptions.emplace_back(constraint->getName() + " | " + constraint->getDescription());
+  {
+    auto titleAndDescriptionsGroup =
+        std::make_unique<SvgGroup>("Title And Descriptions", "black", std::nullopt, std::nullopt);
+    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
+        0, options.titleBaseHeight, name, options.titleFontSize, TextAnchor::Start, TextBaseline::Bottom));
+    const std::string infoDescription = std::to_string(getGivenDigitsAmount()) + " (-" +
+                                        std::to_string(Sudo::TOTAL_DIGITS - getGivenDigitsAmount()) + ")";
+    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+                                                             options.titleBaseHeight,
+                                                             infoDescription,
+                                                             options.infoFontSize,
+                                                             TextAnchor::End,
+                                                             TextBaseline::Bottom));
+    int32_t constraintCount = 0;
+    for (const auto& constraint : constraints) {
+      const double infoHeight = options.infoBaseHeight + constraintCount * options.infoLineHeight;
+      const std::string constraintName = constraint->getName();
+      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
+          0, infoHeight, constraintName, options.infoFontSize, TextAnchor::Start, TextBaseline::Bottom));
+      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+                                                               infoHeight,
+                                                               constraint->getDescription(),
+                                                               options.infoFontSize,
+                                                               TextAnchor::End,
+                                                               TextBaseline::Bottom));
+      constraintCount++;
+    }
+    document->add(std::move(titleAndDescriptionsGroup));
   }
-  svgContent += SvgUtilities::titleAndDescription(name, constraintDescriptions);
 
-  // Constraints visual elements
-  for (const auto& constraint : constraints) {
-    svgContent += constraint->getSvgGroup();
+  // Digits
+  {
+    const auto solution = board->getSolution();
+    const auto givenMask = board->getGivenMask();
+    auto givenDigitsGroup = std::make_unique<SvgGroup>("Given Digits", "black", std::nullopt, std::nullopt);
+    auto otherDigitsGroup = std::make_unique<SvgGroup>("Other Digits", "black", std::nullopt, std::nullopt);
+    int32_t i = 0;
+    for (const auto& row : solution) {
+      int32_t j = 0;
+      for (const auto& digit : row) {
+        const double x = (j + 0.5) * options.cellSize;
+        const double y = (i + 0.5) * options.cellSize;
+        const std::string digitString = std::to_string(static_cast<int32_t>(digit));
+        if (givenMask[i][j]) {
+          givenDigitsGroup->add(std::make_unique<SvgText>(
+              x, y, digitString, options.givenDigitsFontSize, TextAnchor::Middle, TextBaseline::Central));
+        } else {
+          otherDigitsGroup->add(std::make_unique<SvgText>(
+              x, y, digitString, options.nonGivenDigitsFontSize, TextAnchor::Middle, TextBaseline::Central));
+        }
+        j++;
+      }
+      i++;
+    }
+    document->add(std::move(givenDigitsGroup));
+    document->add(std::move(otherDigitsGroup));
   }
 
-  // Given digits
-  svgContent += SvgUtilities::givenDigits(board->getSolution(), board->getGivenMask());
+  for (const auto& constraint : constraints) {
+    document->add(constraint->getSvgGroup(options));
+  }
 
-  // Footer
-  svgContent += SvgUtilities::getSvgFooter();
-
-  // Stream it to file, then save and close
-  outfile << svgContent;
-  outfile.close();
+  document->writeToFile(location);
 }
 
 void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
-  if (!std::filesystem::exists(location)) {
-    std::filesystem::create_directories(location);
-  }
-  const std::filesystem::path outputFilePath = location / (name + "-ExactCover.svg");
-  std::ofstream outfile(outputFilePath);
-
-  std::string svgContent = createExactCoverMatrixSvgContents(DataStructure(board->getField(), constraints));
-
-  // Stream it to file, then save and close
-  outfile << svgContent;
-  outfile.close();
+  auto document = createExactCoverDocument(name + "-ExactCover", DataStructure(board->getField(), constraints));
+  document->writeToFile(location);
 }
 
 void Sudoku::printInfo() {
@@ -189,51 +220,37 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
   return transformedClues;
 }
 
-std::string Sudoku::createExactCoverMatrixSvgContents(const DataStructure& dataStructure) {
-  std::string svg;
+std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string& name,
+                                                              const DataStructure& dataStructure) {
+  const int32_t columnsCount = dataStructure.getItemsAmount();
+  const int32_t rowsCount = dataStructure.getOptionsAmount();
 
-  const int32_t columnsAmount = dataStructure.getItemsAmount();
-  const int32_t rowsAmount = dataStructure.getOptionsAmount();
+  const double paperSize = 1000; // Both in X and Y
 
-  const double boardSize = 1000; // Both in X and Y
-  const double originX = 0;
-  const double originY = 0;
-
-  const double verticalCellSize = boardSize / rowsAmount;
-  const double horizontalCellSize = boardSize / columnsAmount;
+  const double verticalCellSize = paperSize / rowsCount;
+  const double horizontalCellSize = paperSize / columnsCount;
   const double cellSize = std::min(verticalCellSize, horizontalCellSize);
-  const double margin = cellSize * 10;
-
+  const double margin = cellSize * 1;
   const double textSize = cellSize * 1;
 
-  const double namesBuffer = cellSize * 20;
-  // const double namesBuffer = 0;
-  const double actualHeight = cellSize * rowsAmount + namesBuffer;
-  const double actualWidth = cellSize * columnsAmount + namesBuffer;
+  const double textLength = cellSize * 20;
+  const double width = cellSize * columnsCount + textLength;
+  const double height = cellSize * rowsCount + textLength;
 
   const double primaryLineWidth = cellSize / 5.0;
   const double secondaryLineWidth = cellSize / 20.0;
 
   const auto structure = dataStructure.getStructureCopy();
-  // Header
-  {
-    const std::string header =
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"" + SvgUtilities::toString(originX - margin) + " " +
-        SvgUtilities::toString(originY - margin) + " " + SvgUtilities::toString(actualWidth + 2.0 * margin) + " " +
-        SvgUtilities::toString(actualHeight + 2.0 * margin) + "\" >\n";
-    svg += header;
-  }
+
+  auto document = std::make_unique<SvgDocument>(name, width, height, margin);
 
   // Background
-  {
-    const std::string background = SvgUtilities::paperUnitsRect(
-        0 - margin, 0 - margin, actualWidth + 2.0 * margin, actualHeight + 2.0 * margin, lightRectStyle);
-    svg += background;
-  }
+  document->add(std::make_unique<SvgRect>(
+      -margin, -margin, width + 2.0 * margin, height + 2.0 * margin, "rgb(230,230,230)", std::nullopt, std::nullopt));
 
   // Cells
   {
-    std::string cells;
+    std::unique_ptr<SvgGroup> cellsGroup = std::make_unique<SvgGroup>("Cells", "black", std::nullopt, std::nullopt);
 
     int32_t currentOption = -1;
     for (const auto& node : structure) {
@@ -244,16 +261,18 @@ std::string Sudoku::createExactCoverMatrixSvgContents(const DataStructure& dataS
       if (node.type == NodeType::Node) {
         // Compute coordinates of square
         const int32_t itemIndex = node.header - 1;
-        cells += SvgUtilities::paperUnitsRect(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize);
+        cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
       }
     }
-    svg += SvgUtilities::createGroup("Cells", cells, darkRectStyle);
+    document->add(std::move(cellsGroup));
   }
 
   // Vertical Lines
   {
-    std::string primaryLines;
-    std::string secondaryLines;
+    std::unique_ptr<SvgGroup> primaryLinesGroup =
+        std::make_unique<SvgGroup>("Primary Vertical Lines", std::nullopt, "black", primaryLineWidth);
+    std::unique_ptr<SvgGroup> secondaryLinesGroup =
+        std::make_unique<SvgGroup>("Secondary Vertical Lines", std::nullopt, "black", secondaryLineWidth);
 
     std::string currentName;
     int32_t currentIndex = 0;
@@ -261,86 +280,89 @@ std::string Sudoku::createExactCoverMatrixSvgContents(const DataStructure& dataS
       const double x = currentIndex * cellSize;
       if (currentName != itemData.constraintName) {
         // Add primary vertical line
-        primaryLines += SvgUtilities::paperUnitsLine(x, 0, x, actualHeight);
+        primaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
 
         currentName = itemData.constraintName;
       } else {
         // Add secondary vertical line
-        secondaryLines += SvgUtilities::paperUnitsLine(x, 0, x, actualHeight);
+        secondaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
       }
       currentIndex++;
     }
-    primaryLines += SvgUtilities::paperUnitsLine(currentIndex * cellSize, 0, currentIndex * cellSize, actualHeight);
-    primaryLines += SvgUtilities::paperUnitsLine(actualWidth, 0, actualWidth, cellSize * rowsAmount);
+    primaryLinesGroup->add(std::make_unique<SvgLine>(currentIndex * cellSize, 0, currentIndex * cellSize, height));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount));
 
-    svg += SvgUtilities::createGroup(
-        "Primary Vertical Lines", primaryLines, SvgUtilities::getNoFillStroke(primaryLineWidth));
-    svg += SvgUtilities::createGroup(
-        "Secondary Vertical Lines", secondaryLines, SvgUtilities::getNoFillStroke(secondaryLineWidth));
+    document->add(std::move(primaryLinesGroup));
+    document->add(std::move(secondaryLinesGroup));
   }
 
   // Horizontal Lines
   {
-    std::string primaryLines;
-    std::string secondaryLines;
+    std::unique_ptr<SvgGroup> primaryLinesGroup =
+        std::make_unique<SvgGroup>("Primary Horizontal Lines", std::nullopt, "black", primaryLineWidth);
+    std::unique_ptr<SvgGroup> secondaryLinesGroup =
+        std::make_unique<SvgGroup>("Secondary Horizontal Lines", std::nullopt, "black", secondaryLineWidth);
+
     std::pair<int32_t, int32_t> previousCell{-1, -1};
     int32_t counter = 0;
     for (const auto& optionData : dataStructure.getOptionsData()) {
       const double y = cellSize * counter;
       std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
       if (previousCell != currentCell) {
-        primaryLines += SvgUtilities::paperUnitsLine(0, y, actualWidth, y);
+
+        primaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
         previousCell = currentCell;
       } else {
-        secondaryLines += SvgUtilities::paperUnitsLine(0, y, actualWidth, y);
+        secondaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
       }
       counter++;
     }
-    primaryLines += SvgUtilities::paperUnitsLine(0, cellSize * counter, actualWidth, cellSize * counter);
-    primaryLines += SvgUtilities::paperUnitsLine(0, actualHeight, cellSize * columnsAmount, actualHeight);
+    primaryLinesGroup->add(std::make_unique<SvgLine>(0, cellSize * counter, width, cellSize * counter));
+    primaryLinesGroup->add(std::make_unique<SvgLine>(0, height, cellSize * columnsCount, height));
 
-    svg += SvgUtilities::createGroup(
-        "Primary Horizontal Lines", primaryLines, SvgUtilities::getNoFillStroke(primaryLineWidth));
-    svg += SvgUtilities::createGroup(
-        "Secondary Horizontal Lines", secondaryLines, SvgUtilities::getNoFillStroke(secondaryLineWidth));
+    document->add(std::move(primaryLinesGroup));
+    document->add(std::move(secondaryLinesGroup));
   }
 
   // Text
   {
+    std::unique_ptr<SvgGroup> textGroup = std::make_unique<SvgGroup>("Text", "black", std::nullopt, std::nullopt);
     // Bottom Text
     {
-      std::string bottomText;
+      std::unique_ptr<SvgGroup> bottomTextGroup =
+          std::make_unique<SvgGroup>("Bottom Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
       for (const auto& itemData : dataStructure.getItemsData()) {
-        std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                               SvgUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+        const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
+                                     DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
-        double y = cellSize * rowsAmount;
-        bottomText += SvgUtilities::text(x, y, itemName, SvgUtilities::getRotatedTextStyle(x, y, textSize));
+        double y = cellSize * rowsCount;
+        bottomTextGroup->add(std::make_unique<SvgText>(
+            x, y, itemName, textSize, TextAnchor::End, TextBaseline::Central, std::nullopt, -90));
         counter++;
       }
-      svg += SvgUtilities::createGroup("Text", bottomText);
+      textGroup->add(std::move(bottomTextGroup));
     }
     // Right Text
     {
-      std::string rightText;
+      std::unique_ptr<SvgGroup> rightTextGroup =
+          std::make_unique<SvgGroup>("Right Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
       for (const auto& optionData : dataStructure.getOptionsData()) {
-        std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
-                                 std::to_string(optionData.indexJ) + ", Digit " +
-                                 std::to_string(static_cast<int32_t>(optionData.digit));
-        double x = cellSize * columnsAmount;
+        const std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
+                                       std::to_string(optionData.indexJ) + ", Digit " +
+                                       std::to_string(static_cast<int32_t>(optionData.digit));
+        double x = cellSize * columnsCount;
         double y = (static_cast<double>(counter) + 0.5) * cellSize;
-        rightText += SvgUtilities::text(x, y, optionName, SvgUtilities::getTextStyle(textSize));
+        rightTextGroup->add(
+            std::make_unique<SvgText>(x, y, optionName, textSize, TextAnchor::Start, TextBaseline::Central));
         counter++;
       }
-      svg += SvgUtilities::createGroup("Text", rightText);
+      textGroup->add(std::move(rightTextGroup));
     }
+
+    document->add(std::move(textGroup));
   }
-  // Footer
-  {
-    const std::string footer = SvgUtilities::getSvgFooter();
-    svg += footer;
-  }
-  return svg;
+
+  return document;
 }

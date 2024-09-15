@@ -7,7 +7,7 @@ TEST_SUITE("Constraints: Output") {
   TEST_CASE("Anti-King") {
     auto constraint = AntiKing();
     constraint.initialize();
-const std::vector<std::vector<int32_t>> expectedPrimaryItems = {};
+    const std::vector<std::vector<int32_t>> expectedPrimaryItems = {};
     const std::vector<std::vector<int32_t>> expectedSecondaryItems = {
         {0, 9, 18},
         {1, 10, 19},

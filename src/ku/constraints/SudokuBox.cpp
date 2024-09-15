@@ -1,29 +1,27 @@
 #include "SudokuBox.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgRect.h"
 
 SudokuBox::SudokuBox()
     : AbstractConstraint(
           ConstraintType::SUDOKU_BOX, "Sudoku-Box", "3x3 boxes contain all the digits from 1 to 9 exactly once.") {}
 
-std::string SudokuBox::getSvgGroup() const {
-  constexpr double oneThird = 1.0 / 3.0;
-  constexpr double twoThirds = 2.0 / 3.0;
+std::unique_ptr<SvgGroup> SudokuBox::getSvgGroup(const DrawingOptions& options) const {
+  const double oneThird = options.size / 3.0;
+  const double twoThirds = oneThird * 2.0;
+  auto group = std::make_unique<SvgGroup>(getName(), "transparent", "black", options.mediumLine);
+  group->add(std::make_unique<SvgRect>(0, 0, oneThird, oneThird));
+  group->add(std::make_unique<SvgRect>(oneThird, 0, oneThird, oneThird));
+  group->add(std::make_unique<SvgRect>(twoThirds, 0, oneThird, oneThird));
 
-  std::string result;
-  result += SvgUtilities::rect(0, 0, oneThird, oneThird);
-  result += SvgUtilities::rect(oneThird, 0, oneThird, oneThird);
-  result += SvgUtilities::rect(twoThirds, 0, oneThird, oneThird);
+  group->add(std::make_unique<SvgRect>(0, oneThird, oneThird, oneThird));
+  group->add(std::make_unique<SvgRect>(oneThird, oneThird, oneThird, oneThird));
+  group->add(std::make_unique<SvgRect>(twoThirds, oneThird, oneThird, oneThird));
 
-  result += SvgUtilities::rect(0, oneThird, oneThird, oneThird);
-  result += SvgUtilities::rect(oneThird, oneThird, oneThird, oneThird);
-  result += SvgUtilities::rect(twoThirds, oneThird, oneThird, oneThird);
-
-  result += SvgUtilities::rect(0, 0, twoThirds, oneThird);
-  result += SvgUtilities::rect(oneThird, twoThirds, oneThird, oneThird);
-  result += SvgUtilities::rect(twoThirds, twoThirds, oneThird, oneThird);
-
-  return SvgUtilities::createGroup(getName(), result, SvgUtilities::getNoFillStroke(mediumLine));
+  group->add(std::make_unique<SvgRect>(0, 0, twoThirds, oneThird));
+  group->add(std::make_unique<SvgRect>(oneThird, twoThirds, oneThird, oneThird));
+  group->add(std::make_unique<SvgRect>(twoThirds, twoThirds, oneThird, oneThird));
+  return group;
 }
 
 bool SudokuBox::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

@@ -1,6 +1,6 @@
 #include "AntiKnight.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgLine.h"
 #include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
 
@@ -12,16 +12,15 @@ AntiKnight::AntiKnight()
           ConstraintType::ANTI_KNIGHT, "Anti-Knight", "A digit cannot appear at a knight's move away from itself.")
     , dashVector(ConstraintUtilities::createDashVector({{2, -1}, {2, 1}, {1, 2}, {-1, 2}}, false)) {}
 
-std::string AntiKnight::getSvgGroup() const {
-  std::string lines;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  const double distanceFromCenterAxis = (1 - .618) * cellSize;
+std::unique_ptr<SvgGroup> AntiKnight::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  const double distanceFromCenterAxis = (1 - .618) * options.cellSize;
   for (const auto& [pairA, pairB] : dashVector) {
-    const double abX = cellSize * pairB.first - cellSize * pairA.first;
-    const double abY = cellSize * pairB.second - cellSize * pairA.second;
+    const double abX = options.cellSize * pairB.first - options.cellSize * pairA.first;
+    const double abY = options.cellSize * pairB.second - options.cellSize * pairA.second;
     const double norm = (1. / std::sqrt(abX * abX + abY * abY));
-    const double centerAX = cellSize * pairA.first + cellSize * 0.5;
-    const double centerAY = cellSize * pairA.second + cellSize * 0.5;
+    const double centerAX = options.cellSize * pairA.first + options.cellSize * 0.5;
+    const double centerAY = options.cellSize * pairA.second + options.cellSize * 0.5;
     const double centerBX = centerAX + abX;
     const double centerBY = centerAY + abY;
     const double abNormalizedX = abX * norm;
@@ -31,9 +30,9 @@ std::string AntiKnight::getSvgGroup() const {
     const double endX = centerBX - distanceFromCenterAxis * abNormalizedX;
     const double endY = centerBY - distanceFromCenterAxis * abNormalizedY;
 
-    lines += SvgUtilities::line(startX, startY, endX, endY);
+    group->add(std::make_unique<SvgLine>(startX, startY, endX, endY));
   }
-  return SvgUtilities::createGroup(getName(), lines, SvgUtilities::getNoFillStroke(thinnestLine));
+  return group;
 }
 
 bool AntiKnight::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {

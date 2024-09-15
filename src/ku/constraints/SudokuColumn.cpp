@@ -1,20 +1,19 @@
 #include "SudokuColumn.h"
 
-#include "../SvgUtilities.h"
+#include "../drawing/SvgLine.h"
 
 SudokuColumn::SudokuColumn()
     : AbstractConstraint(ConstraintType::SUDOKU_COLUMN,
                          "Sudoku-Column",
                          "1x9 columns contain all the digits from 1 to 9 exactly once.") {}
 
-std::string SudokuColumn::getSvgGroup() const {
-  std::string verticalLines;
-  const double cellSize = 1.0 / static_cast<double>(Sudo::MAX_DIGIT);
-  for (int i = 0; i < Sudo::MAX_DIGIT; i++) {
-    const double xPosition = cellSize * i;
-    verticalLines += SvgUtilities::line(xPosition, 0, xPosition, 1);
+std::unique_ptr<SvgGroup> SudokuColumn::getSvgGroup(const DrawingOptions& options) const {
+  auto group = std::make_unique<SvgGroup>(getName(), std::nullopt, "black", options.thinLine);
+  for (int32_t i = 0; i < Sudo::MAX_DIGIT; i++) {
+    const double x = options.cellSize * i;
+    group->add(std::make_unique<SvgLine>(x, 0.0, x, options.size));
   }
-  return SvgUtilities::createGroup(getName(), verticalLines, SvgUtilities::getNoFillStroke(thinLine));
+  return group;
 }
 
 bool SudokuColumn::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
