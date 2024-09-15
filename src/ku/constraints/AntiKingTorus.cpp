@@ -4,6 +4,7 @@
 #include "../utilities/IdPacking.h"
 #include "ConstraintUtilities.h"
 
+#include <algorithm>
 #include <cmath>
 
 AntiKingTorus::AntiKingTorus()
