@@ -10,6 +10,7 @@ ku_sources = files(
   'drawing/SvgSquigglyLine.cpp',
   'drawing/SvgRect.cpp',
   'drawing/SvgText.cpp',
+  'drawing/SvgZigZagLine.cpp',
   'Setter.cpp',
   'Sudo.cpp',
   'Sudoku.cpp',

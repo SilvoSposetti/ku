@@ -21,6 +21,7 @@ unit_test_sources = files(
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgElementTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',
+  'drawing/SvgZigZagLineTest.cpp',
   'FileIoTest.cpp',
   'IdPackingTest.cpp',
   'main.cpp',
