@@ -6,7 +6,7 @@ project('ku',
   default_options : ['cpp_std=c++23'])
 
 # Add Defines
-add_project_arguments('-DOUT_DIR="' + meson.source_root() +'/out"', language : 'cpp')
+add_project_arguments('-DOUT_DIR="' + meson.project_source_root() +'/out"', language : 'cpp')
 
 # Grab subprojects
 subproject('doctest')
