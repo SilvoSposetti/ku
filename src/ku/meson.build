@@ -45,7 +45,6 @@ ku_sources = files(
   'solver/ItemData.cpp',
   'solver/Node.cpp',
   'solver/OptionData.cpp',
-  'solver/XccOption.cpp',
   'solver/XccElement.cpp',
   'utilities/IdPacking.cpp',
   'utilities/FileIo.cpp',

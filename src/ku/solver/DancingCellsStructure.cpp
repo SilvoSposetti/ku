@@ -34,7 +34,7 @@ DancingCellsStructure::createStructure(const std::vector<std::vector<Sudo::Digit
   // Data for the options
   auto optionsData = std::vector<OptionData>(totalOptions);
 
-  auto optionsCache = std::vector<std::set<XccElement>>(totalOptions);
+  auto optionsCache = std::vector<std::vector<XccElement>>(totalOptions);
   optionsCache.reserve(totalOptions);
   int32_t optionId = 0;
   int32_t overallOptionId = 0;
@@ -51,7 +51,7 @@ DancingCellsStructure::createStructure(const std::vector<std::vector<Sudo::Digit
             if (primaryItemsAmount > 0) {
               const auto& primaryItems = constraint->getPrimaryItems();
               for (const auto& primaryItemId : primaryItems[overallOptionId]) {
-                optionsCache[optionId].insert(XccElement::makePrimary(primaryItemId + baseItemId));
+                optionsCache[optionId].emplace_back(primaryItemId + baseItemId);
               }
               baseItemId += primaryItemsAmount;
             }
@@ -62,7 +62,7 @@ DancingCellsStructure::createStructure(const std::vector<std::vector<Sudo::Digit
             if (secondaryItemsAmount > 0) {
               const auto& secondaryItems = constraint->getSecondaryItems();
               for (const auto& secondaryItemId : secondaryItems[overallOptionId]) {
-                optionsCache[optionId].insert(XccElement::makeSecondary(secondaryItemId + baseItemId));
+                optionsCache[optionId].emplace_back(secondaryItemId + baseItemId);
               }
               baseItemId += secondaryItemsAmount;
             }
@@ -79,7 +79,7 @@ DancingCellsStructure::createStructure(const std::vector<std::vector<Sudo::Digit
 
 DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItemsCount,
                                                              int32_t secondaryItemsCount,
-                                                             const std::vector<std::set<XccElement>>& options)
+                                                             const std::vector<std::vector<XccElement>>& options)
 
 {
   int32_t itemsCount = primaryItemsCount + secondaryItemsCount;
@@ -96,16 +96,20 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
   }
 
   // Element IDs are sorted in each option because XccOption uses sets
+  {
+    for (const auto& option : options) {
+      if (!std::is_sorted(option.begin(), option.end())) {
+        throw std::runtime_error(std::string("An option's element's IDs are not sorted"));
+      }
+    }
+  }
+
   // Element IDs must be in the correct ranges for primary and secondary items
   {
     for (const auto& option : options) {
-      if (std::any_of(option.begin(), option.end(), [&](const XccElement& element) {
-            if (element.isPrimary) {
-              return element.id < 0 || primaryItemsCount <= element.id;
-            }
-            return element.id < primaryItemsCount || itemsCount <= element.id;
-          })) {
-        throw std::runtime_error(std::string("Invalid primary item ID"));
+      // Note, the vector is sorted
+      if (option.front().id < 0 || option.back().id >= optionsCount) {
+        throw std::runtime_error(std::string("Invalid item ID"));
       }
     }
   }
@@ -115,9 +119,7 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
     auto isPrimaryItemCoverable = std::vector<bool>(primaryItemsCount, false);
     for (const auto& option : options) {
       for (const auto& element : option) {
-        if (element.isPrimary) {
-          isPrimaryItemCoverable[element.id] = true;
-        }
+        isPrimaryItemCoverable[element.id] = true;
       }
     }
     if (std::any_of(isPrimaryItemCoverable.begin(), isPrimaryItemCoverable.end(), [](bool isCoverable) {

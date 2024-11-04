@@ -2,7 +2,6 @@
 #include "../constraints/AbstractConstraint.h"
 #include "DancingCellsNode.h"
 #include "OptionData.h"
-#include "XccOption.h"
 
 #include <unordered_map>
 #include <vector>
@@ -37,7 +36,7 @@ public:
    */
   static DancingCellsStructure createStructure(int32_t primaryItemsCount,
                                                int32_t secondaryItemsCount,
-                                               const std::vector<std::set<XccElement>>& options);
+                                               const std::vector<std::vector<XccElement>>& options);
 
   /** Utility to log the current data structure contents to standard output. Useful for debugging.
    */
