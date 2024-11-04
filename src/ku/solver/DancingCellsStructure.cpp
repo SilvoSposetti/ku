@@ -146,6 +146,7 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
     // Add spacer nodes at the beginning, end, and between each option
     nodeCount += options.size() + 1;
   }
+
   int32_t setCount = 0;
   {
     for (const auto& blockSize : setBlockCount) {
@@ -160,15 +161,6 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
       setBlockSums[i] = setBlockSums[i - 1] + setBlockCount[i - 1];
     }
   }
-
-  std::map<int32_t, std::vector<int32_t>> map;
-  const auto addToMap = [&](int32_t id, int32_t location) {
-    if (map.contains(id)) {
-      map[id].emplace_back(location);
-    } else {
-      map[id] = {location};
-    }
-  };
 
   // Start with SET's "pos" & "size" fields
   SET.resize(setCount, -1);
@@ -204,7 +196,6 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
       // The first element in the option IDs map is right after the first spacer
       nodeIndicesToOptionIdMap.insert(std::make_pair(NODE.size(), optionIndex));
       // Actual node element
-      addToMap(element.id, NODE.size());
       NODE.emplace_back(baseIndex, locIndex, element.colorId);
       itemCounters[itemIndex]++;
     }
