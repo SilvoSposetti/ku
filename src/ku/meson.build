@@ -38,7 +38,6 @@ ku_sources = files(
   'constraints/SudokuRow.cpp',
   'randomGenerator/RandomGenerator.cpp',
   'solver/Solver.cpp',
-  'solver/AlgorithmX.cpp',
   'solver/AlgorithmC.cpp',
   'solver/DataStructure.cpp',
   'solver/DancingCellsStructure.cpp',

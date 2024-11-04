@@ -23,40 +23,40 @@ TEST_CASE("Algorithm C") {
 
   SUBCASE("Preconditions") {
     // No primary items
-    CHECK_THROWS(DancingCellsStructure(0, 2, {}));
+    CHECK_THROWS(DancingCellsStructure::createStructure(0, 2, {}));
 
     // TODO: Should it really throw if there are no options?
-    CHECK_THROWS(DancingCellsStructure(2, 2, {}));
+    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {}));
 
     // No options that cover a primary item
-    CHECK_THROWS(DancingCellsStructure(2,
-                                       1,
-                                       {
-                                           XccOption({p(0)}),
-                                           XccOption({p(0), s(2)}),
-                                       }));
+    CHECK_THROWS(DancingCellsStructure::createStructure(2,
+                                                        1,
+                                                        {
+                                                            {{p(0)}},
+                                                            {{p(0), s(2)}},
+                                                        }));
 
     // Primary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure(2, 2, {XccOption({p(2), s(0)})}));
+    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {{{p(2), s(0)}}}));
 
     // Secondary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure(2, 2, {XccOption({p(0), s(0)})}));
+    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {{{p(0), s(0)}}}));
   }
 
   SUBCASE("Single solution, primary and secondary items with colors") {
     const int32_t primaryItemsCount = 3; // p q r
     const int32_t secondaryItemsCount = 2; // x y
-    const std::vector<XccOption> options = {
-        XccOption({p(0), p(1), s(3, 3), s(4, 1)}), // Option 0: 'p q x:C y:A'
-        XccOption({p(0), p(2), s(3, 1), s(4, 3)}), // Option 1: 'p r x:A y:C' // Part of solution
-        XccOption({p(0), s(3, 2)}), // Option 2: 'p x:B'
-        XccOption({p(1), s(3, 1)}), // Option 3: 'q x:A' // Part of solution
-        XccOption({p(2), s(4, 3)}), // Option 4: 'r y:C'
+    const std::vector<std::set<XccElement>> options = {
+        {{p(0), p(1), s(3, 3), s(4, 1)}}, // Option 0: 'p q x:C y:A'
+        {{p(0), p(2), s(3, 1), s(4, 3)}}, // Option 1: 'p r x:A y:C' // Part of solution
+        {{p(0), s(3, 2)}}, // Option 2: 'p x:B'
+        {{p(1), s(3, 1)}}, // Option 3: 'q x:A' // Part of solution
+        {{p(2), s(4, 3)}}, // Option 4: 'r y:C'
     };
     const std::unordered_set<int32_t> solution = {1, 3};
 
     for (const auto& seed : seeds) {
-      DancingCellsStructure structure(primaryItemsCount, secondaryItemsCount, options);
+      auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
       // REQUIRE(structure.isPotentiallySolvableByAlgorithmX());
       CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
       const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
@@ -69,151 +69,152 @@ TEST_CASE("Algorithm C") {
   }
 
   SUBCASE("No solutions, primary items only") {
-    const std::vector<std::tuple<int32_t, int32_t, std::vector<XccOption>>> problemData = {
+    const std::vector<std::tuple<int32_t, int32_t, std::vector<std::set<XccElement>>>> problemData = {
 
         // Problem 1
         {3, // Primary items
          0, // Secondary items
          {
-             /*{0, 1, 1}*/ XccOption({p(1), p(2)}),
-             /*{1, 1, 0}*/ XccOption({p(0), p(1)}),
+             /*{0, 1, 1}*/ {{p(1), p(2)}},
+             /*{1, 1, 0}*/ {{p(0), p(1)}},
          }},
 
         // Promblem 2
         {3, // Primary items
          0, // Secondary items
          {
-             /*{1, 0, 1}*/ XccOption({p(0), p(2)}),
-             /*{0, 0, 0}*/ XccOption({}), // Empty option
-             /*{0, 1, 1}*/ XccOption({p(1), p(2)}),
-             /*{1, 1, 0}*/ XccOption({p(0), p(1)}),
-             /*{0, 0, 0}*/ XccOption({}), // Empty option
+             /*{1, 0, 1}*/ {{p(0), p(2)}},
+             /*{0, 0, 0}*/ {{}}, // Empty option
+             /*{0, 1, 1}*/ {{p(1), p(2)}},
+             /*{1, 1, 0}*/ {{p(0), p(1)}},
+             /*{0, 0, 0}*/ {{}}, // Empty option
          }},
 
         // Problem 3
         {7, // Primary items
          0, // Secondary items
          {
-             /*{0, 0, 1, 0, 1, 0, 0}*/ XccOption({p(2), p(4)}),
-             /*{1, 0, 0, 1, 0, 0, 1}*/ XccOption({p(0), p(3), p(6)}),
-             /*{0, 1, 1, 0, 0, 1, 0}*/ XccOption({p(1), p(2), p(5)}),
-             /*{1, 0, 0, 1, 0, 0, 0}*/ XccOption({p(0), p(3)}),
-             /*{0, 1, 0, 0, 0, 0, 1}*/ XccOption({p(2), p(6)}),
-             /*{0, 0, 0, 1, 1, 0, 1}*/ XccOption({p(3), p(4), p(6)}),
+             /*{0, 0, 1, 0, 1, 0, 0}*/ {{p(2), p(4)}},
+             /*{1, 0, 0, 1, 0, 0, 1}*/ {{p(0), p(3), p(6)}},
+             /*{0, 1, 1, 0, 0, 1, 0}*/ {{p(1), p(2), p(5)}},
+             /*{1, 0, 0, 1, 0, 0, 0}*/ {{p(0), p(3)}},
+             /*{0, 1, 0, 0, 0, 0, 1}*/ {{p(2), p(6)}},
+             /*{0, 0, 0, 1, 1, 0, 1}*/ {{p(3), p(4), p(6)}},
          }},
 
         // Problem 4
         {7, // Primary items
          0, // Secondary items
          {
-             /*{1, 1, 0, 1, 1, 1, 1}*/ XccOption({p(0), p(1), p(3), p(4), p(5), p(6)}),
-             /*{0, 1, 1, 0, 0, 0, 0}*/ XccOption({p(1), p(2)}),
-             /*{0, 0, 1, 1, 0, 0, 0}*/ XccOption({p(2), p(3)}),
-             /*{0, 0, 0, 0, 1, 1, 0}*/ XccOption({p(4), p(5)}),
-             /*{0, 0, 0, 1, 0, 0, 0}*/ XccOption({p(3)}),
-             /*{0, 0, 0, 0, 0, 0, 0}*/ XccOption({}), // Empty option
-             /*{1, 1, 1, 0, 0, 0, 0}*/ XccOption({p(0), p(1), p(2)}),
+             /*{1, 1, 0, 1, 1, 1, 1}*/ {{p(0), p(1), p(3), p(4), p(5), p(6)}},
+             /*{0, 1, 1, 0, 0, 0, 0}*/ {{p(1), p(2)}},
+             /*{0, 0, 1, 1, 0, 0, 0}*/ {{p(2), p(3)}},
+             /*{0, 0, 0, 0, 1, 1, 0}*/ {{p(4), p(5)}},
+             /*{0, 0, 0, 1, 0, 0, 0}*/ {{p(3)}},
+             /*{0, 0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
+             /*{1, 1, 1, 0, 0, 0, 0}*/ {{p(0), p(1), p(2)}},
          }},
 
     };
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options] : problemData) {
 
-        DancingCellsStructure dataStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
         // Theoretically solvable, but no solutions can be found
-        // REQUIRE(dataStructure.isPotentiallySolvableByAlgorithmX());
-        //   AlgorithmX::printDataStructure(dataStructure);
-        CHECK(!AlgorithmC::hasUniqueSolution(dataStructure, seed));
-        CHECK(AlgorithmC::findAllSolutions(dataStructure, seed).empty());
-        CHECK(!AlgorithmC::findOneSolution(dataStructure, seed).has_value());
+        // REQUIRE(structure.isPotentiallySolvableByAlgorithmX());
+        //   AlgorithmX::printDataStructure(structure);
+        CHECK(!AlgorithmC::hasUniqueSolution(structure, seed));
+        CHECK(AlgorithmC::findAllSolutions(structure, seed).empty());
+        CHECK(!AlgorithmC::findOneSolution(structure, seed).has_value());
       }
     }
   }
 
   SUBCASE("Single solution, primary items only") {
-    const std::vector<std::tuple<int32_t, int32_t, std::vector<XccOption>, std::unordered_set<int32_t>>> problemData = {
-        // Problem 1
-        {1, // Primary items
-         0, // Secondary items
-         {
-             /*{1}*/ XccOption({p(0)}), // Part of solution
-         },
-         // Solution
-         {0}},
+    const std::vector<std::tuple<int32_t, int32_t, std::vector<std::set<XccElement>>, std::unordered_set<int32_t>>>
+        problemData = {
+            // Problem 1
+            {1, // Primary items
+             0, // Secondary items
+             {
+                 /*{1}*/ {{p(0)}}, // Part of solution
+             },
+             // Solution
+             {0}},
 
-        // Problem 2
-        {2, // Primary items
-         0, // Secondary items
-         {
-             /*{1, 1}*/ XccOption({p(0), p(1)}), // Part of solution
-         },
-         // Solution
-         {0}},
+            // Problem 2
+            {2, // Primary items
+             0, // Secondary items
+             {
+                 /*{1, 1}*/ {{p(0), p(1)}} // Part of solution
+             },
+             // Solution
+             {0}},
 
-        // Problem 3
-        {6, // Primary items
-         0, // Secondary items
-         {
-             /*{0, 0, 0, 0, 0, 0}*/ XccOption({}), // Empty option
-             /*{1, 1, 1, 1, 1, 1}*/ XccOption({p(0), p(1), p(2), p(3), p(4), p(5)}), // Part of solution
-         },
-         // Solution
-         {1}},
+            // Problem 3
+            {6, // Primary items
+             0, // Secondary items
+             {
+                 /*{0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
+                 /*{1, 1, 1, 1, 1, 1}*/ {{p(0), p(1), p(2), p(3), p(4), p(5)}}, // Part of solution
+             },
+             // Solution
+             {1}},
 
-        // Problem 4
-        {7, // Primary items
-         0, // Secondary items
-         {
-             /*{0, 0, 1, 0, 1, 0, 0}*/ XccOption({p(2), p(4)}), // Part of solution
-             /*{1, 0, 0, 1, 0, 0, 1}*/ XccOption({p(0), p(3), p(6)}),
-             /*{0, 1, 1, 0, 0, 1, 0}*/ XccOption({p(1), p(2), p(5)}),
-             /*{1, 0, 0, 1, 0, 1, 0}*/ XccOption({p(0), p(3), p(5)}), // Part of solution
-             /*{0, 1, 0, 0, 0, 0, 1}*/ XccOption({p(1), p(6)}), // Part of solution
-             /*{0, 0, 0, 1, 1, 0, 1}*/ XccOption({p(3), p(4), p(6)}),
-         },
-         // Solution
-         {0, 3, 4}},
+            // Problem 4
+            {7, // Primary items
+             0, // Secondary items
+             {
+                 /*{0, 0, 1, 0, 1, 0, 0}*/ {{p(2), p(4)}}, // Part of solution
+                 /*{1, 0, 0, 1, 0, 0, 1}*/ {{p(0), p(3), p(6)}},
+                 /*{0, 1, 1, 0, 0, 1, 0}*/ {{p(1), p(2), p(5)}},
+                 /*{1, 0, 0, 1, 0, 1, 0}*/ {{p(0), p(3), p(5)}}, // Part of solution
+                 /*{0, 1, 0, 0, 0, 0, 1}*/ {{p(1), p(6)}}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0, 1}*/ {{p(3), p(4), p(6)}},
+             },
+             // Solution
+             {0, 3, 4}},
 
-        // Problem 5
-        {7, // Primary items
-         0, // Secondary items
-         {
-             /*{1, 0, 0, 1, 0, 0, 1}*/ XccOption({p(0), p(3), p(6)}),
-             /*{1, 0, 0, 1, 0, 0, 0}*/ XccOption({p(0), p(3)}), // Part of solution
-             /*{0, 0, 0, 1, 1, 0, 1}*/ XccOption({p(3), p(4), p(6)}),
-             /*{0, 0, 1, 0, 1, 1, 0}*/ XccOption({p(2), p(4), p(5)}), // Part of solution
-             /*{0, 1, 1, 0, 0, 1, 1}*/ XccOption({p(1), p(2), p(5), p(6)}),
-             /*{0, 1, 0, 0, 0, 0, 1}*/ XccOption({p(1), p(6)}), // Part of solution
-             /*{0, 0, 0, 0, 0, 0, 0}*/ XccOption({}), // Empty option
-         },
-         // Solution
-         {1, 3, 5}},
+            // Problem 5
+            {7, // Primary items
+             0, // Secondary items
+             {
+                 /*{1, 0, 0, 1, 0, 0, 1}*/ {{p(0), p(3), p(6)}},
+                 /*{1, 0, 0, 1, 0, 0, 0}*/ {{p(0), p(3)}}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0, 1}*/ {{p(3), p(4), p(6)}},
+                 /*{0, 0, 1, 0, 1, 1, 0}*/ {{p(2), p(4), p(5)}}, // Part of solution
+                 /*{0, 1, 1, 0, 0, 1, 1}*/ {{p(1), p(2), p(5), p(6)}},
+                 /*{0, 1, 0, 0, 0, 0, 1}*/ {{p(1), p(6)}}, // Part of solution
+                 /*{0, 0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
+             },
+             // Solution
+             {1, 3, 5}},
 
-        // Problem 6
-        {6, // Primary items
-         0, // Secondary items
-         {
-             /*{1, 1, 0, 0, 0, 0}*/ XccOption({p(0), p(1)}), // Part of solution
-             /*{0, 0, 0, 0, 1, 1}*/ XccOption({p(4), p(5)}), // Part of solution
-             /*{0, 0, 0, 1, 1, 0}*/ XccOption({p(3), p(4)}),
-             /*{1, 0, 1, 0, 0, 0}*/ XccOption({p(0), p(2)}),
-             /*{0, 0, 0, 0, 0, 0}*/ XccOption({}), // Empty option
-             /*{0, 0, 1, 0, 0, 0}*/ XccOption({p(2)}), // Part of solution
-             /*{0, 0, 0, 1, 0, 0}*/ XccOption({p(3)}), // Part of solution
-             /*{1, 0, 1, 0, 0, 1}*/ XccOption({p(0), p(2), p(5)}),
-         },
-         // Solution
-         {0, 1, 5, 6}},
-    };
+            // Problem 6
+            {6, // Primary items
+             0, // Secondary items
+             {
+                 /*{1, 1, 0, 0, 0, 0}*/ {{p(0), p(1)}}, // Part of solution
+                 /*{0, 0, 0, 0, 1, 1}*/ {{p(4), p(5)}}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0}*/ {{p(3), p(4)}},
+                 /*{1, 0, 1, 0, 0, 0}*/ {{p(0), p(2)}},
+                 /*{0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
+                 /*{0, 0, 1, 0, 0, 0}*/ {{p(2)}}, // Part of solution
+                 /*{0, 0, 0, 1, 0, 0}*/ {{p(3)}}, // Part of solution
+                 /*{1, 0, 1, 0, 0, 1}*/ {{p(0), p(2), p(5)}},
+             },
+             // Solution
+             {0, 1, 5, 6}},
+        };
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolution] : problemData) {
-        DancingCellsStructure dataStructure(primaryItemsCount, secondaryItemsCount, options);
-        CHECK(AlgorithmC::hasUniqueSolution(dataStructure, seed));
-        const auto allSolutions = AlgorithmC::findAllSolutions(dataStructure, seed);
+        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
+        const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
         CHECK_EQ(1, allSolutions.size());
         CHECK_EQ(expectedSolution, *allSolutions.begin());
-        const auto oneSolutionOptional = AlgorithmC::findOneSolution(dataStructure, seed);
+        const auto oneSolutionOptional = AlgorithmC::findOneSolution(structure, seed);
         CHECK(oneSolutionOptional.has_value());
         CHECK_EQ(expectedSolution, oneSolutionOptional.value());
       }
@@ -221,70 +222,71 @@ TEST_CASE("Algorithm C") {
   }
 
   SUBCASE("Single solution, primary and secondary items") {
-    const std::vector<std::tuple<int32_t, int32_t, std::vector<XccOption>, std::unordered_set<int32_t>>> problemData = {
-        // Problem 1
-        {4, // Primary items
-         3, // Secondary items
-         {
-             /*{1, 0, 0, 0 | 0, 0, 0}*/ XccOption({p(0)}), // Part of solution
-             /*{0, 1, 0, 0 | 1, 0, 0}*/ XccOption({p(1), s(4)}), // Part of solution
-             /*{0, 1, 0, 0 | 0, 1, 0}*/ XccOption({p(1), s(5)}),
-             /*{0, 0, 1, 0 | 1, 1, 0}*/ XccOption({p(2), s(4), s(5)}),
-             /*{0, 0, 1, 0 | 0, 1, 1}*/ XccOption({p(2), s(5), s(6)}),
-             /*{0, 0, 1, 0 | 0, 1, 0}*/ XccOption({p(2), s(5)}), // Part of solution
-             /*{0, 0, 0, 1 | 0, 0, 1}*/ XccOption({p(3), s(6)}), // Part of solution
-         },
-         // Solution
-         {0, 1, 5, 6}},
+    const std::vector<std::tuple<int32_t, int32_t, std::vector<std::set<XccElement>>, std::unordered_set<int32_t>>>
+        problemData = {
+            // Problem 1
+            {4, // Primary items
+             3, // Secondary items
+             {
+                 /*{1, 0, 0, 0 | 0, 0, 0}*/ {{p(0)}}, // Part of solution
+                 /*{0, 1, 0, 0 | 1, 0, 0}*/ {{p(1), s(4)}}, // Part of solution
+                 /*{0, 1, 0, 0 | 0, 1, 0}*/ {{p(1), s(5)}},
+                 /*{0, 0, 1, 0 | 1, 1, 0}*/ {{p(2), s(4), s(5)}},
+                 /*{0, 0, 1, 0 | 0, 1, 1}*/ {{p(2), s(5), s(6)}},
+                 /*{0, 0, 1, 0 | 0, 1, 0}*/ {{p(2), s(5)}}, // Part of solution
+                 /*{0, 0, 0, 1 | 0, 0, 1}*/ {{p(3), s(6)}}, // Part of solution
+             },
+             // Solution
+             {0, 1, 5, 6}},
 
-        // Problem 2
-        {3, // Primary items
-         1, // Secondary items
-         {
-             /*{0, 1, 0 | 1}*/ XccOption({p(1), s(3)}),
-             /*{0, 1, 0 | 0}*/ XccOption({p(1)}), // Part of solution
-             /*{1, 0, 0 | 0}*/ XccOption({p(0)}), // Part of solution
-             /*{0, 0, 0 | 0}*/ XccOption({}), // Empty option
-             /*{0, 0, 1 | 1}*/ XccOption({p(2), s(3)}), // Part of solution
-             /*{1, 0, 0 | 1}*/ XccOption({p(0), s(3)}),
-         },
-         // Solution
-         {1, 2, 4}},
+            // Problem 2
+            {3, // Primary items
+             1, // Secondary items
+             {
+                 /*{0, 1, 0 | 1}*/ {{p(1), s(3)}},
+                 /*{0, 1, 0 | 0}*/ {{p(1)}}, // Part of solution
+                 /*{1, 0, 0 | 0}*/ {{p(0)}}, // Part of solution
+                 /*{0, 0, 0 | 0}*/ {{}}, // Empty option
+                 /*{0, 0, 1 | 1}*/ {{p(2), s(3)}}, // Part of solution
+                 /*{1, 0, 0 | 1}*/ {{p(0), s(3)}},
+             },
+             // Solution
+             {1, 2, 4}},
 
-        // // Problem 3 (secondary items given, but no option with them)
-        // {4, // Primary items
-        //  2, // Secondary items
-        //  {
-        //      /*{1, 0, 0, 0 | 0, 0}*/ XccOption({p(0)}), // Part of solution
-        //      /*{0, 0, 1, 0 | 0, 0}*/ XccOption({p(2)}),
-        //      /*{0, 0, 0, 1 | 0, 0}*/ XccOption({p(3)}), // Part of solution
-        //      /*{0, 0, 1, 1 | 0, 0}*/ XccOption({p(2), p(3)}),
-        //      /*{0, 1, 1, 0 | 0, 0}*/ XccOption({p(1), p(2)}), // Part of solution
-        //  },
-        //  // Solution
-        //  {0, 2, 4}},
+            // // Problem 3 (secondary items given, but no option with them)
+            // {4, // Primary items
+            //  2, // Secondary items
+            //  {
+            //      /*{1, 0, 0, 0 | 0, 0}*/ {{p(0)}}, // Part of solution
+            //      /*{0, 0, 1, 0 | 0, 0}*/ {{p(2)}},
+            //      /*{0, 0, 0, 1 | 0, 0}*/ {{p(3)}}, // Part of solution
+            //      /*{0, 0, 1, 1 | 0, 0}*/ {{p(2), p(3)}},
+            //      /*{0, 1, 1, 0 | 0, 0}*/ {{p(1), p(2)}}, // Part of solution
+            //  },
+            //  // Solution
+            //  {0, 2, 4}},
 
-        // Problem 4
-        {2, // Primary items
-         3, // Secondary items
-         {
-             /*{0, 0 | 0, 1, 0}*/ XccOption({s(3)}), // No primary items, this will never be selected
-             /*{1, 0 | 1, 0, 0}*/ XccOption({p(0), s(2)}), // Part of solution
-             /*{0, 0 | 0, 0, 0}*/ XccOption({}), // Empty option
-             /*{0, 1 | 0, 0, 1}*/ XccOption({p(1), s(4)}), // Part of solution
-         },
-         // Solution
-         {1, 3}},
+            // Problem 4
+            {2, // Primary items
+             3, // Secondary items
+             {
+                 /*{0, 0 | 0, 1, 0}*/ {{s(3)}}, // No primary items, this will never be selected
+                 /*{1, 0 | 1, 0, 0}*/ {{p(0), s(2)}}, // Part of solution
+                 /*{0, 0 | 0, 0, 0}*/ {{}}, // Empty option
+                 /*{0, 1 | 0, 0, 1}*/ {{p(1), s(4)}}, // Part of solution
+             },
+             // Solution
+             {1, 3}},
 
-    };
+        };
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolution] : problemData) {
-        DancingCellsStructure dataStructure(primaryItemsCount, secondaryItemsCount, options);
-        CHECK(AlgorithmC::hasUniqueSolution(dataStructure, seed));
-        const auto allSolutions = AlgorithmC::findAllSolutions(dataStructure, seed);
+        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
+        const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
         CHECK_EQ(1, allSolutions.size());
         CHECK_EQ(expectedSolution, *allSolutions.begin());
-        const auto oneSolutionOptional = AlgorithmC::findOneSolution(dataStructure, seed);
+        const auto oneSolutionOptional = AlgorithmC::findOneSolution(structure, seed);
         CHECK(oneSolutionOptional.has_value());
         CHECK_EQ(expectedSolution, oneSolutionOptional.value());
       }
@@ -292,23 +294,24 @@ TEST_CASE("Algorithm C") {
   }
 
   SUBCASE("Multiple solutions, primary items only") {
-    const std::vector<std::tuple<int32_t, int32_t, std::vector<XccOption>, std::vector<std::unordered_set<int32_t>>>>
+    const std::vector<
+        std::tuple<int32_t, int32_t, std::vector<std::set<XccElement>>, std::vector<std::unordered_set<int32_t>>>>
         problemData = {
             // Problem 1
             {7, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0, 0, 1, 0, 0, 1},*/ XccOption({p(0), p(3), p(6)}),
-                 /*{1, 0, 0, 1, 0, 1, 0},*/ XccOption({p(0), p(3), p(5)}), // Part of solution A
-                 /*{0, 1, 0, 0, 1, 1, 0},*/ XccOption({p(1), p(4), p(5)}), // Part of solution B
-                 /*{0, 1, 1, 0, 0, 1, 0},*/ XccOption({p(1), p(2), p(5)}),
-                 /*{0, 0, 1, 1, 0, 0, 0},*/ XccOption({p(2), p(3)}), // Part of solution B
-                 /*{0, 0, 1, 0, 1, 0, 0},*/ XccOption({p(2), p(4)}), // Part of solution A
-                 /*{0, 1, 0, 0, 0, 0, 1},*/ XccOption({p(1), p(6)}), // Part of solution A
-                 /*{0, 0, 0, 1, 1, 0, 1},*/ XccOption({p(3), p(4), p(6)}),
-                 /*{0, 0, 0, 0, 0, 0, 0},*/ XccOption({}), // Empty option
-                 /*{1, 0, 0, 0, 0, 0, 1},*/ XccOption({p(0), p(6)}), // Part of solution B
-                 /*{0, 0, 1, 0, 0, 1, 0},*/ XccOption({p(2), p(5)}),
+                 /*{1, 0, 0, 1, 0, 0, 1},*/ {{p(0), p(3), p(6)}},
+                 /*{1, 0, 0, 1, 0, 1, 0},*/ {{p(0), p(3), p(5)}}, // Part of solution A
+                 /*{0, 1, 0, 0, 1, 1, 0},*/ {{p(1), p(4), p(5)}}, // Part of solution B
+                 /*{0, 1, 1, 0, 0, 1, 0},*/ {{p(1), p(2), p(5)}},
+                 /*{0, 0, 1, 1, 0, 0, 0},*/ {{p(2), p(3)}}, // Part of solution B
+                 /*{0, 0, 1, 0, 1, 0, 0},*/ {{p(2), p(4)}}, // Part of solution A
+                 /*{0, 1, 0, 0, 0, 0, 1},*/ {{p(1), p(6)}}, // Part of solution A
+                 /*{0, 0, 0, 1, 1, 0, 1},*/ {{p(3), p(4), p(6)}},
+                 /*{0, 0, 0, 0, 0, 0, 0},*/ {{}}, // Empty option
+                 /*{1, 0, 0, 0, 0, 0, 1},*/ {{p(0), p(6)}}, // Part of solution B
+                 /*{0, 0, 1, 0, 0, 1, 0},*/ {{p(2), p(5)}},
              },
              // Solutions
              {
@@ -320,12 +323,12 @@ TEST_CASE("Algorithm C") {
             {4, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0, 0, 0}*/ XccOption({p(0)}), // Part of solution A | B
-                 /*{0, 1, 0, 0}*/ XccOption({p(1)}), // Part of solution A
-                 /*{0, 0, 1, 0}*/ XccOption({p(2)}), // Part of solution A | C
-                 /*{0, 0, 0, 1}*/ XccOption({p(3)}), // Part of solution A | B | C
-                 /*{0, 1, 1, 0}*/ XccOption({p(1), p(2)}), // Part of solution B
-                 /*{1, 1, 0, 0}*/ XccOption({p(0), p(1)}), // Part of solution C
+                 /*{1, 0, 0, 0}*/ {{p(0)}}, // Part of solution A | B
+                 /*{0, 1, 0, 0}*/ {{p(1)}}, // Part of solution A
+                 /*{0, 0, 1, 0}*/ {{p(2)}}, // Part of solution A | C
+                 /*{0, 0, 0, 1}*/ {{p(3)}}, // Part of solution A | B | C
+                 /*{0, 1, 1, 0}*/ {{p(1), p(2)}}, // Part of solution B
+                 /*{1, 1, 0, 0}*/ {{p(0), p(1)}}, // Part of solution C
              },
              // Solutions
              {
@@ -338,14 +341,14 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              0, // Secondary items
              {
-                 /*{0, 0, 0}*/ XccOption({}), // Empty option
-                 /*{1, 0, 0}*/ XccOption({p(0)}), // Solution A | B
-                 /*{0, 1, 0}*/ XccOption({p(1)}), // Solution A | C
-                 /*{0, 0, 1}*/ XccOption({p(2)}), // Solution A | D
-                 /*{1, 1, 0}*/ XccOption({p(0), p(1)}), // Solution D
-                 /*{1, 0, 1}*/ XccOption({p(0), p(2)}), // Solution C
-                 /*{0, 1, 1}*/ XccOption({p(1), p(2)}), // Solution B
-                 /*{1, 1, 1}*/ XccOption({p(0), p(1), p(2)}), // Solution E
+                 /*{0, 0, 0}*/ {{}}, // Empty option
+                 /*{1, 0, 0}*/ {{p(0)}}, // Solution A | B
+                 /*{0, 1, 0}*/ {{p(1)}}, // Solution A | C
+                 /*{0, 0, 1}*/ {{p(2)}}, // Solution A | D
+                 /*{1, 1, 0}*/ {{p(0), p(1)}}, // Solution D
+                 /*{1, 0, 1}*/ {{p(0), p(2)}}, // Solution C
+                 /*{0, 1, 1}*/ {{p(1), p(2)}}, // Solution B
+                 /*{1, 1, 1}*/ {{p(0), p(1), p(2)}}, // Solution E
              },
              // Solutions
              {
@@ -360,12 +363,12 @@ TEST_CASE("Algorithm C") {
             {2, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0}*/ XccOption({p(0)}), // Solution A | B | C
-                 /*{1, 0}*/ XccOption({p(0)}), // Solution D | E | F
-                 /*{1, 0}*/ XccOption({p(0)}), // Solution G | H | I
-                 /*{0, 1}*/ XccOption({p(1)}), // Solution A | D | G
-                 /*{0, 1}*/ XccOption({p(1)}), // Solution B | E | H
-                 /*{0, 1}*/ XccOption({p(1)}), // Solution C | F | I
+                 /*{1, 0}*/ {{p(0)}}, // Solution A | B | C
+                 /*{1, 0}*/ {{p(0)}}, // Solution D | E | F
+                 /*{1, 0}*/ {{p(0)}}, // Solution G | H | I
+                 /*{0, 1}*/ {{p(1)}}, // Solution A | D | G
+                 /*{0, 1}*/ {{p(1)}}, // Solution B | E | H
+                 /*{0, 1}*/ {{p(1)}}, // Solution C | F | I
              },
              // Solutions
              {
@@ -384,9 +387,9 @@ TEST_CASE("Algorithm C") {
             {1, // Primary items
              0, // Secondary items
              {
-                 /*{1}*/ XccOption({p(0)}), // Solution A
-                 /*{1}*/ XccOption({p(0)}), // Solution B
-                 /*{1}*/ XccOption({p(0)}), // Solution C
+                 /*{1}*/ {{p(0)}}, // Solution A
+                 /*{1}*/ {{p(0)}}, // Solution B
+                 /*{1}*/ {{p(0)}}, // Solution C
              },
              // Solutions
              {
@@ -398,9 +401,9 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolutions] : problemData) {
-        DancingCellsStructure dataStructure(primaryItemsCount, secondaryItemsCount, options);
-        CHECK(!AlgorithmC::hasUniqueSolution(dataStructure, seed));
-        const auto solutionsFound = AlgorithmC::findAllSolutions(dataStructure, seed);
+        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        CHECK(!AlgorithmC::hasUniqueSolution(structure, seed));
+        const auto solutionsFound = AlgorithmC::findAllSolutions(structure, seed);
         // Check that every solution found was expected
         CHECK_EQ(solutionsFound.size(), expectedSolutions.size());
         for (const auto& solutionFound : solutionsFound) {
@@ -408,7 +411,7 @@ TEST_CASE("Algorithm C") {
         }
 
         // Check that the one solution found appears in the expected
-        const auto oneSolutionOptional = AlgorithmC::findOneSolution(dataStructure, seed);
+        const auto oneSolutionOptional = AlgorithmC::findOneSolution(structure, seed);
         CHECK(oneSolutionOptional.has_value());
         CHECK(std::count(expectedSolutions.begin(), expectedSolutions.end(), oneSolutionOptional.value()) == 1);
       }
@@ -416,18 +419,19 @@ TEST_CASE("Algorithm C") {
   }
 
   SUBCASE("Multiple solutions, primary and secondary items") {
-    const std::vector<std::tuple<int32_t, int32_t, std::vector<XccOption>, std::vector<std::unordered_set<int32_t>>>>
+    const std::vector<
+        std::tuple<int32_t, int32_t, std::vector<std::set<XccElement>>, std::vector<std::unordered_set<int32_t>>>>
         problemData{
             // Problem 1
             {4, // Primary items
              3, // Secondary items
              {
-                 /*{0, 0, 1, 0 | 1, 0, 0}*/ XccOption({p(2), s(4)}), // Part of solution A
-                 /*{1, 0, 0, 1 | 0, 0, 1}*/ XccOption({p(0), p(3), s(6)}), // Part of solution B
-                 /*{0, 1, 1, 0 | 0, 1, 0}*/ XccOption({p(1), p(2), s(5)}), // Part of solution B
-                 /*{1, 0, 0, 1 | 0, 1, 0}*/ XccOption({p(0), p(3), s(5)}), // Part of solution A
-                 /*{0, 1, 0, 0 | 0, 0, 1}*/ XccOption({p(1), s(6)}), // Part of solution A
-                 /*{0, 0, 0, 1 | 1, 0, 1}*/ XccOption({p(3), s(4), s(6)}),
+                 /*{0, 0, 1, 0 | 1, 0, 0}*/ {{p(2), s(4)}}, // Part of solution A
+                 /*{1, 0, 0, 1 | 0, 0, 1}*/ {{p(0), p(3), s(6)}}, // Part of solution B
+                 /*{0, 1, 1, 0 | 0, 1, 0}*/ {{p(1), p(2), s(5)}}, // Part of solution B
+                 /*{1, 0, 0, 1 | 0, 1, 0}*/ {{p(0), p(3), s(5)}}, // Part of solution A
+                 /*{0, 1, 0, 0 | 0, 0, 1}*/ {{p(1), s(6)}}, // Part of solution A
+                 /*{0, 0, 0, 1 | 1, 0, 1}*/ {{p(3), s(4), s(6)}},
              },
              // Solutions
              {
@@ -439,11 +443,11 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              1, // Secondary items
              {
-                 /*{0, 0, 1 | 0}*/ XccOption({p(2)}), // Part of solution A
-                 /*{1, 0, 0 | 1}*/ XccOption({p(0), s(3)}), // Part of solution B
-                 /*{0, 1, 1 | 0}*/ XccOption({p(1), p(2)}), // Part of solution B
-                 /*{0, 0, 0 | 0}*/ XccOption({}), // Empty option
-                 /*{1, 1, 0 | 0}*/ XccOption({p(0), p(1)}), // Part of solution A
+                 /*{0, 0, 1 | 0}*/ {{p(2)}}, // Part of solution A
+                 /*{1, 0, 0 | 1}*/ {{p(0), s(3)}}, // Part of solution B
+                 /*{0, 1, 1 | 0}*/ {{p(1), p(2)}}, // Part of solution B
+                 /*{0, 0, 0 | 0}*/ {{}}, // Empty option
+                 /*{1, 1, 0 | 0}*/ {{p(0), p(1)}}, // Part of solution A
              },
              // Solutions
              {
@@ -455,12 +459,12 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              2, // Secondary items
              {
-                 /*{0, 1, 0 | 0, 0}*/ XccOption({p(1)}), //  Part of solution A
-                 /*{1, 0, 1 | 0, 1}*/ XccOption({p(0), p(2), s(4)}), //  Part of solution A | B | C
-                 /*{0, 0, 0 | 0, 0}*/ XccOption({}), // Empty option
-                 /*{0, 1, 0 | 1, 1}*/ XccOption({p(1), s(3), s(4)}),
-                 /*{0, 1, 0 | 1, 0}*/ XccOption({p(1), s(3)}), //  Part of solution B
-                 /*{0, 1, 0 | 0, 0}*/ XccOption({p(1)}), //  Part of solution C
+                 /*{0, 1, 0 | 0, 0}*/ {{p(1)}}, //  Part of solution A
+                 /*{1, 0, 1 | 0, 1}*/ {{p(0), p(2), s(4)}}, //  Part of solution A | B | C
+                 /*{0, 0, 0 | 0, 0}*/ {{}}, // Empty option
+                 /*{0, 1, 0 | 1, 1}*/ {{p(1), s(3), s(4)}},
+                 /*{0, 1, 0 | 1, 0}*/ {{p(1), s(3)}}, //  Part of solution B
+                 /*{0, 1, 0 | 0, 0}*/ {{p(1)}}, //  Part of solution C
              },
              // Solutions
              {
@@ -472,16 +476,16 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolutions] : problemData) {
-        DancingCellsStructure dataStructure(primaryItemsCount, secondaryItemsCount, options);
-        CHECK(!AlgorithmC::hasUniqueSolution(dataStructure, seed));
-        const auto solutionsFound = AlgorithmC::findAllSolutions(dataStructure, seed);
+        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        CHECK(!AlgorithmC::hasUniqueSolution(structure, seed));
+        const auto solutionsFound = AlgorithmC::findAllSolutions(structure, seed);
         // Check that every solution found was expected
         CHECK_EQ(solutionsFound.size(), expectedSolutions.size());
         for (const auto& solutionFound : solutionsFound) {
           CHECK(std::count(expectedSolutions.begin(), expectedSolutions.end(), solutionFound) == 1);
         }
         // Check that the one solution found appears in the list of the ones provided
-        const auto oneSolutionOptional = AlgorithmC::findOneSolution(dataStructure, seed);
+        const auto oneSolutionOptional = AlgorithmC::findOneSolution(structure, seed);
         CHECK(oneSolutionOptional.has_value());
         CHECK(std::count(expectedSolutions.begin(), expectedSolutions.end(), oneSolutionOptional.value()) == 1);
       }

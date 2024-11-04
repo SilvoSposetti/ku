@@ -2,7 +2,7 @@
 
 #include "../Sudo.h"
 #include "../constraints/AbstractConstraint.h"
-#include "DataStructure.h"
+#include "DancingCellsStructure.h"
 
 #include <memory>
 #include <optional>
@@ -64,6 +64,7 @@ private:
    * @param solutionOptions A of option indices that solve the Exact Cover problem
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                       const DataStructure& dataStructure,
+                                                       const DancingCellsStructure& structure,
+                                                       const std::vector<OptionData>& optionsData,
                                                        const std::unordered_set<int32_t>& solutionOptions);
 };

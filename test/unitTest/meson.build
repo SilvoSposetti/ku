@@ -1,6 +1,5 @@
 unit_test_sources = files(
   'AlgorithmCTest.cpp',
-  'AlgorithmXTest.cpp',
   'constraints/AntiKingTest.cpp',
   'constraints/AntiKingTorusTest.cpp',
   'constraints/AntiKnightTest.cpp',

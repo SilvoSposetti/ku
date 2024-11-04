@@ -4,24 +4,102 @@
 #include <iostream>
 #include <map>
 
-DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
-                                             int32_t secondaryItemsCount,
-                                             const std::vector<XccOption>& options)
-    : primaryItemsCount(primaryItemsCount)
-    , secondaryItemsCount(secondaryItemsCount)
-    , itemsCount(primaryItemsCount + secondaryItemsCount)
-    , optionsCount(options.size()) {
+std::pair<DancingCellsStructure, std::vector<OptionData>>
+DancingCellsStructure::createStructure(const std::vector<std::vector<Sudo::Digit>>& board,
+                                       const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+
+  int32_t primaryItemsCount = 0;
+  int32_t secondaryItemsCount = 0;
+
+  for (const auto& constraint : constraints) {
+    primaryItemsCount += constraint->getPrimaryItemsAmount();
+    secondaryItemsCount += constraint->getSecondaryItemsAmount();
+  }
+
+  // Count how many digits are given
+  int32_t givensAmount = 0;
+  for (const auto& row : board) {
+    for (const auto& digit : row) {
+      if (digit != Sudo::Digit::NONE) {
+        ++givensAmount;
+      }
+    }
+  }
+
+  // At most 729 options => (9x9 grid,9 possible digits for each cell)
+  constexpr int32_t maximumOptions = Sudo::MAX_DIGIT * Sudo::MAX_DIGIT * Sudo::MAX_DIGIT;
+  // Each given digit reduces the amount of options by (Sudo::MAX_DIGIT - 1)
+  const int32_t totalOptions = maximumOptions - (Sudo::MAX_DIGIT - 1) * givensAmount;
+
+  // Data for the options
+  auto optionsData = std::vector<OptionData>(totalOptions);
+
+  auto optionsCache = std::vector<std::set<XccElement>>(totalOptions);
+  optionsCache.reserve(totalOptions);
+  int32_t optionId = 0;
+  int32_t overallOptionId = 0;
+  for (const auto& boardI : Sudo::INDICES) {
+    for (const auto& boardJ : Sudo::INDICES) {
+      const Sudo::Digit actualDigit = board[boardI][boardJ];
+      for (const auto& possibleDigit : Sudo::SUDO_DIGITS) {
+        if (actualDigit == Sudo::Digit::NONE || actualDigit == possibleDigit) {
+          int32_t baseItemId = 0;
+          optionsData[optionId] = OptionData(boardI, boardJ, possibleDigit);
+          for (const auto& constraint : constraints) {
+            // Primary items
+            const int32_t primaryItemsAmount = constraint->getPrimaryItemsAmount();
+            if (primaryItemsAmount > 0) {
+              const auto& primaryItems = constraint->getPrimaryItems();
+              for (const auto& primaryItemId : primaryItems[overallOptionId]) {
+                optionsCache[optionId].insert(XccElement::makePrimary(primaryItemId + baseItemId));
+              }
+              baseItemId += primaryItemsAmount;
+            }
+          }
+          for (const auto& constraint : constraints) {
+            // Secondary items
+            const int32_t secondaryItemsAmount = constraint->getSecondaryItemsAmount();
+            if (secondaryItemsAmount > 0) {
+              const auto& secondaryItems = constraint->getSecondaryItems();
+              for (const auto& secondaryItemId : secondaryItems[overallOptionId]) {
+                optionsCache[optionId].insert(XccElement::makeSecondary(secondaryItemId + baseItemId));
+              }
+              baseItemId += secondaryItemsAmount;
+            }
+          }
+          optionId++;
+        }
+        overallOptionId++;
+      }
+    }
+  }
+
+  return {createStructure(primaryItemsCount, secondaryItemsCount, optionsCache), optionsData};
+}
+
+DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItemsCount,
+                                                             int32_t secondaryItemsCount,
+                                                             const std::vector<std::set<XccElement>>& options)
+
+{
+  int32_t itemsCount = primaryItemsCount + secondaryItemsCount;
+  int32_t optionsCount = options.size();
+  std::vector<int32_t> ITEM;
+  std::vector<int32_t> SET;
+  std::vector<DancingCellsNode> NODE;
+  std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
   {
     // TODO: check if these preconditions can be removed/relaxed
     if (primaryItemsCount <= 0 || options.empty()) {
       throw std::runtime_error(std::string("No items or options provided"));
     }
   }
+
   // Element IDs are sorted in each option because XccOption uses sets
   // Element IDs must be in the correct ranges for primary and secondary items
   {
     for (const auto& option : options) {
-      if (std::any_of(option.elements.begin(), option.elements.end(), [&](const XccElement& element) {
+      if (std::any_of(option.begin(), option.end(), [&](const XccElement& element) {
             if (element.isPrimary) {
               return element.id < 0 || primaryItemsCount <= element.id;
             }
@@ -36,7 +114,7 @@ DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
   {
     auto isPrimaryItemCoverable = std::vector<bool>(primaryItemsCount, false);
     for (const auto& option : options) {
-      for (const auto& element : option.elements) {
+      for (const auto& element : option) {
         if (element.isPrimary) {
           isPrimaryItemCoverable[element.id] = true;
         }
@@ -58,10 +136,10 @@ DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
   auto setBlockCount = std::vector<int32_t>(itemsCount, 0);
   {
     for (const auto& option : options) {
-      for (const auto& element : option.elements) {
+      for (const auto& element : option) {
         setBlockCount[element.id]++;
       }
-      nodeCount += option.elements.size();
+      nodeCount += option.size();
     }
     // Add spacer nodes at the beginning, end, and between each option
     nodeCount += options.size() + 1;
@@ -106,10 +184,10 @@ DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
   NODE.reserve(nodeCount);
   auto setBlockCounters = std::vector<int32_t>(itemsCount, 0);
   // First elment of NODE is a spacer
-  NODE.emplace_back(0, options[0].elements.size(), undefinedColor);
+  NODE.emplace_back(0, options[0].size(), undefinedColor);
   int32_t optionIndex = 0;
   for (const auto& option : options) {
-    for (const auto& element : option.elements) {
+    for (const auto& element : option) {
       const int32_t itemIndex = element.id;
       const int32_t itemsBefore = itemIndex == 0 ? 0 : setBlockSums[itemIndex];
       const int32_t baseIndex = itemsBefore + (itemIndex + 1) * 2;
@@ -134,12 +212,21 @@ DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
     if (!lastOption) {
       // Regular spacer
       const auto& nextOption = options[optionIndex];
-      NODE.emplace_back(-option.elements.size(), nextOption.elements.size(), undefinedColor);
+      NODE.emplace_back(-option.size(), nextOption.size(), undefinedColor);
     } else {
       // Last spacer
-      NODE.emplace_back(-option.elements.size(), 0, undefinedColor);
+      NODE.emplace_back(-option.size(), 0, undefinedColor);
     }
   }
+
+  return DancingCellsStructure{.ITEM = ITEM,
+                               .SET = SET,
+                               .NODE = NODE,
+                               .primaryItemsCount = primaryItemsCount,
+                               .secondaryItemsCount = secondaryItemsCount,
+                               .itemsCount = itemsCount,
+                               .optionsCount = optionsCount,
+                               .nodeIndicesToOptionIdMap = nodeIndicesToOptionIdMap};
 }
 
 void DancingCellsStructure::print() const {

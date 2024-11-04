@@ -244,125 +244,125 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
 
   auto document = std::make_unique<SvgDocument>(name, width, height, margin);
 
-  // Background
-  document->add(std::make_unique<SvgRect>(
-      -margin, -margin, width + 2.0 * margin, height + 2.0 * margin, "rgb(230,230,230)", std::nullopt, std::nullopt));
+  // // Background
+  // document->add(std::make_unique<SvgRect>(
+  //     -margin, -margin, width + 2.0 * margin, height + 2.0 * margin, "rgb(230,230,230)", std::nullopt, std::nullopt));
 
-  // Cells
-  {
-    std::unique_ptr<SvgGroup> cellsGroup = std::make_unique<SvgGroup>("Cells", "black", std::nullopt, std::nullopt);
+  // // Cells
+  // {
+  //   std::unique_ptr<SvgGroup> cellsGroup = std::make_unique<SvgGroup>("Cells", "black", std::nullopt, std::nullopt);
 
-    int32_t currentOption = -1;
-    for (const auto& node : structure) {
-      if (node.type == NodeType::Spacer) {
-        // go to next option
-        currentOption++;
-      }
-      if (node.type == NodeType::Node) {
-        // Compute coordinates of square
-        const int32_t itemIndex = node.header - 1;
-        cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
-      }
-    }
-    document->add(std::move(cellsGroup));
-  }
+  //   int32_t currentOption = -1;
+  //   for (const auto& node : structure) {
+  //     if (node.type == NodeType::Spacer) {
+  //       // go to next option
+  //       currentOption++;
+  //     }
+  //     if (node.type == NodeType::Node) {
+  //       // Compute coordinates of square
+  //       const int32_t itemIndex = node.header - 1;
+  //       cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
+  //     }
+  //   }
+  //   document->add(std::move(cellsGroup));
+  // }
 
-  // Vertical Lines
-  {
-    std::unique_ptr<SvgGroup> primaryLinesGroup =
-        std::make_unique<SvgGroup>("Primary Vertical Lines", std::nullopt, "black", primaryLineWidth);
-    std::unique_ptr<SvgGroup> secondaryLinesGroup =
-        std::make_unique<SvgGroup>("Secondary Vertical Lines", std::nullopt, "black", secondaryLineWidth);
+  // // Vertical Lines
+  // {
+  //   std::unique_ptr<SvgGroup> primaryLinesGroup =
+  //       std::make_unique<SvgGroup>("Primary Vertical Lines", std::nullopt, "black", primaryLineWidth);
+  //   std::unique_ptr<SvgGroup> secondaryLinesGroup =
+  //       std::make_unique<SvgGroup>("Secondary Vertical Lines", std::nullopt, "black", secondaryLineWidth);
 
-    std::string currentName;
-    int32_t currentIndex = 0;
-    for (const auto& itemData : dataStructure.getItemsData()) {
-      const double x = currentIndex * cellSize;
-      if (currentName != itemData.constraintName) {
-        // Add primary vertical line
-        primaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
+  //   std::string currentName;
+  //   int32_t currentIndex = 0;
+  //   for (const auto& itemData : dataStructure.getItemsData()) {
+  //     const double x = currentIndex * cellSize;
+  //     if (currentName != itemData.constraintName) {
+  //       // Add primary vertical line
+  //       primaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
 
-        currentName = itemData.constraintName;
-      } else {
-        // Add secondary vertical line
-        secondaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
-      }
-      currentIndex++;
-    }
-    primaryLinesGroup->add(std::make_unique<SvgLine>(currentIndex * cellSize, 0, currentIndex * cellSize, height));
-    primaryLinesGroup->add(std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount));
+  //       currentName = itemData.constraintName;
+  //     } else {
+  //       // Add secondary vertical line
+  //       secondaryLinesGroup->add(std::make_unique<SvgLine>(x, 0, x, height));
+  //     }
+  //     currentIndex++;
+  //   }
+  //   primaryLinesGroup->add(std::make_unique<SvgLine>(currentIndex * cellSize, 0, currentIndex * cellSize, height));
+  //   primaryLinesGroup->add(std::make_unique<SvgLine>(width, 0, width, cellSize * rowsCount));
 
-    document->add(std::move(primaryLinesGroup));
-    document->add(std::move(secondaryLinesGroup));
-  }
+  //   document->add(std::move(primaryLinesGroup));
+  //   document->add(std::move(secondaryLinesGroup));
+  // }
 
-  // Horizontal Lines
-  {
-    std::unique_ptr<SvgGroup> primaryLinesGroup =
-        std::make_unique<SvgGroup>("Primary Horizontal Lines", std::nullopt, "black", primaryLineWidth);
-    std::unique_ptr<SvgGroup> secondaryLinesGroup =
-        std::make_unique<SvgGroup>("Secondary Horizontal Lines", std::nullopt, "black", secondaryLineWidth);
+  // // Horizontal Lines
+  // {
+  //   std::unique_ptr<SvgGroup> primaryLinesGroup =
+  //       std::make_unique<SvgGroup>("Primary Horizontal Lines", std::nullopt, "black", primaryLineWidth);
+  //   std::unique_ptr<SvgGroup> secondaryLinesGroup =
+  //       std::make_unique<SvgGroup>("Secondary Horizontal Lines", std::nullopt, "black", secondaryLineWidth);
 
-    std::pair<int32_t, int32_t> previousCell{-1, -1};
-    int32_t counter = 0;
-    for (const auto& optionData : dataStructure.getOptionsData()) {
-      const double y = cellSize * counter;
-      std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
-      if (previousCell != currentCell) {
+  //   std::pair<int32_t, int32_t> previousCell{-1, -1};
+  //   int32_t counter = 0;
+  //   for (const auto& optionData : dataStructure.getOptionsData()) {
+  //     const double y = cellSize * counter;
+  //     std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
+  //     if (previousCell != currentCell) {
 
-        primaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
-        previousCell = currentCell;
-      } else {
-        secondaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
-      }
-      counter++;
-    }
-    primaryLinesGroup->add(std::make_unique<SvgLine>(0, cellSize * counter, width, cellSize * counter));
-    primaryLinesGroup->add(std::make_unique<SvgLine>(0, height, cellSize * columnsCount, height));
+  //       primaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
+  //       previousCell = currentCell;
+  //     } else {
+  //       secondaryLinesGroup->add(std::make_unique<SvgLine>(0, y, width, y));
+  //     }
+  //     counter++;
+  //   }
+  //   primaryLinesGroup->add(std::make_unique<SvgLine>(0, cellSize * counter, width, cellSize * counter));
+  //   primaryLinesGroup->add(std::make_unique<SvgLine>(0, height, cellSize * columnsCount, height));
 
-    document->add(std::move(primaryLinesGroup));
-    document->add(std::move(secondaryLinesGroup));
-  }
+  //   document->add(std::move(primaryLinesGroup));
+  //   document->add(std::move(secondaryLinesGroup));
+  // }
 
-  // Text
-  {
-    std::unique_ptr<SvgGroup> textGroup = std::make_unique<SvgGroup>("Text", "black", std::nullopt, std::nullopt);
-    // Bottom Text
-    {
-      std::unique_ptr<SvgGroup> bottomTextGroup =
-          std::make_unique<SvgGroup>("Bottom Text", "black", std::nullopt, std::nullopt);
-      int32_t counter = 0;
-      for (const auto& itemData : dataStructure.getItemsData()) {
-        const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
-        double x = (static_cast<double>(counter) + 0.5) * cellSize;
-        double y = cellSize * rowsCount;
-        bottomTextGroup->add(std::make_unique<SvgText>(
-            x, y, itemName, textSize, TextAnchor::End, TextBaseline::Central, std::nullopt, -90));
-        counter++;
-      }
-      textGroup->add(std::move(bottomTextGroup));
-    }
-    // Right Text
-    {
-      std::unique_ptr<SvgGroup> rightTextGroup =
-          std::make_unique<SvgGroup>("Right Text", "black", std::nullopt, std::nullopt);
-      int32_t counter = 0;
-      for (const auto& optionData : dataStructure.getOptionsData()) {
-        const std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
-                                       std::to_string(optionData.indexJ) + ", Digit " +
-                                       std::to_string(static_cast<int32_t>(optionData.digit));
-        double x = cellSize * columnsCount;
-        double y = (static_cast<double>(counter) + 0.5) * cellSize;
-        rightTextGroup->add(
-            std::make_unique<SvgText>(x, y, optionName, textSize, TextAnchor::Start, TextBaseline::Central));
-        counter++;
-      }
-      textGroup->add(std::move(rightTextGroup));
-    }
+  // // Text
+  // {
+  //   std::unique_ptr<SvgGroup> textGroup = std::make_unique<SvgGroup>("Text", "black", std::nullopt, std::nullopt);
+  //   // Bottom Text
+  //   {
+  //     std::unique_ptr<SvgGroup> bottomTextGroup =
+  //         std::make_unique<SvgGroup>("Bottom Text", "black", std::nullopt, std::nullopt);
+  //     int32_t counter = 0;
+  //     for (const auto& itemData : dataStructure.getItemsData()) {
+  //       const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
+  //                                    DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+  //       double x = (static_cast<double>(counter) + 0.5) * cellSize;
+  //       double y = cellSize * rowsCount;
+  //       bottomTextGroup->add(std::make_unique<SvgText>(
+  //           x, y, itemName, textSize, TextAnchor::End, TextBaseline::Central, std::nullopt, -90));
+  //       counter++;
+  //     }
+  //     textGroup->add(std::move(bottomTextGroup));
+  //   }
+  //   // Right Text
+  //   {
+  //     std::unique_ptr<SvgGroup> rightTextGroup =
+  //         std::make_unique<SvgGroup>("Right Text", "black", std::nullopt, std::nullopt);
+  //     int32_t counter = 0;
+  //     for (const auto& optionData : dataStructure.getOptionsData()) {
+  //       const std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
+  //                                      std::to_string(optionData.indexJ) + ", Digit " +
+  //                                      std::to_string(static_cast<int32_t>(optionData.digit));
+  //       double x = cellSize * columnsCount;
+  //       double y = (static_cast<double>(counter) + 0.5) * cellSize;
+  //       rightTextGroup->add(
+  //           std::make_unique<SvgText>(x, y, optionName, textSize, TextAnchor::Start, TextBaseline::Central));
+  //       counter++;
+  //     }
+  //     textGroup->add(std::move(rightTextGroup));
+  //   }
 
-    document->add(std::move(textGroup));
-  }
+  //   document->add(std::move(textGroup));
+  // }
 
   return document;
 }

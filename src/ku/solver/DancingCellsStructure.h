@@ -1,5 +1,7 @@
 #pragma once
+#include "../constraints/AbstractConstraint.h"
 #include "DancingCellsNode.h"
+#include "OptionData.h"
 #include "XccOption.h"
 
 #include <unordered_map>
@@ -17,15 +19,25 @@
  * ITEM[pos(x)] = x -> ITEM[SET[x - 2]] = x
  * SET[NODE[y].LOC] = y
  */
-class DancingCellsStructure {
+struct DancingCellsStructure {
 public:
+  /** Constructor. Creates the structure given a board and a set of constraints.
+   * @param board The board
+   * @param constraints The set of constraints
+   */
+  static std::pair<DancingCellsStructure, std::vector<OptionData>>
+  createStructure(const std::vector<std::vector<Sudo::Digit>>& board,
+                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+
   /** Constructor
    * @param primaryItemsCount The amount of primary items (for n primary items: IDs: [0, 1, ..., n-1])
    * @param secondaryItemsCount The amount of secondary items (for m secondary items: IDs: [n, n+1, ..., n+m-1])
    * @param options The list of options, each option must contain sorted IDs, therefore the primary items appear first
    * in a single option's list, the secondary items appear at the end.
    */
-  DancingCellsStructure(int32_t primaryItemsCount, int32_t secondaryItemsCount, const std::vector<XccOption>& options);
+  static DancingCellsStructure createStructure(int32_t primaryItemsCount,
+                                               int32_t secondaryItemsCount,
+                                               const std::vector<std::set<XccElement>>& options);
 
   /** Utility to log the current data structure contents to standard output. Useful for debugging.
    */
