@@ -115,7 +115,7 @@ int32_t hide2(DancingCellsStructure& structure,
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>> runAlgorithmX(const DancingCellsStructure& dataStructure,
+std::vector<std::unordered_set<int32_t>> runAlgorithmC(const DancingCellsStructure& dataStructure,
                                                        bool findFirstSolution,
                                                        bool checkForUniqueness,
                                                        const std::optional<int32_t>& seed) {
@@ -322,13 +322,13 @@ done: { return retrieveOptionIndices(structure, solutions); }
 std::vector<std::unordered_set<int32_t>> AlgorithmC::findAllSolutions(const DancingCellsStructure& dataStructure,
                                                                       const std::optional<int32_t>& seed) {
   // Algorithm C returns a list of node indices. These are the first nodes of the options which describe the solution
-  return runAlgorithmX(dataStructure, false, false, seed);
+  return runAlgorithmC(dataStructure, false, false, seed);
 }
 
 std::optional<std::unordered_set<int32_t>> AlgorithmC::findOneSolution(const DancingCellsStructure& dataStructure,
                                                                        const std::optional<int32_t>& seed) {
   // Algorithm C returns a list of node indices. These are the first nodes of the options which describe the solution
-  const auto solutions = runAlgorithmX(dataStructure, true, false, seed);
+  const auto solutions = runAlgorithmC(dataStructure, true, false, seed);
   if (solutions.size() >= 1) {
     return *solutions.begin();
   }
@@ -337,7 +337,7 @@ std::optional<std::unordered_set<int32_t>> AlgorithmC::findOneSolution(const Dan
 
 std::optional<std::unordered_set<int32_t>> AlgorithmC::hasUniqueSolution(const DancingCellsStructure& dataStructure,
                                                                          const std::optional<int32_t>& seed) {
-  const auto solutions = runAlgorithmX(dataStructure, false, true, seed);
+  const auto solutions = runAlgorithmC(dataStructure, false, true, seed);
   if (solutions.empty()) {
     return {};
   }
