@@ -108,7 +108,7 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
   {
     for (const auto& option : options) {
       // Note, the vector is sorted
-      if (option.front().id < 0 || option.back().id >= optionsCount) {
+      if (!option.empty() && (option.front().id < 0 || option.back().id >= itemsCount)) {
         throw std::runtime_error(std::string("Invalid item ID"));
       }
     }
@@ -116,15 +116,14 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
 
   // Cannot be solved if any item cannot be covered
   {
-    auto isPrimaryItemCoverable = std::vector<bool>(primaryItemsCount, false);
+    auto areItemsCoverable = std::vector<bool>(itemsCount, false);
     for (const auto& option : options) {
       for (const auto& element : option) {
-        isPrimaryItemCoverable[element.id] = true;
+        areItemsCoverable[element.id] = true;
       }
     }
-    if (std::any_of(isPrimaryItemCoverable.begin(), isPrimaryItemCoverable.end(), [](bool isCoverable) {
-          return !isCoverable;
-        })) {
+    if (std::any_of(
+            areItemsCoverable.begin(), areItemsCoverable.end(), [](bool isCoverable) { return !isCoverable; })) {
       throw std::runtime_error(std::string("A primary item is cannot be covered with the given options"));
     }
   }

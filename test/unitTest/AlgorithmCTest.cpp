@@ -63,44 +63,44 @@ TEST_CASE("Algorithm C") {
         {3, // Primary items
          0, // Secondary items
          {
-             /*{0, 1, 1}*/ {{1, 2}},
-             /*{1, 1, 0}*/ {{0, 1}},
+             /*{0, 1, 1}*/ {1, 2},
+             /*{1, 1, 0}*/ {0, 1},
          }},
 
         // Promblem 2
         {3, // Primary items
          0, // Secondary items
          {
-             /*{1, 0, 1}*/ {{0, 2}},
-             /*{0, 0, 0}*/ {{}}, // Empty option
-             /*{0, 1, 1}*/ {{1, 2}},
-             /*{1, 1, 0}*/ {{0, 1}},
-             /*{0, 0, 0}*/ {{}}, // Empty option
+             /*{1, 0, 1}*/ {0, 2},
+             /*{0, 0, 0}*/ {}, // Empty option
+             /*{0, 1, 1}*/ {1, 2},
+             /*{1, 1, 0}*/ {0, 1},
+             /*{0, 0, 0}*/ {}, // Empty option
          }},
 
         // Problem 3
         {7, // Primary items
          0, // Secondary items
          {
-             /*{0, 0, 1, 0, 1, 0, 0}*/ {{2, 4}},
-             /*{1, 0, 0, 1, 0, 0, 1}*/ {{0, 3, 6}},
-             /*{0, 1, 1, 0, 0, 1, 0}*/ {{1, 2, 5}},
-             /*{1, 0, 0, 1, 0, 0, 0}*/ {{0, 3}},
-             /*{0, 1, 0, 0, 0, 0, 1}*/ {{2, 6}},
-             /*{0, 0, 0, 1, 1, 0, 1}*/ {{3, 4, 6}},
+             /*{0, 0, 1, 0, 1, 0, 0}*/ {2, 4},
+             /*{1, 0, 0, 1, 0, 0, 1}*/ {0, 3, 6},
+             /*{0, 1, 1, 0, 0, 1, 0}*/ {1, 2, 5},
+             /*{1, 0, 0, 1, 0, 0, 0}*/ {0, 3},
+             /*{0, 1, 0, 0, 0, 0, 1}*/ {2, 6},
+             /*{0, 0, 0, 1, 1, 0, 1}*/ {3, 4, 6},
          }},
 
         // Problem 4
         {7, // Primary items
          0, // Secondary items
          {
-             /*{1, 1, 0, 1, 1, 1, 1}*/ {{0, 1, 3, 4, 5, 6}},
-             /*{0, 1, 1, 0, 0, 0, 0}*/ {{1, 2}},
-             /*{0, 0, 1, 1, 0, 0, 0}*/ {{2, 3}},
-             /*{0, 0, 0, 0, 1, 1, 0}*/ {{4, 5}},
-             /*{0, 0, 0, 1, 0, 0, 0}*/ {{3}},
-             /*{0, 0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
-             /*{1, 1, 1, 0, 0, 0, 0}*/ {{0, 1, 2}},
+             /*{1, 1, 0, 1, 1, 1, 1}*/ {0, 1, 3, 4, 5, 6},
+             /*{0, 1, 1, 0, 0, 0, 0}*/ {1, 2},
+             /*{0, 0, 1, 1, 0, 0, 0}*/ {2, 3},
+             /*{0, 0, 0, 0, 1, 1, 0}*/ {4, 5},
+             /*{0, 0, 0, 1, 0, 0, 0}*/ {3},
+             /*{0, 0, 0, 0, 0, 0, 0}*/ {}, // Empty option
+             /*{1, 1, 1, 0, 0, 0, 0}*/ {0, 1, 2},
          }},
 
     };
@@ -125,7 +125,7 @@ TEST_CASE("Algorithm C") {
             {1, // Primary items
              0, // Secondary items
              {
-                 /*{1}*/ {{0}}, // Part of solution
+                 /*{1}*/ {0}, // Part of solution
              },
              // Solution
              {0}},
@@ -134,7 +134,7 @@ TEST_CASE("Algorithm C") {
             {2, // Primary items
              0, // Secondary items
              {
-                 /*{1, 1}*/ {{0, 1}} // Part of solution
+                 /*{1, 1}*/ {0, 1} // Part of solution
              },
              // Solution
              {0}},
@@ -143,8 +143,8 @@ TEST_CASE("Algorithm C") {
             {6, // Primary items
              0, // Secondary items
              {
-                 /*{0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
-                 /*{1, 1, 1, 1, 1, 1}*/ {{0, 1, 2, 3, 4, 5}}, // Part of solution
+                 /*{0, 0, 0, 0, 0, 0}*/ {}, // Empty option
+                 /*{1, 1, 1, 1, 1, 1}*/ {0, 1, 2, 3, 4, 5}, // Part of solution
              },
              // Solution
              {1}},
@@ -153,12 +153,12 @@ TEST_CASE("Algorithm C") {
             {7, // Primary items
              0, // Secondary items
              {
-                 /*{0, 0, 1, 0, 1, 0, 0}*/ {{2, 4}}, // Part of solution
-                 /*{1, 0, 0, 1, 0, 0, 1}*/ {{0, 3, 6}},
-                 /*{0, 1, 1, 0, 0, 1, 0}*/ {{1, 2, 5}},
-                 /*{1, 0, 0, 1, 0, 1, 0}*/ {{0, 3, 5}}, // Part of solution
-                 /*{0, 1, 0, 0, 0, 0, 1}*/ {{1, 6}}, // Part of solution
-                 /*{0, 0, 0, 1, 1, 0, 1}*/ {{3, 4, 6}},
+                 /*{0, 0, 1, 0, 1, 0, 0}*/ {2, 4}, // Part of solution
+                 /*{1, 0, 0, 1, 0, 0, 1}*/ {0, 3, 6},
+                 /*{0, 1, 1, 0, 0, 1, 0}*/ {1, 2, 5},
+                 /*{1, 0, 0, 1, 0, 1, 0}*/ {0, 3, 5}, // Part of solution
+                 /*{0, 1, 0, 0, 0, 0, 1}*/ {1, 6}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0, 1}*/ {3, 4, 6},
              },
              // Solution
              {0, 3, 4}},
@@ -167,13 +167,13 @@ TEST_CASE("Algorithm C") {
             {7, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0, 0, 1, 0, 0, 1}*/ {{0, 3, 6}},
-                 /*{1, 0, 0, 1, 0, 0, 0}*/ {{0, 3}}, // Part of solution
-                 /*{0, 0, 0, 1, 1, 0, 1}*/ {{3, 4, 6}},
-                 /*{0, 0, 1, 0, 1, 1, 0}*/ {{2, 4, 5}}, // Part of solution
-                 /*{0, 1, 1, 0, 0, 1, 1}*/ {{1, 2, 5, 6}},
-                 /*{0, 1, 0, 0, 0, 0, 1}*/ {{1, 6}}, // Part of solution
-                 /*{0, 0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
+                 /*{1, 0, 0, 1, 0, 0, 1}*/ {0, 3, 6},
+                 /*{1, 0, 0, 1, 0, 0, 0}*/ {0, 3}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0, 1}*/ {3, 4, 6},
+                 /*{0, 0, 1, 0, 1, 1, 0}*/ {2, 4, 5}, // Part of solution
+                 /*{0, 1, 1, 0, 0, 1, 1}*/ {1, 2, 5, 6},
+                 /*{0, 1, 0, 0, 0, 0, 1}*/ {1, 6}, // Part of solution
+                 /*{0, 0, 0, 0, 0, 0, 0}*/ {}, // Empty option
              },
              // Solution
              {1, 3, 5}},
@@ -182,14 +182,14 @@ TEST_CASE("Algorithm C") {
             {6, // Primary items
              0, // Secondary items
              {
-                 /*{1, 1, 0, 0, 0, 0}*/ {{0, 1}}, // Part of solution
-                 /*{0, 0, 0, 0, 1, 1}*/ {{4, 5}}, // Part of solution
-                 /*{0, 0, 0, 1, 1, 0}*/ {{3, 4}},
-                 /*{1, 0, 1, 0, 0, 0}*/ {{0, 2}},
-                 /*{0, 0, 0, 0, 0, 0}*/ {{}}, // Empty option
-                 /*{0, 0, 1, 0, 0, 0}*/ {{2}}, // Part of solution
-                 /*{0, 0, 0, 1, 0, 0}*/ {{3}}, // Part of solution
-                 /*{1, 0, 1, 0, 0, 1}*/ {{0, 2, 5}},
+                 /*{1, 1, 0, 0, 0, 0}*/ {0, 1}, // Part of solution
+                 /*{0, 0, 0, 0, 1, 1}*/ {4, 5}, // Part of solution
+                 /*{0, 0, 0, 1, 1, 0}*/ {3, 4},
+                 /*{1, 0, 1, 0, 0, 0}*/ {0, 2},
+                 /*{0, 0, 0, 0, 0, 0}*/ {}, // Empty option
+                 /*{0, 0, 1, 0, 0, 0}*/ {2}, // Part of solution
+                 /*{0, 0, 0, 1, 0, 0}*/ {3}, // Part of solution
+                 /*{1, 0, 1, 0, 0, 1}*/ {0, 2, 5},
              },
              // Solution
              {0, 1, 5, 6}},
@@ -216,13 +216,13 @@ TEST_CASE("Algorithm C") {
             {4, // Primary items
              3, // Secondary items
              {
-                 /*{1, 0, 0, 0 | 0, 0, 0}*/ {{0}}, // Part of solution
-                 /*{0, 1, 0, 0 | 1, 0, 0}*/ {{1, 4}}, // Part of solution
-                 /*{0, 1, 0, 0 | 0, 1, 0}*/ {{1, 5}},
-                 /*{0, 0, 1, 0 | 1, 1, 0}*/ {{2, 4, 5}},
-                 /*{0, 0, 1, 0 | 0, 1, 1}*/ {{2, 5, 6}},
-                 /*{0, 0, 1, 0 | 0, 1, 0}*/ {{2, 5}}, // Part of solution
-                 /*{0, 0, 0, 1 | 0, 0, 1}*/ {{3, 6}}, // Part of solution
+                 /*{1, 0, 0, 0 | 0, 0, 0}*/ {0}, // Part of solution
+                 /*{0, 1, 0, 0 | 1, 0, 0}*/ {1, 4}, // Part of solution
+                 /*{0, 1, 0, 0 | 0, 1, 0}*/ {1, 5},
+                 /*{0, 0, 1, 0 | 1, 1, 0}*/ {2, 4, 5},
+                 /*{0, 0, 1, 0 | 0, 1, 1}*/ {2, 5, 6},
+                 /*{0, 0, 1, 0 | 0, 1, 0}*/ {2, 5}, // Part of solution
+                 /*{0, 0, 0, 1 | 0, 0, 1}*/ {3, 6}, // Part of solution
              },
              // Solution
              {0, 1, 5, 6}},
@@ -231,12 +231,12 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              1, // Secondary items
              {
-                 /*{0, 1, 0 | 1}*/ {{1, 3}},
-                 /*{0, 1, 0 | 0}*/ {{1}}, // Part of solution
-                 /*{1, 0, 0 | 0}*/ {{0}}, // Part of solution
-                 /*{0, 0, 0 | 0}*/ {{}}, // Empty option
-                 /*{0, 0, 1 | 1}*/ {{2, 3}}, // Part of solution
-                 /*{1, 0, 0 | 1}*/ {{0, 3}},
+                 /*{0, 1, 0 | 1}*/ {1, 3},
+                 /*{0, 1, 0 | 0}*/ {1}, // Part of solution
+                 /*{1, 0, 0 | 0}*/ {0}, // Part of solution
+                 /*{0, 0, 0 | 0}*/ {}, // Empty option
+                 /*{0, 0, 1 | 1}*/ {2, 3}, // Part of solution
+                 /*{1, 0, 0 | 1}*/ {0, 3},
              },
              // Solution
              {1, 2, 4}},
@@ -258,10 +258,10 @@ TEST_CASE("Algorithm C") {
             {2, // Primary items
              3, // Secondary items
              {
-                 /*{0, 0 | 0, 1, 0}*/ {{3}}, // No primary items, this will never be selected
-                 /*{1, 0 | 1, 0, 0}*/ {{0, 2}}, // Part of solution
-                 /*{0, 0 | 0, 0, 0}*/ {{}}, // Empty option
-                 /*{0, 1 | 0, 0, 1}*/ {{1, 4}}, // Part of solution
+                 /*{0, 0 | 0, 1, 0}*/ {3}, // No primary items, this will never be selected
+                 /*{1, 0 | 1, 0, 0}*/ {0, 2}, // Part of solution
+                 /*{0, 0 | 0, 0, 0}*/ {}, // Empty option
+                 /*{0, 1 | 0, 0, 1}*/ {1, 4}, // Part of solution
              },
              // Solution
              {1, 3}},
@@ -289,17 +289,17 @@ TEST_CASE("Algorithm C") {
             {7, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0, 0, 1, 0, 0, 1},*/ {{0, 3, 6}},
-                 /*{1, 0, 0, 1, 0, 1, 0},*/ {{0, 3, 5}}, // Part of solution A
-                 /*{0, 1, 0, 0, 1, 1, 0},*/ {{1, 4, 5}}, // Part of solution B
-                 /*{0, 1, 1, 0, 0, 1, 0},*/ {{1, 2, 5}},
-                 /*{0, 0, 1, 1, 0, 0, 0},*/ {{2, 3}}, // Part of solution B
-                 /*{0, 0, 1, 0, 1, 0, 0},*/ {{2, 4}}, // Part of solution A
-                 /*{0, 1, 0, 0, 0, 0, 1},*/ {{1, 6}}, // Part of solution A
-                 /*{0, 0, 0, 1, 1, 0, 1},*/ {{3, 4, 6}},
-                 /*{0, 0, 0, 0, 0, 0, 0},*/ {{}}, // Empty option
-                 /*{1, 0, 0, 0, 0, 0, 1},*/ {{0, 6}}, // Part of solution B
-                 /*{0, 0, 1, 0, 0, 1, 0},*/ {{2, 5}},
+                 /*{1, 0, 0, 1, 0, 0, 1},*/ {0, 3, 6},
+                 /*{1, 0, 0, 1, 0, 1, 0},*/ {0, 3, 5}, // Part of solution A
+                 /*{0, 1, 0, 0, 1, 1, 0},*/ {1, 4, 5}, // Part of solution B
+                 /*{0, 1, 1, 0, 0, 1, 0},*/ {1, 2, 5},
+                 /*{0, 0, 1, 1, 0, 0, 0},*/ {2, 3}, // Part of solution B
+                 /*{0, 0, 1, 0, 1, 0, 0},*/ {2, 4}, // Part of solution A
+                 /*{0, 1, 0, 0, 0, 0, 1},*/ {1, 6}, // Part of solution A
+                 /*{0, 0, 0, 1, 1, 0, 1},*/ {3, 4, 6},
+                 /*{0, 0, 0, 0, 0, 0, 0},*/ {}, // Empty option
+                 /*{1, 0, 0, 0, 0, 0, 1},*/ {0, 6}, // Part of solution B
+                 /*{0, 0, 1, 0, 0, 1, 0},*/ {2, 5},
              },
              // Solutions
              {
@@ -311,12 +311,12 @@ TEST_CASE("Algorithm C") {
             {4, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0, 0, 0}*/ {{0}}, // Part of solution A | B
-                 /*{0, 1, 0, 0}*/ {{1}}, // Part of solution A
-                 /*{0, 0, 1, 0}*/ {{2}}, // Part of solution A | C
-                 /*{0, 0, 0, 1}*/ {{3}}, // Part of solution A | B | C
-                 /*{0, 1, 1, 0}*/ {{1, 2}}, // Part of solution B
-                 /*{1, 1, 0, 0}*/ {{0, 1}}, // Part of solution C
+                 /*{1, 0, 0, 0}*/ {0}, // Part of solution A | B
+                 /*{0, 1, 0, 0}*/ {1}, // Part of solution A
+                 /*{0, 0, 1, 0}*/ {2}, // Part of solution A | C
+                 /*{0, 0, 0, 1}*/ {3}, // Part of solution A | B | C
+                 /*{0, 1, 1, 0}*/ {1, 2}, // Part of solution B
+                 /*{1, 1, 0, 0}*/ {0, 1}, // Part of solution C
              },
              // Solutions
              {
@@ -329,14 +329,14 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              0, // Secondary items
              {
-                 /*{0, 0, 0}*/ {{}}, // Empty option
-                 /*{1, 0, 0}*/ {{0}}, // Solution A | B
-                 /*{0, 1, 0}*/ {{1}}, // Solution A | C
-                 /*{0, 0, 1}*/ {{2}}, // Solution A | D
-                 /*{1, 1, 0}*/ {{0, 1}}, // Solution D
-                 /*{1, 0, 1}*/ {{0, 2}}, // Solution C
-                 /*{0, 1, 1}*/ {{1, 2}}, // Solution B
-                 /*{1, 1, 1}*/ {{0, 1, 2}}, // Solution E
+                 /*{0, 0, 0}*/ {}, // Empty option
+                 /*{1, 0, 0}*/ {0}, // Solution A | B
+                 /*{0, 1, 0}*/ {1}, // Solution A | C
+                 /*{0, 0, 1}*/ {2}, // Solution A | D
+                 /*{1, 1, 0}*/ {0, 1}, // Solution D
+                 /*{1, 0, 1}*/ {0, 2}, // Solution C
+                 /*{0, 1, 1}*/ {1, 2}, // Solution B
+                 /*{1, 1, 1}*/ {0, 1, 2}, // Solution E
              },
              // Solutions
              {
@@ -351,12 +351,12 @@ TEST_CASE("Algorithm C") {
             {2, // Primary items
              0, // Secondary items
              {
-                 /*{1, 0}*/ {{0}}, // Solution A | B | C
-                 /*{1, 0}*/ {{0}}, // Solution D | E | F
-                 /*{1, 0}*/ {{0}}, // Solution G | H | I
-                 /*{0, 1}*/ {{1}}, // Solution A | D | G
-                 /*{0, 1}*/ {{1}}, // Solution B | E | H
-                 /*{0, 1}*/ {{1}}, // Solution C | F | I
+                 /*{1, 0}*/ {0}, // Solution A | B | C
+                 /*{1, 0}*/ {0}, // Solution D | E | F
+                 /*{1, 0}*/ {0}, // Solution G | H | I
+                 /*{0, 1}*/ {1}, // Solution A | D | G
+                 /*{0, 1}*/ {1}, // Solution B | E | H
+                 /*{0, 1}*/ {1}, // Solution C | F | I
              },
              // Solutions
              {
@@ -375,9 +375,9 @@ TEST_CASE("Algorithm C") {
             {1, // Primary items
              0, // Secondary items
              {
-                 /*{1}*/ {{0}}, // Solution A
-                 /*{1}*/ {{0}}, // Solution B
-                 /*{1}*/ {{0}}, // Solution C
+                 /*{1}*/ {0}, // Solution A
+                 /*{1}*/ {0}, // Solution B
+                 /*{1}*/ {0}, // Solution C
              },
              // Solutions
              {
@@ -414,12 +414,12 @@ TEST_CASE("Algorithm C") {
             {4, // Primary items
              3, // Secondary items
              {
-                 /*{0, 0, 1, 0 | 1, 0, 0}*/ {{2, 4}}, // Part of solution A
-                 /*{1, 0, 0, 1 | 0, 0, 1}*/ {{0, 3, 6}}, // Part of solution B
-                 /*{0, 1, 1, 0 | 0, 1, 0}*/ {{1, 2, 5}}, // Part of solution B
-                 /*{1, 0, 0, 1 | 0, 1, 0}*/ {{0, 3, 5}}, // Part of solution A
-                 /*{0, 1, 0, 0 | 0, 0, 1}*/ {{1, 6}}, // Part of solution A
-                 /*{0, 0, 0, 1 | 1, 0, 1}*/ {{3, 4, 6}},
+                 /*{0, 0, 1, 0 | 1, 0, 0}*/ {2, 4}, // Part of solution A
+                 /*{1, 0, 0, 1 | 0, 0, 1}*/ {0, 3, 6}, // Part of solution B
+                 /*{0, 1, 1, 0 | 0, 1, 0}*/ {1, 2, 5}, // Part of solution B
+                 /*{1, 0, 0, 1 | 0, 1, 0}*/ {0, 3, 5}, // Part of solution A
+                 /*{0, 1, 0, 0 | 0, 0, 1}*/ {1, 6}, // Part of solution A
+                 /*{0, 0, 0, 1 | 1, 0, 1}*/ {3, 4, 6},
              },
              // Solutions
              {
@@ -431,11 +431,11 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              1, // Secondary items
              {
-                 /*{0, 0, 1 | 0}*/ {{2}}, // Part of solution A
-                 /*{1, 0, 0 | 1}*/ {{0, 3}}, // Part of solution B
-                 /*{0, 1, 1 | 0}*/ {{1, 2}}, // Part of solution B
-                 /*{0, 0, 0 | 0}*/ {{}}, // Empty option
-                 /*{1, 1, 0 | 0}*/ {{0, 1}}, // Part of solution A
+                 /*{0, 0, 1 | 0}*/ {2}, // Part of solution A
+                 /*{1, 0, 0 | 1}*/ {0, 3}, // Part of solution B
+                 /*{0, 1, 1 | 0}*/ {1, 2}, // Part of solution B
+                 /*{0, 0, 0 | 0}*/ {}, // Empty option
+                 /*{1, 1, 0 | 0}*/ {0, 1}, // Part of solution A
              },
              // Solutions
              {
@@ -447,12 +447,12 @@ TEST_CASE("Algorithm C") {
             {3, // Primary items
              2, // Secondary items
              {
-                 /*{0, 1, 0 | 0, 0}*/ {{1}}, //  Part of solution A
-                 /*{1, 0, 1 | 0, 1}*/ {{0, 2, 4}}, //  Part of solution A | B | C
-                 /*{0, 0, 0 | 0, 0}*/ {{}}, // Empty option
-                 /*{0, 1, 0 | 1, 1}*/ {{1, 3, 4}},
-                 /*{0, 1, 0 | 1, 0}*/ {{1, 3}}, //  Part of solution B
-                 /*{0, 1, 0 | 0, 0}*/ {{1}}, //  Part of solution C
+                 /*{0, 1, 0 | 0, 0}*/ {1}, //  Part of solution A
+                 /*{1, 0, 1 | 0, 1}*/ {0, 2, 4}, //  Part of solution A | B | C
+                 /*{0, 0, 0 | 0, 0}*/ {}, // Empty option
+                 /*{0, 1, 0 | 1, 1}*/ {1, 3, 4},
+                 /*{0, 1, 0 | 1, 0}*/ {1, 3}, //  Part of solution B
+                 /*{0, 1, 0 | 0, 0}*/ {1}, //  Part of solution C
              },
              // Solutions
              {

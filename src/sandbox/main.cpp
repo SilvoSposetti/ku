@@ -22,12 +22,12 @@ int main() {
   // constraints = constraints | ConstraintType::HYPER_SUDOKU;
 
   const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
-  for (int32_t i = 0; i < 100; ++i) {
+  for (int32_t i = 0; i < 1; ++i) {
     Sudoku sudoku("Sandbox_" + std::to_string(i + 1), constraints, 81);
-    // sudoku.printInfo();
-    // sudoku.printBoard();
-    // sudoku.exportToSvg(location);
-    // sudoku.exportExactCoverMatrixToSvg(location);
+    sudoku.printInfo();
+    sudoku.printBoard();
+    sudoku.exportToSvg(location);
+    sudoku.exportExactCoverMatrixToSvg(location);
   }
 
   return EXIT_SUCCESS;
