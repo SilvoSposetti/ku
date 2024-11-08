@@ -11,24 +11,24 @@ TEST_CASE("Algorithm C") {
 
   SUBCASE("Preconditions") {
     // No primary items
-    CHECK_THROWS(DancingCellsStructure::createStructure(0, 2, {}));
+    CHECK_THROWS(DancingCellsStructure(0, 2, {}));
 
     // TODO: Should it really throw if there are no options?
-    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {}));
+    CHECK_THROWS(DancingCellsStructure(2, 2, {}));
 
     // No options that cover a primary item
-    CHECK_THROWS(DancingCellsStructure::createStructure(2,
-                                                        1,
-                                                        {
-                                                            {0},
-                                                            {0, 2},
-                                                        }));
+    CHECK_THROWS(DancingCellsStructure(2,
+                                       1,
+                                       {
+                                           {0},
+                                           {0, 2},
+                                       }));
 
     // Primary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {{2, 0}}));
+    CHECK_THROWS(DancingCellsStructure(2, 2, {{2, 0}}));
 
     // Secondary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure::createStructure(2, 2, {{0, 0}}));
+    CHECK_THROWS(DancingCellsStructure(2, 2, {{0, 0}}));
   }
 
   SUBCASE("Single solution, primary and secondary items with colors") {
@@ -44,7 +44,7 @@ TEST_CASE("Algorithm C") {
     const std::unordered_set<int32_t> solution = {1, 3};
 
     for (const auto& seed : seeds) {
-      auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+      auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
       // REQUIRE(structure.isPotentiallySolvableByAlgorithmX());
       CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
       const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
@@ -107,7 +107,7 @@ TEST_CASE("Algorithm C") {
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options] : problemData) {
 
-        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
         // Theoretically solvable, but no solutions can be found
         // REQUIRE(structure.isPotentiallySolvableByAlgorithmX());
         //   AlgorithmX::printDataStructure(structure);
@@ -197,7 +197,7 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolution] : problemData) {
-        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
         CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
         const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
         CHECK_EQ(1, allSolutions.size());
@@ -269,7 +269,7 @@ TEST_CASE("Algorithm C") {
         };
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolution] : problemData) {
-        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
         CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
         const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
         CHECK_EQ(1, allSolutions.size());
@@ -389,7 +389,7 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolutions] : problemData) {
-        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
         CHECK(!AlgorithmC::hasUniqueSolution(structure, seed));
         const auto solutionsFound = AlgorithmC::findAllSolutions(structure, seed);
         // Check that every solution found was expected
@@ -464,7 +464,7 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       for (const auto& [primaryItemsCount, secondaryItemsCount, options, expectedSolutions] : problemData) {
-        auto structure = DancingCellsStructure::createStructure(primaryItemsCount, secondaryItemsCount, options);
+        auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
         CHECK(!AlgorithmC::hasUniqueSolution(structure, seed));
         const auto solutionsFound = AlgorithmC::findAllSolutions(structure, seed);
         // Check that every solution found was expected

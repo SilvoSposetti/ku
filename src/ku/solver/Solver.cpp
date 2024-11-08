@@ -66,8 +66,9 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    std::optional<int32_t> seed) {
 
   // Reduce problem: Sudoku -> Exact Cover
-  const auto [structure, optionsData] = DancingCellsStructure::createStructure(board, constraints);
-
+  auto structure = DancingCellsStructure(board, constraints);
+  const auto& optionsData = structure.optionsData;
+  
   // if (!dataStructure.isPotentiallySolvableByAlgorithmX()) {
   // return false;
   // }

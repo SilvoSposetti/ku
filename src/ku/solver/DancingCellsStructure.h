@@ -24,9 +24,8 @@ public:
    * @param board The board
    * @param constraints The set of constraints
    */
-  static std::pair<DancingCellsStructure, std::vector<OptionData>>
-  createStructure(const std::vector<std::vector<Sudo::Digit>>& board,
-                  const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  DancingCellsStructure(const std::vector<std::vector<Sudo::Digit>>& board,
+                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
   /** Constructor
    * @param primaryItemsCount The amount of primary items (for n primary items: IDs: [0, 1, ..., n-1])
@@ -34,9 +33,9 @@ public:
    * @param options The list of options, each option must contain sorted IDs, therefore the primary items appear first
    * in a single option's list, the secondary items appear at the end.
    */
-  static DancingCellsStructure createStructure(int32_t primaryItemsCount,
-                                               int32_t secondaryItemsCount,
-                                               const std::vector<std::vector<XccElement>>& options);
+  DancingCellsStructure(int32_t primaryItemsCount,
+                        int32_t secondaryItemsCount,
+                        const std::vector<std::vector<XccElement>>& options);
 
   /** Utility to log the current data structure contents to standard output. Useful for debugging.
    */
@@ -54,6 +53,17 @@ public:
    * @return A reference to how many active options there are for the particular item in the SET array.
    */
   int32_t& size(int32_t index);
+
+private:
+  static void
+  checkOptions(const std::vector<std::vector<XccElement>>& options, int32_t primaryItemsCount, int32_t itemsCount);
+
+  void
+  intializeMembers(int32_t primaryItemsCount, int32_t secondaryItemsCount, int32_t optionsCount, int32_t nodesCount);
+
+  void finishInitialization(int32_t second, int32_t last_node);
+
+  void createNodeForItem(const XccElement& element, int32_t& last_node, int32_t optionIndex);
 
 public:
   /** ITEM contains all items in the domain. The value of ITEM[k] is an index x into SET, for which SET[x-1] (size) and
@@ -113,17 +123,19 @@ public:
   std::vector<DancingCellsNode> NODE;
 
   /// The amount of primary items
-  const int32_t primaryItemsCount = 0;
+  int32_t primaryItemsCount = 0;
   /// The amount of secondary items
-  const int32_t secondaryItemsCount = 0;
+  int32_t secondaryItemsCount = 0;
   /// The total amount of items
-  const int32_t itemsCount = 0;
+  int32_t itemsCount = 0;
   /// The total amount of options
-  const int32_t optionsCount = 0;
+  int32_t optionsCount = 0;
 
   /** This map is used to retrieve the option indices when Algorithm C has found a solution.
    * It must contain all node indices stored the NODE array as keys, and maps them to the option index that they
    * originally came from.
    */
   std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
+
+  std::vector<OptionData> optionsData;
 };
