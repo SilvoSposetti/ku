@@ -115,19 +115,19 @@ int32_t hide2(DancingCellsStructure& structure,
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>> runAlgorithmC(const DancingCellsStructure& dataStructure,
+std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& structure,
                                                        bool findFirstSolution,
                                                        bool checkForUniqueness,
                                                        const std::optional<int32_t>& seed) {
 
-  const int32_t optionsAmount = dataStructure.optionsCount;
+  const int32_t optionsAmount = structure.optionsCount;
   // Don't run Algorithm C on an empty structure
   if (optionsAmount == 0) {
     return {};
   }
 
-  // Get a copy of the structure to work on
-  auto structure = dataStructure;
+  // // Get a copy of the structure to work on
+  // auto structure = dataStructure;
 
   // apparentlyTheresAnotherX is the list of all options currently selected, this is used for backtracking
   // an option in this case is represented by the index of a node that is contained by the option
@@ -319,13 +319,13 @@ done: { return retrieveOptionIndices(structure, solutions); }
 
 } // namespace
 
-std::vector<std::unordered_set<int32_t>> AlgorithmC::findAllSolutions(const DancingCellsStructure& dataStructure,
+std::vector<std::unordered_set<int32_t>> AlgorithmC::findAllSolutions(DancingCellsStructure& dataStructure,
                                                                       const std::optional<int32_t>& seed) {
   // Algorithm C returns a list of node indices. These are the first nodes of the options which describe the solution
   return runAlgorithmC(dataStructure, false, false, seed);
 }
 
-std::optional<std::unordered_set<int32_t>> AlgorithmC::findOneSolution(const DancingCellsStructure& dataStructure,
+std::optional<std::unordered_set<int32_t>> AlgorithmC::findOneSolution(DancingCellsStructure& dataStructure,
                                                                        const std::optional<int32_t>& seed) {
   // Algorithm C returns a list of node indices. These are the first nodes of the options which describe the solution
   const auto solutions = runAlgorithmC(dataStructure, true, false, seed);
@@ -335,7 +335,7 @@ std::optional<std::unordered_set<int32_t>> AlgorithmC::findOneSolution(const Dan
   return {};
 }
 
-std::optional<std::unordered_set<int32_t>> AlgorithmC::hasUniqueSolution(const DancingCellsStructure& dataStructure,
+std::optional<std::unordered_set<int32_t>> AlgorithmC::hasUniqueSolution(DancingCellsStructure& dataStructure,
                                                                          const std::optional<int32_t>& seed) {
   const auto solutions = runAlgorithmC(dataStructure, false, true, seed);
   if (solutions.empty()) {

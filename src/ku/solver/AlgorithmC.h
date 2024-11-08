@@ -18,7 +18,7 @@ namespace AlgorithmC {
  * @return Returns potentially zero, one or many sets of option indices that solve the XCC problem. The solutions
  * retrieved are in the order that they are found.
  */
-std::vector<std::unordered_set<int32_t>> findAllSolutions(const DancingCellsStructure& dataStructure,
+std::vector<std::unordered_set<int32_t>> findAllSolutions(DancingCellsStructure& dataStructure,
                                                           const std::optional<int32_t>& seed);
 
 /** Solves the Exact Covering with Colors problem described by the matrix and retrieves the first solution found.
@@ -27,7 +27,7 @@ std::vector<std::unordered_set<int32_t>> findAllSolutions(const DancingCellsStru
  * @return If there's at least one, a set of option indices that solve the XCC problem. This solution is not guaranteed
  * to be unique. Returns an empty optional if there are no solutions.
  */
-std::optional<std::unordered_set<int32_t>> findOneSolution(const DancingCellsStructure& dataStructure,
+std::optional<std::unordered_set<int32_t>> findOneSolution(DancingCellsStructure& dataStructure,
                                                            const std::optional<int32_t>& seed);
 
 /** Computes whether the Exact Covering with Colors problem has exactly one solution. In the case of multiple solutions
@@ -37,7 +37,7 @@ std::optional<std::unordered_set<int32_t>> findOneSolution(const DancingCellsStr
  * @param seed The seed for the random number generator. Uses a random seed if not available.
  * @return If exactly one solution exists, then that solution. Otherwise an empty optional.
  */
-std::optional<std::unordered_set<int32_t>> hasUniqueSolution(const DancingCellsStructure& dataStructure,
+std::optional<std::unordered_set<int32_t>> hasUniqueSolution(DancingCellsStructure& dataStructure,
                                                              const std::optional<int32_t>& seed);
 
 }; // namespace AlgorithmC
