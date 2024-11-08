@@ -84,10 +84,7 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
 {
   int32_t itemsCount = primaryItemsCount + secondaryItemsCount;
   int32_t optionsCount = options.size();
-  std::vector<int32_t> ITEM;
-  std::vector<int32_t> SET;
-  std::vector<DancingCellsNode> NODE;
-  std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
+
   {
     // TODO: check if these preconditions can be removed/relaxed
     if (primaryItemsCount <= 0 || options.empty()) {
@@ -128,97 +125,141 @@ DancingCellsStructure DancingCellsStructure::createStructure(int32_t primaryItem
     }
   }
 
-  constexpr int32_t undefinedColor = 0;
-
-  // nodeCount, setCount, and setBlockCount
-  // The total amount of nodes
-  int32_t nodeCount = 0;
-
-  auto setBlockCount = std::vector<int32_t>(itemsCount, 0);
-  {
-    for (const auto& option : options) {
-      for (const auto& element : option) {
-        setBlockCount[element.id]++;
-      }
-      nodeCount += option.size();
-    }
-    // Add spacer nodes at the beginning, end, and between each option
-    nodeCount += options.size() + 1;
+  int32_t nodesCount = 0;
+  for (const auto& option : options) {
+    nodesCount += option.size();
   }
 
-  int32_t setCount = 0;
-  {
-    for (const auto& blockSize : setBlockCount) {
-      // Size of the block, plus two elements before the block (pos, size)
-      setCount += blockSize + 2;
-    }
-  }
+  // TODO: do these vector really need to be initialized to zero?
+  auto ITEM = std::vector<int32_t>(itemsCount, 0);
+  const int32_t setPosAndSizeCellsCount = itemsCount * 2;
+  auto SET = std::vector<int32_t>(nodesCount + setPosAndSizeCellsCount, 0);
+  const int32_t nodeSpacersCount = optionsCount + 1;
+  auto NODE = std::vector<DancingCellsNode>(nodesCount + nodeSpacersCount, DancingCellsNode(0, 0, 0));
+  // Can the map be a vector? (nodeindex is literally the index of a vector element)
+  std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
 
-  auto setBlockSums = std::vector<int32_t>(itemsCount, 0);
-  {
-    for (size_t i = 1; i < setBlockCount.size(); i++) {
-      setBlockSums[i] = setBlockSums[i - 1] + setBlockCount[i - 1];
-    }
-  }
+  const int32_t undefinedColor = XccElement::undefinedColor();
+  int32_t last_item = 0; // Items seen so far, +1
+  int32_t last_node = 0; // The first node in NODE that's not yet used
+  int32_t second = secondaryItemsCount > 0 ? primaryItemsCount + 1 : std::numeric_limits<int32_t>::max();
 
-  // Start with SET's "pos" & "size" fields
-  SET.resize(setCount, -1);
-  {
-    for (int32_t i = 0; i < setBlockCount.size(); i++) {
-      const int32_t baseIndex = setBlockSums[i] + (i + 1) * 2;
-      SET[baseIndex - 2] = i;
-      SET[baseIndex - 1] = setBlockCount[i];
-    }
-  }
+  // Take advantage of the fact that SET will always be larger than NODE. Therefore partially complete NODE and use
+  // SET's memory as temporary storage for data that will be useful in the next phases.
 
-  // NODE & SET & ITEM
-  auto itemCounters = std::vector<int32_t>(itemsCount, 0);
-  ITEM = std::vector<int32_t>(itemsCount, -1);
-  NODE.reserve(nodeCount);
-  auto setBlockCounters = std::vector<int32_t>(itemsCount, 0);
-  // First elment of NODE is a spacer
-  NODE.emplace_back(0, options[0].size(), undefinedColor);
+  // Phase 1: Go through all the options and gather as much information as possible
   int32_t optionIndex = 0;
   for (const auto& option : options) {
-    for (const auto& element : option) {
-      const int32_t itemIndex = element.id;
-      const int32_t itemsBefore = itemIndex == 0 ? 0 : setBlockSums[itemIndex];
-      const int32_t baseIndex = itemsBefore + (itemIndex + 1) * 2;
-      const int32_t setIndex = baseIndex + setBlockCounters[itemIndex];
-      const int32_t locIndex = baseIndex + itemCounters[itemIndex];
-      SET[setIndex] = NODE.size();
-      if (setBlockCounters[itemIndex] == 0) {
-        ITEM[itemIndex] = setIndex;
+    int32_t i = last_node; // Remember the spacer before this option in NODE;
+    if (!option.empty()) {
+      for (const auto& element : option) {
+        {
+          // create a node for the item
+
+          // k points correctly one element after the temporary blocks of pairs (pos, size)
+          int32_t k = (element.id + 1) * 2;
+          last_node++;
+
+          // t is how many previous options have used this item
+          int32_t t = SET[k - 1]; // TODO: replace with size()
+          NODE[last_node].item = k >> 1; // need to divide by two to get the 1-based index of the item
+          NODE[last_node].location = t; // The amount of nodes for this item that were found until now
+          NODE[last_node].color = element.colorId; // Set the correct color ID
+          nodeIndicesToOptionIdMap.insert(std::make_pair(last_node, optionIndex));
+          // Increase the amount of nodes are found for item index k
+          SET[k - 1] = t + 1; // TODO: replace with size()
+          // Set the index of the last node in NODE where itemm k has appeared
+          SET[k - 2] = last_node; // TODO: replace with pos()
+        }
       }
-      setBlockCounters[itemIndex]++;
-
-      // The first element in the option IDs map is right after the first spacer
-      nodeIndicesToOptionIdMap.insert(std::make_pair(NODE.size(), optionIndex));
-      // Actual node element
-      NODE.emplace_back(baseIndex, locIndex, element.colorId);
-      itemCounters[itemIndex]++;
+      NODE[i].location = last_node - i; // Complete the previous spacer
+      last_node++; // Create the next spacer
+      NODE[last_node].item = i + 1 - last_node;
     }
-    const bool lastOption = optionIndex >= options.size() - 1;
     optionIndex++;
+  }
 
-    if (!lastOption) {
-      // Regular spacer
-      const auto& nextOption = options[optionIndex];
-      NODE.emplace_back(-option.size(), nextOption.size(), undefinedColor);
-    } else {
-      // Last spacer
-      NODE.emplace_back(-option.size(), 0, undefinedColor);
+  // Now, after Phase 1,
+  // NODE contains:
+  // - Already completed spacers, whose attributes are:
+  //   - 'item' contains negative the amount of nodes in the option before the spacer (or 0 for the first spacer)
+  //   - 'location' contains the amount of nodes in the option after the spacer (or 0 for the last spacer)
+  //   - 'color' unused
+  // - Regular nodes are filled, but with attributes helpful in the next phase:
+  //   - 'item' contains the 1-based index of the item for this option
+  //   - 'location'contains the amount of nodes of the same item that were found when this node was inserted
+  //   - 'color' attributes
+  //
+  // SET contains:
+  // pair of 'last_node' and 'size' values, where size is already the final value of size(k) for an item k, only in a
+  // different location (except for the very first pair).
+  // Therefore, SET contains data in contiguous pairs like this:
+  // [(last_node, size), (last_node, size), ...
+  //   item index 0       item index 1
+
+  // Phase 2: Set every elemnt into ITEM
+  // After Phase 2, ITEM contains the correct values.
+  {
+    int32_t k = 0;
+    int32_t active = last_item - 1;
+    // j is an inde x in SET
+    int32_t j = 2; // The first node in ITEM will always be in position 2
+    // k is an index in ITEM
+    for (k = 0; k < itemsCount; k++) {
+      ITEM[k] = j;
+      // Add to j the size() of the node, going forward in every pair
+      j += 2 + SET[((k + 1) << 1) - 1]; // TODO: replace with size()
+    }
+
+    // Update second
+    if (second == std::numeric_limits<int32_t>::max()) { // there were secondary items
+      second = j;
     }
   }
 
-  return DancingCellsStructure{.ITEM = ITEM,
-                               .SET = SET,
-                               .NODE = NODE,
-                               .primaryItemsCount = primaryItemsCount,
-                               .secondaryItemsCount = secondaryItemsCount,
-                               .itemsCount = itemsCount,
-                               .optionsCount = optionsCount,
-                               .nodeIndicesToOptionIdMap = nodeIndicesToOptionIdMap};
+  // Phase 3: Expand SET, going from last element to first, move an item's pos() and size() values from the pair's
+  // location, to where they should be.
+  // After Phase 3, SET has now size() and pos() elements set correctly, there other nodes may still contain other, now
+  // unused, values from before.
+  {
+    for (int32_t k = itemsCount; k > 0; k--) {
+
+      // j is the index of item k into SET, where k is the 1-based index of an item.
+      int32_t j = ITEM[k - 1];
+      if (k == second) {
+        second = j; // second is now an index into SET
+      }
+      SET[j - 1] = SET[(k << 1) - 1]; // TODO: replace with size() (twice)
+      SET[j - 2] = k - 1; // TODO: replace with pos()
+    }
+  }
+
+  // Phase 4: Adjust NODE
+  {
+    for (int32_t k = 1; k < last_node; k++) {
+      if (NODE[k].item < 0) {
+        continue;
+      }
+      int32_t j = ITEM[NODE[k].item - 1];
+      int32_t i = j + NODE[k].location;
+      NODE[k].item = j;
+      NODE[k].location = i;
+      SET[i] = k;
+    }
+  }
+
+  // Does this reeeally need to be here? Not copying these would be better.
+  auto structure = DancingCellsStructure{.ITEM = ITEM,
+                                         .SET = SET,
+                                         .NODE = NODE,
+                                         .primaryItemsCount = primaryItemsCount,
+                                         .secondaryItemsCount = secondaryItemsCount,
+                                         .itemsCount = itemsCount,
+                                         .optionsCount = optionsCount,
+                                         .nodeIndicesToOptionIdMap = nodeIndicesToOptionIdMap};
+
+  // structure.print();
+  return structure;
 }
 
 void DancingCellsStructure::print() const {
