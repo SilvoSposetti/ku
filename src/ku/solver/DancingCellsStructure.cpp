@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 DancingCellsStructure::DancingCellsStructure(const std::vector<std::vector<Sudo::Digit>>& board,
                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
