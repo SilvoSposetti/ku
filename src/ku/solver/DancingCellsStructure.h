@@ -35,18 +35,23 @@ public:
                         int32_t secondaryItemsCount,
                         const std::vector<std::vector<XccElement>>& options);
 
-  /** This function is a helper to retrieve the ITEM index of an option. It is simply an abbrevbiation for SET[x−2].
+  /** This function is a helper to retrieve the ITEM index of an option.
+   * It is simply an abbrevbiation for SET[x−2] for an input x.
    * @param itemIndex The index of the item in the SET array.
    * @return A reference to the where the item is in the ITEM array.
    */
-  int32_t& pos(int32_t itemIndex);
+  inline int32_t& position(int32_t itemIndex) {
+    return SET[itemIndex - 2];
+  };
 
-  /** This function is a helper to retrieve the amount of nodes (aka size) of an item. It is simply an abbrevbiation for
-   * SET[x−1].
+  /** This function is a helper to retrieve the amount of nodes (aka size) of an item.
+   * It is simply an abbrevbiation for SET[x−1] for an input x.
    * @param itemIndex The index of the item in the SET array.
    * @return A reference to how many active options there are for the particular item in the SET array.
    */
-  int32_t& size(int32_t index);
+  inline int32_t& size(int32_t itemIndex) {
+    return SET[itemIndex - 1];
+  };
 
 private:
   /** Helper to make sure that a set of preconditions are ensured before creating the structure with some options.

@@ -129,14 +129,6 @@ DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
   finishInitialization(second, lastNode);
 }
 
-int32_t& DancingCellsStructure::pos(int32_t index) {
-  return SET[index - 2];
-}
-
-int32_t& DancingCellsStructure::size(int32_t index) {
-  return SET[index - 1];
-}
-
 void DancingCellsStructure::checkOptions(const std::vector<std::vector<XccElement>>& options,
                                          int32_t primaryItemsCount,
                                          int32_t itemsCount) {
@@ -198,7 +190,7 @@ void DancingCellsStructure::createNodeForItem(const XccElement& element, int32_t
   nodeOptionIndices[lastNode] = optionIndex;
 
   size(baseSetIndex) = t + 1; // Increase the amount of nodes are found for item index baseSetIndex
-  pos(baseSetIndex) = lastNode; // Set the index of the last node in NODE where item baseSetIndex has appeared
+  position(baseSetIndex) = lastNode; // Set the index of the last node in NODE where item baseSetIndex has appeared
 }
 
 void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNode) {
@@ -249,7 +241,7 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
         second = setIndex; // second is now an index into SET
       }
       size(setIndex) = size(itemIndexOneBased << 1);
-      pos(setIndex) = itemIndexOneBased - 1;
+      position(setIndex) = itemIndexOneBased - 1;
     }
   }
   // Now SET has  size() and pos() elements set correctly, its other cells nodes may still contain other, now unused,

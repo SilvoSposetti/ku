@@ -109,12 +109,12 @@ bool hide(DancingCellsStructure& structure,
             continue;
           }
 
-          if (structure.pos(siblingNodeItem) < previousActive) {
+          if (structure.position(siblingNodeItem) < previousActive) {
             // If the sibling node's item is active
             int32_t newSize = structure.size(siblingNodeItem) - 1;
             const bool isLastNodeOfSiblingItem = newSize == 0;
             const bool isSiblingItemPrimary = siblingNodeItem < second;
-            const bool isSiblingItemActive = structure.pos(siblingNodeItem) < active;
+            const bool isSiblingItemActive = structure.position(siblingNodeItem) < active;
             if (performEarlyExitIfPrimaryItemIsUncoverable // Early return is enabled
                 && isSiblingItemPrimary // The sibling item is primary
                 && isLastNodeOfSiblingItem // The sibling item has only one option left
@@ -233,12 +233,12 @@ Forward: {
     // Swap the best item witht he last of the active list, making it inactive
     int32_t currentItemIndex = active - 1;
     active = currentItemIndex;
-    int32_t indexOfBestItem = structure.pos(bestItemIndex);
+    int32_t indexOfBestItem = structure.position(bestItemIndex);
     int32_t setIndexOfCurrentItem = structure.ITEM[currentItemIndex];
     structure.ITEM[currentItemIndex] = bestItemIndex;
     structure.ITEM[indexOfBestItem] = setIndexOfCurrentItem;
-    structure.pos(setIndexOfCurrentItem) = indexOfBestItem;
-    structure.pos(bestItemIndex) = currentItemIndex;
+    structure.position(setIndexOfCurrentItem) = indexOfBestItem;
+    structure.position(bestItemIndex) = currentItemIndex;
   }
 
   {
@@ -275,14 +275,14 @@ Advance: {
           // siblingNodeItem is a spacer, jump to the previous item in the option
           siblingNodeIndex += siblingNodeItem;
         } else {
-          int32_t setIndexOfSiblingNodeItem = structure.pos(siblingNodeItem);
+          int32_t setIndexOfSiblingNodeItem = structure.position(siblingNodeItem);
           if (setIndexOfSiblingNodeItem < itemIndex) {
             // Swap out the item
             int32_t previousItemIndex = structure.ITEM[--itemIndex];
             structure.ITEM[itemIndex] = siblingNodeItem;
             structure.ITEM[setIndexOfSiblingNodeItem] = previousItemIndex;
-            structure.pos(previousItemIndex) = setIndexOfSiblingNodeItem;
-            structure.pos(siblingNodeItem) = itemIndex;
+            structure.position(previousItemIndex) = setIndexOfSiblingNodeItem;
+            structure.position(siblingNodeItem) = itemIndex;
           }
           siblingNodeIndex++;
         }
@@ -305,7 +305,7 @@ Advance: {
               goto Abort;
             }
           } else { // do nothing if cc already purified
-            int32_t pp = structure.pos(siblingNodeItem);
+            int32_t pp = structure.position(siblingNodeItem);
             if (pp < previousActive) {
               const bool isHideSuccessful = hide(structure,
                                                  siblingNodeItem,
