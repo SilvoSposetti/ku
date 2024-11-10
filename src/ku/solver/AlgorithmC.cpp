@@ -115,19 +115,18 @@ int32_t hide2(DancingCellsStructure& structure,
  * @return One or multiple sets of indices pointing to nodes in the data structure. The elements of these sets point
  * to the first nodes of options that are part of the solution found.
  */
-std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& structure,
+std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& dataStructure,
                                                        bool findFirstSolution,
                                                        bool checkForUniqueness,
                                                        const std::optional<int32_t>& seed) {
 
-  const int32_t optionsAmount = structure.optionsCount;
   // Don't run Algorithm C on an empty structure
-  if (optionsAmount == 0) {
+  if (dataStructure.optionsCount == 0) {
     return {};
   }
 
   // // Get a copy of the structure to work on
-  // auto structure = dataStructure;
+  auto structure = dataStructure;
 
   // apparentlyTheresAnotherX is the list of all options currently selected, this is used for backtracking
   // an option in this case is represented by the index of a node that is contained by the option
@@ -169,8 +168,8 @@ std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& st
   int32_t cur_choice = 0; // j of before
   int32_t cur_node = 0; //
   int32_t invalidChoice = -1;
-  std::vector<int32_t> choice(optionsAmount, invalidChoice); // The node chosen on each level
-  std::vector<int32_t> saved(optionsAmount + 1, 0); // The size of savestack on each level
+  std::vector<int32_t> choice(structure.optionsCount, invalidChoice); // The node chosen on each level
+  std::vector<int32_t> saved(structure.optionsCount + 1, 0); // The size of savestack on each level
   auto savestack = std::vector<std::pair<int32_t, int32_t>>();
   int32_t saveptr = 0;
 
