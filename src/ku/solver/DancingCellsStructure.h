@@ -7,10 +7,8 @@
 #include <vector>
 
 /** Data structure used by Algorithm C.
- * This data structure mainly contains three lists: ITEM, SET and NODE.
- * Suppose ITEM[k]=i. Then the SET array, beginning at SET[i] lists the places where item i appears in options; and so,
- * if SET[i] = j, NODE[j].LOC = i.
- * The NODE array lists the options themselves.
+ * This data structure mainly contains three lists: ITEM, SET and NODE. These three lists are modified by Algorithm C as
+ * it runs.
  *
  * Whenever Algorithm C runs, it maintains the following invariants:
  * pos(ITEM[k]) = k -> SET[ITEM[k] - 2] = k
@@ -37,17 +35,13 @@ public:
                         int32_t secondaryItemsCount,
                         const std::vector<std::vector<XccElement>>& options);
 
-  /** Utility to log the current data structure contents to standard output. Useful for debugging.
-   */
-  void print() const;
-
   /** This function is a helper to retrieve the ITEM index of an option. It is simply an abbrevbiation for SET[x−2].
    * @param itemIndex The index of the item in the SET array.
    * @return A reference to the where the item is in the ITEM array.
    */
   int32_t& pos(int32_t itemIndex);
 
-  /** This function is a helper to retrieve the amount of nodes (size) of an item. It is simply an abbrevbiation for
+  /** This function is a helper to retrieve the amount of nodes (aka size) of an item. It is simply an abbrevbiation for
    * SET[x−1].
    * @param itemIndex The index of the item in the SET array.
    * @return A reference to how many active options there are for the particular item in the SET array.
@@ -55,15 +49,41 @@ public:
   int32_t& size(int32_t index);
 
 private:
+  /** Helper to make sure that a set of preconditions are ensured before creating the structure with some options.
+   * @param options The list of options
+   * @param primaryItemsCount The amount of primary items
+   * @param itemsCount The toal amount of items (primary + secondary).
+   */
   static void
   checkOptions(const std::vector<std::vector<XccElement>>& options, int32_t primaryItemsCount, int32_t itemsCount);
 
-  void
-  intializeMembers(int32_t primaryItemsCount, int32_t secondaryItemsCount, int32_t optionsCount, int32_t nodesCount);
+  /** Helper to allocate the correct amount of memory necessary for the ITEM, SET, and NODE lists.
+   * @param primaryCount The amount of primary items.
+   * @param secondaryCount The amount of secondary items.
+   * @param optionsCount The amount of options.
+   * @param nodesCount The amount of nodes.
+   */
+  void allocateMemoryForMembers(int32_t primaryCount, int32_t secondaryCount, int32_t optionsCount, int32_t nodesCount);
 
-  void finishInitialization(int32_t second, int32_t last_node);
+  /** Helper to set up the temporary data in NODE and SET. Used whilst going through the options once at the beginning
+   * of the structure creation.
+   * @param element The element's data
+   * @param lastNode The index of the last node, is modified by this function
+   * @param optionIndex The index of the option in which this node was in
+   */
+  void createNodeForItem(const XccElement& element, int32_t& lastNode, int32_t optionIndex);
 
-  void createNodeForItem(const XccElement& element, int32_t& last_node, int32_t optionIndex);
+  /** Helper to finish initialization once NODE and SET have been set up temporarily by visiting all options once.
+   * @param second If secondary items were encountered, it contains the value for the boundary between primary and
+   * secondary items
+   * @param lastNode The index of the last node
+   */
+  void finishInitialization(int32_t second, int32_t lastNode);
+
+public:
+  /** Utility to log the current data structure contents to standard output. Useful for debugging.
+   */
+  void print() const;
 
 public:
   /** ITEM contains all items in the domain. The value of ITEM[k] is an index x into SET, for which SET[x-1] (size) and
@@ -137,5 +157,8 @@ public:
    */
   std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
 
+  /** List of data for every option. When the structure is created to represent a puzzle, it contains information to
+   * find out which cell and possibility an option was created to represent.
+   */
   std::vector<OptionData> optionsData;
 };
