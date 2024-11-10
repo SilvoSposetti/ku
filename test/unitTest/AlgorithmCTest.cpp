@@ -475,7 +475,7 @@ TEST_CASE("Algorithm C") {
     check(problemsData, seeds);
   }
 
-  //   SUBCASE("Algorithm X Solvability") {
+  //   SUBCASE("Algorithm C Solvability") {
   //     // Create & fill. Note that there's no column with all cells unset
   //     const std::vector<std::vector<bool>> matrix = {
   //         {1, 0, 1, 0, 0, 0},
@@ -494,7 +494,7 @@ TEST_CASE("Algorithm C") {
   //     }
 
   //     SUBCASE("All columns secondary") {
-  //       // Sparse matrix is not solvable by Algorithm X if all columns are secondary
+  //       // Sparse matrix is not solvable by Algorithm C if all columns are secondary
   //       DataStructure allSecondaryColumnsDataStructure(matrix, columns);
   //       CHECK_FALSE(allSecondaryColumnsDataStructure.isPotentiallySolvableByAlgorithmX());
   //     }

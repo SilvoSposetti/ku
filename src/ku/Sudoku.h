@@ -5,7 +5,7 @@
 #include "constraints/AbstractConstraint.h"
 #include "constraints/ConstraintType.h"
 #include "drawing/SvgDocument.h"
-#include "solver/DataStructure.h"
+#include "solver/DancingCellsStructure.h"
 
 #include <filesystem>
 #include <optional>
@@ -108,7 +108,7 @@ private:
    * @return The svg document
    */
   static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
-                                                               const DataStructure& dataStructure);
+                                                               const DancingCellsStructure& dataStructure);
 
 private:
   /// The name

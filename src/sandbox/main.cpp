@@ -15,7 +15,7 @@ int main() {
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::ANTI_KING;
   // constraints = constraints | ConstraintType::ANTI_KING_TORUS;
-  // constraints = constraints | ConstraintType::ANTI_KNIGHT;
+  constraints = constraints | ConstraintType::ANTI_KNIGHT;
   // constraints = constraints | ConstraintType::ANTI_KNIGHT_TORUS;
   // constraints = constraints | ConstraintType::DISJOINT_BOXES;
   // constraints = constraints | ConstraintType::ASTERISK;
@@ -23,7 +23,7 @@ int main() {
 
   const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
   for (int32_t i = 0; i < 1; ++i) {
-    Sudoku sudoku("Sandbox_" + std::to_string(i + 1), constraints, 81);
+    Sudoku sudoku("Sandbox_" + std::to_string(i + 1), constraints, 0);
     sudoku.printInfo();
     sudoku.printBoard();
     sudoku.exportToSvg(location);
