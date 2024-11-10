@@ -2,8 +2,6 @@
 
 #include "../randomGenerator/RandomGenerator.h"
 
-#include <algorithm>
-#include <functional>
 #include <limits>
 
 /** Helper functions for Algorithm C have been put here in an unnamed namespace such that they are only accessible by
@@ -11,33 +9,44 @@
  */
 namespace {
 
-/** Selects one of the of the item with smallest length in the active list of the data structure. If there are
- * multiple elements with the same smallest length, selects one of those at random.
+/** Selects one the of the items with smallest length in the active list of the data structure. If there are
+ * multiple items with the same smallest length, it selects one of those at random.
  * @param structure A reference to the structure currently being used
- * @return The index to the first smallest item in the data structure
- */
-void pickUsingMrvHeuristic(DancingCellsStructure& structure,
-                           RandomGenerator& randomGenerator,
-                           int32_t& t,
-                           int32_t& best_itm,
-                           int32_t ACTIVE,
-                           int32_t SECOND) {
-  int32_t minimumLengthNodesAmount = 0;
-  const auto selectThisItem = [&](int32_t k, int32_t s) {
-    best_itm = structure.ITEM[k];
-    t = s;
+ * @param randomGenerator A reference to the random number generator being used
+ * @param smallestSizeFoundSoFar A reference to the smallest size found so far, enter this function as the maximum
+ * int32_t allowed.
+ * @param bestItemIndex The item in the datastructure that has been picked by the MRV heuristic
+ * @param active The amount of active items in the structure
+ * @param second The index of the first secondary item in the structure
+F */
+void pickItemUsingMrvHeuristic(DancingCellsStructure& structure,
+                               RandomGenerator& randomGenerator,
+                               int32_t& smallestSizeFoundSoFar,
+                               int32_t& bestItemIndex,
+                               int32_t active,
+                               int32_t second) {
+  const auto selectThisItem = [&](int32_t itemIndex, int32_t sizeOfItem) {
+    bestItemIndex = structure.ITEM[itemIndex];
+    smallestSizeFoundSoFar = sizeOfItem;
   };
 
-  for (int32_t k = 0; t > 1 && k < ACTIVE; k++) {
-    if (structure.ITEM[k] < SECOND) {
-      int32_t s = structure.size(structure.ITEM[k]);
-      if (s < t) {
-        selectThisItem(k, s);
-        minimumLengthNodesAmount = 1;
-      } else if (s == t) {
-        minimumLengthNodesAmount++;
-        if (randomGenerator.uniformFloat(0.0f, 1.0f) < (1.0f / static_cast<float>(minimumLengthNodesAmount))) {
-          selectThisItem(k, s);
+  int32_t smallestSizeNodesAmount = 0;
+  for (int32_t itemIndex = 0; smallestSizeFoundSoFar > 1 && itemIndex < active; itemIndex++) {
+    if (structure.ITEM[itemIndex] < second) {
+      int32_t sizeOfItem = structure.size(structure.ITEM[itemIndex]);
+      if (sizeOfItem < smallestSizeFoundSoFar) {
+        // New size is smaller than the smallest one found so far, select it
+        selectThisItem(itemIndex, sizeOfItem);
+        smallestSizeNodesAmount = 1;
+      } else if (sizeOfItem == smallestSizeFoundSoFar) {
+        // New size is equal to the smallest one found so far, randomly select it.
+        smallestSizeNodesAmount++;
+        // Chance to select this item is: one over the amount of items found so far with this smallest size.
+        // This ensures that every item with smallest size has an equal probability of being selected.
+        const bool needToSelectThisItem =
+            randomGenerator.uniformFloat(0.0f, 1.0f) < (1.0f / static_cast<float>(smallestSizeNodesAmount));
+        if (needToSelectThisItem) {
+          selectThisItem(itemIndex, sizeOfItem);
         }
       }
     }
@@ -64,46 +73,74 @@ retrieveOptionIndices(const DancingCellsStructure& structure,
   return solutions;
 };
 
-int32_t hide2(DancingCellsStructure& structure,
-              int32_t c,
-              int32_t color,
-              int32_t check,
-              int32_t OACTIVE,
-              int32_t SECOND,
-              int32_t ACTIVE) {
-  int32_t rr = c;
-  int32_t s = c + structure.size(c);
+/** Hide all of the incompatible options remaining in the set of a given item.
+ * If check is true, this function returns zero if that would cause a primary item to be uncoverable.
+ * @param structure A reference to the structure
+ * @param setBaseIndex The base index of the item in SET that needs to hide incompatible options
+ * @param color The color information for the item that's being hidden
+ * @param performEarlyExitIfPrimaryItemIsUncoverable Whether to
+ * @param previousActive
+ * @param second
+ * @param active
+ * @return Whether hiding the incompatible options is successful
+ */
+bool hide(DancingCellsStructure& structure,
+          int32_t setBaseIndex,
+          int32_t color,
+          bool performEarlyExitIfPrimaryItemIsUncoverable,
+          int32_t previousActive,
+          int32_t second,
+          int32_t active) {
+  int32_t setIndex = setBaseIndex;
+  int32_t size = setBaseIndex + structure.size(setBaseIndex);
 
-  for (; rr < s; rr++) {
-    int32_t tt = structure.SET[rr];
-    if (!color || structure.NODE[tt].color != color) {
+  for (; setIndex < size; setIndex++) {
+    int32_t nodeIndex = structure.SET[setIndex];
+    const bool isColorUndefined = !color;
+    const bool doesNodeHaveDifferentColor = structure.NODE[nodeIndex].color != color;
+    if (isColorUndefined || doesNodeHaveDifferentColor) {
       //  remove option tt from the other sets it's in
       {
-        for (int32_t nn = tt + 1; nn != tt;) {
-          int32_t uu = structure.NODE[nn].item;
-          int32_t vv = structure.NODE[nn].location;
-          if (uu < 0) {
-            nn += uu;
+        for (int32_t siblingNodeIndex = nodeIndex + 1; siblingNodeIndex != nodeIndex;) {
+          int32_t siblingNodeItem = structure.NODE[siblingNodeIndex].item;
+          if (siblingNodeItem < 0) {
+            // This node is a spacer, loop back to the index in NODE that represents the first item in the option
+            siblingNodeIndex += siblingNodeItem;
             continue;
           }
-          if (structure.pos(uu) < OACTIVE) {
-            int32_t ss = structure.size(uu) - 1;
-            if (ss == 0 && check && uu < SECOND && structure.pos(uu) < ACTIVE) {
-              return 0;
+
+          if (structure.pos(siblingNodeItem) < previousActive) {
+            // If the sibling node's item is active
+            int32_t newSize = structure.size(siblingNodeItem) - 1;
+            const bool isLastNodeOfSiblingItem = newSize == 0;
+            const bool isSiblingItemPrimary = siblingNodeItem < second;
+            const bool isSiblingItemActive = structure.pos(siblingNodeItem) < active;
+            if (performEarlyExitIfPrimaryItemIsUncoverable // Early return is enabled
+                && isSiblingItemPrimary // The sibling item is primary
+                && isLastNodeOfSiblingItem // The sibling item has only one option left
+                && isSiblingItemActive // The sibling item active
+            ) {
+              // Then there's no way that the item can be covered.
+              // Hiding is not successful, -> early exit and report
+              return false;
             }
-            int32_t nnp = structure.SET[uu + ss];
-            structure.size(uu) = ss;
-            structure.SET[uu + ss] = nn;
-            structure.SET[vv] = nnp;
-            structure.NODE[nn].location = uu + ss;
-            structure.NODE[nnp].location = vv;
+
+            // Proceed with hiding the node of the sibling item
+            int32_t newNodeLocation = structure.SET[siblingNodeItem + newSize];
+            int32_t siblingNodeLocation = structure.NODE[siblingNodeIndex].location;
+            structure.size(siblingNodeItem) = newSize;
+            structure.SET[siblingNodeItem + newSize] = siblingNodeIndex;
+            structure.SET[siblingNodeLocation] = newNodeLocation;
+            structure.NODE[siblingNodeIndex].location = siblingNodeItem + newSize;
+            structure.NODE[newNodeLocation].location = siblingNodeLocation;
           }
-          nn++;
+          siblingNodeIndex++;
         }
       }
     }
   }
-  return 1;
+  // Hiding was successful
+  return true;
 }
 
 /** Runs Algorithm C on the internal data structure to find a solution.
@@ -139,181 +176,191 @@ std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& da
   // Initialize random generator to pick columns randomly according to a certain seed
   RandomGenerator randomGenerator(seed);
 
-  int32_t ACTIVE = structure.itemsCount;
-  // Second is the internal number of the smallest secondary item (if any). Otherwise it's infinite.
-  int32_t SECOND = std::numeric_limits<int32_t>::max();
-  if (structure.secondaryItemsCount > 0) {
-    SECOND = structure.ITEM.at(structure.primaryItemsCount);
-  }
+  constexpr int32_t maxInt = std::numeric_limits<int32_t>::max();
 
-  int32_t l = 0;
-  int32_t t = 0;
+  // The currently active items are the ones to the left of the "active" index in the ITEM list.
+  int32_t active = structure.itemsCount;
+  // Second is the internal number of the smallest secondary item (if any). Otherwise it's infinite.
+  int32_t second = structure.secondaryItemsCount <= 0 ? maxInt : structure.ITEM.at(structure.primaryItemsCount);
+
+  int32_t level = 0;
+  int32_t smallestItemSizeAvailable = 0;
 
   // "Global" variables
-  // int32_t FLAG = 0; // Set when need to backtrack immediately
-  int32_t OACTIVE = ACTIVE; // Value of ACTIVE just before items of the current option are being deactivated
+  int32_t previousActive = active; // Value of "active" just before items of the current option get deactivated
 
-  // Trail is a sequential stack, stores data for backtracking faster, without recomputing
+  // Trail is a sequential stack, stores data for backtracking faster, without recomputing previous values
   auto TRAIL = std::vector<std::pair<int32_t, int32_t>>();
-
-  // The index of the item in structure.SET that's been chosen
-  // int32_t i = 0;
-  // The index of the option containing the item in structure.SET
-  // int32_t j = 0;
 
   // ALGORITHM C (Exact Covering with colors).
 
-  int32_t max_nodes = std::numeric_limits<int32_t>::max();
-  int32_t best_itm = 0; // i of before
-  int32_t cur_choice = 0; // j of before
-  int32_t cur_node = 0; //
-  int32_t invalidChoice = -1;
-  std::vector<int32_t> choice(structure.optionsCount, invalidChoice); // The node chosen on each level
-  std::vector<int32_t> saved(structure.optionsCount + 1, 0); // The size of savestack on each level
-  auto savestack = std::vector<std::pair<int32_t, int32_t>>();
-  int32_t saveptr = 0;
+  int32_t bestItemIndex = 0;
+  int32_t currentItemIndexChosen = 0;
+  int32_t currentNodeIndex = 0; //
+  constexpr int32_t invalidChoice = -1;
+  // The node chosen on each level
+  std::vector<int32_t> choices(structure.optionsCount, invalidChoice);
+  // The size of savestack on each level
+  std::vector<int32_t> saved(structure.optionsCount + 1, 0);
+  auto saveStack = std::vector<std::pair<int32_t, int32_t>>();
+  int32_t currentSaveIndex = 0;
 
-  l = 0;
-forward: {
-  t = max_nodes;
+  level = 0;
+Forward: {
+  smallestItemSizeAvailable = maxInt;
   // set best_itm to the best item for branching
-  pickUsingMrvHeuristic(structure, randomGenerator, t, best_itm, ACTIVE, SECOND);
+  pickItemUsingMrvHeuristic(structure, randomGenerator, smallestItemSizeAvailable, bestItemIndex, active, second);
 
-  if (t == max_nodes) {
-    // Solution found! Save it into the solutions vector
-    // Only the first choices are the those that need saving. The amount is equal to the current level
-    auto solution = std::unordered_set<int32_t>(choice.begin(), choice.begin() + l);
-    solution.erase(invalidChoice);
-    solutions.push_back(solution);
+  const bool notAbleToPickItem = smallestItemSizeAvailable == maxInt;
+  if (notAbleToPickItem) {
+    // No item new item could be picked, therefore a solution was just found! Save it into the solutions vector.
+    // Only the first elements in the choices list are the those that need saving.
+    // The amount to save is equal to the current level, because a choice is made at every level.
+    solutions.push_back(
+        std::unordered_set<int32_t>(choices.begin(), choices.begin() + level)); // TODO: use emplace_back
 
     // Exit early if checking for uniqueness and more than one solution is found
     const bool uniquenessEarlyExit = checkForUniqueness && solutions.size() >= 2;
     // Exit early if it's not required to find all solutions and at least one has been found
     const bool singleSolutionEarlyExit = findFirstSolution && solutions.size() >= 1;
     if (singleSolutionEarlyExit || uniquenessEarlyExit) {
-      goto done;
+      goto Done;
     }
 
-    goto backup;
-  }
-
-  // swap best_itm out of the active list
-  {
-    int32_t p = ACTIVE - 1;
-    ACTIVE = p;
-    int32_t pp = structure.pos(best_itm);
-    int32_t cc = structure.ITEM[p];
-    structure.ITEM[p] = best_itm;
-    structure.ITEM[pp] = cc;
-    structure.pos(cc) = pp;
-    structure.pos(best_itm) = p;
+    goto Backup;
   }
 
   {
-    OACTIVE = ACTIVE;
-    hide2(structure, best_itm, 0, 0, OACTIVE, SECOND, ACTIVE);
-    cur_choice = best_itm;
+    // Swap the best item witht he last of the active list, making it inactive
+    int32_t currentItemIndex = active - 1;
+    active = currentItemIndex;
+    int32_t indexOfBestItem = structure.pos(bestItemIndex);
+    int32_t setIndexOfCurrentItem = structure.ITEM[currentItemIndex];
+    structure.ITEM[currentItemIndex] = bestItemIndex;
+    structure.ITEM[indexOfBestItem] = setIndexOfCurrentItem;
+    structure.pos(setIndexOfCurrentItem) = indexOfBestItem;
+    structure.pos(bestItemIndex) = currentItemIndex;
+  }
+
+  {
+    previousActive = active;
+    hide(structure, bestItemIndex, 0, false, previousActive, second, active);
+    currentItemIndexChosen = bestItemIndex;
   }
 
   // Save the currently active sizes
   {
-    if (saveptr + ACTIVE + 1 > savestack.size()) {
-      savestack.resize(saveptr + ACTIVE + 1);
+    if (currentSaveIndex + active + 1 > saveStack.size()) {
+      saveStack.resize(currentSaveIndex + active + 1);
     }
-
-    for (int32_t p = 0; p < ACTIVE; p++) {
-      savestack[saveptr + p] = {structure.ITEM[p], structure.size(structure.ITEM[p])};
+    for (int32_t p = 0; p < active; p++) {
+      saveStack[currentSaveIndex + p] = {structure.ITEM[p], structure.size(structure.ITEM[p])};
     }
-    saveptr = saveptr + ACTIVE;
-    saved[l + 1] = saveptr;
+    currentSaveIndex = currentSaveIndex + active;
+    saved[level + 1] = currentSaveIndex;
   }
 }
-advance: {
-  choice[l] = structure.SET[cur_choice];
-  cur_node = choice[l];
+Advance: {
+  choices[level] = structure.SET[currentItemIndexChosen];
+  currentNodeIndex = choices[level];
 }
-tryit: {
-  // Swap out all other items of cur_node
+  // TryIt:
   {
-    int32_t p = ACTIVE;
-    OACTIVE = ACTIVE;
-    for (int32_t q = cur_node + 1; q != cur_node;) {
-      int32_t c = structure.NODE[q].item;
-      if (c < 0) {
-        q += c;
-      } else {
-        int32_t pp = structure.pos(c);
-        if (pp < p) {
-          int32_t cc = structure.ITEM[--p];
-          structure.ITEM[p] = c;
-          structure.ITEM[pp] = cc;
-          structure.pos(cc) = pp;
-          structure.pos(c) = p;
+    {
+      // Swap out all other items of currentNodeIndex
+      int32_t itemIndex = active;
+      previousActive = active;
+      for (int32_t siblingNodeIndex = currentNodeIndex + 1; siblingNodeIndex != currentNodeIndex;) {
+        int32_t siblingNodeItem = structure.NODE[siblingNodeIndex].item;
+        if (siblingNodeItem < 0) {
+          // siblingNodeItem is a spacer, jump to the previous item in the option
+          siblingNodeIndex += siblingNodeItem;
+        } else {
+          int32_t setIndexOfSiblingNodeItem = structure.pos(siblingNodeItem);
+          if (setIndexOfSiblingNodeItem < itemIndex) {
+            // Swap out the item
+            int32_t previousItemIndex = structure.ITEM[--itemIndex];
+            structure.ITEM[itemIndex] = siblingNodeItem;
+            structure.ITEM[setIndexOfSiblingNodeItem] = previousItemIndex;
+            structure.pos(previousItemIndex) = setIndexOfSiblingNodeItem;
+            structure.pos(siblingNodeItem) = itemIndex;
+          }
+          siblingNodeIndex++;
         }
-        q++;
+      }
+      active = itemIndex;
+    }
+
+    {
+      // Hide the other options of those items or goto abort
+      // A secondary item was purified at lower levels if and only if its position is >= previousActive
+      for (int32_t siblingNodeIndex = currentNodeIndex + 1; siblingNodeIndex != currentNodeIndex;) {
+        int32_t siblingNodeItem = structure.NODE[siblingNodeIndex].item;
+        if (siblingNodeItem < 0) {
+          // siblingNodeItem is a spacer, jump to the previous item in the option
+          siblingNodeIndex += siblingNodeItem;
+        } else {
+          if (siblingNodeItem < second) {
+            const bool isHideSuccessful = hide(structure, siblingNodeItem, 0, true, previousActive, second, active);
+            if (!isHideSuccessful) {
+              goto Abort;
+            }
+          } else { // do nothing if cc already purified
+            int32_t pp = structure.pos(siblingNodeItem);
+            if (pp < previousActive) {
+              const bool isHideSuccessful = hide(structure,
+                                                 siblingNodeItem,
+                                                 structure.NODE[siblingNodeIndex].color,
+                                                 true,
+                                                 previousActive,
+                                                 second,
+                                                 active);
+              if (!isHideSuccessful) {
+                goto Abort;
+              }
+            }
+          }
+          siblingNodeIndex++;
+        }
       }
     }
-    ACTIVE = p;
+    level++;
+    goto Forward;
   }
 
-  // Hide the other options of those items or goto abort
-  {
-    // A secondary item was purified at lower levels if and only if its position is >= OACTIVE
-    for (int32_t q = cur_node + 1; q != cur_node;) {
-      int32_t cc = structure.NODE[q].item;
-      if (cc < 0) {
-        q += cc;
-      } else {
-        if (cc < SECOND) {
-          if (0 == hide2(structure, cc, 0, 1, OACTIVE, SECOND, ACTIVE)) {
-            goto abort;
-          }
-        } else { // do nothing if cc already purified
-          int32_t pp = structure.pos(cc);
-          if (pp < OACTIVE && 0 == hide2(structure, cc, structure.NODE[q].color, 1, OACTIVE, SECOND, ACTIVE)) {
-            goto abort;
-          }
-        }
-        q++;
-      }
-    }
-  }
-  l++;
-  goto forward;
-}
-
-backup: {
-  const bool searchedThroughAllPossibilities = l == 0;
+Backup: {
+  // When the level reaches 0, all possible solutions have been evaluated
+  const bool searchedThroughAllPossibilities = level == 0;
   if (searchedThroughAllPossibilities) {
-    // When the level reaches 0, all possible solutions have been evaluated
-    goto done;
+    goto Done;
   }
-  l--;
-  cur_node = choice[l];
-  best_itm = structure.NODE[cur_node].item;
-  cur_choice = structure.NODE[cur_node].location;
+  level--;
+  currentNodeIndex = choices[level];
+  bestItemIndex = structure.NODE[currentNodeIndex].item;
+  currentItemIndexChosen = structure.NODE[currentNodeIndex].location;
 }
-abort: {
+Abort: {
 
-  if (cur_choice + 1 >= best_itm + structure.size(best_itm)) {
+  if (currentItemIndexChosen + 1 >= bestItemIndex + structure.size(bestItemIndex)) {
     // Tried every option of the current best item
-    goto backup;
+    goto Backup;
   }
 
-  // Restore the currently active sizes
   {
+    // Restore the currently active sizes:
     // Use savestack to restore the size of the current best item in the structure
-    saveptr = saved[l + 1];
-    ACTIVE = saveptr - saved[l];
-    for (int32_t p = -ACTIVE; p < 0; p++) {
-      structure.size(savestack[saveptr + p].first) = savestack[saveptr + p].second;
+    currentSaveIndex = saved[level + 1];
+    active = currentSaveIndex - saved[level];
+    for (int32_t negativeItemIndex = -active; negativeItemIndex < 0; negativeItemIndex++) {
+      structure.size(saveStack[currentSaveIndex + negativeItemIndex].first) =
+          saveStack[currentSaveIndex + negativeItemIndex].second;
     }
   }
-  // There's still options available for the current best item, go to the next
-  cur_choice++;
-  goto advance;
+  // There's still options available for the current best item: go to the next
+  currentItemIndexChosen++;
+  goto Advance;
 }
-done: { return retrieveOptionIndices(structure, solutions); }
+Done: { return retrieveOptionIndices(structure, solutions); }
 }
 
 } // namespace

@@ -208,7 +208,7 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
   //   - 'item' contains negative the amount of nodes in the option before the spacer (or 0 for the first spacer)
   //   - 'location' contains the amount of nodes in the option after the spacer (or 0 for the last spacer)
   //   - 'color' unused
-  // - Regular nodes are filled, but with attributes helpful in the next phase:
+  // - Regular nodes are filled, but with attributes helpful in the next steps:
   //   - 'item' contains the 1-based index of the item for this option
   //   - 'location'contains the amount of nodes of the same item that were found when this node was inserted
   //   - 'color' attributes
@@ -240,8 +240,7 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
   {
     // Next step: Expand SET, going from last element to first, move an item's pos() and size() values from the pair's
     // location, to where they should be.
-    // After Phase 3, SET has now size() and pos() elements set correctly, there other nodes may still contain other,
-    // now unused, values from before.
+    // After Phase 3,
     for (int32_t itemIndexOneBased = itemsCount; itemIndexOneBased > 0; itemIndexOneBased--) {
 
       // setIndex is the index of the item into SET, where itemIndexOneBased is the 1-based index of an item.
@@ -253,7 +252,8 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
       pos(setIndex) = itemIndexOneBased - 1;
     }
   }
-  // Now SET contains pos() and size() pairs at the correct location.
+  // Now SET has  size() and pos() elements set correctly, its other cells nodes may still contain other, now unused,
+  // values from before.
 
   {
     // Next step: Adjust NODE and SET with the remaining information
@@ -290,17 +290,17 @@ void DancingCellsStructure::print() const {
   std::cout << std::endl;
 
   std::cout << "NODE" << std::endl;
-  int32_t j = 0;
+  int32_t nodeIndex = 0;
   for (const auto& element : NODE) {
     if (element.item <= 0) {
       std::cout << " " << std::endl;
     }
-    std::cout << j << " - \titem:" << element.item << "\tlocation:" << element.location << "\tcolor:" << element.color
-              << "" << std::endl;
+    std::cout << nodeIndex << " - \titem:" << element.item << "\tlocation:" << element.location
+              << "\tcolor:" << element.color << "" << std::endl;
     if (element.item <= 0) {
       std::cout << " " << std::endl;
     }
-    j++;
+    nodeIndex++;
   }
   std::cout << std::endl;
   std::cout << std::endl;
