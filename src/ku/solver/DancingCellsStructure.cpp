@@ -180,7 +180,7 @@ void DancingCellsStructure::allocateMemoryForMembers(int32_t primaryCount,
   SET = std::vector<int32_t>(nodesCount + setPosAndSizeCellsCount, 0);
   const int32_t nodeSpacersCount = optionsCount + 1;
   NODE = std::vector<DancingCellsNode>(nodesCount + nodeSpacersCount, DancingCellsNode(0, 0, 0));
-  // TODO: Can the map be a vector? (node's index is literally the index of a vector element)
+  nodeOptionIndices.resize(nodesCount + nodeSpacersCount);
 }
 
 void DancingCellsStructure::createNodeForItem(const XccElement& element, int32_t& lastNode, int32_t optionIndex) {
@@ -195,7 +195,7 @@ void DancingCellsStructure::createNodeForItem(const XccElement& element, int32_t
   NODE[lastNode].color = element.colorId; // Set the correct color ID
 
   // Now that it's known where the elment landed in NODE, the map can be updated
-  nodeIndicesToOptionIdMap.insert(std::make_pair(lastNode, optionIndex));
+  nodeOptionIndices[lastNode] = optionIndex;
 
   size(baseSetIndex) = t + 1; // Increase the amount of nodes are found for item index baseSetIndex
   pos(baseSetIndex) = lastNode; // Set the index of the last node in NODE where item baseSetIndex has appeared
@@ -306,9 +306,8 @@ void DancingCellsStructure::print() const {
   std::cout << std::endl;
 
   std::cout << "optionsMap" << std::endl;
-  for (const auto& [firstNodeOfOptionIndex, optionIndex] : nodeIndicesToOptionIdMap) {
-
-    std::cout << "nodeIndex: " << firstNodeOfOptionIndex << "\t - optionIndex: " << optionIndex << std::endl;
+  for (int32_t i = 0; i < nodeOptionIndices.size(); i++) {
+    std::cout << "nodeIndex: " << i << "\t - optionIndex: " << nodeOptionIndices[i] << std::endl;
   }
   std::cout << std::endl;
   std::cout << std::endl;

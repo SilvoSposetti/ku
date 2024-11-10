@@ -66,7 +66,7 @@ retrieveOptionIndices(const DancingCellsStructure& structure,
   for (const auto& nodeIndicesSet : nodeIndicesSets) {
     std::unordered_set<int32_t> solution;
     for (const auto value : nodeIndicesSet) {
-      solution.insert(structure.nodeIndicesToOptionIdMap.at(value));
+      solution.insert(structure.nodeOptionIndices.at(value));
     }
     solutions.push_back(solution);
   }
@@ -216,8 +216,7 @@ Forward: {
     // No item new item could be picked, therefore a solution was just found! Save it into the solutions vector.
     // Only the first elements in the choices list are the those that need saving.
     // The amount to save is equal to the current level, because a choice is made at every level.
-    solutions.push_back(
-        std::unordered_set<int32_t>(choices.begin(), choices.begin() + level)); // TODO: use emplace_back
+    solutions.emplace_back(choices.begin(), choices.begin() + level);
 
     // Exit early if checking for uniqueness and more than one solution is found
     const bool uniquenessEarlyExit = checkForUniqueness && solutions.size() >= 2;

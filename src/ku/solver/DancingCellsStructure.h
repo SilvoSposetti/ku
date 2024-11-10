@@ -152,10 +152,9 @@ public:
   int32_t optionsCount = 0;
 
   /** This map is used to retrieve the option indices when Algorithm C has found a solution.
-   * It must contain all node indices stored the NODE array as keys, and maps them to the option index that they
-   * originally came from.
+   * It contains an option ID for every node.
    */
-  std::unordered_map<int32_t, int32_t> nodeIndicesToOptionIdMap;
+  std::vector<int32_t> nodeOptionIndices;
 
   /** List of data for every option. When the structure is created to represent a puzzle, it contains information to
    * find out which cell and possibility an option was created to represent.
