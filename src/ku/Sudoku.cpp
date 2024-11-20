@@ -160,7 +160,8 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
 }
 
 void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
-  auto document = createExactCoverDocument(name + "-ExactCover", DancingCellsStructure(board->getField(), constraints));
+  auto document = createExactCoverDocument(
+      name + "-ExactCover", DancingCellsStructure(board->getField(), constraints), constraints);
   document->writeToFile(location);
 }
 
@@ -221,19 +222,26 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
   return transformedClues;
 }
 
-std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string& name,
-                                                              const DancingCellsStructure& dataStructure) {
+std::unique_ptr<SvgDocument>
+Sudoku::createExactCoverDocument(const std::string& name,
+                                 const DancingCellsStructure& dataStructure,
+                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
 
   auto itemsData = std::vector<ItemData>(dataStructure.itemsCount);
   {
-
-    const int32_t primaryItemsAmount = dataStructure.primaryItemsCount;
-    for (int32_t primaryItemId = 0; primaryItemId < primaryItemsAmount; primaryItemId++) {
-      itemsData[primaryItemId] = ItemData(std::to_string(primaryItemId), true, primaryItemId);
-    }
-    for (int32_t secondaryItemId = 0; secondaryItemId < dataStructure.secondaryItemsCount; secondaryItemId++) {
-      itemsData[primaryItemsAmount + secondaryItemId] =
-          ItemData(std::to_string(secondaryItemId), false, secondaryItemId);
+    int32_t counter = 0;
+    for (const auto& constraint : constraints) {
+      int32_t constraintCounter = 0;
+      for (int32_t i = 0; i < constraint->getPrimaryItemsAmount(); i++) {
+        itemsData[counter] = ItemData(constraint->getName(), true, counter, constraintCounter);
+        constraintCounter++;
+        counter++;
+      }
+      for (int32_t i = 0; i < constraint->getSecondaryItemsAmount(); i++) {
+        itemsData[counter] = ItemData(constraint->getName(), false, counter, constraintCounter);
+        constraintCounter++;
+        counter++;
+      }
     }
   }
 
@@ -348,8 +356,10 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
           std::make_unique<SvgGroup>("Bottom Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
       for (const auto& itemData : itemsData) {
-        const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+        const std::string itemName = itemData.constraintName + " " +
+                                     DrawingUtilities::padLeft(std::to_string(itemData.constraintItemId), '0', 4) +
+                                     " " + (itemData.isPrimary ? "P" : "S") + " " +
+                                     DrawingUtilities::padLeft(std::to_string(itemData.overallItemId), '0', 4);
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
         double y = cellSize * rowsCount;
         bottomTextGroup->add(std::make_unique<SvgText>(
@@ -364,7 +374,7 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
           std::make_unique<SvgGroup>("Right Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
       for (const auto& optionData : dataStructure.optionsData) {
-        const std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
+        const std::string optionName = "Row " + std::to_string(optionData.indexI) + ", Column " +
                                        std::to_string(optionData.indexJ) + ", Digit " +
                                        std::to_string(static_cast<int32_t>(optionData.digit));
         double x = cellSize * columnsCount;

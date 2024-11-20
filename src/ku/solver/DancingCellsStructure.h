@@ -3,7 +3,6 @@
 #include "DancingCellsNode.h"
 #include "OptionData.h"
 
-#include <unordered_map>
 #include <vector>
 
 /** Data structure used by Algorithm C.
