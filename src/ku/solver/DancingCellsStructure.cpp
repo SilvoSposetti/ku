@@ -304,7 +304,7 @@ void DancingCellsStructure::print() const {
   std::cout << std::endl;
 
   std::cout << "optionsMap" << std::endl;
-  for (int32_t i = 0; i < nodeOptionIndices.size(); i++) {
+  for (size_t i = 0; i < nodeOptionIndices.size(); i++) {
     std::cout << "nodeIndex: " << i << "\t - optionIndex: " << nodeOptionIndices[i] << std::endl;
   }
   std::cout << std::endl;

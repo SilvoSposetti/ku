@@ -33,7 +33,7 @@ struct XccElement {
    * @param other The other instance of XccElement.
    * @return Whether this instance is less than the other.
    */
-  const bool operator<(const XccElement& other) const {
+  bool operator<(const XccElement& other) const {
     return (id < other.id);
   }
 };

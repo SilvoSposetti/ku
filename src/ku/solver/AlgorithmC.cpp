@@ -245,7 +245,7 @@ Forward: {
 
   // Save the currently active sizes
   {
-    if (currentSaveIndex + active + 1 > saveStack.size()) {
+    if (static_cast<size_t>(currentSaveIndex + active + 1) > saveStack.size()) {
       saveStack.resize(currentSaveIndex + active + 1);
     }
     for (int32_t p = 0; p < active; p++) {

@@ -12,7 +12,7 @@ std::unique_ptr<SvgGroup> SudokuCell::getSvgGroup(const DrawingOptions& options)
   return group;
 }
 
-bool SudokuCell::satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const {
+bool SudokuCell::satisfy([[maybe_unused]] const std::vector<std::vector<Sudo::Digit>>& board) const {
   return true;
 }
 
