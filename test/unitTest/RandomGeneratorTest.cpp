@@ -1,7 +1,7 @@
 #include "randomGenerator/RandomGenerator.h"
 
 #include "Sudoku.h"
-#include "doctest.h"
+#include <doctest.h>
 
 #include <algorithm>
 #include <unordered_set>

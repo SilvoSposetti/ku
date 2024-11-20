@@ -162,12 +162,8 @@ std::vector<std::unordered_set<int32_t>> runAlgorithmC(DancingCellsStructure& da
     return {};
   }
 
-  // // Get a copy of the structure to work on
+  // Get a copy of the structure to work on
   auto structure = dataStructure;
-
-  // apparentlyTheresAnotherX is the list of all options currently selected, this is used for backtracking
-  // an option in this case is represented by the index of a node that is contained by the option
-  // std::vector<int32_t> apparentlyTheresAnotherX(optionsAmount, -1);
 
   // The following vector will store the solutions, i.e. the sets of nodes which are contained by the options that
   // solve the exact cover problem

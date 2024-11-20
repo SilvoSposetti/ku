@@ -1,6 +1,6 @@
 #include "KuTestArguments.h"
 #include "Sudoku.h"
-#include "doctest.h"
+#include <doctest.h>
 #include "solver/Solver.h"
 
 static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {

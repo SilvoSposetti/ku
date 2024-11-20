@@ -1,6 +1,6 @@
 #include "drawing/SvgDocument.h"
 
-#include "doctest.h"
+#include <doctest.h>
 #include "drawing/DrawingUtilities.h"
 #include "drawing/SvgCircle.h"
 #include "drawing/SvgGroup.h"

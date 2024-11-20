@@ -1,6 +1,6 @@
 #include "utilities/TemporaryDirectory.h"
 
-#include "doctest.h"
+#include <doctest.h>
 
 #include <fstream>
 #include <vector>

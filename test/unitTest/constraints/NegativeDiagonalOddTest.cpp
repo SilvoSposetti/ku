@@ -1,7 +1,7 @@
 
 #include "constraints/NegativeDiagonalOdd.h"
 
-#include "doctest.h"
+#include <doctest.h>
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Negative-Diagonal-Odd") {

@@ -16,7 +16,7 @@
 #include "constraints/SudokuCell.h"
 #include "constraints/SudokuColumn.h"
 #include "constraints/SudokuRow.h"
-#include "doctest.h"
+#include <doctest.h>
 
 #include <algorithm>
 

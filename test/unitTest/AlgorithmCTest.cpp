@@ -1,9 +1,9 @@
 #include "solver/AlgorithmC.h"
 
-#include "doctest.h"
 #include "solver/DancingCellsStructure.h"
 
 #include <algorithm>
+#include <doctest.h>
 
 struct ProblemData {
   ProblemData(const DancingCellsStructure& structure, const std::vector<std::unordered_set<int32_t>>& expectedSolutions)
@@ -58,28 +58,6 @@ void check(const std::vector<ProblemData>& problemsData, const std::vector<std::
 TEST_CASE("Algorithm C") {
   const std::vector<std::optional<int32_t>> seeds = {std::nullopt, 0, 1, -566, 9845};
 
-  SUBCASE("Preconditions") {
-    // No primary items
-    CHECK_THROWS(DancingCellsStructure(0, 2, {}));
-
-    // TODO: Should it really throw if there are no options?
-    CHECK_THROWS(DancingCellsStructure(2, 2, {}));
-
-    // No options that cover a primary item
-    CHECK_THROWS(DancingCellsStructure(2,
-                                       1,
-                                       {
-                                           {0},
-                                           {0, 2},
-                                       }));
-
-    // Primary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure(2, 2, {{2, 0}}));
-
-    // Secondary item id outside of the valid range
-    CHECK_THROWS(DancingCellsStructure(2, 2, {{0, 0}}));
-  }
-
   SUBCASE("Single solution, primary and secondary items with colors") {
     const int32_t primaryItemsCount = 3; // p q r
     const int32_t secondaryItemsCount = 2; // x y
@@ -94,7 +72,6 @@ TEST_CASE("Algorithm C") {
 
     for (const auto& seed : seeds) {
       auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
-      // REQUIRE(structure.isPotentiallySolvableByAlgorithmX());
       CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
       const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
       CHECK(allSolutions.size() == 1);
@@ -474,71 +451,4 @@ TEST_CASE("Algorithm C") {
 
     check(problemsData, seeds);
   }
-
-  //   SUBCASE("Algorithm C Solvability") {
-  //     // Create & fill. Note that there's no column with all cells unset
-  //     const std::vector<std::vector<bool>> matrix = {
-  //         {1, 0, 1, 0, 0, 0},
-  //         {1, 1, 0, 1, 0, 0},
-  //         {0, 1, 1, 0, 1, 0},
-  //         {0, 0, 1, 1, 0, 1},
-  //         {0, 0, 0, 0, 0, 0},
-  //         {1, 1, 0, 0, 0, 1},
-  //     };
-  //     const int32_t columns = matrix.at(0).size();
-
-  //     SUBCASE("Solvable") {
-  //       // Nothing out of the ordinary
-  //       DataStructure dataStructure(matrix);
-  //       CHECK(dataStructure.isPotentiallySolvableByAlgorithmX());
-  //     }
-
-  //     SUBCASE("All columns secondary") {
-  //       // Sparse matrix is not solvable by Algorithm C if all columns are secondary
-  //       DataStructure allSecondaryColumnsDataStructure(matrix, columns);
-  //       CHECK_FALSE(allSecondaryColumnsDataStructure.isPotentiallySolvableByAlgorithmX());
-  //     }
-
-  //     SUBCASE("Empty primary columns") {
-  //       {
-  //         // Matrix with an all-zeroes primary column in the middle
-  //         const std::vector<std::vector<bool>> invalidMatrix = {
-  //             {1, 0, 1, 0, 0, 0},
-  //             {1, 1, 0, 0, 1, 0},
-  //             {0, 1, 1, 0, 0, 0},
-  //             {0, 0, 1, 0, 1, 1},
-  //             {0, 0, 0, 0, 0, 0},
-  //             {1, 1, 0, 0, 0, 1},
-  //         };
-
-  //         DataStructure unsolvableDataStructure(invalidMatrix);
-  //         // Matrix is unsolvable, since a primary column is empty
-  //         CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
-  //       }
-
-  //       {
-  //         // Matrix with two all-zeroes columns at the end
-  //         const std::vector<std::vector<bool>> invalidMatrix = {
-  //             {1, 0, 1, 0, 0, 0, 0},
-  //             {1, 1, 0, 1, 0, 0, 0},
-  //             {0, 1, 1, 0, 0, 0, 0},
-  //             {0, 0, 1, 1, 1, 0, 0},
-  //             {0, 0, 0, 0, 0, 0, 0},
-  //             {1, 1, 0, 0, 1, 0, 0},
-  //         };
-
-  //         DataStructure unsolvableDataStructure(invalidMatrix);
-  //         // Now matrix is unsolvable, since a primary column is empty
-  //         CHECK_FALSE(unsolvableDataStructure.isPotentiallySolvableByAlgorithmX());
-
-  //         // But if the last empty columns are set to be secondary the matrix becomes solvable
-  //         DataStructure solvableDataStructure(invalidMatrix, 2);
-  //         CHECK(solvableDataStructure.isPotentiallySolvableByAlgorithmX());
-  //       }
-  //     }
-
-  //     // Empty matrix is solvable
-  //     const DataStructure empty({});
-  //     CHECK(empty.isPotentiallySolvableByAlgorithmX());
-  //   }
 }

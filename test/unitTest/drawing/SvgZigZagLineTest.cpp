@@ -1,6 +1,6 @@
 #include "drawing/SvgZigZagLine.h"
 
-#include "doctest.h"
+#include <doctest.h>
 #include "drawing/SvgDocument.h"
 #include "drawing/SvgGroup.h"
 #include "utilities/FileIo.h"

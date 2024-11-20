@@ -140,9 +140,8 @@ void DancingCellsStructure::checkOptions(const std::vector<std::vector<XccElemen
                                          int32_t primaryItemsCount,
                                          int32_t itemsCount) {
 
-  // TODO: check if these preconditions can be imrpoved/removed/relaxed
   if (primaryItemsCount <= 0 || options.empty()) {
-    throw std::runtime_error(std::string("No items or options provided"));
+    throw std::runtime_error(std::string("No primary items or options provided"));
   }
 
   auto areItemsCoverable = std::vector<bool>(itemsCount, false);

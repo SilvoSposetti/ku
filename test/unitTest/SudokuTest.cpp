@@ -1,7 +1,7 @@
 #include "Sudoku.h"
 
 #include "Sudo.h"
-#include "doctest.h"
+#include <doctest.h>
 
 TEST_CASE("Sudoku") {
   ConstraintType classicConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
