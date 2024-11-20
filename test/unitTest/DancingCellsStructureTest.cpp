@@ -91,4 +91,38 @@ TEST_CASE("Dancing Cells Structure") {
     }
   }
 
+  SUBCASE("Construction") {
+
+    SUBCASE("Primary and secondary items with colors") {
+      const auto structure =
+          DancingCellsStructure(3,
+                                2,
+                                {
+                                    {{0, 1, {3, 3}, {4, 1}}}, // Option 0: 'p q x:C y:A'
+                                    {{0, 2, {3, 1}, {4, 3}}}, // Option 1: 'p r x:A y:C' // Part of solution
+                                    {{0, {3, 2}}}, // Option 2: 'p x:B'
+                                    {{1, {3, 1}}}, // Option 3: 'q x:A' // Part of solution
+                                    {{2, {4, 3}}}, // Option 4: 'r y:C'
+                                });
+      const auto expectedItem = std::vector<int32_t>{2, 7, 11, 15, 21};
+      const auto expectedSet =
+          std::vector<int32_t>{0, 3, 1, 6, 11, 1, 2, 2, 14, 2, 2, 7, 17, 3, 4, 3, 8, 12, 15, 4, 3, 4, 9, 18};
+      const auto expectedNode = std::vector<DancingCellsNode>{
+          {0, 4, 0},   {2, 2, 0},   {7, 7, 0},   {15, 15, 3}, {21, 21, 1}, {-4, 4, 0},  {2, 3, 0},
+          {11, 11, 0}, {15, 16, 1}, {21, 22, 3}, {-4, 2, 0},  {2, 4, 0},   {15, 17, 2}, {-2, 2, 0},
+          {7, 8, 0},   {15, 18, 1}, {-2, 2, 0},  {11, 12, 0}, {21, 23, 3}, {-2, 0, 0}};
+
+      const auto expectedNodeOptionIndices =
+          std::vector<int32_t>{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 2, 2, 0, 3, 3, 0, 4, 4, 0};
+
+      CHECK_EQ(expectedItem, structure.ITEM);
+      CHECK_EQ(expectedSet, structure.SET);
+      CHECK_EQ(expectedNode, structure.NODE);
+      CHECK_EQ(expectedNodeOptionIndices, structure.nodeOptionIndices);
+      CHECK_EQ(3, structure.primaryItemsCount);
+      CHECK_EQ(2, structure.secondaryItemsCount);
+      CHECK_EQ(5, structure.itemsCount);
+      CHECK_EQ(5, structure.optionsCount);
+    }
+  }
 }
