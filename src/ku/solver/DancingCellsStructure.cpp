@@ -8,6 +8,7 @@ DancingCellsStructure::DancingCellsStructure(const std::vector<std::vector<Sudo:
                                              const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
   // Set up primary- secondary- and itemsCount, as well as optionsCount
   {
+    // TODO: simplify setting up items with Puzzle class
     int32_t primaryItemsCount = 0;
     int32_t secondaryItemsCount = 0;
     int32_t nodesCount = 0;
@@ -16,6 +17,12 @@ DancingCellsStructure::DancingCellsStructure(const std::vector<std::vector<Sudo:
       secondaryItemsCount += constraint->getSecondaryItemsAmount();
       nodesCount += constraint->getPrimaryItems().size();
       nodesCount += constraint->getSecondaryItems().size();
+      for (const auto& option : constraint->getPrimaryItems()) {
+        nodesCount += option.size();
+      }
+      for (const auto& option : constraint->getSecondaryItems()) {
+        nodesCount += option.size();
+      }
     }
     itemsCount = primaryItemsCount + secondaryItemsCount;
     // Count how many digits are given

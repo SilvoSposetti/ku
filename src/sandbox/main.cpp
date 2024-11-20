@@ -15,7 +15,7 @@ int main() {
   // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
   // constraints = constraints | ConstraintType::ANTI_KING;
   // constraints = constraints | ConstraintType::ANTI_KING_TORUS;
-  constraints = constraints | ConstraintType::ANTI_KNIGHT;
+  // constraints = constraints | ConstraintType::ANTI_KNIGHT;
   // constraints = constraints | ConstraintType::ANTI_KNIGHT_TORUS;
   // constraints = constraints | ConstraintType::DISJOINT_BOXES;
   // constraints = constraints | ConstraintType::ASTERISK;
