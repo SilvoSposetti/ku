@@ -13,7 +13,7 @@ void AbstractConstraint::initialize() {
   isInitialized = true;
 }
 
-const ConstraintType AbstractConstraint::getType() const {
+ConstraintType AbstractConstraint::getType() const {
   return type;
 }
 

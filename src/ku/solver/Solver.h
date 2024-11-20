@@ -60,11 +60,10 @@ private:
 
   /** Creates a Sudoku board from an Exact Cover matrix and one of its (possibly many) solutions
    * @param board The Sudoku problem's board to be solved
-   * @param dataStructure The data structure used during solving of the Exact Cover problem
+   * @param optionsData The data about the options
    * @param solutionOptions A of option indices that solve the Exact Cover problem
    */
   static void reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                       const DancingCellsStructure& structure,
                                                        const std::vector<OptionData>& optionsData,
                                                        const std::unordered_set<int32_t>& solutionOptions);
 };

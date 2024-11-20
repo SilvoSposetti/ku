@@ -82,7 +82,7 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
   // This solution should have 81 elements, one for each cell piked
   if (solutionOptional.has_value()) {
     // Reduce solution: Exact Cover -> Sudoku
-    reduceExactCoverSolutionToSudokuSolution(board, structure, optionsData, solutionOptional.value());
+    reduceExactCoverSolutionToSudokuSolution(board, optionsData, solutionOptional.value());
 
     return true;
   }
@@ -90,7 +90,6 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
 }
 
 void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                      const DancingCellsStructure& structure,
                                                       const std::vector<OptionData>& optionsData,
                                                       const std::unordered_set<int32_t>& solutionOptions) {
 

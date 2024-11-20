@@ -31,7 +31,7 @@ public:
   /** Retrieves the type of the constraint
    * @return The type
    */
-  const ConstraintType getType() const;
+  ConstraintType getType() const;
 
   /** Retrieves the name of the constraint
    * @return The name
