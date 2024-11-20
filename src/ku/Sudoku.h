@@ -5,7 +5,7 @@
 #include "constraints/AbstractConstraint.h"
 #include "constraints/ConstraintType.h"
 #include "drawing/SvgDocument.h"
-#include "solver/DataStructure.h"
+#include "solver/DancingCellsStructure.h"
 
 #include <filesystem>
 #include <optional>
@@ -105,10 +105,12 @@ private:
   /** Creates an svg document graphically showing the exact cover matrix that represents this sudoku
    * @param name The name of the document that is created
    * @param dataStructure The data structure constructed with the current constraints and field
+   * @param constraints The data structure constructed with the current constraints and field
    * @return The svg document
    */
   static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
-                                                               const DataStructure& dataStructure);
+                                                               const DancingCellsStructure& dataStructure,
+                                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
 private:
   /// The name

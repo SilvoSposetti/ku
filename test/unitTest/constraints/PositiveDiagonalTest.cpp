@@ -1,7 +1,7 @@
 
 #include "constraints/PositiveDiagonal.h"
 
-#include "doctest.h"
+#include <doctest.h>
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Positive-Diagonal") {

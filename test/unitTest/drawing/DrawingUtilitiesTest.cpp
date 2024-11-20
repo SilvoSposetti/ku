@@ -1,4 +1,4 @@
-#include "doctest.h"
+#include <doctest.h>
 #include "drawing/DrawingUtilities.h"
 
 TEST_SUITE("Drawing") {

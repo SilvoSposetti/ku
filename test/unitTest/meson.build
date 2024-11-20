@@ -1,5 +1,5 @@
 unit_test_sources = files(
-  'AlgorithmXTest.cpp',
+  'AlgorithmCTest.cpp',
   'constraints/AntiKingTest.cpp',
   'constraints/AntiKingTorusTest.cpp',
   'constraints/AntiKnightTest.cpp',
@@ -18,6 +18,7 @@ unit_test_sources = files(
   'constraints/SudokuCellTest.cpp',
   'constraints/SudokuColumnTest.cpp',
   'constraints/SudokuRowTest.cpp',
+  'DancingCellsStructureTest.cpp',
   'drawing/DrawingUtilitiesTest.cpp',
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',

@@ -8,6 +8,7 @@
 #include "drawing/SvgLine.h"
 #include "drawing/SvgRect.h"
 #include "drawing/SvgText.h"
+#include "solver/ItemData.h"
 #include "solver/Solver.h"
 
 #include <algorithm>
@@ -159,7 +160,8 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
 }
 
 void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
-  auto document = createExactCoverDocument(name + "-ExactCover", DataStructure(board->getField(), constraints));
+  auto document = createExactCoverDocument(
+      name + "-ExactCover", DancingCellsStructure(board->getField(), constraints), constraints);
   document->writeToFile(location);
 }
 
@@ -220,10 +222,31 @@ std::vector<std::vector<Sudo::Digit>> Sudoku::transformClues(const std::vector<s
   return transformedClues;
 }
 
-std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string& name,
-                                                              const DataStructure& dataStructure) {
-  const int32_t columnsCount = dataStructure.getItemsAmount();
-  const int32_t rowsCount = dataStructure.getOptionsAmount();
+std::unique_ptr<SvgDocument>
+Sudoku::createExactCoverDocument(const std::string& name,
+                                 const DancingCellsStructure& dataStructure,
+                                 const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
+
+  auto itemsData = std::vector<ItemData>(dataStructure.itemsCount);
+  {
+    int32_t counter = 0;
+    for (const auto& constraint : constraints) {
+      int32_t constraintCounter = 0;
+      for (int32_t i = 0; i < constraint->getPrimaryItemsAmount(); i++) {
+        itemsData[counter] = ItemData(constraint->getName(), true, counter, constraintCounter);
+        constraintCounter++;
+        counter++;
+      }
+      for (int32_t i = 0; i < constraint->getSecondaryItemsAmount(); i++) {
+        itemsData[counter] = ItemData(constraint->getName(), false, counter, constraintCounter);
+        constraintCounter++;
+        counter++;
+      }
+    }
+  }
+
+  const int32_t columnsCount = dataStructure.itemsCount;
+  const int32_t rowsCount = dataStructure.optionsCount;
 
   const double paperSize = 1000; // Both in X and Y
 
@@ -240,7 +263,8 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
   const double primaryLineWidth = cellSize / 5.0;
   const double secondaryLineWidth = cellSize / 20.0;
 
-  const auto structure = dataStructure.getStructureCopy();
+  // Create copy
+  auto structure = dataStructure;
 
   auto document = std::make_unique<SvgDocument>(name, width, height, margin);
 
@@ -253,16 +277,15 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
     std::unique_ptr<SvgGroup> cellsGroup = std::make_unique<SvgGroup>("Cells", "black", std::nullopt, std::nullopt);
 
     int32_t currentOption = -1;
-    for (const auto& node : structure) {
-      if (node.type == NodeType::Spacer) {
+    for (const auto& node : structure.NODE) {
+      if (node.item <= 0) {
         // go to next option
         currentOption++;
+        continue;
       }
-      if (node.type == NodeType::Node) {
-        // Compute coordinates of square
-        const int32_t itemIndex = node.header - 1;
-        cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
-      }
+      // Compute coordinates of square
+      const int32_t itemIndex = structure.position(node.item);
+      cellsGroup->add(std::make_unique<SvgRect>(cellSize * itemIndex, cellSize * currentOption, cellSize, cellSize));
     }
     document->add(std::move(cellsGroup));
   }
@@ -276,7 +299,7 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
 
     std::string currentName;
     int32_t currentIndex = 0;
-    for (const auto& itemData : dataStructure.getItemsData()) {
+    for (const auto& itemData : itemsData) {
       const double x = currentIndex * cellSize;
       if (currentName != itemData.constraintName) {
         // Add primary vertical line
@@ -305,7 +328,7 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
 
     std::pair<int32_t, int32_t> previousCell{-1, -1};
     int32_t counter = 0;
-    for (const auto& optionData : dataStructure.getOptionsData()) {
+    for (const auto& optionData : dataStructure.optionsData) {
       const double y = cellSize * counter;
       std::pair<int32_t, int32_t> currentCell = std::make_pair(optionData.indexI, optionData.indexJ);
       if (previousCell != currentCell) {
@@ -332,9 +355,11 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       std::unique_ptr<SvgGroup> bottomTextGroup =
           std::make_unique<SvgGroup>("Bottom Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
-      for (const auto& itemData : dataStructure.getItemsData()) {
-        const std::string itemName = itemData.constraintName + " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     DrawingUtilities::padLeft(std::to_string(itemData.itemId), '0', 4) + "->";
+      for (const auto& itemData : itemsData) {
+        const std::string itemName = itemData.constraintName + " " +
+                                     DrawingUtilities::padLeft(std::to_string(itemData.constraintItemId), '0', 4) +
+                                     " " + (itemData.isPrimary ? "P" : "S") + " " +
+                                     DrawingUtilities::padLeft(std::to_string(itemData.overallItemId), '0', 4);
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
         double y = cellSize * rowsCount;
         bottomTextGroup->add(std::make_unique<SvgText>(
@@ -348,8 +373,8 @@ std::unique_ptr<SvgDocument> Sudoku::createExactCoverDocument(const std::string&
       std::unique_ptr<SvgGroup> rightTextGroup =
           std::make_unique<SvgGroup>("Right Text", "black", std::nullopt, std::nullopt);
       int32_t counter = 0;
-      for (const auto& optionData : dataStructure.getOptionsData()) {
-        const std::string optionName = "<- Row " + std::to_string(optionData.indexI) + ", Column " +
+      for (const auto& optionData : dataStructure.optionsData) {
+        const std::string optionName = "Row " + std::to_string(optionData.indexI) + ", Column " +
                                        std::to_string(optionData.indexJ) + ", Digit " +
                                        std::to_string(static_cast<int32_t>(optionData.digit));
         double x = cellSize * columnsCount;

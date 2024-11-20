@@ -1,7 +1,7 @@
 
 #include "constraints/SudokuRow.h"
 
-#include "doctest.h"
+#include <doctest.h>
 
 TEST_SUITE("Constraints: Output") {
   TEST_CASE("Sudoku-Row") {

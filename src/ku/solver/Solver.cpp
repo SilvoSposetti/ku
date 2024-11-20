@@ -2,7 +2,7 @@
 
 #include "../Sudo.h"
 #include "../Validator.h"
-#include "AlgorithmX.h"
+#include "AlgorithmC.h"
 
 #include <iostream>
 
@@ -66,26 +66,23 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
                    std::optional<int32_t> seed) {
 
   // Reduce problem: Sudoku -> Exact Cover
-  DataStructure dataStructure = DataStructure(board, constraints);
-
-  if (!dataStructure.isPotentiallySolvableByAlgorithmX()) {
-    return false;
-  }
-
+  auto structure = DancingCellsStructure(board, constraints);
+  const auto& optionsData = structure.optionsData;
+  
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {
-    return AlgorithmX::hasUniqueSolution(dataStructure, seed);
+    return AlgorithmC::hasUniqueSolution(structure, seed).has_value();
   }
   // AlgorithmX::printDataStructure(matrix);
 
   // Find a possible solution
-  std::unordered_set<int32_t> solution = AlgorithmX::findOneSolution(dataStructure, seed);
+  auto solutionOptional = AlgorithmC::findOneSolution(structure, seed);
 
   // Use first solution out of all those that are found
   // This solution should have 81 elements, one for each cell piked
-  if (solution.size() == Sudo::TOTAL_DIGITS) {
+  if (solutionOptional.has_value()) {
     // Reduce solution: Exact Cover -> Sudoku
-    reduceExactCoverSolutionToSudokuSolution(board, dataStructure, solution);
+    reduceExactCoverSolutionToSudokuSolution(board, structure, optionsData, solutionOptional.value());
 
     return true;
   }
@@ -93,10 +90,10 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
 }
 
 void Solver::reduceExactCoverSolutionToSudokuSolution(std::vector<std::vector<Sudo::Digit>>& board,
-                                                      const DataStructure& dataStructure,
+                                                      const DancingCellsStructure& structure,
+                                                      const std::vector<OptionData>& optionsData,
                                                       const std::unordered_set<int32_t>& solutionOptions) {
 
-  const auto& optionsData = dataStructure.getOptionsData();
   for (const auto& optionIndex : solutionOptions) {
     const auto& OptionData = optionsData[optionIndex];
     board[OptionData.indexI][OptionData.indexJ] = OptionData.digit;
