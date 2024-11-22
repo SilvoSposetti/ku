@@ -1,6 +1,7 @@
 #include "Sudoku.h"
 
 #include "Sudo.h"
+
 #include <doctest.h>
 
 TEST_CASE("Sudoku") {

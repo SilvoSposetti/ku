@@ -1,5 +1,6 @@
-#include <doctest.h>
 #include "drawing/DrawingUtilities.h"
+
+#include <doctest.h>
 
 TEST_SUITE("Drawing") {
 

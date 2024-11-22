@@ -108,9 +108,10 @@ private:
    * @param constraints The data structure constructed with the current constraints and field
    * @return The svg document
    */
-  static std::unique_ptr<SvgDocument> createExactCoverDocument(const std::string& name,
-                                                               const DancingCellsStructure& dataStructure,
-                                                               const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
+  static std::unique_ptr<SvgDocument>
+  createExactCoverDocument(const std::string& name,
+                           const DancingCellsStructure& dataStructure,
+                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
 private:
   /// The name

@@ -68,7 +68,7 @@ bool Solver::solve(std::vector<std::vector<Sudo::Digit>>& board,
   // Reduce problem: Sudoku -> Exact Cover
   auto structure = DancingCellsStructure(board, constraints);
   const auto& optionsData = structure.optionsData;
-  
+
   // No need to reduce the solution back to a valid board when simply checking for uniqueness
   if (checkForUniqueness) {
     return AlgorithmC::hasUniqueSolution(structure, seed).has_value();

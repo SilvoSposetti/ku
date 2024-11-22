@@ -4,7 +4,7 @@
 #include <iostream>
 
 Timer::Timer()
-    : startTime(std::chrono::high_resolution_clock::now()){};
+    : startTime(std::chrono::high_resolution_clock::now()) {};
 
 void Timer::reset() {
   startTime = std::chrono::high_resolution_clock::now();

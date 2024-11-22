@@ -2,7 +2,7 @@
 
 #include "../Sudo.h"
 #include "../constraints/AbstractConstraint.h"
-#include "DancingCellsStructure.h"
+#include "OptionData.h"
 
 #include <memory>
 #include <optional>
