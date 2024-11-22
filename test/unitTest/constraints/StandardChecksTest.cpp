@@ -16,9 +16,9 @@
 #include "constraints/SudokuCell.h"
 #include "constraints/SudokuColumn.h"
 #include "constraints/SudokuRow.h"
-#include <doctest.h>
 
 #include <algorithm>
+#include <doctest.h>
 
 TEST_SUITE("Constraints: Standard Checks") {
   TEST_CASE_TEMPLATE_DEFINE("Standard Checks ", T, checks) {

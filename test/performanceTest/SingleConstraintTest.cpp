@@ -1,7 +1,8 @@
 #include "KuTestArguments.h"
 #include "Sudoku.h"
-#include <doctest.h>
 #include "solver/Solver.h"
+
+#include <doctest.h>
 
 static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
   const auto constraints = Sudoku::getConstraintsList(constraintType);

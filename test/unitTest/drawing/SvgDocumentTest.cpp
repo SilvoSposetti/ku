@@ -1,6 +1,5 @@
 #include "drawing/SvgDocument.h"
 
-#include <doctest.h>
 #include "drawing/DrawingUtilities.h"
 #include "drawing/SvgCircle.h"
 #include "drawing/SvgGroup.h"
@@ -11,6 +10,7 @@
 #include "utilities/FileIo.h"
 #include "utilities/TemporaryDirectory.h"
 
+#include <doctest.h>
 #include <numbers>
 
 TEST_SUITE("Drawing") {

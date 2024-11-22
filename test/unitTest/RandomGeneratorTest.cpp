@@ -1,9 +1,9 @@
 #include "randomGenerator/RandomGenerator.h"
 
 #include "Sudoku.h"
-#include <doctest.h>
 
 #include <algorithm>
+#include <doctest.h>
 #include <unordered_set>
 
 TEST_CASE("Random Generator") {
