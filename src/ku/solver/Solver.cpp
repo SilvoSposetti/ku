@@ -1,8 +1,8 @@
-#include "Solver.h"
+#include "Solver.hpp"
 
-#include "../Sudo.h"
-#include "../Validator.h"
-#include "AlgorithmC.h"
+#include "../Sudo.hpp"
+#include "../Validator.hpp"
+#include "AlgorithmC.hpp"
 
 #include <iostream>
 

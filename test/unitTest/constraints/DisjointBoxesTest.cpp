@@ -1,5 +1,5 @@
 
-#include "constraints/DisjointBoxes.h"
+#include "constraints/DisjointBoxes.hpp"
 
 #include <doctest.h>
 

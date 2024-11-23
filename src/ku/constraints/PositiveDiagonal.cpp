@@ -1,7 +1,7 @@
-#include "PositiveDiagonal.h"
+#include "PositiveDiagonal.hpp"
 
-#include "../drawing/SvgLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 PositiveDiagonal::PositiveDiagonal()
     : AbstractConstraint(ConstraintType::POSITIVE_DIAGONAL,

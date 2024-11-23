@@ -1,5 +1,5 @@
 
-#include "constraints/Asterisk.h"
+#include "constraints/Asterisk.hpp"
 
 #include <doctest.h>
 

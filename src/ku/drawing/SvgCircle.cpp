@@ -1,6 +1,6 @@
-#include "SvgCircle.h"
+#include "SvgCircle.hpp"
 
-#include "DrawingUtilities.h"
+#include "DrawingUtilities.hpp"
 
 SvgCircle::SvgCircle(double cx,
                      double cy,

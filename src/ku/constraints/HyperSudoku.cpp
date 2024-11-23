@@ -1,7 +1,7 @@
-#include "HyperSudoku.h"
+#include "HyperSudoku.hpp"
 
-#include "../drawing/SvgRect.h"
-#include "../utilities/IdPacking.h"
+#include "../drawing/SvgRect.hpp"
+#include "../utilities/IdPacking.hpp"
 
 HyperSudoku::HyperSudoku()
     : AbstractConstraint(ConstraintType::HYPER_SUDOKU,

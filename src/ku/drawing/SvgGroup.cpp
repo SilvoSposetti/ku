@@ -1,6 +1,6 @@
-#include "SvgGroup.h"
+#include "SvgGroup.hpp"
 
-#include "DrawingUtilities.h"
+#include "DrawingUtilities.hpp"
 
 SvgGroup::SvgGroup(const std::string& name,
                    const std::optional<const std::string>& fill,

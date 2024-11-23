@@ -1,4 +1,4 @@
-#include "solver/DancingCellsStructure.h"
+#include "solver/DancingCellsStructure.hpp"
 
 #include <doctest.h>
 

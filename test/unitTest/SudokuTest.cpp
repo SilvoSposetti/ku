@@ -1,6 +1,6 @@
-#include "Sudoku.h"
+#include "Sudoku.hpp"
 
-#include "Sudo.h"
+#include "Sudo.hpp"
 
 #include <doctest.h>
 

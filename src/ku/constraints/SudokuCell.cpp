@@ -1,6 +1,6 @@
-#include "SudokuCell.h"
+#include "SudokuCell.hpp"
 
-#include "../drawing/SvgRect.h"
+#include "../drawing/SvgRect.hpp"
 
 SudokuCell::SudokuCell()
     : AbstractConstraint(

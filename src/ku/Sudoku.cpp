@@ -1,15 +1,15 @@
-#include "Sudoku.h"
+#include "Sudoku.hpp"
 
-#include "Setter.h"
-#include "constraints/ConstraintFactory.h"
-#include "drawing/DrawingOptions.h"
-#include "drawing/DrawingUtilities.h"
-#include "drawing/SvgGroup.h"
-#include "drawing/SvgLine.h"
-#include "drawing/SvgRect.h"
-#include "drawing/SvgText.h"
-#include "solver/ItemData.h"
-#include "solver/Solver.h"
+#include "Setter.hpp"
+#include "constraints/ConstraintFactory.hpp"
+#include "drawing/DrawingOptions.hpp"
+#include "drawing/DrawingUtilities.hpp"
+#include "drawing/SvgGroup.hpp"
+#include "drawing/SvgLine.hpp"
+#include "drawing/SvgRect.hpp"
+#include "drawing/SvgText.hpp"
+#include "solver/ItemData.hpp"
+#include "solver/Solver.hpp"
 
 #include <algorithm>
 #include <iostream>

@@ -1,7 +1,7 @@
-#include "NegativeDiagonalEven.h"
+#include "NegativeDiagonalEven.hpp"
 
-#include "../drawing/SvgSquigglyLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgSquigglyLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 NegativeDiagonalEven::NegativeDiagonalEven()
     : AbstractConstraint(ConstraintType::NEGATIVE_DIAGONAL_EVEN,

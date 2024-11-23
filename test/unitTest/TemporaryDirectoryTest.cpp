@@ -1,4 +1,4 @@
-#include "utilities/TemporaryDirectory.h"
+#include "utilities/TemporaryDirectory.hpp"
 
 #include <doctest.h>
 #include <fstream>

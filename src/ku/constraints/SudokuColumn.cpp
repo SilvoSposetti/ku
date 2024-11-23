@@ -1,6 +1,6 @@
-#include "SudokuColumn.h"
+#include "SudokuColumn.hpp"
 
-#include "../drawing/SvgLine.h"
+#include "../drawing/SvgLine.hpp"
 
 SudokuColumn::SudokuColumn()
     : AbstractConstraint(ConstraintType::SUDOKU_COLUMN,

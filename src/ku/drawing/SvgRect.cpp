@@ -1,6 +1,6 @@
-#include "SvgRect.h"
+#include "SvgRect.hpp"
 
-#include "DrawingUtilities.h"
+#include "DrawingUtilities.hpp"
 
 SvgRect::SvgRect(double x,
                  double y,

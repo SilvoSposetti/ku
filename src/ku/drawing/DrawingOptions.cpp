@@ -1,4 +1,4 @@
-#include "DrawingOptions.h"
+#include "DrawingOptions.hpp"
 
 DrawingOptions::DrawingOptions(double size, double margin, int32_t constraintsCount)
     : size(size)

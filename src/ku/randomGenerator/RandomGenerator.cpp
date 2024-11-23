@@ -1,4 +1,4 @@
-#include "RandomGenerator.h"
+#include "RandomGenerator.hpp"
 
 RandomGenerator::RandomGenerator(std::optional<int32_t> seed) {
   if (!seed) {

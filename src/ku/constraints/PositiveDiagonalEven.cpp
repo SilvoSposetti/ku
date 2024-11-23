@@ -1,7 +1,7 @@
-#include "PositiveDiagonalEven.h"
+#include "PositiveDiagonalEven.hpp"
 
-#include "../drawing/SvgSquigglyLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgSquigglyLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 PositiveDiagonalEven::PositiveDiagonalEven()
     : AbstractConstraint(ConstraintType::POSITIVE_DIAGONAL_EVEN,

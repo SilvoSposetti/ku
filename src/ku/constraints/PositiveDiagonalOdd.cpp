@@ -1,7 +1,7 @@
-#include "PositiveDiagonalOdd.h"
+#include "PositiveDiagonalOdd.hpp"
 
-#include "../drawing/SvgZigZagLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgZigZagLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 PositiveDiagonalOdd::PositiveDiagonalOdd()
     : AbstractConstraint(ConstraintType::POSITIVE_DIAGONAL_ODD,

@@ -1,4 +1,4 @@
-#include "AbstractConstraint.h"
+#include "AbstractConstraint.hpp"
 
 AbstractConstraint::AbstractConstraint(ConstraintType type, const std::string& name, const std::string& description)
     : type(type)

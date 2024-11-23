@@ -1,5 +1,5 @@
 
-#include "constraints/HyperSudoku.h"
+#include "constraints/HyperSudoku.hpp"
 
 #include <doctest.h>
 

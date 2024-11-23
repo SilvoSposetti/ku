@@ -1,7 +1,7 @@
-#include "KuTestArguments.h"
-#include "Sudoku.h"
-#include "constraints/ConstraintType.h"
-#include "solver/Solver.h"
+#include "KuTestArguments.hpp"
+#include "Sudoku.hpp"
+#include "constraints/ConstraintType.hpp"
+#include "solver/Solver.hpp"
 
 #include <doctest.h>
 

@@ -1,5 +1,5 @@
 
-#include "constraints/NegativeDiagonalOdd.h"
+#include "constraints/NegativeDiagonalOdd.hpp"
 
 #include <doctest.h>
 

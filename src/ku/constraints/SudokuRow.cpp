@@ -1,6 +1,6 @@
-#include "SudokuRow.h"
+#include "SudokuRow.hpp"
 
-#include "../drawing/SvgLine.h"
+#include "../drawing/SvgLine.hpp"
 
 SudokuRow::SudokuRow()
     : AbstractConstraint(

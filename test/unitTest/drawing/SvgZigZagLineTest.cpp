@@ -1,9 +1,9 @@
-#include "drawing/SvgZigZagLine.h"
+#include "drawing/SvgZigZagLine.hpp"
 
-#include "drawing/SvgDocument.h"
-#include "drawing/SvgGroup.h"
-#include "utilities/FileIo.h"
-#include "utilities/TemporaryDirectory.h"
+#include "drawing/SvgDocument.hpp"
+#include "drawing/SvgGroup.hpp"
+#include "utilities/FileIo.hpp"
+#include "utilities/TemporaryDirectory.hpp"
 
 #include <doctest.h>
 #include <numbers>

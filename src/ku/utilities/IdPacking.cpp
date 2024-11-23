@@ -1,4 +1,4 @@
-#include "IdPacking.h"
+#include "IdPacking.hpp"
 
 uint32_t IdPacking::packId(uint32_t x, uint32_t y, [[maybe_unused]] uint32_t xAmount, uint32_t yAmount) {
   return x * yAmount + y;
