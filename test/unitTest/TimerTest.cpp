@@ -1,4 +1,4 @@
-#include "utilities/Timer.h"
+#include "utilities/Timer.hpp"
 
 #include <doctest.h>
 #include <thread>

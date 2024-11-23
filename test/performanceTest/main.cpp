@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include "KuTestArguments.h"
+#include "KuTestArguments.hpp"
 
 #include <algorithm>
 #include <doctest.h>

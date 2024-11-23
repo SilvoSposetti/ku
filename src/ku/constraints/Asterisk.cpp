@@ -1,7 +1,7 @@
-#include "Asterisk.h"
+#include "Asterisk.hpp"
 
-#include "../drawing/SvgRect.h"
-#include "../utilities/IdPacking.h"
+#include "../drawing/SvgRect.hpp"
+#include "../utilities/IdPacking.hpp"
 
 Asterisk::Asterisk()
     : AbstractConstraint(ConstraintType::ASTERISK,

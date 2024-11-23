@@ -1,6 +1,6 @@
-#include "KuTestArguments.h"
-#include "Sudoku.h"
-#include "solver/Solver.h"
+#include "KuTestArguments.hpp"
+#include "Sudoku.hpp"
+#include "solver/Solver.hpp"
 
 #include <doctest.h>
 

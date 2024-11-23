@@ -1,6 +1,6 @@
-#include "SudokuBox.h"
+#include "SudokuBox.hpp"
 
-#include "../drawing/SvgRect.h"
+#include "../drawing/SvgRect.hpp"
 
 SudokuBox::SudokuBox()
     : AbstractConstraint(

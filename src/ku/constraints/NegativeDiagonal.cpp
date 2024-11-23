@@ -1,7 +1,7 @@
-#include "NegativeDiagonal.h"
+#include "NegativeDiagonal.hpp"
 
-#include "../drawing/SvgLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 NegativeDiagonal::NegativeDiagonal()
     : AbstractConstraint(ConstraintType::NEGATIVE_DIAGONAL,

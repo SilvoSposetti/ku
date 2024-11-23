@@ -1,6 +1,6 @@
-#include "ConstraintUtilities.h"
+#include "ConstraintUtilities.hpp"
 
-#include "../Sudo.h"
+#include "../Sudo.hpp"
 
 namespace ConstraintUtilities {
 std::vector<std::pair<int32_t, int32_t>> getAllPositiveDiagonalIndices() {

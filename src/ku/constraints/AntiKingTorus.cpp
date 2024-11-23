@@ -1,8 +1,8 @@
-#include "AntiKingTorus.h"
+#include "AntiKingTorus.hpp"
 
-#include "../drawing/SvgLine.h"
-#include "../utilities/IdPacking.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgLine.hpp"
+#include "../utilities/IdPacking.hpp"
+#include "ConstraintUtilities.hpp"
 
 #include <algorithm>
 #include <cmath>

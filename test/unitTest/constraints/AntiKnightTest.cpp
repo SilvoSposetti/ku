@@ -1,5 +1,5 @@
 
-#include "constraints/AntiKnight.h"
+#include "constraints/AntiKnight.hpp"
 
 #include <doctest.h>
 

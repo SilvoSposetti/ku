@@ -1,4 +1,4 @@
-#include "DancingCellsStructure.h"
+#include "DancingCellsStructure.hpp"
 
 #include <algorithm>
 #include <iostream>

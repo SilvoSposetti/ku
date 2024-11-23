@@ -1,4 +1,4 @@
-#include "TemporaryDirectory.h"
+#include "TemporaryDirectory.hpp"
 
 TemporaryDirectory::TemporaryDirectory()
     : temporaryPath(createTemporaryDirectory()) {}

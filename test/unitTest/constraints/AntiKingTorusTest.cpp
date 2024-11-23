@@ -1,5 +1,5 @@
 
-#include "constraints/AntiKingTorus.h"
+#include "constraints/AntiKingTorus.hpp"
 
 #include <doctest.h>
 

@@ -1,6 +1,6 @@
-#include "SvgSquigglyLine.h"
+#include "SvgSquigglyLine.hpp"
 
-#include "DrawingUtilities.h"
+#include "DrawingUtilities.hpp"
 
 #include <cmath>
 

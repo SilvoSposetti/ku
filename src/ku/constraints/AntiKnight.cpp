@@ -1,8 +1,8 @@
-#include "AntiKnight.h"
+#include "AntiKnight.hpp"
 
-#include "../drawing/SvgLine.h"
-#include "../utilities/IdPacking.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgLine.hpp"
+#include "../utilities/IdPacking.hpp"
+#include "ConstraintUtilities.hpp"
 
 #include <cmath>
 #include <set>

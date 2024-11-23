@@ -1,14 +1,14 @@
-#include "drawing/SvgDocument.h"
+#include "drawing/SvgDocument.hpp"
 
-#include "drawing/DrawingUtilities.h"
-#include "drawing/SvgCircle.h"
-#include "drawing/SvgGroup.h"
-#include "drawing/SvgLine.h"
-#include "drawing/SvgPolyline.h"
-#include "drawing/SvgRect.h"
-#include "drawing/SvgText.h"
-#include "utilities/FileIo.h"
-#include "utilities/TemporaryDirectory.h"
+#include "drawing/DrawingUtilities.hpp"
+#include "drawing/SvgCircle.hpp"
+#include "drawing/SvgGroup.hpp"
+#include "drawing/SvgLine.hpp"
+#include "drawing/SvgPolyline.hpp"
+#include "drawing/SvgRect.hpp"
+#include "drawing/SvgText.hpp"
+#include "utilities/FileIo.hpp"
+#include "utilities/TemporaryDirectory.hpp"
 
 #include <doctest.h>
 #include <numbers>

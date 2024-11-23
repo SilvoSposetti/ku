@@ -1,6 +1,6 @@
-#include "SvgText.h"
+#include "SvgText.hpp"
 
-#include "DrawingUtilities.h"
+#include "DrawingUtilities.hpp"
 
 SvgText::SvgText(double x,
                  double y,

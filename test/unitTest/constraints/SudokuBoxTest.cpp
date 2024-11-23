@@ -1,5 +1,5 @@
 
-#include "constraints/SudokuBox.h"
+#include "constraints/SudokuBox.hpp"
 
 #include <doctest.h>
 

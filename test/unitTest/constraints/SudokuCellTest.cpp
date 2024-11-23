@@ -1,5 +1,5 @@
 
-#include "constraints/SudokuCell.h"
+#include "constraints/SudokuCell.hpp"
 
 #include <doctest.h>
 

@@ -1,4 +1,4 @@
-#include "utilities/IdPacking.h"
+#include "utilities/IdPacking.hpp"
 
 #include <doctest.h>
 #include <vector>

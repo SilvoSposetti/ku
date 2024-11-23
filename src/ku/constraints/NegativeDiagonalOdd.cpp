@@ -1,7 +1,7 @@
-#include "NegativeDiagonalOdd.h"
+#include "NegativeDiagonalOdd.hpp"
 
-#include "../drawing/SvgZigZagLine.h"
-#include "ConstraintUtilities.h"
+#include "../drawing/SvgZigZagLine.hpp"
+#include "ConstraintUtilities.hpp"
 
 NegativeDiagonalOdd::NegativeDiagonalOdd()
     : AbstractConstraint(ConstraintType::NEGATIVE_DIAGONAL_ODD,

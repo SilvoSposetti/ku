@@ -1,7 +1,7 @@
-#include "Setter.h"
+#include "Setter.hpp"
 
-#include "solver/Solver.h"
-#include "utilities/Timer.h"
+#include "solver/Solver.hpp"
+#include "utilities/Timer.hpp"
 
 #include <iostream>
 

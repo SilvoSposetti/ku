@@ -1,4 +1,4 @@
-#include "Sudo.h"
+#include "Sudo.hpp"
 
 std::vector<std::vector<Sudo::Digit>> Sudo::emptyField() {
   return std::vector<std::vector<Sudo::Digit>>(Sudo::MAX_DIGIT,

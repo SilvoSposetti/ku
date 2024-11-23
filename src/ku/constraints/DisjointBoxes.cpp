@@ -1,7 +1,7 @@
-#include "DisjointBoxes.h"
+#include "DisjointBoxes.hpp"
 
-#include "../drawing/SvgCircle.h"
-#include "../utilities/IdPacking.h"
+#include "../drawing/SvgCircle.hpp"
+#include "../utilities/IdPacking.hpp"
 
 #include <iostream>
 

@@ -1,6 +1,6 @@
-#include "randomGenerator/RandomGenerator.h"
+#include "randomGenerator/RandomGenerator.hpp"
 
-#include "Sudoku.h"
+#include "Sudoku.hpp"
 
 #include <algorithm>
 #include <doctest.h>

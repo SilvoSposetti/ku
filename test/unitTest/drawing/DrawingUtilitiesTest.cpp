@@ -1,4 +1,4 @@
-#include "drawing/DrawingUtilities.h"
+#include "drawing/DrawingUtilities.hpp"
 
 #include <doctest.h>
 

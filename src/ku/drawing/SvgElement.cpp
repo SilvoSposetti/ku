@@ -1,4 +1,4 @@
-#include "SvgElement.h"
+#include "SvgElement.hpp"
 
 SvgElement::SvgElement(const std::string& tagName, bool canHaveChildElements)
     : tagName(tagName)

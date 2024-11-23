@@ -1,5 +1,5 @@
 
-#include "constraints/NegativeDiagonalEven.h"
+#include "constraints/NegativeDiagonalEven.hpp"
 
 #include <doctest.h>
 
