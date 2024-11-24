@@ -4,58 +4,57 @@
 #include <cstdint>
 #include <doctest.h>
 
-TEST_CASE("Array Utilities") {
+TEST_SUITE("Array Utilities") {
+  constexpr auto columns = 5zu;
+  constexpr auto rows = 7zu;
+  constexpr auto defaultValue = 2;
 
-  // TODO: these could be templated test
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time 2D Array (Empty)", T, test_2D_empty) {
+    constexpr auto matrix = ArrayUtilities::create2DArray<T, 0, 0>(defaultValue);
+    CHECK(matrix.empty());
+    CHECK_EQ(matrix, std::array<std::array<T, 0>, 0>());
+  }
+  TEST_CASE_TEMPLATE_INVOKE(test_2D_empty, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D_empty, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D_empty, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D_empty, uint64_t);
 
-  SUBCASE("Compile-Time 2D Array creation") {
-    SUBCASE("Empty") {
-      constexpr auto defaultValue = std::uint8_t(2);
-      constexpr auto matrix = ArrayUtilities::create2DArray<uint8_t, 0, 0>(defaultValue);
-      CHECK(matrix.empty());
-    }
-
-    constexpr auto columns = 5zu;
-    constexpr auto rows = 5zu;
-    SUBCASE("uint8_t") {
-      constexpr auto defaultValue = std::uint8_t(2);
-      constexpr auto matrix = ArrayUtilities::create2DArray<uint8_t, columns, rows>(defaultValue);
-      CHECK(!matrix.empty());
-      CHECK_EQ(matrix.size(), rows);
-      for (const auto& row : matrix) {
-        CHECK_EQ(row.size(), columns);
-        CHECK(std::ranges::all_of(row, [&](const auto& value) { return value == defaultValue; }));
-      }
-    }
-
-    SUBCASE("int32_t") {
-      constexpr auto defaultValue = std::numeric_limits<int32_t>::max();
-      constexpr auto matrix = ArrayUtilities::create2DArray<int32_t, columns, rows>(defaultValue);
-      CHECK(!matrix.empty());
-      CHECK_EQ(matrix.size(), rows);
-      for (const auto& row : matrix) {
-        CHECK_EQ(row.size(), columns);
-        CHECK(std::ranges::all_of(row, [&](const auto& value) { return value == defaultValue; }));
-      }
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time 2D Array", T, test_2D) {
+    constexpr auto matrix = ArrayUtilities::create2DArray<T, columns, rows>(defaultValue);
+    CHECK(!matrix.empty());
+    CHECK_EQ(matrix.size(), rows);
+    for (const auto& row : matrix) {
+      CHECK_EQ(row.size(), columns);
+      CHECK(std::ranges::all_of(row, [&](const auto& value) { return value == defaultValue; }));
     }
   }
+  TEST_CASE_TEMPLATE_INVOKE(test_2D, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_2D, uint64_t);
 
-  SUBCASE("Compile-Time Iota Array creation") {
+  constexpr auto amount = 3zu;
 
-    SUBCASE("Empty") {
-      constexpr auto array = ArrayUtilities::createIotaArray<uint8_t, 0>(5);
-      CHECK_EQ(array, std::array<uint8_t, 0>());
-    }
-
-    constexpr auto amount = 5zu;
-    SUBCASE("uint8_t") {
-      constexpr auto array = ArrayUtilities::createIotaArray<uint8_t, amount>(5);
-      CHECK_EQ(array, std::array<uint8_t, 5>{5, 6, 7, 8, 9});
-    }
-
-    SUBCASE("int32_t") {
-      constexpr auto array = ArrayUtilities::createIotaArray<int32_t, amount>(-2);
-      CHECK_EQ(array, std::array<int32_t, 5>{-2, -1, 0, 1, 2});
-    }
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time Iota Array (Empty)", T, test_iota_empty) {
+    constexpr auto array = ArrayUtilities::createIotaArray<T, 0>(5);
+    CHECK(array.empty());
+    CHECK_EQ(array, std::array<T, 0>());
   }
+  TEST_CASE_TEMPLATE_INVOKE(test_iota_empty, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota_empty, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota_empty, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota_empty, uint64_t);
+
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time Iota Array", T, test_iota) {
+    constexpr auto start = T(2);
+    constexpr auto array = ArrayUtilities::createIotaArray<T, amount>(start);
+    CHECK_EQ(array.size(), amount);
+    CHECK_EQ(array[0], start);
+    CHECK_EQ(array[1], start + 1);
+    CHECK_EQ(array[2], start + 2);
+  }
+  TEST_CASE_TEMPLATE_INVOKE(test_iota, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_iota, uint64_t);
 }
