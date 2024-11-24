@@ -1,5 +1,6 @@
 unit_test_sources = files(
   'AlgorithmCTest.cpp',
+  'ArrayUtilitiesTest.cpp',
   'DancingCellsStructureTest.cpp',
   'FileIoTest.cpp',
   'IdPackingTest.cpp',
@@ -30,4 +31,6 @@ unit_test_sources = files(
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',
   'drawing/SvgZigZagLineTest.cpp',
+  'puzzles/DigitTest.cpp',
+  'puzzles/PuzzleTest.cpp',
 )
