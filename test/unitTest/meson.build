@@ -31,6 +31,7 @@ unit_test_sources = files(
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',
   'drawing/SvgZigZagLineTest.cpp',
+  'puzzles/CellTest.cpp',
   'puzzles/DigitTest.cpp',
   'puzzles/PuzzleTest.cpp',
 )

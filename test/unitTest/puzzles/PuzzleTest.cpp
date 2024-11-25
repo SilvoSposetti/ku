@@ -70,6 +70,26 @@ TEST_SUITE("Puzzle") {
         CHECK(std::ranges::all_of(row, [&](const auto& digit) { return digit == Digits::invalidDigit; }));
       }
     }
+
+    SUBCASE("Possibilites") {
+      // One possibility for each row, column, and digit
+      constexpr auto possibilitiesCount = puzzle.rows * puzzle.columns * puzzle.digits.size();
+      CHECK_EQ(puzzle.possibilities.size(), possibilitiesCount);
+
+      // All possibilities should appear in the correct order:
+      std::size_t i = 0;
+      for (const auto& rowIndex : puzzle.rowIndices) {
+        for (const auto& columnIndex : puzzle.columnIndices) {
+          for (const auto& digit : puzzle.digits) {
+            const auto& cell = puzzle.possibilities[i];
+            CHECK_EQ(cell.rowIndex, rowIndex);
+            CHECK_EQ(cell.columnIndex, columnIndex);
+            CHECK_EQ(cell.digit, digit);
+            i++;
+          }
+        }
+      }
+    }
   }
 
   // Cases with zero
@@ -87,5 +107,6 @@ TEST_SUITE("Puzzle") {
   TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<9, 9, 9>);
   TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<7, 12, 5>);
   TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<13, 12, 11>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<21, 22, 23>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<15, 7, 21>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, Puzzle<1, 100, 3>);
 }
