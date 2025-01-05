@@ -5,8 +5,8 @@
 #include <doctest.h>
 
 TEST_SUITE("Array Utilities") {
-  constexpr auto columns = 5zu;
-  constexpr auto rows = 7zu;
+  constexpr uint32_t columns = 5;
+  constexpr uint32_t rows = 7;
   constexpr auto defaultValue = 2;
 
   TEST_CASE_TEMPLATE_DEFINE("Compile-Time 2D Array (Empty)", T, test_2D_empty) {
@@ -33,7 +33,7 @@ TEST_SUITE("Array Utilities") {
   TEST_CASE_TEMPLATE_INVOKE(test_2D, uint32_t);
   TEST_CASE_TEMPLATE_INVOKE(test_2D, uint64_t);
 
-  constexpr auto amount = 3zu;
+  constexpr auto amount = 3;
 
   TEST_CASE_TEMPLATE_DEFINE("Compile-Time Iota Array (Empty)", T, test_iota_empty) {
     constexpr auto array = ArrayUtilities::createIotaArray<T, 0>(5);

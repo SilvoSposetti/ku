@@ -10,8 +10,8 @@ TEST_CASE("Random Generator") {
   constexpr int32_t amount = 1000;
 
   SUBCASE("Uniform integer") {
-    const int32_t minimum = -100.0f;
-    const int32_t maximum = 618.0f;
+    constexpr int32_t minimum = -100;
+    constexpr int32_t maximum = 618;
 
     SUBCASE("Random Seed") {
       RandomGenerator generator1;
@@ -24,9 +24,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -43,9 +43,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -61,9 +61,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 == set2);
     }
   }
@@ -83,9 +83,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -102,9 +102,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -120,9 +120,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 == set2);
     }
   }
