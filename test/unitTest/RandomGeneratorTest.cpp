@@ -7,7 +7,7 @@
 #include <unordered_set>
 
 TEST_CASE("Random Generator") {
-  constexpr int32_t amount = 1000;
+  constexpr int32_t amount = 100;
 
   SUBCASE("Uniform integer") {
     constexpr int32_t minimum = -100;

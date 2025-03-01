@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utilities/ArrayUtilities.hpp"
+#include "../utilities/ArrayUtilities.hpp"
 
 #include <array>
 #include <cstdint>

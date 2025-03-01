@@ -33,5 +33,5 @@ unit_test_sources = files(
   'drawing/SvgZigZagLineTest.cpp',
   'puzzles/CellTest.cpp',
   'puzzles/DigitTest.cpp',
-  'puzzles/PuzzleTest.cpp',
+  'puzzles/PuzzleIntrinsicsTest.cpp',
 )

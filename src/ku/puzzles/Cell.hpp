@@ -19,6 +19,7 @@ struct Cell {
       : rowIndex(rowIndex)
       , columnIndex(columnIndex)
       , digit(digit) {};
+
 public:
   /** The row-index of the cell in the Puzzle
    */
