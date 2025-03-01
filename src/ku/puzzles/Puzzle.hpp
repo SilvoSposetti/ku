@@ -18,5 +18,5 @@ public:
 
   /** A 2D matrix of the grid, intialized with invalid digits
    */
-  const std::array<std::array<Digit, columnsCount>, rowsCount> grid;
+  std::array<std::array<Digit, columnsCount>, rowsCount> grid;
 };
