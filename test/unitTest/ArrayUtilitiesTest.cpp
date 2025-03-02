@@ -9,6 +9,27 @@ TEST_SUITE("Array Utilities") {
   constexpr uint32_t rows = 7;
   constexpr auto defaultValue = 2;
 
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time Array (Empty)", T, test_empty) {
+    constexpr auto array = ArrayUtilities::createArray<T, 0>(defaultValue);
+    CHECK(array.empty());
+    CHECK_EQ(array, std::array<T, 0>());
+  }
+  TEST_CASE_TEMPLATE_INVOKE(test_empty, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_empty, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_empty, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test_empty, uint64_t);
+
+  TEST_CASE_TEMPLATE_DEFINE("Compile-Time Array", T, test) {
+    constexpr auto array = ArrayUtilities::createArray<T, rows>(defaultValue);
+    CHECK(!array.empty());
+    CHECK_EQ(array.size(), rows);
+    CHECK(std::ranges::all_of(array, [&](const auto& element) { return element == defaultValue; }));
+  }
+  TEST_CASE_TEMPLATE_INVOKE(test, uint8_t);
+  TEST_CASE_TEMPLATE_INVOKE(test, int32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test, uint32_t);
+  TEST_CASE_TEMPLATE_INVOKE(test, uint64_t);
+
   TEST_CASE_TEMPLATE_DEFINE("Compile-Time 2D Array (Empty)", T, test_2D_empty) {
     constexpr auto matrix = ArrayUtilities::create2DArray<T, 0, 0>(defaultValue);
     CHECK(matrix.empty());
