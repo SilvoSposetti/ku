@@ -90,6 +90,34 @@ TEST_SUITE("PuzzleIntrinsiscs") {
         }
       }
     }
+
+    SUBCASE("Are indices valid") {
+      if (puzzle.rows != 0) {
+        CHECK(puzzle.isRowIndexValid(0));
+      }
+      if (puzzle.columns != 0) {
+        CHECK(puzzle.isColumnIndexValid(0));
+      }
+      for (const auto& rowIndex : puzzle.rowIndices) {
+        CHECK(puzzle.isRowIndexValid(rowIndex));
+      }
+      for (const auto& columnIndex : puzzle.columnIndices) {
+        CHECK(puzzle.isColumnIndexValid(columnIndex));
+      }
+      CHECK_FALSE(puzzle.isRowIndexValid(puzzle.rows));
+      CHECK_FALSE(puzzle.isColumnIndexValid(puzzle.columns));
+    }
+
+    SUBCASE("Is digit valid") {
+      if constexpr (!puzzle.digits.empty()) {
+        for (const auto& digit : puzzle.digits) {
+          CHECK(puzzle.isDigitValid(digit));
+        }
+        auto maxDigitIterator = std::ranges::max_element(puzzle.digits);
+        auto maxDigit = *maxDigitIterator;
+        CHECK_FALSE(puzzle.isDigitValid(maxDigit + 1));
+      }
+    }
   }
 
   // Cases with zero

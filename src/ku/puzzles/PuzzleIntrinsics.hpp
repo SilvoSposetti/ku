@@ -31,6 +31,32 @@ public:
    */
   virtual ~PuzzleIntrinsics() = default;
 
+  /** Checks if a row index is valid for the puzzle
+   * @param rowIndex The index to check
+   * @return Whether the index is valid
+   */
+  constexpr bool isRowIndexValid(uint8_t rowIndex) const {
+    return rowIndex < rows;
+  };
+
+  /** Checks if a column index is valid for the puzzle
+   * @param columnIndex The index to check
+   * @return Whether the index is valid
+   */
+
+  constexpr bool isColumnIndexValid(uint8_t columnIndex) const {
+    return columnIndex < columns;
+  };
+
+  /** Checks if a digit is valid for the puzzle
+   * @param digit The digit to check
+   * @return Whether the digit is valid
+   */
+  constexpr bool isDigitValid(Digit digit) const {
+    return Digits::isValid(digit) &&
+           std::ranges::any_of(digits, [&](const auto& availableDigit) { return availableDigit == digit; });
+  }
+
 private:
   /** Constructs an array with an ordered set of possibilities covering all cells
    * @param rowIndices All the valid row indices, ordered.
