@@ -1,6 +1,7 @@
 #include "Sudoku.hpp"
 
 #include <cstdio>
+#include <string>
 
 void Sudoku::printGrid() const {
   const auto maxRowIndex = rowIndices.back();
