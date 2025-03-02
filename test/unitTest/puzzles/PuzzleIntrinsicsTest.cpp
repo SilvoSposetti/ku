@@ -26,6 +26,39 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     auto digitsSet = std::set<Digit>(puzzle.digits.begin(), puzzle.digits.end());
   }
 
+  TEST_CASE("Cell Validiy") {
+    constexpr uint8_t rows = 3;
+    constexpr uint8_t columns = 4;
+    constexpr uint8_t digitsCount = 5;
+
+    constexpr auto puzzle = PuzzleIntrinsics<rows, columns, digitsCount>();
+
+    constexpr auto validCells = std::array{
+        Cell(0, 0, 1),
+        Cell(1, 1, 2),
+        Cell(2, 2, 3),
+        Cell(2, 3, 4),
+        Cell(2, 3, 5),
+    };
+
+    for (const auto& validCell : validCells) {
+      CHECK(puzzle.isCellValid(validCell));
+    }
+
+    constexpr auto invalidCells = std::array{
+        Cell(3, 0, 1), // invalid row index
+        Cell(3, 1, 2), // invalid row index
+        Cell(0, 4, 3), // invalid column index
+        Cell(1, 4, 4), // invalid column index
+        Cell(0, 2, 6), // invalid digit
+        Cell(1, 3, 6), // invalid digit
+    };
+
+    for (const auto& invalidCell : invalidCells) {
+      CHECK_FALSE(puzzle.isCellValid(invalidCell));
+    }
+  }
+
   TEST_CASE_TEMPLATE_DEFINE("Compile-time construction", T, test_id) {
 
     constexpr T puzzle;
@@ -37,7 +70,11 @@ TEST_SUITE("PuzzleIntrinsiscs") {
       if (puzzle.rows > 0) {
         CHECK_EQ(puzzle.rowIndices.front(), 0);
         CHECK_EQ(puzzle.rowIndices.back(), puzzle.rows - 1);
+        for (const auto& rowIndex : puzzle.rowIndices) {
+          CHECK(puzzle.isRowIndexValid(rowIndex));
+        }
       }
+      CHECK_FALSE(puzzle.isRowIndexValid(puzzle.rows + 1));
     }
 
     SUBCASE("Columns and column indices") {
@@ -47,7 +84,11 @@ TEST_SUITE("PuzzleIntrinsiscs") {
       if (puzzle.columns > 0) {
         CHECK_EQ(puzzle.columnIndices.front(), 0);
         CHECK_EQ(puzzle.columnIndices.back(), puzzle.columns - 1);
+        for (const auto& columnIndex : puzzle.columnIndices) {
+          CHECK(puzzle.isColumnIndexValid(columnIndex));
+        }
       }
+      CHECK_FALSE(puzzle.isColumnIndexValid(puzzle.columns + 1));
     }
 
     SUBCASE("Digits") {
@@ -57,6 +98,10 @@ TEST_SUITE("PuzzleIntrinsiscs") {
       if (puzzle.digits.size() > 0) {
         CHECK_EQ(puzzle.digits.front(), 1);
         CHECK_EQ(puzzle.digits.back(), puzzle.digits.size());
+        for (const auto& digit : puzzle.digits) {
+          CHECK(puzzle.isDigitValid(digit));
+        }
+        CHECK_FALSE(puzzle.isDigitValid(puzzle.digits.back() + 1));
       }
     }
 
@@ -88,34 +133,6 @@ TEST_SUITE("PuzzleIntrinsiscs") {
             i++;
           }
         }
-      }
-    }
-
-    SUBCASE("Are indices valid") {
-      if (puzzle.rows != 0) {
-        CHECK(puzzle.isRowIndexValid(0));
-      }
-      if (puzzle.columns != 0) {
-        CHECK(puzzle.isColumnIndexValid(0));
-      }
-      for (const auto& rowIndex : puzzle.rowIndices) {
-        CHECK(puzzle.isRowIndexValid(rowIndex));
-      }
-      for (const auto& columnIndex : puzzle.columnIndices) {
-        CHECK(puzzle.isColumnIndexValid(columnIndex));
-      }
-      CHECK_FALSE(puzzle.isRowIndexValid(puzzle.rows));
-      CHECK_FALSE(puzzle.isColumnIndexValid(puzzle.columns));
-    }
-
-    SUBCASE("Is digit valid") {
-      if constexpr (!puzzle.digits.empty()) {
-        for (const auto& digit : puzzle.digits) {
-          CHECK(puzzle.isDigitValid(digit));
-        }
-        auto maxDigitIterator = std::ranges::max_element(puzzle.digits);
-        auto maxDigit = *maxDigitIterator;
-        CHECK_FALSE(puzzle.isDigitValid(maxDigit + 1));
       }
     }
   }

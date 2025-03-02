@@ -57,6 +57,14 @@ public:
            std::ranges::any_of(digits, [&](const auto& availableDigit) { return availableDigit == digit; });
   }
 
+  /** Checks if a Cell is valid for the puzzle
+   * @param cell The cell to check
+   * @return Whether the cell is valid
+   */
+  constexpr bool isCellValid(const Cell& cell) const {
+    return isRowIndexValid(cell.rowIndex) && isColumnIndexValid(cell.columnIndex) && isDigitValid(cell.digit);
+  }
+
 private:
   /** Constructs an array with an ordered set of possibilities covering all cells
    * @param rowIndices All the valid row indices, ordered.
