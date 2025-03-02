@@ -36,7 +36,7 @@ public:
    * @return Whether the index is valid
    */
   constexpr bool isRowIndexValid(uint8_t rowIndex) const {
-    return rowIndex < rows;
+    return std::ranges::contains(rowIndices, rowIndex);
   };
 
   /** Checks if a column index is valid for the puzzle
@@ -45,7 +45,7 @@ public:
    */
 
   constexpr bool isColumnIndexValid(uint8_t columnIndex) const {
-    return columnIndex < columns;
+    return std::ranges::contains(columnIndices, columnIndex);
   };
 
   /** Checks if a digit is valid for the puzzle
@@ -53,8 +53,8 @@ public:
    * @return Whether the digit is valid
    */
   constexpr bool isDigitValid(Digit digit) const {
-    return Digits::isValid(digit) &&
-           std::ranges::any_of(digits, [&](const auto& availableDigit) { return availableDigit == digit; });
+    return Digits::isValid(digit) && std::ranges::contains(digits, digit);
+    ;
   }
 
   /** Checks if a Cell is valid for the puzzle
@@ -105,6 +105,7 @@ public:
   /** The ordered set of valid row indices, from 0 to the amount of rows - 1
    */
   const std::array<uint8_t, rowsCount> rowIndices;
+
   /** The ordered set of valid column indices, from 0 to the amount of columns - 1
    */
   const std::array<uint8_t, columnsCount> columnIndices;
