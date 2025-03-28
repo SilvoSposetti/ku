@@ -1,22 +1,22 @@
-#include "puzzles/Sudoku.hpp"
+#include "puzzles/Puzzle.hpp"
 
 #include <doctest.h>
 
 /** Using here the classic Sudoku class as replacement for the Puzzle class
  */
 TEST_CASE("Puzzle") {
+  const auto seed = 0;
 
   SUBCASE("Construction") {
-    const auto seed = 5;
     const auto name = std::string("Test");
-    const auto sudoku = Sudoku(name, {}, ConstraintType::NONE, seed);
-    CHECK(sudoku.seed == seed);
-    CHECK(sudoku.name == name);
+    const auto puzzle = Puzzle<1, 1, 1>(name, {}, ConstraintType::NONE, seed);
+    CHECK(puzzle.seed == seed);
+    CHECK(puzzle.name == name);
   }
 
   SUBCASE("Grid Initialization With No Clues") {
-    const auto sudoku = Sudoku("Test", {}, ConstraintType::NONE, {});
-    for (const auto& row : sudoku.grid) {
+    const auto puzzle = Puzzle<9, 9, 9>("Test", {}, ConstraintType::NONE, {});
+    for (const auto& row : puzzle.grid) {
       CHECK(std::ranges::all_of(row, [&](const auto& element) { return element == Digits::invalidDigit; }));
     }
   }
@@ -28,18 +28,104 @@ TEST_CASE("Puzzle") {
         Cell(0, 2, 3),
         Cell(1, 0, 4),
     };
-    const auto sudoku = Sudoku("Test", clues, ConstraintType::NONE, {});
+    const auto puzzle = Puzzle<9, 9, 9>("Test", clues, ConstraintType::NONE, {});
     for (const auto& cell : clues) {
-      CHECK(sudoku.grid[cell.rowIndex][cell.columnIndex] == cell.digit);
+      CHECK(puzzle.grid[cell.rowIndex][cell.columnIndex] == cell.digit);
     }
   }
 
   SUBCASE("Constraint construction") {
     const auto constraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_COLUMN |
                              ConstraintType::SUDOKU_BOX;
-    const auto sudoku = Sudoku("Test", {}, constraints, {});
-    for (const auto& constraint : sudoku.constraints) {
+    const auto puzzle = Puzzle<9, 9, 9>("Test", {}, constraints, {});
+    for (const auto& constraint : puzzle.constraints) {
       CHECK(static_cast<bool>(constraints & constraint->getType()));
+    }
+  }
+
+  SUBCASE("Grid as text") {
+    SUBCASE("1x1") {
+      const auto puzzle = Puzzle<1, 1, 9>("1x1", {}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━┓",
+          "┃ ◌ ┃",
+          "┗━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("1x1 with given") {
+      const auto puzzle = Puzzle<1, 1, 9>("1x1", {{0, 0, 5}}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━┓",
+          "┃ 5 ┃",
+          "┗━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("1x2") {
+      const auto puzzle = Puzzle<1, 2, 9>("1x2", {}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━━━┓",
+          "┃ ◌ ◌ ┃",
+          "┗━━━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("1x2 with givens") {
+      const auto puzzle = Puzzle<1, 2, 9>("1x2", {{0, 0, 1}, {0, 1, 2}}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━━━┓",
+          "┃ 1 2 ┃",
+          "┗━━━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("2x1") {
+      const auto puzzle = Puzzle<2, 1, 9>("2x1", {}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━┓",
+          "┃ ◌ ┃",
+          "┃ ◌ ┃",
+          "┗━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("2x1 with given") {
+      const auto puzzle = Puzzle<2, 1, 9>("2x1", {{1, 0, 8}}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━┓",
+          "┃ ◌ ┃",
+          "┃ 8 ┃",
+          "┗━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("5x7") {
+      const auto puzzle = Puzzle<5, 7, 9>("5x7", {}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━━━━━━━━━━━━━┓",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┗━━━━━━━━━━━━━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
+    }
+    SUBCASE("5x7 with givens") {
+      const auto puzzle = Puzzle<5, 7, 9>(
+          "5x7", {{1, 1, 1}, {1, 5, 4}, {2, 2, 2}, {3, 4, 3}, {4, 1, 5}, {4, 6, 6}}, ConstraintType::NONE, {});
+      const auto expected = std::vector<std::string>{
+          "┏━━━━━━━━━━━━━━━┓",
+          "┃ ◌ ◌ ◌ ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ 1 ◌ ◌ ◌ 4 ◌ ┃",
+          "┃ ◌ ◌ 2 ◌ ◌ ◌ ◌ ┃",
+          "┃ ◌ ◌ ◌ ◌ 3 ◌ ◌ ┃",
+          "┃ ◌ 5 ◌ ◌ ◌ ◌ 6 ┃",
+          "┗━━━━━━━━━━━━━━━┛",
+      };
+      CHECK_EQ(puzzle.gridAsText(), expected);
     }
   }
 }

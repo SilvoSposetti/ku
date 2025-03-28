@@ -11,6 +11,4 @@ public:
             ConstraintType constraintTypes,
             std::optional<int32_t> seed)
       : Puzzle(name, clues, constraintTypes, seed) {}
-
-  virtual void printGrid() const override;
 };

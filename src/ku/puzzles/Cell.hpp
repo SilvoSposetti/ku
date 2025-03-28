@@ -12,7 +12,7 @@ struct Cell {
 
   /** Constructor
    * @param rowIndex The row-index of the cell in the Puzzle
-   * @param rowIndex The column-index of the cell in the Puzzle
+   * @param columnIndex The column-index of the cell in the Puzzle
    * @param digit The digit that the cell could have
    */
   constexpr Cell(uint8_t rowIndex, uint8_t columnIndex, Digit digit)

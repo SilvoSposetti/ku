@@ -31,8 +31,6 @@ ku_sources = files(
   'drawing/SvgSquigglyLine.cpp',
   'drawing/SvgText.cpp',
   'drawing/SvgZigZagLine.cpp',
-  'puzzles/Sudoku.cpp',
-  'puzzles/Sudoku6x6.cpp',
   'randomGenerator/RandomGenerator.cpp',
   'solver/AlgorithmC.cpp',
   'solver/DancingCellsNode.cpp',

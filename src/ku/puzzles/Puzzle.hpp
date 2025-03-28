@@ -20,7 +20,7 @@ public:
       : PuzzleIntrinsics<rowsCount, columnsCount, digitsCount>()
       , name(name)
       , seed(seed)
-      , constraints(getConstraintsList(constraintTypes))
+      , constraints(createConstraints(constraintTypes))
       , grid(initializeGrid(clues)) {};
 
   std::array<std::array<Digit, columnsCount>, rowsCount> initializeGrid(const std::vector<Cell>& clues) const {
@@ -35,10 +35,46 @@ public:
     return grid;
   }
 
-  virtual void printGrid() const = 0;
+  void printGrid() const {
+    for (const auto& line : gridAsText()) {
+      std::puts(line.c_str());
+    }
+  };
+
+  std::vector<std::string> gridAsText() const {
+    const auto createLine = [](const std::string& first,
+                               const std::string& blank,
+                               const std::string& last,
+                               const std::vector<std::string>& elements) {
+      auto line = first + blank;
+      for (const auto& element : elements) {
+        line += element + blank;
+      }
+      return line + last;
+    };
+
+    std::vector<std::string> lines;
+    for (const auto& rowIndex : this->rowIndices) {
+      if (rowIndex == this->rowIndices.front()) {
+        const auto elements = std::vector<std::string>(this->columns, "━");
+        lines.push_back(createLine("┏", "━", "┓", elements));
+      }
+      std::vector<std::string> digitStrings;
+      std::ranges::transform(grid[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
+        return Digits::isValid(digit) ? std::to_string(digit) : "◌";
+      });
+      lines.push_back(createLine("┃", " ", "┃", digitStrings));
+      if (rowIndex == this->rowIndices.back()) {
+        const auto elements = std::vector<std::string>(this->columns, "━");
+        lines.push_back(createLine("┗", "━", "┛", elements));
+      }
+    }
+    return lines;
+  }
 
 private:
-  std::vector<std::unique_ptr<AbstractConstraint>> getConstraintsList(const ConstraintType constraintTypes) {
+  static constexpr std::vector<std::unique_ptr<AbstractConstraint>>
+  createConstraints(const ConstraintType constraintTypes) {
     std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
 
     // SUDOKU_CELL constraint is always present
