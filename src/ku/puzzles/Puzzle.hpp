@@ -3,7 +3,11 @@
 #include "../constraints/AbstractConstraint.hpp"
 #include "../constraints/ConstraintFactory.hpp"
 #include "../constraints/ConstraintType.hpp"
+#include "../drawing/DrawingOptions.hpp"
+#include "../drawing/PuzzleDrawing.hpp"
 #include "PuzzleIntrinsics.hpp"
+
+#include <filesystem>
 
 /** The base class for grid-like puzzles where a single digit goes in each cell.
  * @tparam rowsCount The amount of rows in the grid.
@@ -35,12 +39,17 @@ public:
     return grid;
   }
 
+  /** Prints the puzzle grid to stdout
+   */
   void printGrid() const {
     for (const auto& line : gridAsText()) {
       std::puts(line.c_str());
     }
   };
 
+  /** Constructs the puzzle grid as a list of text lines.
+   * @return The list of lines that represent the puzzle gird
+   */
   std::vector<std::string> gridAsText() const {
     const auto createLine = [](const std::string& first,
                                const std::string& blank,
@@ -72,9 +81,22 @@ public:
     return lines;
   }
 
+  /** Generates and stores the puzzle board to an SVG file in the provided directory
+   * @param location Where the file should be stored
+   * @return whether storing was successufl
+   */
+  bool exportToSvg(const std::filesystem::path& location) const {
+    const auto options = DrawingOptions(1000, 150, constraints.size());
+    const auto document = PuzzleDrawing::create<rowsCount, columnsCount>(name, options, grid, constraints);
+    return document->writeToFile(location);
+  };
+
 private:
-  static constexpr std::vector<std::unique_ptr<AbstractConstraint>>
-  createConstraints(const ConstraintType constraintTypes) {
+  /** Constructs the list of constraints
+   * @param constraintTypes A bitflag of the constraints
+   * @return The list of constructed constraints
+   */
+  std::vector<std::unique_ptr<AbstractConstraint>> createConstraints(const ConstraintType constraintTypes) const {
     std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
 
     // SUDOKU_CELL constraint is always present

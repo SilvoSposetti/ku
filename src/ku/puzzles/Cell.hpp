@@ -24,9 +24,11 @@ public:
   /** The row-index of the cell in the Puzzle
    */
   uint8_t rowIndex = 0;
+
   /** The column-index of the cell in the Puzzle
    */
   uint8_t columnIndex = 0;
+
   /** The digit that the cell could have
    */
   Digit digit = Digits::invalidDigit;
