@@ -25,16 +25,13 @@ public:
       , name(name)
       , seed(seed)
       , constraints(createConstraints(constraintTypes))
-      , grid(initializeGrid(clues)) {};
+      , givenCells(getOnlyValidClues(clues))
+      , grid(initializeGrid()) {};
 
-  std::array<std::array<Digit, columnsCount>, rowsCount> initializeGrid(const std::vector<Cell>& clues) const {
+  std::array<std::array<Digit, columnsCount>, rowsCount> initializeGrid() const {
     auto grid = ArrayUtilities::create2DArray<Digit, columnsCount, rowsCount>(Digits::invalidDigit);
-    if (!clues.empty()) {
-      for (const auto& cell : clues) {
-        if (PuzzleIntrinsics<rowsCount, columnsCount, digitsCount>::isCellValid(cell)) {
-          grid[cell.rowIndex][cell.columnIndex] = cell.digit;
-        }
-      }
+    for (const auto& cell : givenCells) {
+      grid[cell.rowIndex][cell.columnIndex] = cell.digit;
     }
     return grid;
   }
@@ -114,6 +111,21 @@ private:
     return constraintList;
   }
 
+  /** Selects only the valid clues out of the provided ones
+   * @param clues A list of clues
+   * @return The list of constructed constraints
+   */
+  std::vector<Cell> getOnlyValidClues(const std::vector<Cell>& clues) {
+    std::vector<Cell> result;
+    result.reserve(clues.size());
+    for (const auto& cell : clues) {
+      if (PuzzleIntrinsics<rowsCount, columnsCount, digitsCount>::isCellValid(cell)) {
+        result.push_back(cell);
+      }
+    }
+    return result;
+  }
+
 public:
   ///  The name of the puzzle
   const std::string name;
@@ -124,7 +136,9 @@ public:
   /// The list of constraint on the Puzzle
   const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
 
+  /// The cells with given values
+  std::vector<Cell> givenCells;
+
   /// A 2D matrix of the grid, intialized with invalid digits
-  std::array<std::array<Digit, columnsCount>, rowsCount> grid =
-      ArrayUtilities::create2DArray<Digit, columnsCount, rowsCount>(Digits::invalidDigit);
+  std::array<std::array<Digit, columnsCount>, rowsCount> grid = this->emptyGrid;
 };

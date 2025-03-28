@@ -20,6 +20,10 @@ struct Cell {
       , columnIndex(columnIndex)
       , digit(digit) {};
 
+  /** Default comparison operator==
+   */
+  bool operator==(const Cell&) const = default;
+
 public:
   /** The row-index of the cell in the Puzzle
    */
