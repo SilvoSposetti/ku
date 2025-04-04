@@ -3,6 +3,7 @@
 #include "../utilities/ArrayUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
+#include "PuzzleSpace.hpp"
 
 #include <array>
 #include <cstdint>
@@ -13,18 +14,19 @@
  * @tparam columnsCount The amount of columns in the grid.
  * @tparam digitsCount The amount of digits possible in each cell of the grid.
  */
-template <uint8_t rowsCount, uint8_t columnsCount, uint8_t digitsCount>
+template <PuzzleSpace puzzleSpace>
 class PuzzleIntrinsics {
 public:
   /** Constructor
    */
   constexpr PuzzleIntrinsics()
-      : rows(rowsCount)
-      , columns(columnsCount)
-      , rowIndices(ArrayUtilities::createIotaArray<uint8_t, rowsCount>(0))
-      , columnIndices(ArrayUtilities::createIotaArray<uint8_t, columnsCount>(0))
-      , digits(Digits::createDigits<digitsCount>())
-      , emptyGrid(ArrayUtilities::create2DArray<Digit, columnsCount, rowsCount>(Digits::invalidDigit))
+      : rows(puzzleSpace.rowsCount)
+      , columns(puzzleSpace.columnsCount)
+      , rowIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.rowsCount>(0))
+      , columnIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.columnsCount>(0))
+      , digits(Digits::createDigits<puzzleSpace.digitsCount>())
+      , emptyGrid(
+            ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit))
       , possibilities(createPossibilities(rowIndices, columnIndices, digits)) {};
 
   /** Virtual destructor
@@ -35,7 +37,7 @@ public:
    * @param rowIndex The index to check
    * @return Whether the index is valid
    */
-  constexpr bool isRowIndexValid(uint8_t rowIndex) const {
+  constexpr bool isRowIndexValid(Index rowIndex) const {
     return std::ranges::contains(rowIndices, rowIndex);
   };
 
@@ -44,7 +46,7 @@ public:
    * @return Whether the index is valid
    */
 
-  constexpr bool isColumnIndexValid(uint8_t columnIndex) const {
+  constexpr bool isColumnIndexValid(Index columnIndex) const {
     return std::ranges::contains(columnIndices, columnIndex);
   };
 
@@ -73,11 +75,12 @@ private:
    * @return From the top-left cell going right and then going down line by line, the ordered set of all possibilities
    * for every cell.
    */
-  constexpr std::array<Cell, rowsCount * columnsCount * digitsCount>
-  createPossibilities(std::array<uint8_t, rowsCount> rowIndices,
-                      std::array<uint8_t, columnsCount> columnIndices,
-                      std::array<Digit, digitsCount> digits) {
-    constexpr auto amount = std::size_t(rowsCount) * std::size_t(columnsCount) * std::size_t(digitsCount);
+  constexpr std::array<Cell, puzzleSpace.rowsCount * puzzleSpace.columnsCount * puzzleSpace.digitsCount>
+  createPossibilities(std::array<Index, puzzleSpace.rowsCount> rowIndices,
+                      std::array<Index, puzzleSpace.columnsCount> columnIndices,
+                      std::array<Digit, puzzleSpace.digitsCount> digits) {
+    constexpr auto amount = std::size_t(puzzleSpace.rowsCount) * std::size_t(puzzleSpace.columnsCount) *
+                            std::size_t(puzzleSpace.digitsCount);
     auto array = std::array<Cell, amount>();
     std::size_t i = 0;
     // First order priority: the rows
@@ -97,28 +100,28 @@ private:
 public:
   /** The amount of rows in the puzzle grid
    */
-  const uint8_t rows = 0;
+  const Index rows = 0;
   /** The amount of columns in the puzzle grid
    */
-  const uint8_t columns = 0;
+  const Index columns = 0;
 
   /** The ordered set of valid row indices, from 0 to the amount of rows - 1
    */
-  const std::array<uint8_t, rowsCount> rowIndices;
+  const std::array<Index, puzzleSpace.rowsCount> rowIndices;
 
   /** The ordered set of valid column indices, from 0 to the amount of columns - 1
    */
-  const std::array<uint8_t, columnsCount> columnIndices;
+  const std::array<Index, puzzleSpace.columnsCount> columnIndices;
 
   /** The ordered set of valid digits
    */
-  const std::array<Digit, digitsCount> digits;
+  const std::array<Digit, puzzleSpace.digitsCount> digits;
 
   /** A 2D matrix of the empty grid, with only invalid digits
    */
-  const std::array<std::array<Digit, columnsCount>, rowsCount> emptyGrid;
+  const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> emptyGrid;
 
   /** The canonical ordering of all the possibilities in the puzzle space
    */
-  const std::array<Cell, rowsCount * columnsCount * digitsCount> possibilities;
+  const std::array<Cell, puzzleSpace.rowsCount * puzzleSpace.columnsCount * puzzleSpace.digitsCount> possibilities;
 };

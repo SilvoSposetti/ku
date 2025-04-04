@@ -10,7 +10,7 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     constexpr uint8_t columns = 5;
     constexpr uint8_t digitsCount = 9;
 
-    constexpr auto puzzle = PuzzleIntrinsics<rows, columns, digitsCount>();
+    constexpr auto puzzle = PuzzleIntrinsics<{rows, columns, digitsCount}>();
 
     // rows and columns become available as members
     CHECK_EQ(puzzle.rows, rows);
@@ -31,7 +31,7 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     constexpr uint8_t columns = 4;
     constexpr uint8_t digitsCount = 5;
 
-    constexpr auto puzzle = PuzzleIntrinsics<rows, columns, digitsCount>();
+    constexpr auto puzzle = PuzzleIntrinsics<{rows, columns, digitsCount}>();
 
     constexpr auto validCells = std::array{
         Cell(0, 0, 1),
@@ -138,21 +138,21 @@ TEST_SUITE("PuzzleIntrinsiscs") {
   }
 
   // Cases with zero
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<0, 0, 0>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<1, 1, 0>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<1, 0, 1>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<0, 1, 1>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<1, 0, 0>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<0, 1, 0>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<0, 0, 1>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{0, 0, 0}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{1, 1, 0}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{1, 0, 1}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{0, 1, 1}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{1, 0, 0}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{0, 1, 0}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{0, 0, 1}>);
 
   // More "regular" cases
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<1, 2, 5>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<3, 3, 3>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<6, 6, 2>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<9, 9, 9>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<7, 12, 5>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<13, 12, 11>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<15, 7, 21>);
-  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<1, 100, 3>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{1, 2, 5}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{3, 3, 3}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{6, 6, 2}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{9, 9, 9}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{7, 12, 5}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{13, 12, 11}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{15, 7, 21}>);
+  TEST_CASE_TEMPLATE_INVOKE(test_id, PuzzleIntrinsics<{1, 100, 3}>);
 }

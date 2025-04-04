@@ -14,22 +14,23 @@
  * @tparam columnsCount The amount of columns in the grid.
  * @tparam digitsCount The amount of digits possible in each cell of the grid.
  */
-template <uint8_t rowsCount, uint8_t columnsCount, uint8_t digitsCount>
-class Puzzle : public PuzzleIntrinsics<rowsCount, columnsCount, digitsCount> {
+template <PuzzleSpace puzzleSpace>
+class Puzzle : public PuzzleIntrinsics<puzzleSpace> {
 public:
   constexpr Puzzle(const std::string& name,
                    const std::vector<Cell>& clues,
                    ConstraintType constraintTypes,
                    std::optional<int32_t> seed)
-      : PuzzleIntrinsics<rowsCount, columnsCount, digitsCount>()
+      : PuzzleIntrinsics<puzzleSpace>()
       , name(name)
       , seed(seed)
       , constraints(createConstraints(constraintTypes))
       , givenCells(getOnlyValidClues(clues))
       , grid(initializeGrid()) {};
 
-  std::array<std::array<Digit, columnsCount>, rowsCount> initializeGrid() const {
-    auto grid = ArrayUtilities::create2DArray<Digit, columnsCount, rowsCount>(Digits::invalidDigit);
+  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> initializeGrid() const {
+    auto grid =
+        ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit);
     for (const auto& cell : givenCells) {
       grid[cell.rowIndex][cell.columnIndex] = cell.digit;
     }
@@ -84,7 +85,8 @@ public:
    */
   bool exportToSvg(const std::filesystem::path& location) const {
     const auto options = DrawingOptions(1000, 150, constraints.size());
-    const auto document = PuzzleDrawing::create<rowsCount, columnsCount>(name, options, grid, constraints);
+    const auto document =
+        PuzzleDrawing::create<puzzleSpace.rowsCount, puzzleSpace.columnsCount>(name, options, grid, constraints);
     return document->writeToFile(location);
   };
 
@@ -119,7 +121,7 @@ private:
     std::vector<Cell> result;
     result.reserve(clues.size());
     for (const auto& cell : clues) {
-      if (PuzzleIntrinsics<rowsCount, columnsCount, digitsCount>::isCellValid(cell)) {
+      if (this->isCellValid(cell)) {
         result.push_back(cell);
       }
     }
@@ -140,5 +142,5 @@ public:
   std::vector<Cell> givenCells;
 
   /// A 2D matrix of the grid, intialized with invalid digits
-  std::array<std::array<Digit, columnsCount>, rowsCount> grid = this->emptyGrid;
+  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> grid = this->emptyGrid;
 };

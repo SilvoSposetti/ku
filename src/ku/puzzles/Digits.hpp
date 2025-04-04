@@ -7,7 +7,7 @@
 
 /** The type of all Digits
  */
-typedef uint8_t Digit;
+using Digit = uint8_t;
 
 /** Utilities for creating and managing Digits
  */
