@@ -8,7 +8,7 @@ public:
 
   virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions& options) const override;
 
-  virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const;
+  virtual bool satisfy(const std::vector<std::vector<Sudo::Digit>>& board) const override;
 
 protected:
   virtual int32_t definePrimaryItemsAmount() const override;

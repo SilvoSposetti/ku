@@ -159,7 +159,7 @@ void DancingCellsStructure::checkOptions(const std::vector<std::vector<XccElemen
     }
   }
   if (std::any_of(areItemsCoverable.begin(), areItemsCoverable.end(), [](bool isCoverable) { return !isCoverable; })) {
-    throw std::runtime_error(std::string("A primary item is cannot be covered with the given options"));
+    throw std::runtime_error(std::string("An item cannot be covered with the given options"));
   }
 }
 

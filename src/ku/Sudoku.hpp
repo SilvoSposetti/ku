@@ -4,8 +4,6 @@
 #include "Sudo.hpp"
 #include "constraints/AbstractConstraint.hpp"
 #include "constraints/ConstraintType.hpp"
-#include "drawing/SvgDocument.hpp"
-#include "solver/DancingCellsStructure.hpp"
 
 #include <filesystem>
 #include <optional>
@@ -101,17 +99,6 @@ private:
    * @return The transformed matrix
    */
   static std::vector<std::vector<Sudo::Digit>> transformClues(const std::vector<std::vector<int32_t>>& clues);
-
-  /** Creates an svg document graphically showing the exact cover matrix that represents this sudoku
-   * @param name The name of the document that is created
-   * @param dataStructure The data structure constructed with the current constraints and field
-   * @param constraints The data structure constructed with the current constraints and field
-   * @return The svg document
-   */
-  static std::unique_ptr<SvgDocument>
-  createExactCoverDocument(const std::string& name,
-                           const DancingCellsStructure& dataStructure,
-                           const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
 
 private:
   /// The name
