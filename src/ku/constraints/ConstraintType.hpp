@@ -32,11 +32,3 @@ inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
 inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
   return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
 }
-
-namespace Constraint {
-inline ConstraintType getSudokuConstraints() {
-  return ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_COLUMN |
-         ConstraintType::SUDOKU_BOX;
-}
-
-} // namespace Constraint
