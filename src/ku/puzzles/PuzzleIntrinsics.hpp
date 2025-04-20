@@ -3,10 +3,10 @@
 #include "../utilities/ArrayUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
+#include "Possibilities.hpp"
 #include "PuzzleSpace.hpp"
 
 #include <array>
-#include <cstdint>
 
 /** The base 'constexpr' class for puzzle intrinsics where a single digit goes in each cell.
  * Provides constant members, which are initialized at compile-time.
@@ -28,10 +28,6 @@ public:
       , emptyGrid(
             ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit))
       , possibilities(createPossibilities(rowIndices, columnIndices, digits)) {};
-
-  /** Virtual destructor
-   */
-  virtual ~PuzzleIntrinsics() = default;
 
   /** Checks if a row index is valid for the puzzle
    * @param rowIndex The index to check
@@ -75,13 +71,10 @@ private:
    * @return From the top-left cell going right and then going down line by line, the ordered set of all possibilities
    * for every cell.
    */
-  constexpr std::array<Cell, puzzleSpace.rowsCount * puzzleSpace.columnsCount * puzzleSpace.digitsCount>
-  createPossibilities(std::array<Index, puzzleSpace.rowsCount> rowIndices,
-                      std::array<Index, puzzleSpace.columnsCount> columnIndices,
-                      std::array<Digit, puzzleSpace.digitsCount> digits) {
-    constexpr auto amount = std::size_t(puzzleSpace.rowsCount) * std::size_t(puzzleSpace.columnsCount) *
-                            std::size_t(puzzleSpace.digitsCount);
-    auto array = std::array<Cell, amount>();
+  constexpr Possibilities<puzzleSpace> createPossibilities(std::array<Index, puzzleSpace.rowsCount> rowIndices,
+                                                           std::array<Index, puzzleSpace.columnsCount> columnIndices,
+                                                           std::array<Digit, puzzleSpace.digitsCount> digits) {
+    auto array = Possibilities<puzzleSpace>();
     std::size_t i = 0;
     // First order priority: the rows
     for (const auto& rowIndex : rowIndices) {
@@ -123,5 +116,5 @@ public:
 
   /** The canonical ordering of all the possibilities in the puzzle space
    */
-  const std::array<Cell, puzzleSpace.rowsCount * puzzleSpace.columnsCount * puzzleSpace.digitsCount> possibilities;
+  const Possibilities<puzzleSpace> possibilities;
 };

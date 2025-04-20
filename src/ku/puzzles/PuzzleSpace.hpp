@@ -5,7 +5,6 @@
 
 /** A possibility for a cell in a Puzzle
  */
-// template <>
 struct PuzzleSpace {
   /** Constructor
    */

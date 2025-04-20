@@ -2,6 +2,7 @@
 #include "XccElement.hpp"
 
 #include <cstdint>
+#include <compare>
 
 /** Struct of data stored in the NODE array of the DancingCellsStructure.
  */

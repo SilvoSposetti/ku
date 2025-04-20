@@ -1,10 +1,13 @@
 #pragma once
 
+#include "../Setter.hpp"
 #include "../constraints/AbstractConstraint.hpp"
 #include "../constraints/ConstraintFactory.hpp"
 #include "../constraints/ConstraintType.hpp"
+#include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
+#include "../solver/DancingCellsStructure.hpp"
 #include "PuzzleIntrinsics.hpp"
 
 #include <filesystem>
@@ -26,7 +29,9 @@ public:
       , seed(seed)
       , constraints(createConstraints(constraintTypes))
       , givenCells(getOnlyValidClues(clues))
-      , grid(initializeGrid()) {};
+      , grid(initializeGrid())
+      , structure(createStructure())
+      , solution(solve()) {};
 
   std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> initializeGrid() const {
     auto grid =
@@ -67,7 +72,7 @@ public:
         lines.push_back(createLine("┏", "━", "┓", elements));
       }
       std::vector<std::string> digitStrings;
-      std::ranges::transform(grid[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
+      std::ranges::transform(solution[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
         return Digits::isValid(digit) ? std::to_string(digit) : "◌";
       });
       lines.push_back(createLine("┃", " ", "┃", digitStrings));
@@ -89,6 +94,99 @@ public:
         PuzzleDrawing::create<puzzleSpace.rowsCount, puzzleSpace.columnsCount>(name, options, grid, constraints);
     return document->writeToFile(location);
   };
+
+  /** Generates and stores the puzzle board to an SVG file in the provided directory
+   * @param location Where the file should be stored
+   * @return whether storing was successufl
+   */
+  bool exportDataStructureToSvg(const std::filesystem::path& location) const {
+
+    const auto document = DataStructureDrawing::create(name + "-ExactCover", structure, constraints);
+    document->writeToFile(location);
+    return document->writeToFile(location);
+    return true;
+  };
+
+  DancingCellsStructure createStructure() const {
+    int32_t primaryItemsCount = 0;
+    int32_t secondaryItemsCount = 0;
+    auto idOffsets = std::vector<std::pair<int32_t, int32_t>>(constraints.size() + 1, {0, 0});
+    {
+
+      int32_t constraintIndex = 0;
+      for (const auto& constraint : constraints) {
+        idOffsets[constraintIndex + 1] = {idOffsets[constraintIndex].first + constraint->getPrimaryItemsAmount(),
+                                          idOffsets[constraintIndex].second + constraint->getSecondaryItemsAmount()};
+        constraintIndex++;
+      }
+      primaryItemsCount = idOffsets.back().first;
+      secondaryItemsCount = idOffsets.back().second;
+      for (auto& idOffset : idOffsets) {
+        idOffset.second += idOffsets.back().first;
+      }
+    }
+
+    std::vector<std::vector<XccElement>> options;
+    int32_t globalOptionId = 0;
+    options.reserve(this->possibilities.size());
+    for (const auto& [i, j, possibleDigit] : this->possibilities) {
+      const auto& actualDigit = grid[i][j];
+      std::vector<XccElement> option;
+      if (!Digits::isValid(actualDigit) || actualDigit == possibleDigit) {
+        int32_t constraintId = 0;
+        for (const auto& constraint : constraints) {
+          const auto basePrimaryId = idOffsets[constraintId].first;
+          if (constraint->getPrimaryItemsAmount() > 0) {
+            const auto& primaryItems = constraint->getPrimaryItems();
+            for (const auto& primaryItemId : primaryItems[globalOptionId]) {
+              option.emplace_back(basePrimaryId + primaryItemId);
+            }
+          }
+          constraintId++;
+        }
+        constraintId = 0;
+        for (const auto& constraint : constraints) {
+          if (constraint->getSecondaryItemsAmount() > 0) {
+            const auto baseSecondaryId = idOffsets[constraintId].second;
+            const auto& secondaryItems = constraint->getSecondaryItems();
+            for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
+              const auto itemId = secondaryItemId + baseSecondaryId;
+              option.emplace_back(itemId);
+            }
+          }
+          constraintId++;
+        }
+        options.emplace_back(option);
+      }
+      globalOptionId++;
+    }
+    return DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
+  }
+
+  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> solve() {
+
+    // TODO: remove this "clues" vector and pass only the given cells
+    auto clues = std::vector<std::vector<Sudo::Digit>>();
+    for (const auto& i : this->rowIndices) {
+      auto row = std::vector<Sudo::Digit>();
+      for (const auto& j : this->columnIndices) {
+        row.push_back(static_cast<Sudo::Digit>(grid[i][j]));
+      }
+      clues.push_back(row);
+    }
+
+    const auto board = Setter::generate(clues, constraints, seed);
+
+    // TODO: remove this "result" in a board and return solution directly
+    auto result = std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>();
+    for (const auto& i : this->rowIndices) {
+      auto& row = result[i];
+      for (const auto& j : this->columnIndices) {
+        row[j] = static_cast<Digit>(board->getSolution()[i][j]);
+      }
+    }
+    return result;
+  }
 
 private:
   /** Constructs the list of constraints
@@ -115,7 +213,7 @@ private:
 
   /** Selects only the valid clues out of the provided ones
    * @param clues A list of clues
-   * @return The list of constructed constraints
+   * @return The same list, but only with valid clues
    */
   std::vector<Cell> getOnlyValidClues(const std::vector<Cell>& clues) {
     std::vector<Cell> result;
@@ -143,4 +241,8 @@ public:
 
   /// A 2D matrix of the grid, intialized with invalid digits
   std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> grid = this->emptyGrid;
+
+  const DancingCellsStructure structure;
+
+  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> solution = this->emptyGrid;
 };
