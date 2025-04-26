@@ -8,7 +8,7 @@ class RowConstraint : public Constraint<RowConstraint<puzzle>, puzzle> {
 public:
   constexpr RowConstraint()
       : Constraint<RowConstraint<puzzle>, puzzle>(
-            ConstraintType::SUDOKU_ROW, "Row", "Rows contain all the digits exactly once.") {};
+            ConstraintType::EXACT_ROW, "Row", "Rows contain all the digits exactly once.") {};
 
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();

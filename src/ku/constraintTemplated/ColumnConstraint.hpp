@@ -8,7 +8,7 @@ class ColumnConstraint : public Constraint<ColumnConstraint<puzzle>, puzzle> {
 public:
   constexpr ColumnConstraint()
       : Constraint<ColumnConstraint<puzzle>, puzzle>(
-            ConstraintType::SUDOKU_COLUMN, "Column", "Columns contain all the digits exactly once.") {};
+            ConstraintType::EXACT_COLUMN, "Column", "Columns contain all the digits exactly once.") {};
 
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();

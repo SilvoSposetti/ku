@@ -7,8 +7,8 @@ template <PuzzleIntrinsics puzzle>
 class CellConstraint : public Constraint<CellConstraint<puzzle>, puzzle> {
 public:
   constexpr CellConstraint()
-      : Constraint<CellConstraint<puzzle>, puzzle>(
-            ConstraintType::SUDOKU_CELL, "Cell", "Each cell contains a single digit.") {};
+      : Constraint<CellConstraint<puzzle>, puzzle>(ConstraintType::CELL, "Cell", "Each cell contains a single digit.") {
+      };
 
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();

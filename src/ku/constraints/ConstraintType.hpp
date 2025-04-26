@@ -21,8 +21,11 @@ enum class ConstraintType : uint64_t {
   DISJOINT_BOXES = 1 << 14,
   ASTERISK = 1 << 15,
   HYPER_SUDOKU = 1 << 16,
-  // When adding a constraint, update below:
-  // Constraint::getConstraintNameString()
+  //
+  CELL = 1 << 0,
+  EXACT_ROW = 1 << 1,
+  EXACT_COLUMN = 1 << 2,
+  EXACT_3x3_BOXES = 1 << 3,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

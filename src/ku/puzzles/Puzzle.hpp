@@ -5,10 +5,13 @@
 #include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
+#include "../solver/AlgorithmC.hpp"
 #include "../solver/DancingCellsStructure.hpp"
+#include "../utilities/IdPacking.hpp"
 #include "PuzzleIntrinsics.hpp"
 
 #include <filesystem>
+#include <iostream>
 #include <ranges>
 #include <unordered_set>
 #include <vector>
@@ -48,9 +51,7 @@ public:
     const auto filter = [&](const Cell& possibility) {
       const auto found = std::ranges::find_if(
           this->givenCells, [&](const Cell& givenCell) { return possibility.isAtSameSpot(givenCell); });
-      if (found == givenCells.end()) {
-        return true;
-      } else {
+      if (found != givenCells.end()) {
         const auto givenCell = *found;
         return possibility == givenCell;
       }
@@ -154,65 +155,66 @@ public:
     }
 
     std::vector<std::vector<XccElement>> options;
-    int32_t globalOptionId = 0;
     options.reserve(possibilities.size());
-    for (const auto& [i, j, possibleDigit] : this->allPossibilities) {
-      const auto& actualDigit = startingGrid[i][j];
+    for (const auto& [i, j, possibleDigit] : possibilities) {
+      const int32_t globalOptionId = IdPacking::packId(
+          i, j, possibleDigit - 1, puzzleSpace.rowsCount, puzzleSpace.columnsCount, puzzleSpace.digitsCount);
       std::vector<XccElement> option;
-      if (!Digits::isValid(actualDigit) || actualDigit == possibleDigit) {
-        int32_t constraintId = 0;
-        for (const auto& constraint : constraints) {
-          const auto basePrimaryId = idOffsets[constraintId].first;
-          if (constraint->getPrimaryItemsAmount() > 0) {
-            const auto& primaryItems = constraint->getPrimaryItems();
-            for (const auto& primaryItemId : primaryItems[globalOptionId]) {
-              option.emplace_back(basePrimaryId + primaryItemId);
-            }
+      int32_t constraintId = 0;
+      for (const auto& constraint : constraints) {
+        const auto basePrimaryId = idOffsets[constraintId].first;
+        if (constraint->getPrimaryItemsAmount() > 0) {
+          const auto& primaryItems = constraint->getPrimaryItems();
+          for (const auto& primaryItemId : primaryItems[globalOptionId]) {
+            option.emplace_back(basePrimaryId + primaryItemId);
           }
-          constraintId++;
         }
-        constraintId = 0;
-        for (const auto& constraint : constraints) {
-          if (constraint->getSecondaryItemsAmount() > 0) {
-            const auto baseSecondaryId = idOffsets[constraintId].second;
-            const auto& secondaryItems = constraint->getSecondaryItems();
-            for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
-              const auto itemId = secondaryItemId + baseSecondaryId;
-              option.emplace_back(itemId);
-            }
-          }
-          constraintId++;
-        }
-        options.emplace_back(option);
+        constraintId++;
       }
-      globalOptionId++;
+      constraintId = 0;
+      for (const auto& constraint : constraints) {
+        if (constraint->getSecondaryItemsAmount() > 0) {
+          const auto baseSecondaryId = idOffsets[constraintId].second;
+          const auto& secondaryItems = constraint->getSecondaryItems();
+          for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
+            const auto itemId = secondaryItemId + baseSecondaryId;
+            option.emplace_back(itemId);
+          }
+        }
+        constraintId++;
+      }
+      options.emplace_back(option);
     }
     return DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
   }
 
   Grid<puzzleSpace> solve() {
+    auto solution = Grid<puzzleSpace>();
 
-    // // TODO: remove this "clues" vector and pass only the given cells
-    // auto clues = std::vector<std::vector<Sudo::Digit>>();
-    // for (const auto& i : this->rowIndices) {
-    //   auto row = std::vector<Sudo::Digit>();
-    //   for (const auto& j : this->columnIndices) {
-    //     row.push_back(static_cast<Sudo::Digit>(grid[i][j]));
-    //   }
-    //   clues.push_back(row);
-    // }
+    auto structureCopy = structure;
+    // Find a possible solution
+    const auto solutionOptional = AlgorithmC::findOneSolution(structureCopy, seed);
 
-    // const auto board = Setter::generate(clues, constraints, seed);
+    if (!solutionOptional.has_value()) {
+      std::cout << "Cannot find a solution" << std::endl;
+    }
+    if (solutionOptional.has_value()) {
+      const auto& options = solutionOptional.value();
+      if (options.size() != puzzleSpace.columnsCount * puzzleSpace.rowsCount) {
+        throw std::runtime_error(std::string("Solution found does not cover the entire grid."));
+      }
 
-    // TODO: remove this "result" in a board and return solution directly
-    auto result = Grid<puzzleSpace>();
-    // for (const auto& i : this->rowIndices) {
-    //   auto& row = result[i];
-    //   for (const auto& j : this->columnIndices) {
-    //     row[j] = static_cast<Digit>(board->getSolution()[i][j]);
-    //   }
-    // }
-    return result;
+      // Reduce structure's solution back to a grid:
+      // Datastructure was created with available possibilities, options were given from first to last
+      for (const auto [id, cell] : std::ranges::views::enumerate(possibilities)) {
+        if (options.contains(id)) {
+          const auto& [row, column, digit] = cell;
+          solution[row][column] = digit;
+        }
+      }
+    }
+
+    return solution;
   }
 
 private:
@@ -266,7 +268,7 @@ public:
   const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraints;
 
   /// The cells with given values
-  std::unordered_set<Cell> givenCells;
+  const std::unordered_set<Cell> givenCells;
 
   const std::vector<Cell> possibilities;
 
