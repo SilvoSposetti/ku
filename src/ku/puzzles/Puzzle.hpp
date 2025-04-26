@@ -128,8 +128,8 @@ public:
 
     std::vector<std::vector<XccElement>> options;
     int32_t globalOptionId = 0;
-    options.reserve(this->possibilities.size());
-    for (const auto& [i, j, possibleDigit] : this->possibilities) {
+    options.reserve(this->allPossibilities.size());
+    for (const auto& [i, j, possibleDigit] : this->allPossibilities) {
       const auto& actualDigit = grid[i][j];
       std::vector<XccElement> option;
       if (!Digits::isValid(actualDigit) || actualDigit == possibleDigit) {

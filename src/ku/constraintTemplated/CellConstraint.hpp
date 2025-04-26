@@ -13,7 +13,7 @@ public:
     auto items = ItemsList<puzzle>();
     size_t counter = 0;
     const auto totalDigits = puzzle.rows * puzzle.columns;
-    for (const auto& [row, column, digit] : puzzle.possibilities) {
+    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
       items[counter] = std::array<int32_t, 1>{static_cast<int32_t>((row * puzzle.columns + column) % totalDigits)};
       counter++;
     }

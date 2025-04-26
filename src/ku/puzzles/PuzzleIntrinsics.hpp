@@ -27,7 +27,7 @@ public:
       , digits(Digits::createDigits<puzzleSpace.digitsCount>())
       , emptyGrid(
             ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit))
-      , possibilities(createPossibilities(rowIndices, columnIndices, digits)) {};
+      , allPossibilities(createPossibilities(rowIndices, columnIndices, digits)) {};
 
   /** Checks if a row index is valid for the puzzle
    * @param rowIndex The index to check
@@ -116,5 +116,5 @@ public:
 
   /** The canonical ordering of all the possibilities in the puzzle space
    */
-  const Possibilities<puzzleSpace> possibilities;
+  const Possibilities<puzzleSpace> allPossibilities;
 };

@@ -119,14 +119,14 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     SUBCASE("Possibilites") {
       // One possibility for each row, column, and digit
       constexpr auto possibilitiesCount = puzzle.rows * puzzle.columns * puzzle.digits.size();
-      CHECK_EQ(puzzle.possibilities.size(), possibilitiesCount);
+      CHECK_EQ(puzzle.allPossibilities.size(), possibilitiesCount);
 
       // All possibilities should appear in the correct order:
       std::size_t i = 0;
       for (const auto& rowIndex : puzzle.rowIndices) {
         for (const auto& columnIndex : puzzle.columnIndices) {
           for (const auto& digit : puzzle.digits) {
-            const auto& cell = puzzle.possibilities[i];
+            const auto& cell = puzzle.allPossibilities[i];
             CHECK_EQ(cell.rowIndex, rowIndex);
             CHECK_EQ(cell.columnIndex, columnIndex);
             CHECK_EQ(cell.digit, digit);
