@@ -14,7 +14,7 @@ public:
     size_t counter = 0;
     const auto totalDigits = puzzle.rows * puzzle.columns;
     for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      items[counter] = std::array<int32_t, 1>{static_cast<int32_t>((row * puzzle.columns + column) % totalDigits)};
+      items[counter].push_back(static_cast<int32_t>((row * puzzle.columns + column) % totalDigits));
       counter++;
     }
     return items;

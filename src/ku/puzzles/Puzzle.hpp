@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Setter.hpp"
-#include "../constraints/AbstractConstraint.hpp"
-#include "../constraints/ConstraintFactory.hpp"
-#include "../constraints/ConstraintType.hpp"
+#include "../constraintTemplated/CellConstraint.hpp"
+#include "../constraintTemplated/Constraint.hpp"
+#include "../constraintTemplated/ConstraintInterface.hpp"
 #include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
@@ -11,6 +11,10 @@
 #include "PuzzleIntrinsics.hpp"
 
 #include <filesystem>
+#include <ranges>
+#include <span>
+#include <unordered_set>
+#include <vector>
 
 /** The base class for grid-like puzzles where a single digit goes in each cell.
  * @tparam rowsCount The amount of rows in the grid.
@@ -21,7 +25,7 @@ template <PuzzleSpace puzzleSpace>
 class Puzzle : public PuzzleIntrinsics<puzzleSpace> {
 public:
   constexpr Puzzle(const std::string& name,
-                   const std::vector<Cell>& clues,
+                   const std::unordered_set<Cell>& clues,
                    ConstraintType constraintTypes,
                    std::optional<int32_t> seed)
       : PuzzleIntrinsics<puzzleSpace>()
@@ -29,6 +33,7 @@ public:
       , seed(seed)
       , constraints(createConstraints(constraintTypes))
       , givenCells(getOnlyValidClues(clues))
+      , possibilities(constructActualPossibilities())
       , grid(initializeGrid())
       , structure(createStructure())
       , solution(solve()) {};
@@ -41,6 +46,22 @@ public:
     }
     return grid;
   }
+
+  std::vector<Cell> constructActualPossibilities() const {
+    const auto filter = [&](const Cell& possibility) {
+      const auto found = std::ranges::find_if(
+          this->givenCells, [&](const Cell& givenCell) { return possibility.isAtSameSpot(givenCell); });
+      if (found == givenCells.end()) {
+        return true;
+      } else {
+        const auto givenCell = *found;
+        return possibility == givenCell;
+      }
+      return true;
+    };
+    auto filteredView = this->allPossibilities | std::ranges::views::filter(filter);
+    return std::vector<Cell>(filteredView.begin(), filteredView.end());
+  };
 
   /** Prints the puzzle grid to stdout
    */
@@ -101,7 +122,7 @@ public:
    */
   bool exportDataStructureToSvg(const std::filesystem::path& location) const {
 
-    const auto document = DataStructureDrawing::create(name + "-ExactCover", structure, constraints);
+    const auto document = DataStructureDrawing::create<puzzleSpace>(name + "-ExactCover", structure, constraints, possibilities);
     document->writeToFile(location);
     return document->writeToFile(location);
     return true;
@@ -128,7 +149,7 @@ public:
 
     std::vector<std::vector<XccElement>> options;
     int32_t globalOptionId = 0;
-    options.reserve(this->allPossibilities.size());
+    options.reserve(possibilities.size());
     for (const auto& [i, j, possibleDigit] : this->allPossibilities) {
       const auto& actualDigit = grid[i][j];
       std::vector<XccElement> option;
@@ -165,26 +186,26 @@ public:
 
   std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> solve() {
 
-    // TODO: remove this "clues" vector and pass only the given cells
-    auto clues = std::vector<std::vector<Sudo::Digit>>();
-    for (const auto& i : this->rowIndices) {
-      auto row = std::vector<Sudo::Digit>();
-      for (const auto& j : this->columnIndices) {
-        row.push_back(static_cast<Sudo::Digit>(grid[i][j]));
-      }
-      clues.push_back(row);
-    }
+    // // TODO: remove this "clues" vector and pass only the given cells
+    // auto clues = std::vector<std::vector<Sudo::Digit>>();
+    // for (const auto& i : this->rowIndices) {
+    //   auto row = std::vector<Sudo::Digit>();
+    //   for (const auto& j : this->columnIndices) {
+    //     row.push_back(static_cast<Sudo::Digit>(grid[i][j]));
+    //   }
+    //   clues.push_back(row);
+    // }
 
-    const auto board = Setter::generate(clues, constraints, seed);
+    // const auto board = Setter::generate(clues, constraints, seed);
 
     // TODO: remove this "result" in a board and return solution directly
     auto result = std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>();
-    for (const auto& i : this->rowIndices) {
-      auto& row = result[i];
-      for (const auto& j : this->columnIndices) {
-        row[j] = static_cast<Digit>(board->getSolution()[i][j]);
-      }
-    }
+    // for (const auto& i : this->rowIndices) {
+    //   auto& row = result[i];
+    //   for (const auto& j : this->columnIndices) {
+    //     row[j] = static_cast<Digit>(board->getSolution()[i][j]);
+    //   }
+    // }
     return result;
   }
 
@@ -193,21 +214,25 @@ private:
    * @param constraintTypes A bitflag of the constraints
    * @return The list of constructed constraints
    */
-  std::vector<std::unique_ptr<AbstractConstraint>> createConstraints(const ConstraintType constraintTypes) const {
-    std::vector<std::unique_ptr<AbstractConstraint>> constraintList;
+  std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>
+  createConstraints([[maybe_unused]] const ConstraintType constraintTypes) const {
+    std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraintList;
+
+    constraintList.push_back(std::make_unique<CellConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
 
     // SUDOKU_CELL constraint is always present
-    constraintList.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));
+    // constraintList.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));
 
-    for (int32_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
-      const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
-      if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
-        const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
-        if (singleConstraint != ConstraintType::SUDOKU_CELL) {
-          constraintList.emplace_back(ConstraintFactory::makeConstraint(singleConstraint));
-        }
-      }
-    }
+    // for (int32_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
+    //   const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
+    //   if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
+    //     const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
+    //     if (singleConstraint != ConstraintType::SUDOKU_CELL) {
+    //       constraintList.emplace_back(ConstraintFactory::makeConstraint(singleConstraint));
+    //     }
+    //   }
+    // }
+
     return constraintList;
   }
 
@@ -215,12 +240,11 @@ private:
    * @param clues A list of clues
    * @return The same list, but only with valid clues
    */
-  std::vector<Cell> getOnlyValidClues(const std::vector<Cell>& clues) {
-    std::vector<Cell> result;
-    result.reserve(clues.size());
+  std::unordered_set<Cell> getOnlyValidClues(const std::unordered_set<Cell>& clues) {
+    std::unordered_set<Cell> result;
     for (const auto& cell : clues) {
       if (this->isCellValid(cell)) {
-        result.push_back(cell);
+        result.insert(cell);
       }
     }
     return result;
@@ -234,10 +258,12 @@ public:
   const std::optional<int32_t> seed;
 
   /// The list of constraint on the Puzzle
-  const std::vector<std::unique_ptr<AbstractConstraint>> constraints;
+  const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraints;
 
   /// The cells with given values
-  std::vector<Cell> givenCells;
+  std::unordered_set<Cell> givenCells;
+
+  const std::vector<Cell> possibilities;
 
   /// A 2D matrix of the grid, intialized with invalid digits
   std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> grid = this->emptyGrid;

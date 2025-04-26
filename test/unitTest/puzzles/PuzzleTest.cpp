@@ -22,7 +22,7 @@ TEST_CASE("Puzzle") {
   }
 
   SUBCASE("Grid Initialization With Clues") {
-    const auto clues = std::vector{
+    const auto clues = std::unordered_set{
         Cell(0, 0, 1),
         Cell(0, 1, 2),
         Cell(0, 2, 3),
@@ -46,34 +46,50 @@ TEST_CASE("Puzzle") {
   SUBCASE("Clues handling") {
     SUBCASE("No clues") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {};
+      std::unordered_set<Cell> expected = {};
       CHECK_EQ(puzzle.givenCells, expected);
     }
     SUBCASE("Valid clues") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 1, 2}, {2, 3, 3}}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {{0, 1, 2}, {2, 3, 3}};
+      std::unordered_set<Cell> expected = {{0, 1, 2}, {2, 3, 3}};
       CHECK_EQ(puzzle.givenCells, expected);
     }
     SUBCASE("Invalid row") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{15, 1, 2}}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {};
+      std::unordered_set<Cell> expected = {};
       CHECK_EQ(puzzle.givenCells, expected);
     }
     SUBCASE("Invalid column") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 15, 2}}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {};
+      std::unordered_set<Cell> expected = {};
       CHECK_EQ(puzzle.givenCells, expected);
     }
     SUBCASE("Invalid digit") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 1, 15}}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {};
+      std::unordered_set<Cell> expected = {};
       CHECK_EQ(puzzle.givenCells, expected);
     }
     SUBCASE("Some clues invalid") {
       const auto puzzle = Puzzle<{9, 9, 9}>(
           "Test", {{0, 1, 2}, {5, 5, 5}, {1, 3, 10}, {0, 1, 2}, {12, 0, 1}}, ConstraintType::NONE, {});
-      std::vector<Cell> expected = {{0, 1, 2}, {5, 5, 5}, {0, 1, 2}};
+      std::unordered_set<Cell> expected = {{0, 1, 2}, {5, 5, 5}, {0, 1, 2}};
       CHECK_EQ(puzzle.givenCells, expected);
+    }
+  }
+
+  SUBCASE("Possibilities") {
+    SUBCASE("No clues") {
+      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
+      const auto allPossibilities = std::vector<Cell>(puzzle.allPossibilities.begin(), puzzle.allPossibilities.end());
+      const auto possibilities = puzzle.possibilities;
+      CHECK_EQ(allPossibilities, possibilities);
+    }
+    SUBCASE("Valid clues") {
+      const auto puzzle = Puzzle<{2, 2, 3}>("Test", {{0, 1, 2}, {0, 0, 3}}, ConstraintType::NONE, {});
+      const auto allPossibilities = std::vector<Cell>(puzzle.allPossibilities.begin(), puzzle.allPossibilities.end());
+      const auto possibilities = puzzle.possibilities;
+      CHECK_EQ(possibilities.size(), 8); // Two given digits reduce the possibilities by (digitsCount - 1) twice.
+      CHECK(allPossibilities.size() >= possibilities.size());
     }
   }
 

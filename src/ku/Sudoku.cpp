@@ -156,10 +156,10 @@ void Sudoku::exportToSvg(const std::filesystem::path& location) {
   document->writeToFile(location);
 }
 
-void Sudoku::exportExactCoverMatrixToSvg(const std::filesystem::path& location) {
-  auto document = DataStructureDrawing::create(
-      name + "-ExactCover", DancingCellsStructure(board->getField(), constraints), constraints);
-  document->writeToFile(location);
+void Sudoku::exportExactCoverMatrixToSvg([[maybe_unused]] const std::filesystem::path& location) {
+  // auto document = DataStructureDrawing::create(
+  //     name + "-ExactCover", DancingCellsStructure(board->getField(), constraints), constraints);
+  // document->writeToFile(location);
 }
 
 void Sudoku::printInfo() {

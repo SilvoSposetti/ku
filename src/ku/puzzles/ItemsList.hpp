@@ -2,5 +2,7 @@
 
 #include "PuzzleIntrinsics.hpp"
 
+#include <vector>
+
 template <PuzzleIntrinsics puzzle>
-using ItemsList = std::array<std::array<int32_t, 1>, puzzle.rows * puzzle.columns * puzzle.digits.size()>;
+using ItemsList = std::array<std::vector<int32_t>, puzzle.rows * puzzle.columns * puzzle.digits.size()>;

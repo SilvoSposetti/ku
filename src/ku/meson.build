@@ -19,7 +19,6 @@ ku_sources = files(
   'constraints/SudokuCell.cpp',
   'constraints/SudokuColumn.cpp',
   'constraints/SudokuRow.cpp',
-  'drawing/DataStructureDrawing.cpp',
   'drawing/DrawingOptions.cpp',
   'drawing/DrawingUtilities.cpp',
   'drawing/SvgCircle.cpp',
