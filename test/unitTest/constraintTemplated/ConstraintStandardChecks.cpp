@@ -1,5 +1,7 @@
 
 #include "constraintTemplated/CellConstraint.hpp"
+#include "constraintTemplated/ColumnConstraint.hpp"
+#include "constraintTemplated/RowConstraint.hpp"
 
 #include <algorithm>
 #include <doctest.h>
@@ -50,4 +52,6 @@ TEST_SUITE("ConstraintTemplated: Standard Checks") {
 
   // Invocations
   TEST_CASE_TEMPLATE_INVOKE(checks, CellConstraint<puzzleIntrinsics>);
+  TEST_CASE_TEMPLATE_INVOKE(checks, RowConstraint<puzzleIntrinsics>);
+  TEST_CASE_TEMPLATE_INVOKE(checks, ColumnConstraint<puzzleIntrinsics>);
 }

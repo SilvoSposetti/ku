@@ -2,8 +2,10 @@
 
 #include "../Setter.hpp"
 #include "../constraintTemplated/CellConstraint.hpp"
+#include "../constraintTemplated/ColumnConstraint.hpp"
 #include "../constraintTemplated/Constraint.hpp"
 #include "../constraintTemplated/ConstraintInterface.hpp"
+#include "../constraintTemplated/RowConstraint.hpp"
 #include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
@@ -227,6 +229,8 @@ private:
     std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraintList;
 
     constraintList.push_back(std::make_unique<CellConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
+    constraintList.push_back(std::make_unique<RowConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
+    constraintList.push_back(std::make_unique<ColumnConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
 
     // SUDOKU_CELL constraint is always present
     // constraintList.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));

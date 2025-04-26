@@ -4,20 +4,20 @@
 #include "Constraint.hpp"
 
 template <PuzzleIntrinsics puzzle>
-class CellConstraint : public Constraint<CellConstraint<puzzle>, puzzle> {
+class RowConstraint : public Constraint<RowConstraint<puzzle>, puzzle> {
 public:
-  constexpr CellConstraint()
-      : Constraint<CellConstraint<puzzle>, puzzle>(
-            ConstraintType::SUDOKU_CELL, "Cell", "Each cell contains a single digit.") {};
+  constexpr RowConstraint()
+      : Constraint<RowConstraint<puzzle>, puzzle>(
+            ConstraintType::SUDOKU_ROW, "Row", "Rows contain all the digits exactly once.") {};
 
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();
     size_t counter = 0;
-    const auto totalCells = puzzle.rows * puzzle.columns;
+    constexpr auto totalCount = puzzle.rows * puzzle.digits.size();
     for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      items[counter].push_back(static_cast<int32_t>((row * puzzle.columns + column) % totalCells));
+      items[counter].push_back(static_cast<int32_t>(row * puzzle.digits.size() + (digit - 1)) % totalCount);
       counter++;
-    }
+    };
     return items;
   }
 
