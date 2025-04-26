@@ -12,7 +12,6 @@
 
 #include <filesystem>
 #include <ranges>
-#include <span>
 #include <unordered_set>
 #include <vector>
 
@@ -34,11 +33,11 @@ public:
       , constraints(createConstraints(constraintTypes))
       , givenCells(getOnlyValidClues(clues))
       , possibilities(constructActualPossibilities())
-      , grid(initializeGrid())
+      , startingGrid(initializeGrid())
       , structure(createStructure())
       , solution(solve()) {};
 
-  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> initializeGrid() const {
+  Grid<puzzleSpace> initializeGrid() const {
     auto grid =
         ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit);
     for (const auto& cell : givenCells) {
@@ -66,7 +65,15 @@ public:
   /** Prints the puzzle grid to stdout
    */
   void printGrid() const {
-    for (const auto& line : gridAsText()) {
+    for (const auto& line : gridAsText(startingGrid)) {
+      std::puts(line.c_str());
+    }
+  };
+
+  /** Prints the puzzle grid to stdout
+   */
+  void printSolution() const {
+    for (const auto& line : gridAsText(solution)) {
       std::puts(line.c_str());
     }
   };
@@ -74,7 +81,7 @@ public:
   /** Constructs the puzzle grid as a list of text lines.
    * @return The list of lines that represent the puzzle gird
    */
-  std::vector<std::string> gridAsText() const {
+  std::vector<std::string> gridAsText(const Grid<puzzleSpace>& grid) const {
     const auto createLine = [](const std::string& first,
                                const std::string& blank,
                                const std::string& last,
@@ -93,7 +100,7 @@ public:
         lines.push_back(createLine("┏", "━", "┓", elements));
       }
       std::vector<std::string> digitStrings;
-      std::ranges::transform(solution[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
+      std::ranges::transform(grid[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
         return Digits::isValid(digit) ? std::to_string(digit) : "◌";
       });
       lines.push_back(createLine("┃", " ", "┃", digitStrings));
@@ -111,8 +118,8 @@ public:
    */
   bool exportToSvg(const std::filesystem::path& location) const {
     const auto options = DrawingOptions(1000, 150, constraints.size());
-    const auto document =
-        PuzzleDrawing::create<puzzleSpace.rowsCount, puzzleSpace.columnsCount>(name, options, grid, constraints);
+    const auto document = PuzzleDrawing::create<puzzleSpace.rowsCount, puzzleSpace.columnsCount>(
+        name, options, startingGrid, constraints);
     return document->writeToFile(location);
   };
 
@@ -122,7 +129,8 @@ public:
    */
   bool exportDataStructureToSvg(const std::filesystem::path& location) const {
 
-    const auto document = DataStructureDrawing::create<puzzleSpace>(name + "-ExactCover", structure, constraints, possibilities);
+    const auto document =
+        DataStructureDrawing::create<puzzleSpace>(name + "-ExactCover", structure, constraints, possibilities);
     document->writeToFile(location);
     return document->writeToFile(location);
     return true;
@@ -151,7 +159,7 @@ public:
     int32_t globalOptionId = 0;
     options.reserve(possibilities.size());
     for (const auto& [i, j, possibleDigit] : this->allPossibilities) {
-      const auto& actualDigit = grid[i][j];
+      const auto& actualDigit = startingGrid[i][j];
       std::vector<XccElement> option;
       if (!Digits::isValid(actualDigit) || actualDigit == possibleDigit) {
         int32_t constraintId = 0;
@@ -184,7 +192,7 @@ public:
     return DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
   }
 
-  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> solve() {
+  Grid<puzzleSpace> solve() {
 
     // // TODO: remove this "clues" vector and pass only the given cells
     // auto clues = std::vector<std::vector<Sudo::Digit>>();
@@ -199,7 +207,7 @@ public:
     // const auto board = Setter::generate(clues, constraints, seed);
 
     // TODO: remove this "result" in a board and return solution directly
-    auto result = std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>();
+    auto result = Grid<puzzleSpace>();
     // for (const auto& i : this->rowIndices) {
     //   auto& row = result[i];
     //   for (const auto& j : this->columnIndices) {
@@ -266,9 +274,9 @@ public:
   const std::vector<Cell> possibilities;
 
   /// A 2D matrix of the grid, intialized with invalid digits
-  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> grid = this->emptyGrid;
+  Grid<puzzleSpace> startingGrid = this->emptyGrid;
 
   const DancingCellsStructure structure;
 
-  std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> solution = this->emptyGrid;
+  Grid<puzzleSpace> solution = this->emptyGrid;
 };

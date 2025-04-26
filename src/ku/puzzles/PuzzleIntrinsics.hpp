@@ -3,6 +3,7 @@
 #include "../utilities/ArrayUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
+#include "Grid.hpp"
 #include "Possibilities.hpp"
 #include "PuzzleSpace.hpp"
 
@@ -112,7 +113,7 @@ public:
 
   /** A 2D matrix of the empty grid, with only invalid digits
    */
-  const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount> emptyGrid;
+  const Grid<puzzleSpace> emptyGrid;
 
   /** The canonical ordering of all the possibilities in the puzzle space
    */

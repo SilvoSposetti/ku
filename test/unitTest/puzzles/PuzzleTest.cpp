@@ -16,7 +16,7 @@ TEST_CASE("Puzzle") {
 
   SUBCASE("Grid Initialization With No Clues") {
     const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
-    for (const auto& row : puzzle.grid) {
+    for (const auto& row : puzzle.startingGrid) {
       CHECK(std::ranges::all_of(row, [&](const auto& element) { return element == Digits::invalidDigit; }));
     }
   }
@@ -30,7 +30,7 @@ TEST_CASE("Puzzle") {
     };
     const auto puzzle = Puzzle<{9, 9, 9}>("Test", clues, ConstraintType::NONE, {});
     for (const auto& cell : clues) {
-      CHECK(puzzle.grid[cell.rowIndex][cell.columnIndex] == cell.digit);
+      CHECK(puzzle.startingGrid[cell.rowIndex][cell.columnIndex] == cell.digit);
     }
   }
 
