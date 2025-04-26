@@ -1,11 +1,7 @@
 #pragma once
 
 #include "../Setter.hpp"
-#include "../constraintTemplated/CellConstraint.hpp"
-#include "../constraintTemplated/ColumnConstraint.hpp"
-#include "../constraintTemplated/Constraint.hpp"
-#include "../constraintTemplated/ConstraintInterface.hpp"
-#include "../constraintTemplated/RowConstraint.hpp"
+#include "../constraintTemplated/ConstraintFactory.hpp"
 #include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
@@ -225,25 +221,22 @@ private:
    * @return The list of constructed constraints
    */
   std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>
-  createConstraints([[maybe_unused]] const ConstraintType constraintTypes) const {
+  createConstraints(const ConstraintType constraintTypes) const {
     std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraintList;
 
+    // CellConstraint constraint is always present
     constraintList.push_back(std::make_unique<CellConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
-    constraintList.push_back(std::make_unique<RowConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
-    constraintList.push_back(std::make_unique<ColumnConstraint<PuzzleIntrinsics<puzzleSpace>{}>>());
 
-    // SUDOKU_CELL constraint is always present
-    // constraintList.emplace_back(ConstraintFactory::makeConstraint(ConstraintType::SUDOKU_CELL));
-
-    // for (int32_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
-    //   const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
-    //   if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
-    //     const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
-    //     if (singleConstraint != ConstraintType::SUDOKU_CELL) {
-    //       constraintList.emplace_back(ConstraintFactory::makeConstraint(singleConstraint));
-    //     }
-    //   }
-    // }
+    for (uint8_t bitToCheck = 0; bitToCheck < 64; bitToCheck++) {
+      const uint64_t valueToCheck = static_cast<uint64_t>(1) << bitToCheck;
+      if (static_cast<uint64_t>(constraintTypes) & valueToCheck) {
+        const ConstraintType singleConstraint = static_cast<ConstraintType>(valueToCheck);
+        if (singleConstraint != ConstraintType::SUDOKU_CELL) {
+          constraintList.push_back(
+              ConstraintFactory::makeConstraint<PuzzleIntrinsics<puzzleSpace>{}>(singleConstraint));
+        }
+      }
+    }
 
     return constraintList;
   }

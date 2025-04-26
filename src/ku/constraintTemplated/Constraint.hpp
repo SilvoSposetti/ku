@@ -26,11 +26,14 @@ struct Constraint : public ConstraintInterface<puzzle> {
       , secondaryItems(ConcreteConstraint::createSecondaryItems()) {};
 
 public:
+  virtual ConstraintType getType() const override {
+    return type;
+  }
   virtual std::string getName() const override {
     return std::string(name);
   }
-  virtual ConstraintType getType() const override {
-    return type;
+  virtual std::string getDescription() const override {
+    return std::string(description);
   }
   virtual size_t getPrimaryItemsAmount() const override {
     return countUniqueElementsInOptions(primaryItems);

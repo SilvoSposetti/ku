@@ -10,8 +10,9 @@
 template <PuzzleIntrinsics puzzle>
 struct ConstraintInterface {
   virtual ~ConstraintInterface() = default;
-  virtual std::string getName() const = 0;
   virtual ConstraintType getType() const = 0;
+  virtual std::string getName() const = 0;
+  virtual std::string getDescription() const = 0;
   virtual size_t getPrimaryItemsAmount() const = 0;
   virtual ItemsList<puzzle> getPrimaryItems() const = 0;
   virtual size_t getSecondaryItemsAmount() const = 0;
