@@ -12,8 +12,8 @@ public:
     static_assert(ConstraintConcept<CellConstraint, puzzle>, "CellConstraint does not satisfy ConstraintConcept");
   };
 
-  constexpr static ItemsList<puzzle> createPrimaryItems() {
-    auto items = ItemsList<puzzle>();
+  constexpr static OptionsList<puzzle> createPrimaryItems() {
+    auto items = OptionsList<puzzle>();
     size_t counter = 0;
     constexpr auto totalCells = puzzle.rows * puzzle.columns;
     if constexpr (totalCells > 0) {
@@ -25,7 +25,7 @@ public:
     return items;
   }
 
-  constexpr static ItemsList<puzzle> createSecondaryItems() {
-    return ItemsList<puzzle>();
+  constexpr static OptionsList<puzzle> createSecondaryItems() {
+    return OptionsList<puzzle>();
   }
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include "../constraints/ConstraintType.hpp"
-#include "../puzzles/ItemsList.hpp"
+#include "../puzzles/OptionsList.hpp"
 #include "../puzzles/PuzzleIntrinsics.hpp"
 
 #include <string>
@@ -14,7 +14,7 @@ struct ConstraintInterface {
   virtual std::string getName() const = 0;
   virtual std::string getDescription() const = 0;
   virtual size_t getPrimaryItemsAmount() const = 0;
-  virtual ItemsList<puzzle> getPrimaryItems() const = 0;
+  virtual OptionsList<puzzle> getPrimaryOptions() const = 0;
   virtual size_t getSecondaryItemsAmount() const = 0;
-  virtual ItemsList<puzzle> getSecondaryItems() const = 0;
+  virtual OptionsList<puzzle> getSecondaryOptions() const = 0;
 };

@@ -4,26 +4,26 @@
 #include <doctest.h>
 
 template <PuzzleIntrinsics intrinsics>
-void checkConstraintItems(const ConstraintInterface<intrinsics>& constraint,
-                          int32_t expectedPrimaryItemsCoverage,
-                          const std::vector<std::vector<int32_t>>& expectedPrimaryItems,
-                          int32_t expectedSecondaryItemsCoverage,
-                          const std::vector<std::vector<int32_t>>& expectedSecondaryItems) {
+void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
+                            int32_t expectedPrimaryItemsCoverage,
+                            const std::vector<std::vector<int32_t>>& expectedPrimaryOptions,
+                            int32_t expectedSecondaryItemsCoverage,
+                            const std::vector<std::vector<int32_t>>& expectedSecondaryOptions) {
 
   // Primary items
   SUBCASE("Primary Items") {
-    CHECK_EQ(expectedPrimaryItems.size(), intrinsics.allPossibilities.size());
+    CHECK_EQ(expectedPrimaryOptions.size(), intrinsics.allPossibilities.size());
     CHECK_EQ(expectedPrimaryItemsCoverage, constraint.getPrimaryItemsAmount());
-    const auto array = constraint.getPrimaryItems();
+    const auto array = constraint.getPrimaryOptions();
     const auto vector = std::vector(array.begin(), array.end());
-    CHECK_EQ(expectedPrimaryItems, vector);
+    CHECK_EQ(expectedPrimaryOptions, vector);
   }
   // Primary items
   SUBCASE("Secondary Items") {
-    CHECK_EQ(expectedSecondaryItems.size(), intrinsics.allPossibilities.size());
+    CHECK_EQ(expectedSecondaryOptions.size(), intrinsics.allPossibilities.size());
     CHECK_EQ(expectedSecondaryItemsCoverage, constraint.getSecondaryItemsAmount());
-    const auto array = constraint.getSecondaryItems();
+    const auto array = constraint.getSecondaryOptions();
     const auto vector = std::vector(array.begin(), array.end());
-    CHECK_EQ(expectedSecondaryItems, vector);
+    CHECK_EQ(expectedSecondaryOptions, vector);
   }
 }

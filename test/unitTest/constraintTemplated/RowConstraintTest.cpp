@@ -10,24 +10,24 @@ TEST_SUITE("Constraints: Items") {
   TEST_CASE("RowConstraint") {
     SUBCASE("4x4x4") {
       constexpr auto intriniscs = PuzzleIntrinsics<{4, 4, 4}>{};
-      constexpr auto emptyItemsList = ItemsList<intriniscs>{};
-      checkConstraintItems(RowConstraint<intriniscs>(),
-                           16,
-                           {
-                               {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},
-                               {1},  {2},  {3},  {4},  {5},  {6},  {7},  {4},  {5},  {6},  {7},  {4},  {5},
-                               {6},  {7},  {4},  {5},  {6},  {7},  {8},  {9},  {10}, {11}, {8},  {9},  {10},
-                               {11}, {8},  {9},  {10}, {11}, {8},  {9},  {10}, {11}, {12}, {13}, {14}, {15},
-                               {12}, {13}, {14}, {15}, {12}, {13}, {14}, {15}, {12}, {13}, {14}, {15},
-                           },
-                           0,
-                           std::vector(emptyItemsList.begin(), emptyItemsList.end()));
+      constexpr auto emptyOptionsList = OptionsList<intriniscs>{};
+      checkConstraintOptions(RowConstraint<intriniscs>(),
+                             16,
+                             {
+                                 {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},
+                                 {1},  {2},  {3},  {4},  {5},  {6},  {7},  {4},  {5},  {6},  {7},  {4},  {5},
+                                 {6},  {7},  {4},  {5},  {6},  {7},  {8},  {9},  {10}, {11}, {8},  {9},  {10},
+                                 {11}, {8},  {9},  {10}, {11}, {8},  {9},  {10}, {11}, {12}, {13}, {14}, {15},
+                                 {12}, {13}, {14}, {15}, {12}, {13}, {14}, {15}, {12}, {13}, {14}, {15},
+                             },
+                             0,
+                             std::vector(emptyOptionsList.begin(), emptyOptionsList.end()));
     }
 
     SUBCASE("9x9x9") {
       constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-      constexpr auto emptyItemsList = ItemsList<intriniscs>{};
-      checkConstraintItems(
+      constexpr auto emptyOptionsList = OptionsList<intriniscs>{};
+      checkConstraintOptions(
           RowConstraint<intriniscs>(),
           81,
           {
@@ -76,7 +76,7 @@ TEST_SUITE("Constraints: Items") {
               {75}, {76}, {77}, {78}, {79}, {80}, {72}, {73}, {74}, {75}, {76}, {77}, {78}, {79}, {80},
           },
           0,
-          std::vector(emptyItemsList.begin(), emptyItemsList.end()));
+          std::vector(emptyOptionsList.begin(), emptyOptionsList.end()));
     }
   }
 }

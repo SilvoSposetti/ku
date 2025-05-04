@@ -1,34 +1,25 @@
-#include "Sudoku.hpp"
+#include "puzzles/Puzzle.hpp"
 
-#include <string>
+#include <print>
+#include <unordered_set>
 
 int main() {
-  ConstraintType constraints = ConstraintType::SUDOKU_CELL;
-  constraints = constraints | ConstraintType::SUDOKU_ROW;
-  constraints = constraints | ConstraintType::SUDOKU_COLUMN;
-  constraints = constraints | ConstraintType::SUDOKU_BOX;
-  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL;
-  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_EVEN;
-  // constraints = constraints | ConstraintType::POSITIVE_DIAGONAL_ODD;
-  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL;
-  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_EVEN;
-  // constraints = constraints | ConstraintType::NEGATIVE_DIAGONAL_ODD;
-  // constraints = constraints | ConstraintType::ANTI_KING;
-  // constraints = constraints | ConstraintType::ANTI_KING_TORUS;
-  // constraints = constraints | ConstraintType::ANTI_KNIGHT;
-  // constraints = constraints | ConstraintType::ANTI_KNIGHT_TORUS;
-  // constraints = constraints | ConstraintType::DISJOINT_BOXES;
-  // constraints = constraints | ConstraintType::ASTERISK;
-  // constraints = constraints | ConstraintType::HYPER_SUDOKU;
-
-  const std::filesystem::path location = std::filesystem::path(OUT_DIR) / "sandbox";
-  for (int32_t i = 0; i < 1; ++i) {
-    Sudoku sudoku("Sandbox_" + std::to_string(i + 1), constraints, 40);
-    sudoku.printInfo();
-    sudoku.printBoard();
-    sudoku.exportToSvg(location);
-    sudoku.exportExactCoverMatrixToSvg(location);
-  }
+  const auto location = std::filesystem::path(OUT_DIR) / "sandbox";
+  constexpr auto size = 4;
+  constexpr auto puzzleSpace = PuzzleSpace{size, size, size};
+  const auto clues = std::unordered_set<Cell>{
+      {0, 0, 1},
+      {1, 1, 2},
+      {2, 2, 3},
+  };
+  const auto constraints = ConstraintType::NONE //
+                           | ConstraintType::SUDOKU_ROW //
+                           | ConstraintType::SUDOKU_COLUMN //
+      ;
+  const auto puzzle = Puzzle<puzzleSpace>("Name", clues, constraints, {});
+  puzzle.exportDataStructureToSvg(location);
+  puzzle.printGrid();
+  puzzle.printSolution();
 
   return EXIT_SUCCESS;
 }

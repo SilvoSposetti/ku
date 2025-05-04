@@ -13,8 +13,8 @@ public:
     static_assert(ConstraintConcept<RowConstraint, puzzle>, "RowConstraint does not satisfy ConstraintConcept");
   };
 
-  constexpr static ItemsList<puzzle> createPrimaryItems() {
-    auto items = ItemsList<puzzle>();
+  constexpr static OptionsList<puzzle> createPrimaryItems() {
+    auto items = OptionsList<puzzle>();
     size_t counter = 0;
     constexpr auto totalCount = puzzle.rows * puzzle.digits.size();
     if constexpr (totalCount > 0) {
@@ -26,7 +26,7 @@ public:
     return items;
   }
 
-  constexpr static ItemsList<puzzle> createSecondaryItems() {
-    return ItemsList<puzzle>();
+  constexpr static OptionsList<puzzle> createSecondaryItems() {
+    return OptionsList<puzzle>();
   }
 };

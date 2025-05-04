@@ -54,7 +54,7 @@ bool checkOptions(const auto& options, int32_t itemsAmount) {
 TEST_SUITE("Constraints: Checks") {
 
   TEST_CASE_TEMPLATE_DEFINE("Members", T, members) {
-    // TODO: make this constexpr -> ItemsList should not contain std::vectors
+    // TODO: make this constexpr -> OptionsList should not contain std::vectors
     const auto constraint = T();
 
     SUBCASE("Constraint information exists") {
@@ -65,28 +65,28 @@ TEST_SUITE("Constraints: Checks") {
   }
 
   TEST_CASE_TEMPLATE_DEFINE("Square Checks", T, standard) {
-    // TODO: make this constexpr -> ItemsList should not contain std::vectors
+    // TODO: make this constexpr -> OptionsList should not contain std::vectors
     const auto constraint = T();
 
     SUBCASE("Primary items") {
-      CHECK(checkOptions(constraint.primaryItems, constraint.getPrimaryItemsAmount()));
+      CHECK(checkOptions(constraint.primaryOptions, constraint.getPrimaryItemsAmount()));
     }
 
     SUBCASE("Secondary items") {
-      CHECK(checkOptions(constraint.secondaryItems, constraint.getSecondaryItemsAmount()));
+      CHECK(checkOptions(constraint.secondaryOptions, constraint.getSecondaryItemsAmount()));
     }
   }
 
   TEST_CASE_TEMPLATE_DEFINE("Zero Checks ", T, zero) {
-    // TODO: make this constexpr -> ItemsList should not contain std::vectors
+    // TODO: make this constexpr -> OptionsList should not contain std::vectors
     const auto constraint = T();
     SUBCASE("Primary items") {
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
-      CHECK(constraint.primaryItems.empty());
+      CHECK(constraint.primaryOptions.empty());
     }
     SUBCASE("Secondary items") {
       CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
-      CHECK(constraint.secondaryItems.empty());
+      CHECK(constraint.secondaryOptions.empty());
     }
   }
 

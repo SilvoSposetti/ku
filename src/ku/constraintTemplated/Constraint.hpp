@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../constraints/ConstraintType.hpp"
-#include "../puzzles/ItemsList.hpp"
+#include "../puzzles/OptionsList.hpp"
 #include "../puzzles/PuzzleIntrinsics.hpp"
 #include "ConstraintInterface.hpp"
 
@@ -24,8 +24,8 @@ struct Constraint : public ConstraintInterface<puzzle> {
       : type(type)
       , name(name)
       , description(description)
-      , primaryItems(ConcreteConstraint::createPrimaryItems())
-      , secondaryItems(ConcreteConstraint::createSecondaryItems()) {};
+      , primaryOptions(ConcreteConstraint::createPrimaryItems())
+      , secondaryOptions(ConcreteConstraint::createSecondaryItems()) {};
 
 public:
   virtual ConstraintType getType() const override {
@@ -38,20 +38,20 @@ public:
     return std::string(description);
   }
   virtual size_t getPrimaryItemsAmount() const override {
-    return countUniqueElementsInOptions(primaryItems);
+    return countUniqueElementsInOptions(primaryOptions);
   }
-  virtual ItemsList<puzzle> getPrimaryItems() const override {
-    return primaryItems;
+  virtual OptionsList<puzzle> getPrimaryOptions() const override {
+    return primaryOptions;
   }
   virtual size_t getSecondaryItemsAmount() const override {
-    return countUniqueElementsInOptions(secondaryItems);
+    return countUniqueElementsInOptions(secondaryOptions);
   }
-  virtual ItemsList<puzzle> getSecondaryItems() const override {
-    return secondaryItems;
+  virtual OptionsList<puzzle> getSecondaryOptions() const override {
+    return secondaryOptions;
   }
 
 private:
-  static size_t countUniqueElementsInOptions(const ItemsList<puzzle> options) {
+  static constexpr size_t countUniqueElementsInOptions(const OptionsList<puzzle> options) {
     std::unordered_set<int32_t> set;
     int32_t maxId = std::numeric_limits<int32_t>::min();
     for (const auto& option : options) {
@@ -75,11 +75,11 @@ public:
    */
   const std::string_view description;
 
-  /** The primary items
+  /** The primary options
    */
-  const ItemsList<puzzle> primaryItems;
+  const OptionsList<puzzle> primaryOptions;
 
-  /** The secondary items
+  /** The secondary options
    */
-  const ItemsList<puzzle> secondaryItems;
+  const OptionsList<puzzle> secondaryOptions;
 };
