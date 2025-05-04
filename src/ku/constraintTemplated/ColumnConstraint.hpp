@@ -2,13 +2,16 @@
 
 #include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
+#include "ConstraintConcept.hpp"
 
 template <PuzzleIntrinsics puzzle>
 class ColumnConstraint : public Constraint<ColumnConstraint<puzzle>, puzzle> {
 public:
   constexpr ColumnConstraint()
       : Constraint<ColumnConstraint<puzzle>, puzzle>(
-            ConstraintType::EXACT_COLUMN, "Column", "Columns contain all the digits exactly once.") {};
+            ConstraintType::EXACT_COLUMN, "Column", "Columns contain all the digits exactly once.") {
+    static_assert(ConstraintConcept<ColumnConstraint, puzzle>, "CellConstraint does not satisfy ConstraintConcept");
+  };
 
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();

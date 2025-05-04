@@ -8,7 +8,9 @@
 #include <string_view>
 #include <unordered_set>
 
-/** Base class for all constraints.
+/** Base class of all constraints.
+ * Is also the base class of the Curiously Recurring Template Pattern (CRTP) and its derived classes are named
+ * ConcreteConstraint.
  */
 template <typename ConcreteConstraint, PuzzleIntrinsics puzzle>
 struct Constraint : public ConstraintInterface<puzzle> {
