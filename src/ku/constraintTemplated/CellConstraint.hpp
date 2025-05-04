@@ -13,10 +13,12 @@ public:
   constexpr static ItemsList<puzzle> createPrimaryItems() {
     auto items = ItemsList<puzzle>();
     size_t counter = 0;
-    const auto totalCells = puzzle.rows * puzzle.columns;
-    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      items[counter].push_back(static_cast<int32_t>((row * puzzle.columns + column) % totalCells));
-      counter++;
+    constexpr auto totalCells = puzzle.rows * puzzle.columns;
+    if constexpr (totalCells > 0) {
+      for (const auto& [row, column, digit] : puzzle.allPossibilities) {
+        items[counter].push_back(static_cast<int32_t>((row * puzzle.columns + column) % totalCells));
+        counter++;
+      }
     }
     return items;
   }
