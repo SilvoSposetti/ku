@@ -13,13 +13,7 @@
 
 // Define test case template invocations as a macro. This is specifically for "square" PuzzleSpaces
 #define INVOKE_ZERO_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                          \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{0, 0, 0}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{0, 0, 1}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{0, 1, 0}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{0, 1, 1}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{1, 0, 0}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{1, 0, 1}>{}>);                                      \
-  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{1, 1, 0}>{}>);
+  TEST_CASE_TEMPLATE_INVOKE(zero, ConstraintType<PuzzleIntrinsics<{0, 0, 0}>{}>);
 
 // Define test case template invocations as a macro. This is specifically for "square" PuzzleSpaces
 #define INVOKE_SQUARE_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                        \
@@ -78,7 +72,7 @@ TEST_SUITE("Constraints: Checks") {
   }
 
   TEST_CASE_TEMPLATE_DEFINE("Zero Checks ", T, zero) {
-    // TODO: make this constexpr -> OptionsList should not contain std::vectors
+    // TODO: make this constexpr -> ItemsList should not contain std::vectors
     const auto constraint = T();
     SUBCASE("Primary items") {
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);

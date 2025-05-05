@@ -9,4 +9,5 @@ template <typename T, PuzzleIntrinsics intrinsics>
 concept ConstraintConcept = std::default_initializable<T> && requires {
   { T::createPrimaryItems() } -> std::same_as<OptionsList<intrinsics>>;
   { T::createSecondaryItems() } -> std::same_as<OptionsList<intrinsics>>;
+  { T::supportsPuzzle() } -> std::same_as<bool>;
 };

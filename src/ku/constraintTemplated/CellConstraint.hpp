@@ -5,12 +5,16 @@
 #include "ConstraintConcept.hpp"
 
 template <PuzzleIntrinsics puzzle>
-class CellConstraint : public Constraint<CellConstraint<puzzle>, puzzle> {
+struct CellConstraint : public Constraint<CellConstraint<puzzle>, puzzle> {
 public:
   constexpr CellConstraint()
       : Constraint<CellConstraint<puzzle>, puzzle>(ConstraintType::CELL, "Cell", "Each cell contains a single digit.") {
     static_assert(ConstraintConcept<CellConstraint, puzzle>, "CellConstraint does not satisfy ConstraintConcept");
   };
+
+  constexpr static bool supportsPuzzle() {
+    return true;
+  }
 
   constexpr static OptionsList<puzzle> createPrimaryItems() {
     auto items = OptionsList<puzzle>();

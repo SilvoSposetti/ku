@@ -4,8 +4,12 @@
 #include <doctest.h>
 
 template <PuzzleIntrinsics puzzleIntrinsics>
-class ExampleConstraint {
-public:
+struct ExampleConstraint {
+
+  constexpr static bool supportsPuzzle() {
+    return true;
+  }
+
   constexpr static OptionsList<puzzleIntrinsics> createPrimaryItems() {
     auto optionsList = OptionsList<puzzleIntrinsics>();
     int32_t counter = 0;

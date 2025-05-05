@@ -5,13 +5,17 @@
 #include "ConstraintConcept.hpp"
 
 template <PuzzleIntrinsics puzzle>
-class RowConstraint : public Constraint<RowConstraint<puzzle>, puzzle> {
+struct RowConstraint : public Constraint<RowConstraint<puzzle>, puzzle> {
 public:
   constexpr RowConstraint()
       : Constraint<RowConstraint<puzzle>, puzzle>(
             ConstraintType::EXACT_ROW, "Row", "Rows contain all the digits exactly once.") {
     static_assert(ConstraintConcept<RowConstraint, puzzle>, "RowConstraint does not satisfy ConstraintConcept");
   };
+
+  constexpr static bool supportsPuzzle() {
+    return puzzle.rows == puzzle.digits.size();
+  }
 
   constexpr static OptionsList<puzzle> createPrimaryItems() {
     auto items = OptionsList<puzzle>();

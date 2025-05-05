@@ -8,19 +8,29 @@
 
 namespace ConstraintFactory {
 
-template <PuzzleIntrinsics puzzleIntrinsics>
-std::unique_ptr<ConstraintInterface<puzzleIntrinsics>> makeConstraint(ConstraintType constraintType) {
+template <PuzzleIntrinsics intrinsics>
+std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType constraintType) {
   switch (constraintType) {
   case ConstraintType::CELL:
-    return std::make_unique<CellConstraint<puzzleIntrinsics>>();
+    return std::make_unique<CellConstraint<intrinsics>>();
   case ConstraintType::EXACT_ROW:
-    return std::make_unique<RowConstraint<puzzleIntrinsics>>();
+    if (RowConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<RowConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("RowConstraint does not support this puzzle");
+    }
+    break;
   case ConstraintType::EXACT_COLUMN:
-    return std::make_unique<ColumnConstraint<puzzleIntrinsics>>();
-
+    if (ColumnConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<ColumnConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("ColumnConstraint does not support this puzzle");
+    }
+    break;
   default:
-    return std::make_unique<CellConstraint<puzzleIntrinsics>>();
+    break;
   }
+  return std::make_unique<CellConstraint<intrinsics>>();
 }
 
 } // namespace ConstraintFactory
