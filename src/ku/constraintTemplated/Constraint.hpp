@@ -25,7 +25,9 @@ struct Constraint : public ConstraintInterface<puzzle> {
       , name(name)
       , description(description)
       , primaryOptions(ConcreteConstraint::createPrimaryItems())
-      , secondaryOptions(ConcreteConstraint::createSecondaryItems()) {};
+      , primaryItemsAmount(countUniqueElementsInOptions(primaryOptions))
+      , secondaryOptions(ConcreteConstraint::createSecondaryItems())
+      , secondaryItemsAmount(countUniqueElementsInOptions(secondaryOptions)) {};
 
 public:
   virtual ConstraintType getType() const override {
@@ -38,13 +40,13 @@ public:
     return std::string(description);
   }
   virtual size_t getPrimaryItemsAmount() const override {
-    return countUniqueElementsInOptions(primaryOptions);
+    return primaryItemsAmount;
   }
   virtual OptionsList<puzzle> getPrimaryOptions() const override {
     return primaryOptions;
   }
   virtual size_t getSecondaryItemsAmount() const override {
-    return countUniqueElementsInOptions(secondaryOptions);
+    return secondaryItemsAmount;
   }
   virtual OptionsList<puzzle> getSecondaryOptions() const override {
     return secondaryOptions;
@@ -78,8 +80,10 @@ public:
   /** The primary options
    */
   const OptionsList<puzzle> primaryOptions;
+  const std::size_t primaryItemsAmount = 0;
 
   /** The secondary options
    */
   const OptionsList<puzzle> secondaryOptions;
+  const std::size_t secondaryItemsAmount = 0;
 };

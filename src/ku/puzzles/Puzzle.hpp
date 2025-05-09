@@ -175,7 +175,7 @@ public:
       for (const auto& constraint : constraints) {
         if (constraint->getSecondaryItemsAmount() > 0) {
           const auto baseSecondaryId = idOffsets[constraintId].second;
-          const auto& secondaryItems = constraint->getPrimaryOptions();
+          const auto& secondaryItems = constraint->getSecondaryOptions();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
             const auto itemId = secondaryItemId + baseSecondaryId;
             option.emplace_back(itemId);
