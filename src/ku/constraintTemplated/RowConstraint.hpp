@@ -14,7 +14,7 @@ public:
   };
 
   constexpr static bool supportsPuzzle() {
-    return puzzle.rows == puzzle.digits.size();
+    return puzzle.columns == puzzle.digits.size();
   }
 
   constexpr static OptionsList<puzzle> createPrimaryItems() {

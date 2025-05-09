@@ -2,6 +2,7 @@
 #include "CellConstraint.hpp"
 #include "ColumnConstraint.hpp"
 #include "ConstraintInterface.hpp"
+#include "Exact3x3BoxesConstraint.hpp"
 #include "RowConstraint.hpp"
 
 #include <memory>
@@ -25,6 +26,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<ColumnConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("ColumnConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::EXACT_3x3_BOXES:
+    if (Exact3x3BoxesConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<Exact3x3BoxesConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("Exact3x3BoxesConstraint does not support this puzzle");
     }
     break;
   default:
