@@ -160,10 +160,11 @@ public:
       const int32_t globalOptionId = IdPacking::packId(
           i, j, possibleDigit - 1, puzzleSpace.rowsCount, puzzleSpace.columnsCount, puzzleSpace.digitsCount);
       std::vector<XccElement> option;
+      // TODO: reserve the "correct" size for option vector 
       int32_t constraintId = 0;
       for (const auto& constraint : constraints) {
-        const auto basePrimaryId = idOffsets[constraintId].first;
         if (constraint->getPrimaryItemsAmount() > 0) {
+          const auto& basePrimaryId = idOffsets[constraintId].first;
           const auto& primaryItems = constraint->getPrimaryOptions();
           for (const auto& primaryItemId : primaryItems[globalOptionId]) {
             option.emplace_back(basePrimaryId + primaryItemId);

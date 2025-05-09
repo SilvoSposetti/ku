@@ -42,13 +42,13 @@ public:
   virtual size_t getPrimaryItemsAmount() const override {
     return primaryItemsAmount;
   }
-  virtual OptionsList<puzzle> getPrimaryOptions() const override {
+  virtual const OptionsList<puzzle>& getPrimaryOptions() const override {
     return primaryOptions;
   }
   virtual size_t getSecondaryItemsAmount() const override {
     return secondaryItemsAmount;
   }
-  virtual OptionsList<puzzle> getSecondaryOptions() const override {
+  virtual const OptionsList<puzzle>& getSecondaryOptions() const override {
     return secondaryOptions;
   }
 
@@ -63,7 +63,11 @@ private:
       }
     }
     maxId = std::max(0, maxId);
-    return std::max(set.size(), static_cast<size_t>(maxId));
+    int32_t result = std::max(set.size(), static_cast<size_t>(maxId));
+    if (result == 1) {
+      return 0;
+    }
+    return result;
   }
 
 public:

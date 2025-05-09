@@ -14,7 +14,7 @@ struct ConstraintInterface {
   virtual std::string getName() const = 0;
   virtual std::string getDescription() const = 0;
   virtual size_t getPrimaryItemsAmount() const = 0;
-  virtual OptionsList<puzzle> getPrimaryOptions() const = 0;
+  virtual const OptionsList<puzzle>& getPrimaryOptions() const = 0;
   virtual size_t getSecondaryItemsAmount() const = 0;
-  virtual OptionsList<puzzle> getSecondaryOptions() const = 0;
+  virtual const OptionsList<puzzle>& getSecondaryOptions() const = 0;
 };
