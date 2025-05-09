@@ -2,13 +2,14 @@
 #include "constraintTemplated/ConstraintInterface.hpp"
 
 #include <doctest.h>
+#include <vector>
 
 template <PuzzleIntrinsics intrinsics>
 void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
                             int32_t expectedPrimaryItemsCoverage,
-                            const std::vector<std::vector<int32_t>>& expectedPrimaryOptions,
+                            const std::vector<std::array<int32_t, 1>>& expectedPrimaryOptions,
                             int32_t expectedSecondaryItemsCoverage,
-                            const std::vector<std::vector<int32_t>>& expectedSecondaryOptions) {
+                            const std::vector<std::array<int32_t, 1>>& expectedSecondaryOptions) {
 
   // Primary items
   SUBCASE("Primary Items") {

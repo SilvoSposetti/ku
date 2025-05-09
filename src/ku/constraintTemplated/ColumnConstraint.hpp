@@ -23,7 +23,7 @@ public:
     constexpr auto totalCount = puzzle.columns * puzzle.digits.size();
     if constexpr (totalCount > 0) {
       for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-        items[counter].push_back(static_cast<int32_t>(column * puzzle.digits.size() + (digit - 1)) % totalCount);
+        items[counter][0] = static_cast<int32_t>(column * puzzle.digits.size() + (digit - 1)) % totalCount;
         counter++;
       };
     }

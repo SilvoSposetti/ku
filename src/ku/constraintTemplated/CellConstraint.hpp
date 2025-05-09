@@ -22,7 +22,7 @@ public:
     constexpr auto totalCells = puzzle.rows * puzzle.columns;
     if constexpr (totalCells > 0) {
       for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-        items[counter].push_back(static_cast<int32_t>((row * puzzle.columns + column) % totalCells));
+        items[counter][0] = static_cast<int32_t>((row * puzzle.columns + column) % totalCells);
         counter++;
       }
     }

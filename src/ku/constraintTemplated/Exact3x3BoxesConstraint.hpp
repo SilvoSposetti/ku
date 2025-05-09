@@ -27,7 +27,7 @@ public:
       for (const auto& [row, column, digit] : puzzle.allPossibilities) {
         // Next line explicitly uses integer division to floor results
         const auto boxId = static_cast<int32_t>(column / 3 + boxesVerticalCount * (row / 3));
-        items[counter].push_back((boxId * puzzle.digits.size() + (static_cast<int32_t>(digit) - 1)) % totalCount);
+        items[counter][0] = (boxId * puzzle.digits.size() + (static_cast<int32_t>(digit) - 1)) % totalCount;
         counter++;
       };
     }

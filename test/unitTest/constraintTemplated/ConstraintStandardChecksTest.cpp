@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <doctest.h>
+#include <vector>
 
 #define INVOKE_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                               \
   INVOKE_SQUARE_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                              \

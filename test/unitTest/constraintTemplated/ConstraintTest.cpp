@@ -14,7 +14,7 @@ struct ExampleConstraint {
     auto optionsList = OptionsList<puzzleIntrinsics>();
     int32_t counter = 0;
     for (auto& item : optionsList) {
-      item.emplace_back(counter);
+      item[0] = counter;
       counter++;
     }
     return optionsList;
@@ -24,7 +24,7 @@ struct ExampleConstraint {
     auto optionsList = OptionsList<puzzleIntrinsics>();
     int32_t counter = 0;
     for (auto& item : optionsList) {
-      item.emplace_back(counter);
+      item[0] = counter;
       counter += 2;
     }
     return optionsList;
