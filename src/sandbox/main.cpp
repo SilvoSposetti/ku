@@ -1,6 +1,5 @@
 #include "puzzles/Puzzle.hpp"
 
-#include <print>
 #include <unordered_set>
 
 int main() {
