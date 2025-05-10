@@ -18,23 +18,19 @@ public:
     return puzzle.rows % 3 == 0 && puzzle.columns % 3 == 0 && puzzle.digits.size() == 9;
   }
 
-  constexpr static OptionsList<puzzle> createPrimaryItems() {
-    auto items = OptionsList<puzzle>();
-    size_t counter = 0;
+  constexpr static std::optional<Option> primaryOption([[maybe_unused]] Index row, Index column, Digit digit) {
     constexpr auto totalCount = static_cast<int32_t>(puzzle.rows) * static_cast<int32_t>(puzzle.columns);
     constexpr auto boxesVerticalCount = puzzle.columns / 3;
     if constexpr (totalCount > 0) {
-      for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-        // Next line explicitly uses integer division to floor results
-        const auto boxId = static_cast<int32_t>(column / 3 + boxesVerticalCount * (row / 3));
-        items[counter][0] = (boxId * puzzle.digits.size() + (static_cast<int32_t>(digit) - 1)) % totalCount;
-        counter++;
-      };
+      const auto boxId = static_cast<int32_t>(column / 3 + boxesVerticalCount * (row / 3));
+      return Option{(boxId * static_cast<int32_t>(puzzle.digits.size()) + (static_cast<int32_t>(digit) - 1)) %
+                    totalCount};
     }
-    return items;
+    return std::nullopt;
   }
 
-  constexpr static OptionsList<puzzle> createSecondaryItems() {
-    return OptionsList<puzzle>();
+  constexpr static std::optional<Option>
+  secondaryOption([[maybe_unused]] Index row, [[maybe_unused]] Index column, [[maybe_unused]] Digit digit) {
+    return std::nullopt;
   }
 };

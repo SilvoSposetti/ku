@@ -160,12 +160,12 @@ public:
       const int32_t globalOptionId = IdPacking::packId(
           i, j, possibleDigit - 1, puzzleSpace.rowsCount, puzzleSpace.columnsCount, puzzleSpace.digitsCount);
       std::vector<XccElement> option;
-      // TODO: reserve the "correct" size for option vector 
+      // TODO: reserve the "correct" size for option vector
       int32_t constraintId = 0;
       for (const auto& constraint : constraints) {
-        if (constraint->getPrimaryItemsAmount() > 0) {
+        if (constraint->getPrimaryItemsAmount() > 0 && constraint->getPrimaryOptions().has_value()) {
           const auto& basePrimaryId = idOffsets[constraintId].first;
-          const auto& primaryItems = constraint->getPrimaryOptions();
+          const auto& primaryItems = constraint->getPrimaryOptions().value();
           for (const auto& primaryItemId : primaryItems[globalOptionId]) {
             option.emplace_back(basePrimaryId + primaryItemId);
           }
@@ -174,9 +174,9 @@ public:
       }
       constraintId = 0;
       for (const auto& constraint : constraints) {
-        if (constraint->getSecondaryItemsAmount() > 0) {
+        if (constraint->getSecondaryItemsAmount() > 0 && constraint->getSecondaryOptions().has_value()) {
           const auto baseSecondaryId = idOffsets[constraintId].second;
-          const auto& secondaryItems = constraint->getSecondaryOptions();
+          const auto& secondaryItems = constraint->getSecondaryOptions().value();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
             const auto itemId = secondaryItemId + baseSecondaryId;
             option.emplace_back(itemId);

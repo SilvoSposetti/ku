@@ -7,24 +7,36 @@
 template <PuzzleIntrinsics intrinsics>
 void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
                             int32_t expectedPrimaryItemsCoverage,
-                            const std::vector<std::array<int32_t, 1>>& expectedPrimaryOptions,
+                            const std::vector<Option>& expectedPrimaryOptions,
                             int32_t expectedSecondaryItemsCoverage,
-                            const std::vector<std::array<int32_t, 1>>& expectedSecondaryOptions) {
+                            const std::vector<Option>& expectedSecondaryOptions) {
 
   // Primary items
   SUBCASE("Primary Items") {
-    CHECK_EQ(expectedPrimaryOptions.size(), intrinsics.allPossibilities.size());
-    CHECK_EQ(expectedPrimaryItemsCoverage, constraint.getPrimaryItemsAmount());
-    const auto array = constraint.getPrimaryOptions();
-    const auto vector = std::vector(array.begin(), array.end());
-    CHECK_EQ(expectedPrimaryOptions, vector);
+    if (expectedPrimaryItemsCoverage == 0) {
+      CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
+      CHECK(!constraint.getPrimaryOptions().has_value());
+    } else {
+      CHECK_EQ(expectedPrimaryOptions.size(), intrinsics.allPossibilities.size());
+      CHECK_EQ(constraint.getPrimaryItemsAmount(), expectedPrimaryItemsCoverage);
+      REQUIRE(constraint.getPrimaryOptions().has_value());
+      const auto array = constraint.getPrimaryOptions().value();
+      const auto vector = std::vector(array.begin(), array.end());
+      CHECK_EQ(expectedPrimaryOptions, vector);
+    }
   }
   // Primary items
   SUBCASE("Secondary Items") {
-    CHECK_EQ(expectedSecondaryOptions.size(), intrinsics.allPossibilities.size());
-    CHECK_EQ(expectedSecondaryItemsCoverage, constraint.getSecondaryItemsAmount());
-    const auto array = constraint.getSecondaryOptions();
-    const auto vector = std::vector(array.begin(), array.end());
-    CHECK_EQ(expectedSecondaryOptions, vector);
+    if (expectedSecondaryItemsCoverage == 0) {
+      CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
+      CHECK(!constraint.getSecondaryOptions().has_value());
+    } else {
+      CHECK_EQ(expectedSecondaryOptions.size(), intrinsics.allPossibilities.size());
+      CHECK_EQ(constraint.getSecondaryItemsAmount(), expectedSecondaryItemsCoverage);
+      REQUIRE(constraint.getSecondaryOptions().has_value());
+      const auto array = constraint.getSecondaryOptions().value();
+      const auto vector = std::vector(array.begin(), array.end());
+      CHECK_EQ(expectedSecondaryOptions, vector);
+    }
   }
 }

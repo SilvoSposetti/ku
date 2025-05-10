@@ -24,9 +24,9 @@ struct Constraint : public ConstraintInterface<puzzle> {
       : type(type)
       , name(name)
       , description(description)
-      , primaryOptions(ConcreteConstraint::createPrimaryItems())
+      , primaryOptions(createPrimaryItems())
       , primaryItemsAmount(countUniqueElementsInOptions(primaryOptions))
-      , secondaryOptions(ConcreteConstraint::createSecondaryItems())
+      , secondaryOptions(createSecondaryItems())
       , secondaryItemsAmount(countUniqueElementsInOptions(secondaryOptions)) {};
 
 public:
@@ -42,21 +42,60 @@ public:
   virtual size_t getPrimaryItemsAmount() const override {
     return primaryItemsAmount;
   }
-  virtual const OptionsList<puzzle>& getPrimaryOptions() const override {
+  virtual const std::optional<OptionsList<puzzle>>& getPrimaryOptions() const override {
     return primaryOptions;
   }
   virtual size_t getSecondaryItemsAmount() const override {
     return secondaryItemsAmount;
   }
-  virtual const OptionsList<puzzle>& getSecondaryOptions() const override {
+  virtual const std::optional<OptionsList<puzzle>>& getSecondaryOptions() const override {
     return secondaryOptions;
   }
 
 private:
-  static constexpr size_t countUniqueElementsInOptions(const OptionsList<puzzle> options) {
+  static constexpr std::optional<OptionsList<puzzle>> createPrimaryItems() {
+    auto items = OptionsList<puzzle>();
+    size_t counter = 0;
+    auto atLeastOneOption = false;
+    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
+      const auto option = ConcreteConstraint::primaryOption(row, column, digit);
+      if (option) {
+        items[counter] = option.value();
+        atLeastOneOption = true;
+      }
+      counter++;
+    };
+    if (atLeastOneOption) {
+      return items;
+    }
+    return std::nullopt;
+  }
+
+  static constexpr std::optional<OptionsList<puzzle>> createSecondaryItems() {
+    auto items = OptionsList<puzzle>();
+    size_t counter = 0;
+    auto atLeastOneOption = false;
+    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
+      const auto option = ConcreteConstraint::secondaryOption(row, column, digit);
+      if (option) {
+        items[counter] = option.value();
+        atLeastOneOption = true;
+      }
+      counter++;
+    };
+    if (atLeastOneOption) {
+      return items;
+    }
+    return std::nullopt;
+  }
+
+  static constexpr size_t countUniqueElementsInOptions(const std::optional<OptionsList<puzzle>> options) {
+    if (!options) {
+      return 0;
+    }
     auto maxId = std::numeric_limits<int32_t>::min();
     std::vector<int32_t> set;
-    for (const auto& option : options) {
+    for (const auto& option : options.value()) {
       for (const auto& element : option) {
         if (std::ranges::find(set, element) == set.end()) {
           set.push_back(element);
@@ -65,11 +104,7 @@ private:
       }
     }
     maxId = std::max(0, maxId);
-    int32_t result = std::max(set.size(), static_cast<size_t>(maxId));
-    if (result == 1) {
-      return 0;
-    }
-    return result;
+    return std::max(set.size(), static_cast<size_t>(maxId));
   }
 
 public:
@@ -85,11 +120,11 @@ public:
 
   /** The primary options
    */
-  const OptionsList<puzzle> primaryOptions;
+  const std::optional<OptionsList<puzzle>> primaryOptions;
   const std::size_t primaryItemsAmount = 0;
 
   /** The secondary options
    */
-  const OptionsList<puzzle> secondaryOptions;
+  const std::optional<OptionsList<puzzle>> secondaryOptions;
   const std::size_t secondaryItemsAmount = 0;
 };

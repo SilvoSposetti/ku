@@ -31,16 +31,14 @@
   TEST_CASE_TEMPLATE_INVOKE(standard, ConstraintType<PuzzleIntrinsics<{10, 10, 10}>{}>);
 
 bool checkOptions(const auto& options, int32_t itemsAmount) {
-  if (itemsAmount == 0) { // If items are not defined, all options are set to a list of zeros.
-    return std::ranges::all_of(options, [&](const auto& option) {
-      return std::ranges::all_of(option, [](const auto element) { return element == 0; });
-    });
+  if (itemsAmount == 0) { // If items are not defined, options don't exist
+    return !options.has_value();
   } else { // If any item is defined, all of them must be covered
     auto expected = std::vector<int32_t>(itemsAmount, 0);
     std::ranges::iota(expected, 0);
     const auto expectedSet = std::unordered_set(expected.begin(), expected.end());
     std::vector<int32_t> set;
-    for (const auto& option : options) {
+    for (const auto& option : options.value()) {
       for (const auto& element : option) {
         set.push_back(element);
       }
@@ -77,11 +75,11 @@ TEST_SUITE("Constraints: Checks") {
     constexpr auto constraint = T();
     SUBCASE("Primary items") {
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
-      CHECK(constraint.primaryOptions.empty());
+      CHECK_FALSE(constraint.primaryOptions.has_value());
     }
     SUBCASE("Secondary items") {
       CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
-      CHECK(constraint.secondaryOptions.empty());
+      CHECK_FALSE(constraint.secondaryOptions.has_value());
     }
   }
 

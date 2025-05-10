@@ -17,20 +17,16 @@ public:
     return puzzle.columns == puzzle.digits.size();
   }
 
-  constexpr static OptionsList<puzzle> createPrimaryItems() {
-    auto items = OptionsList<puzzle>();
-    size_t counter = 0;
-    constexpr auto totalCount = puzzle.rows * puzzle.digits.size();
+  constexpr static std::optional<Option> primaryOption(Index row, [[maybe_unused]] Index column, Digit digit) {
+    constexpr auto totalCount = static_cast<int32_t>(puzzle.rows) * static_cast<int32_t>(puzzle.digits.size());
     if constexpr (totalCount > 0) {
-      for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-        items[counter][0] = static_cast<int32_t>(row * puzzle.digits.size() + (digit - 1)) % totalCount;
-        counter++;
-      };
+      return Option{static_cast<int32_t>(row * puzzle.digits.size() + (digit - 1)) % totalCount};
     }
-    return items;
+    return std::nullopt;
   }
 
-  constexpr static OptionsList<puzzle> createSecondaryItems() {
-    return OptionsList<puzzle>();
+  constexpr static std::optional<Option>
+  secondaryOption([[maybe_unused]] Index row, [[maybe_unused]] Index column, [[maybe_unused]] Digit digit) {
+    return std::nullopt;
   }
 };

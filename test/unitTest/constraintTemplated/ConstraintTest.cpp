@@ -1,6 +1,9 @@
 
 #include "constraintTemplated/Constraint.hpp"
 
+#include "ConstraintTestHelpers.hpp"
+#include "utilities/IdPacking.hpp"
+
 #include <doctest.h>
 
 template <PuzzleIntrinsics puzzleIntrinsics>
@@ -10,24 +13,18 @@ struct ExampleConstraint {
     return true;
   }
 
-  constexpr static OptionsList<puzzleIntrinsics> createPrimaryItems() {
-    auto optionsList = OptionsList<puzzleIntrinsics>();
-    int32_t counter = 0;
-    for (auto& item : optionsList) {
-      item[0] = counter;
-      counter++;
-    }
-    return optionsList;
+  constexpr static std::optional<Option> primaryOption(Index row, Index column, Digit digit) {
+    return Option{static_cast<int32_t>(IdPacking::packId(
+        row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size()))};
   }
 
-  constexpr static OptionsList<puzzleIntrinsics> createSecondaryItems() {
-    auto optionsList = OptionsList<puzzleIntrinsics>();
-    int32_t counter = 0;
-    for (auto& item : optionsList) {
-      item[0] = counter;
-      counter += 2;
-    }
-    return optionsList;
+  constexpr static std::optional<Option> secondaryOption(Index row, Index column, Digit digit) {
+    constexpr auto total =
+        static_cast<int32_t>(puzzleIntrinsics.rows * puzzleIntrinsics.columns * puzzleIntrinsics.digits.size());
+    return Option{
+        (total - 1) -
+        static_cast<int32_t>(IdPacking::packId(
+            row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size()))};
   }
 };
 
@@ -40,7 +37,6 @@ TEST_CASE("Base Constraint") {
   CHECK_EQ(constraint.type, ConstraintType::NONE);
   CHECK_EQ(constraint.name, "Name");
   CHECK_EQ(constraint.description, "Description");
-
-  CHECK_EQ(constraint.getPrimaryOptions(), ExampleConstraint<puzzleIntrinsics>::createPrimaryItems());
-  CHECK_EQ(constraint.getSecondaryOptions(), ExampleConstraint<puzzleIntrinsics>::createSecondaryItems());
+  checkConstraintOptions(
+      constraint, 8, {{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}}, 8, {{7}, {6}, {5}, {4}, {3}, {2}, {1}, {0}});
 }
