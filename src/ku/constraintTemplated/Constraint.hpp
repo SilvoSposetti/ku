@@ -58,17 +58,18 @@ private:
   static constexpr std::optional<OptionsList<puzzle>> createOptions(OptionCreatingFunction optionFunction) {
     auto options = OptionsList<puzzle>();
     size_t counter = 0;
-    auto atLeastOneOption = false;
+    auto allOptionsDefined = true;
     for (const auto& [row, column, digit] : puzzle.allPossibilities) {
       const auto option =
           optionFunction(static_cast<uint32_t>(row), static_cast<uint32_t>(column), static_cast<uint32_t>(digit));
       if (option) {
         options[counter] = option.value();
-        atLeastOneOption = true;
+      } else {
+        allOptionsDefined = false;
       }
       counter++;
     };
-    if (atLeastOneOption) {
+    if (allOptionsDefined) {
       return options;
     }
     return std::nullopt;

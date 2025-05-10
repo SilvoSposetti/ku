@@ -75,11 +75,13 @@ TEST_SUITE("Constraints: Checks") {
     constexpr auto constraint = T();
     SUBCASE("Primary items") {
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
-      CHECK_FALSE(constraint.primaryOptions.has_value());
+      REQUIRE(constraint.primaryOptions.has_value());
+      CHECK(constraint.primaryOptions.value().empty());
     }
     SUBCASE("Secondary items") {
       CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
-      CHECK_FALSE(constraint.secondaryOptions.has_value());
+      REQUIRE(constraint.secondaryOptions.has_value());
+      CHECK(constraint.secondaryOptions.value().empty());
     }
   }
 
