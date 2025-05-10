@@ -30,8 +30,10 @@
   TEST_CASE_TEMPLATE_INVOKE(standard, ConstraintType<PuzzleIntrinsics<{10, 10, 10}>{}>);
 
 bool checkOptions(const auto& options, int32_t itemsAmount) {
-  if (itemsAmount == 0) { // If items are not defined, all options must be empty
-    return std::ranges::all_of(options, [&](const auto& option) { return option.empty(); });
+  if (itemsAmount == 0) { // If items are not defined, all options are set to a list of zeros.
+    return std::ranges::all_of(options, [&](const auto& option) {
+      return std::ranges::all_of(option, [](const auto element) { return element == 0; });
+    });
   } else { // If any item is defined, all of them must be covered
     auto expected = std::vector<int32_t>(itemsAmount, 0);
     std::ranges::iota(expected, 0);
