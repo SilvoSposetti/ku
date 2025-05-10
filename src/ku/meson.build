@@ -40,7 +40,6 @@ ku_sources = files(
   'solver/Solver.cpp',
   'solver/XccElement.cpp',
   'utilities/FileIo.cpp',
-  'utilities/IdPacking.cpp',
   'utilities/TemporaryDirectory.cpp',
   'utilities/Timer.cpp',
   'Board.cpp',
