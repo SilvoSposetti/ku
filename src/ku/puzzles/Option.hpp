@@ -2,4 +2,4 @@
 #include <array>
 #include <cstdint>
 
-using Option = std::array<int32_t, 1>;
+using Option = std::array<uint32_t, 1>;

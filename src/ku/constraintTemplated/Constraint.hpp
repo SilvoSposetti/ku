@@ -5,6 +5,7 @@
 #include "../puzzles/PuzzleIntrinsics.hpp"
 #include "ConstraintInterface.hpp"
 
+#include <functional>
 #include <string_view>
 #include <vector>
 
@@ -24,9 +25,9 @@ struct Constraint : public ConstraintInterface<puzzle> {
       : type(type)
       , name(name)
       , description(description)
-      , primaryOptions(createPrimaryItems())
+      , primaryOptions(createOptions(ConcreteConstraint::primaryOption))
       , primaryItemsAmount(countUniqueElementsInOptions(primaryOptions))
-      , secondaryOptions(createSecondaryItems())
+      , secondaryOptions(createOptions(ConcreteConstraint::secondaryOption))
       , secondaryItemsAmount(countUniqueElementsInOptions(secondaryOptions)) {};
 
 public:
@@ -53,38 +54,22 @@ public:
   }
 
 private:
-  static constexpr std::optional<OptionsList<puzzle>> createPrimaryItems() {
-    auto items = OptionsList<puzzle>();
+  template <typename OptionCreatingFunction>
+  static constexpr std::optional<OptionsList<puzzle>> createOptions(OptionCreatingFunction optionFunction) {
+    auto options = OptionsList<puzzle>();
     size_t counter = 0;
     auto atLeastOneOption = false;
     for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      const auto option = ConcreteConstraint::primaryOption(row, column, digit);
+      const auto option =
+          optionFunction(static_cast<uint32_t>(row), static_cast<uint32_t>(column), static_cast<uint32_t>(digit));
       if (option) {
-        items[counter] = option.value();
+        options[counter] = option.value();
         atLeastOneOption = true;
       }
       counter++;
     };
     if (atLeastOneOption) {
-      return items;
-    }
-    return std::nullopt;
-  }
-
-  static constexpr std::optional<OptionsList<puzzle>> createSecondaryItems() {
-    auto items = OptionsList<puzzle>();
-    size_t counter = 0;
-    auto atLeastOneOption = false;
-    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      const auto option = ConcreteConstraint::secondaryOption(row, column, digit);
-      if (option) {
-        items[counter] = option.value();
-        atLeastOneOption = true;
-      }
-      counter++;
-    };
-    if (atLeastOneOption) {
-      return items;
+      return options;
     }
     return std::nullopt;
   }
@@ -93,8 +78,8 @@ private:
     if (!options) {
       return 0;
     }
-    auto maxId = std::numeric_limits<int32_t>::min();
-    std::vector<int32_t> set;
+    auto maxId = std::numeric_limits<uint32_t>::min();
+    std::vector<uint32_t> set;
     for (const auto& option : options.value()) {
       for (const auto& element : option) {
         if (std::ranges::find(set, element) == set.end()) {
@@ -103,7 +88,7 @@ private:
         }
       }
     }
-    maxId = std::max(0, maxId);
+    maxId = std::max(static_cast<uint32_t>(0), maxId);
     return std::max(set.size(), static_cast<size_t>(maxId));
   }
 

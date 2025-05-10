@@ -18,19 +18,18 @@ public:
     return puzzle.rows % 3 == 0 && puzzle.columns % 3 == 0 && puzzle.digits.size() == 9;
   }
 
-  constexpr static std::optional<Option> primaryOption([[maybe_unused]] Index row, Index column, Digit digit) {
-    constexpr auto totalCount = static_cast<int32_t>(puzzle.rows) * static_cast<int32_t>(puzzle.columns);
-    constexpr auto boxesVerticalCount = puzzle.columns / 3;
+  constexpr static std::optional<Option> primaryOption([[maybe_unused]] uint32_t row, uint32_t column, uint32_t digit) {
+    constexpr auto totalCount = static_cast<uint32_t>(puzzle.rows) * static_cast<uint32_t>(puzzle.columns);
+    constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / 3;
     if constexpr (totalCount > 0) {
-      const auto boxId = static_cast<int32_t>(column / 3 + boxesVerticalCount * (row / 3));
-      return Option{(boxId * static_cast<int32_t>(puzzle.digits.size()) + (static_cast<int32_t>(digit) - 1)) %
-                    totalCount};
+      const auto boxId = (column / 3 + boxesVerticalCount * (row / 3));
+      return Option{(boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount};
     }
     return std::nullopt;
   }
 
   constexpr static std::optional<Option>
-  secondaryOption([[maybe_unused]] Index row, [[maybe_unused]] Index column, [[maybe_unused]] Digit digit) {
+  secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return std::nullopt;
   }
 };
