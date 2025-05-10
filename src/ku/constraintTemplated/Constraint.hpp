@@ -54,24 +54,22 @@ public:
 
 private:
   static constexpr size_t countUniqueElementsInOptions(const OptionsList<puzzle> options) {
-    {
-      auto maxId = std::numeric_limits<int32_t>::min();
-      std::vector<int32_t> set;
-      for (const auto& option : options) {
-        for (const auto& element : option) {
-          if (std::ranges::find(set, element) == set.end()) {
-            set.push_back(element);
-            maxId = std::max(maxId, element);
-          }
+    auto maxId = std::numeric_limits<int32_t>::min();
+    std::vector<int32_t> set;
+    for (const auto& option : options) {
+      for (const auto& element : option) {
+        if (std::ranges::find(set, element) == set.end()) {
+          set.push_back(element);
+          maxId = std::max(maxId, element);
         }
       }
-      maxId = std::max(0, maxId);
-      int32_t result = std::max(set.size(), static_cast<size_t>(maxId));
-      if (result == 1) {
-        return 0;
-      }
-      return result;
     }
+    maxId = std::max(0, maxId);
+    int32_t result = std::max(set.size(), static_cast<size_t>(maxId));
+    if (result == 1) {
+      return 0;
+    }
+    return result;
   }
 
 public:

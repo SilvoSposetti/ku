@@ -34,7 +34,6 @@ struct ExampleConstraint {
 TEST_CASE("Base Constraint") {
 
   constexpr auto puzzleIntrinsics = PuzzleIntrinsics<{2, 2, 2}>();
-  // TODO: make this constexpr -> OptionsList should not contain std::vectors
   constexpr auto constraint =
       Constraint<ExampleConstraint<puzzleIntrinsics>, puzzleIntrinsics>(ConstraintType::NONE, "Name", "Description");
 
