@@ -7,9 +7,9 @@
 template <PuzzleIntrinsics intrinsics>
 void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
                             int32_t expectedPrimaryItemsCoverage,
-                            const std::vector<Option>& expectedPrimaryOptions,
+                            const std::optional<std::vector<Option>>& expectedPrimaryOptions,
                             int32_t expectedSecondaryItemsCoverage,
-                            const std::vector<Option>& expectedSecondaryOptions) {
+                            const std::optional<std::vector<Option>>& expectedSecondaryOptions) {
 
   // Primary items
   SUBCASE("Primary Items") {
@@ -17,12 +17,13 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
       CHECK(!constraint.getPrimaryOptions().has_value());
     } else {
-      CHECK_EQ(expectedPrimaryOptions.size(), intrinsics.allPossibilities.size());
+      REQUIRE(expectedPrimaryOptions.has_value());
+      CHECK_EQ(expectedPrimaryOptions.value().size(), intrinsics.allPossibilities.size());
       CHECK_EQ(constraint.getPrimaryItemsAmount(), expectedPrimaryItemsCoverage);
       REQUIRE(constraint.getPrimaryOptions().has_value());
       const auto array = constraint.getPrimaryOptions().value();
       const auto vector = std::vector(array.begin(), array.end());
-      CHECK_EQ(expectedPrimaryOptions, vector);
+      CHECK_EQ(expectedPrimaryOptions.value(), vector);
     }
   }
   // Primary items
@@ -31,12 +32,13 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
       CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
       CHECK(!constraint.getSecondaryOptions().has_value());
     } else {
-      CHECK_EQ(expectedSecondaryOptions.size(), intrinsics.allPossibilities.size());
+      REQUIRE(expectedSecondaryOptions.has_value());
+      CHECK_EQ(expectedSecondaryOptions.value().size(), intrinsics.allPossibilities.size());
       CHECK_EQ(constraint.getSecondaryItemsAmount(), expectedSecondaryItemsCoverage);
       REQUIRE(constraint.getSecondaryOptions().has_value());
       const auto array = constraint.getSecondaryOptions().value();
       const auto vector = std::vector(array.begin(), array.end());
-      CHECK_EQ(expectedSecondaryOptions, vector);
+      CHECK_EQ(expectedSecondaryOptions.value(), vector);
     }
   }
 }
