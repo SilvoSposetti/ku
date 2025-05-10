@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <doctest.h>
 #include <vector>
+#include <unordered_set>
 
 #define INVOKE_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                               \
   INVOKE_SQUARE_TEST_CASES_FOR_CONSTRAINT(ConstraintType)                                                              \
@@ -52,7 +53,7 @@ TEST_SUITE("Constraints: Checks") {
 
   TEST_CASE_TEMPLATE_DEFINE("Members", T, members) {
     // TODO: make this constexpr -> OptionsList should not contain std::vectors
-    const auto constraint = T();
+    constexpr auto constraint = T();
 
     SUBCASE("Constraint information exists") {
       CHECK_NE(constraint.type, ConstraintType::NONE);
@@ -63,7 +64,7 @@ TEST_SUITE("Constraints: Checks") {
 
   TEST_CASE_TEMPLATE_DEFINE("Square Checks", T, standard) {
     // TODO: make this constexpr -> OptionsList should not contain std::vectors
-    const auto constraint = T();
+    constexpr auto constraint = T();
 
     SUBCASE("Primary items") {
       CHECK(checkOptions(constraint.primaryOptions, constraint.getPrimaryItemsAmount()));
@@ -76,7 +77,7 @@ TEST_SUITE("Constraints: Checks") {
 
   TEST_CASE_TEMPLATE_DEFINE("Zero Checks ", T, zero) {
     // TODO: make this constexpr -> ItemsList should not contain std::vectors
-    const auto constraint = T();
+    constexpr auto constraint = T();
     SUBCASE("Primary items") {
       CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
       CHECK(constraint.primaryOptions.empty());

@@ -35,7 +35,7 @@ TEST_CASE("Base Constraint") {
 
   constexpr auto puzzleIntrinsics = PuzzleIntrinsics<{2, 2, 2}>();
   // TODO: make this constexpr -> OptionsList should not contain std::vectors
-  const auto constraint =
+  constexpr auto constraint =
       Constraint<ExampleConstraint<puzzleIntrinsics>, puzzleIntrinsics>(ConstraintType::NONE, "Name", "Description");
 
   CHECK_EQ(constraint.type, ConstraintType::NONE);
