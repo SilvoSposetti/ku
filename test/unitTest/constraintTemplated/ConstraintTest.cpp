@@ -13,12 +13,12 @@ struct ExampleConstraint {
     return true;
   }
 
-  constexpr static std::optional<Option> primaryOption(Index row, Index column, Digit digit) {
+  constexpr static Option primaryOption(Index row, Index column, Digit digit) {
     return Option{IdPacking::packId(
         row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size())};
   }
 
-  constexpr static std::optional<Option> secondaryOption(Index row, Index column, Digit digit) {
+  constexpr static Option secondaryOption(Index row, Index column, Digit digit) {
     constexpr auto total =
         static_cast<uint32_t>(puzzleIntrinsics.rows * puzzleIntrinsics.columns * puzzleIntrinsics.digits.size());
     return Option{

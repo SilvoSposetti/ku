@@ -3,6 +3,7 @@
 #include "ColumnConstraint.hpp"
 #include "ConstraintInterface.hpp"
 #include "Exact3x3BoxesConstraint.hpp"
+#include "ExactPositiveDiagonalConstraint.hpp"
 #include "RowConstraint.hpp"
 
 #include <memory>
@@ -33,6 +34,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<Exact3x3BoxesConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("Exact3x3BoxesConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::EXACT_POSITIVE_DIAGONAL:
+    if (ExactPositiveDiagonalConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<ExactPositiveDiagonalConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("ExactPositiveDiagonalConstraint does not support this puzzle");
     }
     break;
   default:

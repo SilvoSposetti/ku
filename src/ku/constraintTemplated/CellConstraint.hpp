@@ -16,16 +16,16 @@ public:
     return true;
   }
 
-  constexpr static std::optional<Option> primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
+  constexpr static Option primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
     constexpr auto totalCells = static_cast<uint32_t>(puzzle.rows) * static_cast<uint32_t>(puzzle.columns);
     if constexpr (totalCells > 0) {
       return Option{(row * static_cast<uint32_t>(puzzle.columns) + column) % totalCells};
     }
-    return std::nullopt;
+    return {};
   }
 
-  constexpr static std::optional<Option>
+  constexpr static Option
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
-    return std::nullopt;
+    return {};
   }
 };
