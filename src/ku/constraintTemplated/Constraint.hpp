@@ -5,7 +5,6 @@
 #include "../puzzles/PuzzleIntrinsics.hpp"
 #include "ConstraintInterface.hpp"
 
-#include <functional>
 #include <string_view>
 #include <vector>
 

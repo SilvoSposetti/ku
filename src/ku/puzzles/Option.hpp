@@ -1,5 +1,5 @@
 #pragma once
-#include <array>
-#include <cstdint>
 
-using Option = std::array<uint32_t, 1>;
+#include "../utilities/FixedCapacityArray.hpp"
+
+using Option = FixedCapacityArray<uint32_t, 1>;

@@ -3,6 +3,7 @@ unit_test_sources = files(
   'ArrayUtilitiesTest.cpp',
   'DancingCellsStructureTest.cpp',
   'FileIoTest.cpp',
+  'FixedCapacityArrayTest.cpp',
   'IdPackingTest.cpp',
   'main.cpp',
   'RandomGeneratorTest.cpp',
