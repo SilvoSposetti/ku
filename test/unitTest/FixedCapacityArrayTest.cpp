@@ -24,6 +24,22 @@ TEST_CASE("FixedCapacityArray") {
     }
   }
 
+  SUBCASE("Equality") {
+    constexpr auto array = FixedCapacityArray<uint32_t, capacity>{0, 1, 2, 3};
+    constexpr auto equal = FixedCapacityArray<uint32_t, capacity>{0, 1, 2, 3};
+    constexpr auto differentSize = FixedCapacityArray<uint32_t, capacity>{0, 1, 2};
+    constexpr auto differentElements = FixedCapacityArray<uint32_t, capacity>{0, 1, 2, 4};
+    CHECK_EQ(array, equal);
+    CHECK_NE(array, differentSize);
+    CHECK_NE(array, differentElements);
+  }
+
+  SUBCASE("Copy-Constructor") {
+    constexpr auto array = FixedCapacityArray<uint32_t, capacity>{0, 1, 2, 3};
+    constexpr auto copy = array;
+    CHECK_EQ(array, copy);
+  }
+
   SUBCASE("Initializer list") {
     SUBCASE("Regular") {
       constexpr FixedCapacityArray<uint32_t, capacity> array{9, 8, 7};

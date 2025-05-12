@@ -24,6 +24,13 @@ public:
       : count(initializerList.size())
       , data(initializeData(initializerList)) {}
 
+  /** Copy Constructor.
+   * @param other The other instance.
+   */
+  constexpr FixedCapacityArray(const FixedCapacityArray& other)
+      : count(other.count)
+      , data(other.data) {}
+
   /** Copy assignment operator.
    * @param other The other instance.
    */
@@ -33,6 +40,17 @@ public:
       data = other.data; // std::array's assignment operator is constexpr in C++23.
     }
     return *this;
+  }
+
+  /** operator== implementation. Elements in the array after size() are ignored.
+   * @param other The other instance.
+   * @return whether the two FixecCapacityArrays are equal up to the elements that they contain.
+   */
+  constexpr bool operator==(const FixedCapacityArray& other) const noexcept {
+    if (count != other.count) {
+      return false;
+    }
+    return std::equal(data.begin(), data.begin() + count, other.data.begin());
   }
 
   /** Default three-way-comparison operator
