@@ -18,9 +18,9 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
       CHECK(!constraint.getPrimaryOptions().has_value());
     } else {
       REQUIRE(expectedPrimaryOptions.has_value());
+      REQUIRE(constraint.getPrimaryOptions().has_value());
       CHECK_EQ(expectedPrimaryOptions.value().size(), intrinsics.allPossibilities.size());
       CHECK_EQ(constraint.getPrimaryItemsAmount(), expectedPrimaryItemsCoverage);
-      REQUIRE(constraint.getPrimaryOptions().has_value());
       const auto array = constraint.getPrimaryOptions().value();
       const auto vector = std::vector(array.begin(), array.end());
       CHECK_EQ(expectedPrimaryOptions.value(), vector);
@@ -33,9 +33,9 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
       CHECK(!constraint.getSecondaryOptions().has_value());
     } else {
       REQUIRE(expectedSecondaryOptions.has_value());
+      REQUIRE(constraint.getSecondaryOptions().has_value());
       CHECK_EQ(expectedSecondaryOptions.value().size(), intrinsics.allPossibilities.size());
       CHECK_EQ(constraint.getSecondaryItemsAmount(), expectedSecondaryItemsCoverage);
-      REQUIRE(constraint.getSecondaryOptions().has_value());
       const auto array = constraint.getSecondaryOptions().value();
       const auto vector = std::vector(array.begin(), array.end());
       CHECK_EQ(expectedSecondaryOptions.value(), vector);
