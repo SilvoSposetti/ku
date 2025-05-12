@@ -110,7 +110,7 @@ private:
    * @return The constructed array of data
    */
   constexpr std::array<T, N> initializeData(const std::initializer_list<T>& initializerList) {
-    std::array<T, N> data;
+    std::array<T, N> data{};
     if (initializerList.size() > N) {
       throw std::out_of_range("Initializer list exceeds maximum capacity");
     }
@@ -123,7 +123,7 @@ private:
 private:
   /** The amount of valid elements.
    */
-  uint32_t count;
+  uint32_t count = 0;
 
   /** The data.
    */
