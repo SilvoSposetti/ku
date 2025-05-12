@@ -15,7 +15,7 @@ TEST_SUITE("Constraints: Items") {
                              2,
                              std::vector<Option>{{}, {}, {0}, {1}, {0}, {1}, {}, {}},
                              0,
-                             {});
+                             std::nullopt);
     }
     SUBCASE("5x5x5") {
       constexpr auto intriniscs = PuzzleIntrinsics<{5, 5, 5}>{};
@@ -30,7 +30,7 @@ TEST_SUITE("Constraints: Items") {
                               {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {}, {}, {},
                               {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}},
           0,
-          {});
+          std::nullopt);
     }
 
     SUBCASE("9x9x9") {
@@ -71,7 +71,7 @@ TEST_SUITE("Constraints: Items") {
               {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
               {},  {},  {},  {},  {},  {},  {},  {},  {}},
           0,
-          {});
+          std::nullopt);
     }
   }
 }

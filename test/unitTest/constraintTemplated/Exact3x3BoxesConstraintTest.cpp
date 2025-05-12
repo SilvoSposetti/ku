@@ -1,6 +1,7 @@
 
-#include "ConstraintTestHelpers.hpp"
 #include "constraintTemplated/Exact3x3BoxesConstraint.hpp"
+
+#include "ConstraintTestHelpers.hpp"
 
 #include <doctest.h>
 
@@ -104,7 +105,7 @@ TEST_SUITE("Constraints: Items") {
               {75}, {76}, {77}, {78}, {79}, {80}, {72}, {73}, {74}, {75}, {76}, {77}, {78}, {79}, {80},
           },
           0,
-          {});
+          std::nullopt);
     }
   }
 }
