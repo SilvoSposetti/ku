@@ -3,6 +3,7 @@
 #include <concepts>
 #include <stdexcept>
 #include <limits>
+#include <algorithm>
 
 /** A fixed-size unmodifiable array with some maximum capacity and an internal smaller size.
  * Used as an Option returned by Constraints
