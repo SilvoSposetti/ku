@@ -28,6 +28,7 @@ enum class ConstraintType : uint64_t {
   EXACT_COLUMN = 1 << 2,
   EXACT_3x3_BOXES = 1 << 3,
   EXACT_POSITIVE_DIAGONAL = 1 << 4,
+  EXACT_NEGATIVE_DIAGONAL = 1 << 5,
 };
 
 inline ConstraintType operator|(ConstraintType a, ConstraintType b) {

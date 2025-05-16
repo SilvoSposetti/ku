@@ -1,8 +1,9 @@
 
 #include "CellConstraint.hpp"
-#include "ExactColumnConstraint.hpp"
 #include "ConstraintInterface.hpp"
 #include "Exact3x3BoxesConstraint.hpp"
+#include "ExactColumnConstraint.hpp"
+#include "ExactNegativeDiagonalConstraint.hpp"
 #include "ExactPositiveDiagonalConstraint.hpp"
 #include "ExactRowConstraint.hpp"
 
@@ -41,6 +42,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<ExactPositiveDiagonalConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("ExactPositiveDiagonalConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::EXACT_NEGATIVE_DIAGONAL:
+    if (ExactNegativeDiagonalConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<ExactNegativeDiagonalConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("ExactNegativeDiagonalConstraint does not support this puzzle");
     }
     break;
   default:
