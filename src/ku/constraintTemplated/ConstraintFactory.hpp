@@ -4,7 +4,7 @@
 #include "ConstraintInterface.hpp"
 #include "Exact3x3BoxesConstraint.hpp"
 #include "ExactPositiveDiagonalConstraint.hpp"
-#include "RowConstraint.hpp"
+#include "ExactRowConstraint.hpp"
 
 #include <memory>
 
@@ -16,10 +16,10 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
   case ConstraintType::CELL:
     return std::make_unique<CellConstraint<intrinsics>>();
   case ConstraintType::EXACT_ROW:
-    if (RowConstraint<intrinsics>::supportsPuzzle()) {
-      return std::make_unique<RowConstraint<intrinsics>>();
+    if (ExactRowConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<ExactRowConstraint<intrinsics>>();
     } else {
-      throw std::runtime_error("RowConstraint does not support this puzzle");
+      throw std::runtime_error("ExactRowConstraint does not support this puzzle");
     }
     break;
   case ConstraintType::EXACT_COLUMN:

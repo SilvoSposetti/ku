@@ -34,7 +34,7 @@ unit_test_sources = files(
   'constraintTemplated/ColumnConstraintTest.cpp',
   'constraintTemplated/Exact3x3BoxesConstraintTest.cpp',
   'constraintTemplated/ExactPositiveDiagonalConstraintTest.cpp',
-  'constraintTemplated/RowConstraintTest.cpp',
+  'constraintTemplated/ExactRowConstraintTest.cpp',
   'drawing/DrawingUtilitiesTest.cpp',
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',

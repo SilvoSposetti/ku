@@ -1,5 +1,5 @@
 
-#include "constraintTemplated/RowConstraint.hpp"
+#include "constraintTemplated/ExactRowConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
 
@@ -7,10 +7,10 @@
 
 TEST_SUITE("Constraints: Items") {
 
-  TEST_CASE("RowConstraint") {
+  TEST_CASE("ExactRowConstraint") {
     SUBCASE("4x4x4") {
       constexpr auto intriniscs = PuzzleIntrinsics<{4, 4, 4}>{};
-      checkConstraintOptions(RowConstraint<intriniscs>(),
+      checkConstraintOptions(ExactRowConstraint<intriniscs>(),
                              16,
                              std::vector<Option>{
                                  {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},  {1},  {2},  {3},  {0},
@@ -26,7 +26,7 @@ TEST_SUITE("Constraints: Items") {
     SUBCASE("9x9x9") {
       constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
       checkConstraintOptions(
-          RowConstraint<intriniscs>(),
+          ExactRowConstraint<intriniscs>(),
           81,
           std::vector<Option>{
               {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},  {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},
