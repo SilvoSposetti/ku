@@ -80,16 +80,18 @@ TEST_SUITE("FixedCapacityArray") {
       }
       CHECK_EQ(elements, std::vector<T>{1, 2, 3, 4});
     }
+
+    SUBCASE("Accessing index too large for internal size type") {
+      if constexpr (!std::is_same_v<T, uint64_t>) {
+        constexpr FixedCapacityArray<uint8_t, 10> array;
+        constexpr std::size_t index = std::numeric_limits<T>::max() + 1;
+        CHECK_THROWS_AS(array[index], std::out_of_range);
+      }
+    }
   }
 
   TEST_CASE_TEMPLATE_INVOKE(usage, uint8_t);
   TEST_CASE_TEMPLATE_INVOKE(usage, uint16_t);
   TEST_CASE_TEMPLATE_INVOKE(usage, uint32_t);
   TEST_CASE_TEMPLATE_INVOKE(usage, uint64_t);
-
-  
-  TEST_CASE("Accessing index too large for internal size type") {
-    constexpr FixedCapacityArray<uint8_t, 10> array;
-    CHECK_THROWS_AS(array[500], std::out_of_range);
-  }
 }
