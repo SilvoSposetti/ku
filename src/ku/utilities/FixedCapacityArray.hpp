@@ -2,6 +2,7 @@
 #include <array>
 #include <concepts>
 #include <stdexcept>
+#include <limits>
 
 /** A fixed-size unmodifiable array with some maximum capacity and an internal smaller size.
  * Used as an Option returned by Constraints
@@ -84,7 +85,10 @@ public:
    * Throws is an element is accessed outside capacity, or outside size()
    * @return The element.
    */
-  constexpr const T& operator[](T index) const {
+  constexpr const T& operator[](std::size_t index) const {
+    if(index > std::numeric_limits<T>::max()){
+      throw std::out_of_range("Accessing index too large for internal size");
+    }
     if (index >= size() || index >= capacity()) {
       throw std::out_of_range("Accessing index outside size");
     }
@@ -116,7 +120,7 @@ private:
       throw std::out_of_range("Initializer list exceeds maximum capacity");
     }
     if (initializerList.size() > 0) {
-      std::copy(initializerList.begin(), initializerList.end(), data.begin());
+      std::ranges::copy(initializerList, data.begin());
     }
     return data;
   }
