@@ -31,7 +31,7 @@ unit_test_sources = files(
   'constraintTemplated/ConstraintTest.cpp',
   'constraintTemplated/ConstraintStandardChecksTest.cpp',
   'constraintTemplated/CellConstraintTest.cpp',
-  'constraintTemplated/ColumnConstraintTest.cpp',
+  'constraintTemplated/ExactColumnConstraintTest.cpp',
   'constraintTemplated/Exact3x3BoxesConstraintTest.cpp',
   'constraintTemplated/ExactPositiveDiagonalConstraintTest.cpp',
   'constraintTemplated/ExactRowConstraintTest.cpp',

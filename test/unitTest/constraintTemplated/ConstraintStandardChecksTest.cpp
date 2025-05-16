@@ -1,6 +1,6 @@
 
 #include "constraintTemplated/CellConstraint.hpp"
-#include "constraintTemplated/ColumnConstraint.hpp"
+#include "constraintTemplated/ExactColumnConstraint.hpp"
 #include "constraintTemplated/ExactRowConstraint.hpp"
 
 #include <algorithm>
@@ -86,5 +86,5 @@ TEST_SUITE("Constraints: Checks") {
   // Add further constraints here
   INVOKE_TEST_CASES_FOR_CONSTRAINT(CellConstraint);
   INVOKE_TEST_CASES_FOR_CONSTRAINT(ExactRowConstraint);
-  INVOKE_TEST_CASES_FOR_CONSTRAINT(ColumnConstraint);
+  INVOKE_TEST_CASES_FOR_CONSTRAINT(ExactColumnConstraint);
 }
