@@ -1,5 +1,6 @@
 #pragma once
 
 #include "../utilities/FixedCapacityArray.hpp"
+#include "OptionId.hpp"
 
-using Option = FixedCapacityArray<uint32_t, 1>;
+using Option = FixedCapacityArray<OptionId, 1>;

@@ -6,9 +6,9 @@
 
 template <PuzzleIntrinsics intrinsics>
 void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
-                            int32_t expectedPrimaryItemsCoverage,
+                            uint32_t expectedPrimaryItemsCoverage,
                             const std::vector<Option>& expectedPrimaryOptions,
-                            int32_t expectedSecondaryItemsCoverage,
+                            uint32_t expectedSecondaryItemsCoverage,
                             const std::vector<Option>& expectedSecondaryOptions) {
 
   // Primary items

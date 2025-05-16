@@ -14,17 +14,17 @@ struct ExampleConstraint {
   }
 
   constexpr static Option primaryOption(Index row, Index column, Digit digit) {
-    return Option{IdPacking::packId(
-        row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size())};
+    return Option{static_cast<OptionId>(IdPacking::packId(
+        row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size()))};
   }
 
   constexpr static Option secondaryOption(Index row, Index column, Digit digit) {
     constexpr auto total =
         static_cast<uint32_t>(puzzleIntrinsics.rows * puzzleIntrinsics.columns * puzzleIntrinsics.digits.size());
-    return Option{
+    return Option{static_cast<OptionId>(
         (total - 1) -
         IdPacking::packId(
-            row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size())};
+            row, column, digit - 1, puzzleIntrinsics.rows, puzzleIntrinsics.columns, puzzleIntrinsics.digits.size()))};
   }
 };
 

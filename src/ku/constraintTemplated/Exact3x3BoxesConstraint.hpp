@@ -23,7 +23,8 @@ public:
     constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / 3;
     if constexpr (totalCount > 0) {
       const auto boxId = (column / 3 + boxesVerticalCount * (row / 3));
-      return Option{(boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount};
+      return Option{
+          static_cast<OptionId>((boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount)};
     }
     return {};
   }

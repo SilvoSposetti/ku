@@ -72,12 +72,12 @@ private:
     return std::nullopt;
   }
 
-  static constexpr size_t countUniqueElementsInOptions(const std::optional<OptionsList<puzzle>> options) {
+  static constexpr std::size_t countUniqueElementsInOptions(const std::optional<OptionsList<puzzle>> options) {
     if (!options) {
       return 0;
     }
-    auto maxId = std::numeric_limits<uint32_t>::min();
-    std::vector<uint32_t> set;
+    auto maxId = std::numeric_limits<OptionId>::min();
+    std::vector<OptionId> set;
     for (const auto& option : options.value()) {
       for (const auto& element : option) {
         if (std::ranges::find(set, element) == set.end()) {
@@ -86,8 +86,8 @@ private:
         }
       }
     }
-    maxId = std::max(static_cast<uint32_t>(0), maxId);
-    return std::max(set.size(), static_cast<size_t>(maxId));
+    maxId = std::max(static_cast<OptionId>(0), maxId);
+    return std::max(set.size(), static_cast<std::size_t>(maxId));
   }
 
 public:
@@ -104,10 +104,16 @@ public:
   /** The primary options
    */
   const std::optional<OptionsList<puzzle>> primaryOptions;
+
+  /** The amount of items covered by the primary options
+   */
   const std::size_t primaryItemsAmount = 0;
 
   /** The secondary options
    */
   const std::optional<OptionsList<puzzle>> secondaryOptions;
+
+  /** The amount of items covered by the secondary options
+   */
   const std::size_t secondaryItemsAmount = 0;
 };

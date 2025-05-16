@@ -23,7 +23,7 @@ public:
   constexpr static Option primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (isOnPositiveDiagonal(row, column)) {
-        return Option{(digit - 1)};
+        return Option{static_cast<OptionId>((digit - 1))};
       }
     }
     return {};
