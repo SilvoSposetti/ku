@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <cstdint>
+#include <concepts>
 #include <stdexcept>
 
 /** A fixed-size unmodifiable array with some maximum capacity and an internal smaller size.
@@ -8,7 +8,8 @@
  * @tparam T The type to store
  * @tparam N The maximum size of elements that can be stored
  */
-template <typename T, std::size_t N>
+template <typename T, T N>
+  requires std::unsigned_integral<T>
 class FixedCapacityArray {
 public:
   /** Default constructor. Creates a completely empty array.
@@ -61,14 +62,14 @@ public:
   /** Retrieves the amount of elements that have been set
    * @return The amount of valid elements.
    */
-  constexpr std::size_t size() const noexcept {
+  constexpr T size() const noexcept {
     return count;
   }
 
   /** Retrieves the maximum capacity
    * @return The maximum capacity of elements.
    */
-  constexpr std::size_t capacity() const noexcept {
+  constexpr T capacity() const noexcept {
     return N;
   }
 
@@ -83,7 +84,7 @@ public:
    * Throws is an element is accessed outside capacity, or outside size()
    * @return The element.
    */
-  constexpr const T& operator[](std::size_t index) const {
+  constexpr const T& operator[](T index) const {
     if (index >= size() || index >= capacity()) {
       throw std::out_of_range("Accessing index outside size");
     }
@@ -111,7 +112,7 @@ private:
    */
   constexpr std::array<T, N> initializeData(const std::initializer_list<T>& initializerList) {
     std::array<T, N> data{};
-    if (initializerList.size() > N) {
+    if (static_cast<T>(initializerList.size()) > N) {
       throw std::out_of_range("Initializer list exceeds maximum capacity");
     }
     if (initializerList.size() > 0) {
@@ -123,7 +124,7 @@ private:
 private:
   /** The amount of valid elements.
    */
-  uint32_t count = 0;
+  T count = 0;
 
   /** The data.
    */
