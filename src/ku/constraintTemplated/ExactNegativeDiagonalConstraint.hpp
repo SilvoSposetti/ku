@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../constraints/ConstraintType.hpp"
+#include "../puzzles/PuzzleUtilities.hpp"
 #include "Constraint.hpp"
 #include "ConstraintConcept.hpp"
 
@@ -22,7 +23,7 @@ public:
 
   constexpr static Option primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
-      if (isOnNegativeDiagonal(row, column)) {
+      if (PuzzleUtilities::isOnNegativeDiagonal<puzzle>(row, column)) {
         return Option{static_cast<OptionId>((digit - 1))};
       }
     }
@@ -32,9 +33,5 @@ public:
   constexpr static Option
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
-  }
-
-  constexpr static bool isOnNegativeDiagonal(uint32_t rowIndex, uint32_t columnIndex) {
-    return rowIndex == columnIndex;
   }
 };

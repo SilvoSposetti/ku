@@ -44,4 +44,5 @@ unit_test_sources = files(
   'puzzles/PuzzleIntrinsicsTest.cpp',
   'puzzles/PuzzleSpaceTest.cpp',
   'puzzles/PuzzleTest.cpp',
+  'puzzles/PuzzleUtilitiesTest.cpp',
 )

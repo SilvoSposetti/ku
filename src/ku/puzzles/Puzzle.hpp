@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Setter.hpp"
 #include "../constraintTemplated/ConstraintFactory.hpp"
 #include "../drawing/DataStructureDrawing.hpp"
 #include "../drawing/DrawingOptions.hpp"
