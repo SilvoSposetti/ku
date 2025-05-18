@@ -250,7 +250,7 @@ private:
   std::unordered_set<Cell> getOnlyValidClues(const std::unordered_set<Cell>& clues) {
     std::unordered_set<Cell> result;
     for (const auto& cell : clues) {
-      if (this->isCellValid(cell)) {
+      if (this->isValidCell(cell)) {
         result.insert(cell);
       }
     }

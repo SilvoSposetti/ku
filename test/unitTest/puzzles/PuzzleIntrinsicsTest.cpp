@@ -4,8 +4,9 @@
 #include <doctest.h>
 #include <set>
 
-TEST_SUITE("PuzzleIntrinsiscs") {
-  TEST_CASE("Template instantiation") {
+TEST_SUITE("Puzzle Intrinsiscs") {
+
+  TEST_CASE("Template Instantiation") {
     constexpr uint8_t rows = 8;
     constexpr uint8_t columns = 5;
     constexpr uint8_t digitsCount = 9;
@@ -42,7 +43,7 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     };
 
     for (const auto& validCell : validCells) {
-      CHECK(puzzle.isCellValid(validCell));
+      CHECK(puzzle.isValidCell(validCell));
     }
 
     constexpr auto invalidCells = std::array{
@@ -55,7 +56,74 @@ TEST_SUITE("PuzzleIntrinsiscs") {
     };
 
     for (const auto& invalidCell : invalidCells) {
-      CHECK_FALSE(puzzle.isCellValid(invalidCell));
+      CHECK_FALSE(puzzle.isValidCell(invalidCell));
+    }
+  }
+
+  TEST_CASE("Is Square Puzzle") {
+    SUBCASE("Invalid") {
+      CHECK_FALSE(PuzzleIntrinsics<{0, 2, 0}>{}.isSquare());
+      CHECK_FALSE(PuzzleIntrinsics<{1, 2, 1}>{}.isSquare());
+      CHECK_FALSE(PuzzleIntrinsics<{5, 6, 2}>{}.isSquare());
+    }
+    SUBCASE("Valid") {
+      CHECK(PuzzleIntrinsics<{0, 0, 0}>{}.isSquare());
+      CHECK(PuzzleIntrinsics<{1, 1, 1}>{}.isSquare());
+      CHECK(PuzzleIntrinsics<{2, 2, 2}>{}.isSquare());
+      CHECK(PuzzleIntrinsics<{6, 6, 3}>{}.isSquare());
+    }
+  }
+
+  TEST_CASE("Is On Positive Diagonal") {
+    SUBCASE("No Rows Or Columns") {
+      CHECK_FALSE(PuzzleIntrinsics<{0, 0, 5}>{}.isOnPositiveDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{0, 0, 5}>{}.isOnPositiveDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{0, 1, 5}>{}.isOnPositiveDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{1, 0, 5}>{}.isOnPositiveDiagonal(0, 0));
+    }
+    SUBCASE("Puzzle Is Not A Square") {
+      CHECK_FALSE(PuzzleIntrinsics<{8, 7, 5}>{}.isOnPositiveDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{7, 8, 5}>{}.isOnPositiveDiagonal(0, 0));
+    }
+    SUBCASE("Is Outside Of Puzzle") {
+      CHECK_FALSE(PuzzleIntrinsics<{5, 5, 5}>{}.isOnPositiveDiagonal(7, 7));
+    }
+    SUBCASE("Not On Diagonal") {
+      CHECK_FALSE(PuzzleIntrinsics<{7, 7, 5}>{}.isOnPositiveDiagonal(1, 2));
+      CHECK_FALSE(PuzzleIntrinsics<{7, 7, 5}>{}.isOnPositiveDiagonal(2, 0));
+    }
+    SUBCASE("Valid") {
+      CHECK(PuzzleIntrinsics<{1, 1, 5}>{}.isOnPositiveDiagonal(0, 0));
+      CHECK(PuzzleIntrinsics<{7, 7, 5}>{}.isOnPositiveDiagonal(0, 6));
+      CHECK(PuzzleIntrinsics<{7, 7, 5}>{}.isOnPositiveDiagonal(6, 0));
+      CHECK(PuzzleIntrinsics<{5, 5, 5}>{}.isOnPositiveDiagonal(2, 2));
+      CHECK(PuzzleIntrinsics<{12, 12, 5}>{}.isOnPositiveDiagonal(4, 7));
+      CHECK(PuzzleIntrinsics<{12, 12, 5}>{}.isOnPositiveDiagonal(7, 4));
+    }
+  }
+
+  TEST_CASE("Is On Negative Diagonal") {
+    SUBCASE("No Rows Or Columns") {
+      CHECK_FALSE(PuzzleIntrinsics<{0, 0, 5}>{}.isOnNegativeDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{0, 1, 5}>{}.isOnNegativeDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{1, 0, 5}>{}.isOnNegativeDiagonal(0, 0));
+    }
+    SUBCASE("Puzzle Is Not A Square") {
+      CHECK_FALSE(PuzzleIntrinsics<{8, 7, 5}>{}.isOnNegativeDiagonal(0, 0));
+      CHECK_FALSE(PuzzleIntrinsics<{7, 8, 5}>{}.isOnNegativeDiagonal(0, 0));
+    }
+    SUBCASE("Is Outside Of Puzzle") {
+      CHECK_FALSE(PuzzleIntrinsics<{5, 5, 5}>{}.isOnNegativeDiagonal(7, 7));
+    }
+    SUBCASE("Not On Diagonal") {
+      CHECK_FALSE(PuzzleIntrinsics<{7, 7, 5}>{}.isOnNegativeDiagonal(1, 2));
+      CHECK_FALSE(PuzzleIntrinsics<{7, 7, 5}>{}.isOnNegativeDiagonal(2, 0));
+    }
+    SUBCASE("Valid") {
+      CHECK(PuzzleIntrinsics<{1, 1, 5}>{}.isOnNegativeDiagonal(0, 0));
+      CHECK(PuzzleIntrinsics<{7, 7, 5}>{}.isOnNegativeDiagonal(1, 1));
+      CHECK(PuzzleIntrinsics<{5, 5, 5}>{}.isOnNegativeDiagonal(0, 0));
+      CHECK(PuzzleIntrinsics<{12, 12, 5}>{}.isOnNegativeDiagonal(7, 7));
     }
   }
 
@@ -63,7 +131,7 @@ TEST_SUITE("PuzzleIntrinsiscs") {
 
     constexpr T puzzle;
 
-    SUBCASE("Rows and row indices") {
+    SUBCASE("Rows And Row Indices") {
       // Row indices are enough and sorted
       CHECK_EQ(puzzle.rowIndices.size(), puzzle.rows);
       CHECK(std::ranges::is_sorted(puzzle.rowIndices));
@@ -71,13 +139,13 @@ TEST_SUITE("PuzzleIntrinsiscs") {
         CHECK_EQ(puzzle.rowIndices.front(), 0);
         CHECK_EQ(puzzle.rowIndices.back(), puzzle.rows - 1);
         for (const auto& rowIndex : puzzle.rowIndices) {
-          CHECK(puzzle.isRowIndexValid(rowIndex));
+          CHECK(puzzle.isValidRowIndex(rowIndex));
         }
       }
-      CHECK_FALSE(puzzle.isRowIndexValid(puzzle.rows + 1));
+      CHECK_FALSE(puzzle.isValidRowIndex(puzzle.rows + 1));
     }
 
-    SUBCASE("Columns and column indices") {
+    SUBCASE("Columns And Column Indices") {
       // Column indices are enough and sorted
       CHECK_EQ(puzzle.columns, puzzle.columnIndices.size());
       CHECK(std::ranges::is_sorted(puzzle.columnIndices));
@@ -85,10 +153,10 @@ TEST_SUITE("PuzzleIntrinsiscs") {
         CHECK_EQ(puzzle.columnIndices.front(), 0);
         CHECK_EQ(puzzle.columnIndices.back(), puzzle.columns - 1);
         for (const auto& columnIndex : puzzle.columnIndices) {
-          CHECK(puzzle.isColumnIndexValid(columnIndex));
+          CHECK(puzzle.isValidColumnIndex(columnIndex));
         }
       }
-      CHECK_FALSE(puzzle.isColumnIndexValid(puzzle.columns + 1));
+      CHECK_FALSE(puzzle.isValidColumnIndex(puzzle.columns + 1));
     }
 
     SUBCASE("Digits") {
@@ -99,9 +167,9 @@ TEST_SUITE("PuzzleIntrinsiscs") {
         CHECK_EQ(puzzle.digits.front(), 1);
         CHECK_EQ(puzzle.digits.back(), puzzle.digits.size());
         for (const auto& digit : puzzle.digits) {
-          CHECK(puzzle.isDigitValid(digit));
+          CHECK(puzzle.isValidDigit(digit));
         }
-        CHECK_FALSE(puzzle.isDigitValid(puzzle.digits.back() + 1));
+        CHECK_FALSE(puzzle.isValidDigit(puzzle.digits.back() + 1));
       }
     }
 

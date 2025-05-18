@@ -34,7 +34,7 @@ public:
    * @param rowIndex The index to check
    * @return Whether the index is valid
    */
-  constexpr bool isRowIndexValid(Index rowIndex) const {
+  constexpr bool isValidRowIndex(Index rowIndex) const {
     return std::ranges::contains(rowIndices, rowIndex);
   };
 
@@ -43,7 +43,7 @@ public:
    * @return Whether the index is valid
    */
 
-  constexpr bool isColumnIndexValid(Index columnIndex) const {
+  constexpr bool isValidColumnIndex(Index columnIndex) const {
     return std::ranges::contains(columnIndices, columnIndex);
   };
 
@@ -51,17 +51,55 @@ public:
    * @param digit The digit to check
    * @return Whether the digit is valid
    */
-  constexpr bool isDigitValid(Digit digit) const {
+  constexpr bool isValidDigit(Digit digit) const {
     return Digits::isValid(digit) && std::ranges::contains(digits, digit);
-    ;
   }
 
   /** Checks if a Cell is valid for the puzzle
    * @param cell The cell to check
    * @return Whether the cell is valid
    */
-  constexpr bool isCellValid(const Cell& cell) const {
-    return isRowIndexValid(cell.rowIndex) && isColumnIndexValid(cell.columnIndex) && isDigitValid(cell.digit);
+  constexpr bool isValidCell(const Cell& cell) const {
+    return isValidRowIndex(cell.rowIndex) && isValidColumnIndex(cell.columnIndex) && isValidDigit(cell.digit);
+  }
+
+  /** Checks if a puzzle is a square
+   * @return Whether the puzzle is a square
+   */
+  constexpr bool isSquare() const {
+    return rows == columns;
+  }
+
+  /** Checks if a cell defined by a row and column indices are on the positive diagonal of a square puzzle.
+   * The positive diagonal is the diagonal going from the bottom-left to the top-right of the puzzle.
+   * If the puzzle is not a square, it cannot have a positive diagonal.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return Whether the row and column indices describe a square on the positive diagonal.
+   */
+  constexpr bool isOnPositiveDiagonal(Index rowIndex, Index columnIndex) const {
+    if (isSquare()) {
+      if (isValidRowIndex(rowIndex) && isValidColumnIndex(columnIndex)) {
+        return rowIndex + columnIndex == (rowIndices.back()); // or also puzzle.columnIndices.back()
+      }
+    }
+    return false;
+  }
+
+  /** Checks if a cell defined by a row and column indices are on the negative diagonal of a square puzzle.
+   * The negative diagonal is the diagonal going from the top-left to the bottom-right of the puzzle.
+   * If the puzzle is not a square, it cannot have a negative diagonal.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return Whether the row and column indices describe a square on the negative diagonal.
+   */
+  constexpr bool isOnNegativeDiagonal(Index rowIndex, Index columnIndex) const {
+    if (isSquare()) {
+      if (isValidRowIndex(rowIndex) && isValidColumnIndex(columnIndex)) {
+        return rowIndex == columnIndex;
+      }
+    }
+    return false;
   }
 
 private:
