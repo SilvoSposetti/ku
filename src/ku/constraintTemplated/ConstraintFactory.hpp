@@ -6,6 +6,7 @@
 #include "ExactNegativeDiagonalConstraint.hpp"
 #include "ExactPositiveDiagonalConstraint.hpp"
 #include "ExactRowConstraint.hpp"
+#include "HyperSudokuConstraint.hpp"
 
 #include <memory>
 
@@ -49,6 +50,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<ExactNegativeDiagonalConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("ExactNegativeDiagonalConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::HYPER_SUDOKU:
+    if (HyperSudokuConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<HyperSudokuConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("HyperSudokuConstraint does not support this puzzle");
     }
     break;
   default:
