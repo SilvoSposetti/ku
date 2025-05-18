@@ -30,7 +30,7 @@ unit_test_sources = files(
   'constraints/SudokuRowTest.cpp',
   'constraintTemplated/ConstraintTest.cpp',
   'constraintTemplated/CellConstraintTest.cpp',
-  'constraintTemplated/Disjoint3x3BoxesConstraintTest.cpp',
+  'constraintTemplated/Disjoint3x3BoxesSudokuConstraintTest.cpp',
   'constraintTemplated/Exact3x3BoxesConstraintTest.cpp',
   'constraintTemplated/ExactColumnConstraintTest.cpp',
   'constraintTemplated/ExactNegativeDiagonalConstraintTest.cpp',

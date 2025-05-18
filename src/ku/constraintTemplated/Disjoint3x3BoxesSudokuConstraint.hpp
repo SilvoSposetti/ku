@@ -7,15 +7,15 @@
 #include <ranges>
 
 template <PuzzleIntrinsics puzzle>
-struct Disjoint3x3BoxesConstraint : public Constraint<Disjoint3x3BoxesConstraint<puzzle>, puzzle> {
+struct Disjoint3x3BoxesSudokuConstraint : public Constraint<Disjoint3x3BoxesSudokuConstraint<puzzle>, puzzle> {
 public:
-  constexpr Disjoint3x3BoxesConstraint()
-      : Constraint<Disjoint3x3BoxesConstraint<puzzle>, puzzle>(
+  constexpr Disjoint3x3BoxesSudokuConstraint()
+      : Constraint<Disjoint3x3BoxesSudokuConstraint<puzzle>, puzzle>(
             ConstraintType::DISJOINT_BOXES,
             "Disjoint-Boxes",
             "Cells in the same relative position within all 3x3 boxes contain all the digits exactly once.") {
-    static_assert(ConstraintConcept<Disjoint3x3BoxesConstraint, puzzle>,
-                  "Disjoint3x3BoxesConstraint does not satisfy ConstraintConcept");
+    static_assert(ConstraintConcept<Disjoint3x3BoxesSudokuConstraint, puzzle>,
+                  "Disjoint3x3BoxesSudokuConstraint does not satisfy ConstraintConcept");
   };
 
   constexpr static bool supportsPuzzle() {

@@ -1,5 +1,5 @@
 
-#include "constraintTemplated/Disjoint3x3BoxesConstraint.hpp"
+#include "constraintTemplated/Disjoint3x3BoxesSudokuConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
 
@@ -7,15 +7,15 @@
 
 TEST_SUITE("Constraints") {
 
-  TEST_CASE("Disjoint3x3BoxesConstraint") {
+  TEST_CASE("Disjoint3x3BoxesSudokuConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<Disjoint3x3BoxesConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      memberChecks<Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
       // Only works with sudoku puzzle
-      GENERATE_SUBCASE(Disjoint3x3BoxesConstraint, 9, 9, 9);
+      GENERATE_SUBCASE(Disjoint3x3BoxesSudokuConstraint, 9, 9, 9);
     }
 
     SUBCASE("Explicit Options") {
@@ -23,7 +23,7 @@ TEST_SUITE("Constraints") {
       SUBCASE("9x9x9") {
         constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
         checkConstraintOptions(
-            Disjoint3x3BoxesConstraint<intriniscs>(),
+            Disjoint3x3BoxesSudokuConstraint<intriniscs>(),
             81,
             std::vector<Option>{
                 {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},  {9},  {10}, {11}, {12}, {13}, {14}, {15}, {16},

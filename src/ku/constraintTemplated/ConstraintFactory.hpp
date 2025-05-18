@@ -1,7 +1,7 @@
 
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"
-#include "Disjoint3x3BoxesConstraint.hpp"
+#include "Disjoint3x3BoxesSudokuConstraint.hpp"
 #include "Exact3x3BoxesConstraint.hpp"
 #include "ExactColumnConstraint.hpp"
 #include "ExactNegativeDiagonalConstraint.hpp"
@@ -92,10 +92,10 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
     }
     break;
   case ConstraintType::DISJOINT_BOXES:
-    if (Disjoint3x3BoxesConstraint<intrinsics>::supportsPuzzle()) {
-      return std::make_unique<Disjoint3x3BoxesConstraint<intrinsics>>();
+    if (Disjoint3x3BoxesSudokuConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<Disjoint3x3BoxesSudokuConstraint<intrinsics>>();
     } else {
-      throw std::runtime_error("Disjoint3x3BoxesConstraint does not support this puzzle");
+      throw std::runtime_error("Disjoint3x3BoxesSudokuConstraint does not support this puzzle");
     }
     break;
   default:
