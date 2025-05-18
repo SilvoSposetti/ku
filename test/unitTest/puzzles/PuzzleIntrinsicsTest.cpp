@@ -127,6 +127,27 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     }
   }
 
+  TEST_CASE("Is Sudoku") {
+    SUBCASE("Wrong Rows") {
+      CHECK_FALSE(PuzzleIntrinsics<{0, 9, 9}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{5, 9, 9}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{12, 9, 9}>{}.isSudoku());
+    }
+    SUBCASE("Wrong Columns") {
+      CHECK_FALSE(PuzzleIntrinsics<{9, 0, 9}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{9, 6, 9}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{9, 11, 9}>{}.isSudoku());
+    }
+    SUBCASE("Wrong Digits") {
+      CHECK_FALSE(PuzzleIntrinsics<{9, 9, 0}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{9, 9, 7}>{}.isSudoku());
+      CHECK_FALSE(PuzzleIntrinsics<{9, 9, 10}>{}.isSudoku());
+    }
+    SUBCASE("Valid") {
+      CHECK(PuzzleIntrinsics<{9, 9, 9}>{}.isSudoku());
+    }
+  }
+
   TEST_CASE_TEMPLATE_DEFINE("Compile-time construction", T, test_id) {
 
     constexpr T puzzle;

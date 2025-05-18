@@ -63,6 +63,13 @@ public:
     return isValidRowIndex(cell.rowIndex) && isValidColumnIndex(cell.columnIndex) && isValidDigit(cell.digit);
   }
 
+  /** Checks if a puzzle is compatible with classic Sudoku
+   * @return Whether the puzzle is compatible with classic Sudoku
+   */
+  constexpr bool isSudoku() const {
+    return rows == 9 && columns == 9 && digits.size() == 9;
+  }
+
   /** Checks if a puzzle is a square
    * @return Whether the puzzle is a square
    */
