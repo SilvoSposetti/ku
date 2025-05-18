@@ -1,6 +1,7 @@
 
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"
+#include "Disjoint3x3BoxesConstraint.hpp"
 #include "Exact3x3BoxesConstraint.hpp"
 #include "ExactColumnConstraint.hpp"
 #include "ExactNegativeDiagonalConstraint.hpp"
@@ -88,6 +89,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<HyperSudokuConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("HyperSudokuConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::DISJOINT_BOXES:
+    if (Disjoint3x3BoxesConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<Disjoint3x3BoxesConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("Disjoint3x3BoxesConstraint does not support this puzzle");
     }
     break;
   default:
