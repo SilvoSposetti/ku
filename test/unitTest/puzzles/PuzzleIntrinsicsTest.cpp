@@ -148,6 +148,24 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     }
   }
 
+  TEST_CASE("Has Even Digits") {
+    CHECK_FALSE(PuzzleIntrinsics<{0, 0, 0}>{}.hasEvenDigits());
+    CHECK_FALSE(PuzzleIntrinsics<{0, 0, 1}>{}.hasEvenDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 2}>{}.hasEvenDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 3}>{}.hasEvenDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 55}>{}.hasEvenDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 56}>{}.hasEvenDigits());
+  }
+
+  TEST_CASE("Has Odd Digits") {
+    CHECK_FALSE(PuzzleIntrinsics<{0, 0, 0}>{}.hasOddDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 1}>{}.hasOddDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 2}>{}.hasOddDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 3}>{}.hasOddDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 55}>{}.hasOddDigits());
+    CHECK(PuzzleIntrinsics<{0, 0, 56}>{}.hasOddDigits());
+  }
+
   TEST_CASE_TEMPLATE_DEFINE("Compile-time construction", T, test_id) {
 
     constexpr T puzzle;

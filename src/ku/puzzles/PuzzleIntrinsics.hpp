@@ -109,6 +109,20 @@ public:
     return false;
   }
 
+  /** Computes whether the puzzle has any even digits
+   * @return Whether the puzzle has any even digits
+   */
+  constexpr bool hasEvenDigits() const {
+    return std::ranges::any_of(digits, [](const auto& digit) { return Digits::isEven(digit); });
+  }
+
+  /** Computes whether the puzzle has any odd digits
+   * @return Whether the puzzle has any odd digits
+   */
+  constexpr bool hasOddDigits() const {
+    return std::ranges::any_of(digits, [](const auto& digit) { return Digits::isOdd(digit); });
+  }
+
 private:
   /** Constructs an array with an ordered set of possibilities covering all cells
    * @param rowIndices All the valid row indices, ordered.

@@ -12,15 +12,30 @@ TEST_CASE("Digit") {
   }
 
   SUBCASE("Valid digits") {
-    constexpr Digit digit0 = Digits::invalidDigit;
-    constexpr Digit digit1 = 1;
-    constexpr Digit digit2 = 2;
-    constexpr Digit digit3 = 3;
+    CHECK(!Digits::isValid(Digits::invalidDigit));
+    CHECK(Digits::isValid(1));
+    CHECK(Digits::isValid(2));
+    CHECK(Digits::isValid(3));
+  }
 
-    CHECK(!Digits::isValid(digit0));
-    CHECK(Digits::isValid(digit1));
-    CHECK(Digits::isValid(digit2));
-    CHECK(Digits::isValid(digit3));
+  SUBCASE("Is Even") {
+    CHECK(!Digits::isValid(Digits::invalidDigit));
+    CHECK(!Digits::isEven(1));
+    CHECK(Digits::isEven(2));
+    CHECK(!Digits::isEven(3));
+    CHECK(Digits::isEven(4));
+    CHECK(!Digits::isEven(55));
+    CHECK(Digits::isEven(56));
+  }
+
+  SUBCASE("Is Odd") {
+    CHECK(!Digits::isValid(Digits::invalidDigit));
+    CHECK(Digits::isOdd(1));
+    CHECK(!Digits::isOdd(2));
+    CHECK(Digits::isOdd(3));
+    CHECK(!Digits::isOdd(4));
+    CHECK(Digits::isOdd(55));
+    CHECK(!Digits::isOdd(56));
   }
 
   SUBCASE("Create Digits") {
