@@ -20,7 +20,7 @@ public:
     return puzzle.isSudoku();
   }
 
-  constexpr static Option primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
+  constexpr static Option primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr std::array<std::pair<Index, Index>, 4> topLeftCorners = {
         std::make_pair(1, 1), std::make_pair(1, 5), std::make_pair(5, 1), std::make_pair(5, 5)};
     constexpr Index boxSize = 3;

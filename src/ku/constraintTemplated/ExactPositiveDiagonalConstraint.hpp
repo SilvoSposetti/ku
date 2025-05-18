@@ -20,7 +20,7 @@ public:
     return puzzle.rows == puzzle.columns && puzzle.rows == puzzle.digits.size();
   }
 
-  constexpr static Option primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
+  constexpr static Option primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnPositiveDiagonal(row, column)) {
         return Option{static_cast<OptionId>((digit - 1))};

@@ -18,7 +18,7 @@ public:
     return puzzle.rows % 3 == 0 && puzzle.columns % 3 == 0 && puzzle.digits.size() == 9;
   }
 
-  constexpr static Option primaryOption([[maybe_unused]] uint32_t row, uint32_t column, uint32_t digit) {
+  constexpr static Option primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr auto totalCount = static_cast<uint32_t>(puzzle.rows) * static_cast<uint32_t>(puzzle.columns);
     constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / 3;
     if constexpr (totalCount > 0) {
