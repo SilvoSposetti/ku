@@ -8,6 +8,7 @@
 #include "ExactRowConstraint.hpp"
 #include "HyperSudokuConstraint.hpp"
 #include "PositiveDiagonalEvenConstraint.hpp"
+#include "PositiveDiagonalOddConstraint.hpp"
 
 #include <memory>
 
@@ -51,6 +52,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<PositiveDiagonalEvenConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("PositiveDiagonalEvenConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::POSITIVE_DIAGONAL_ODD:
+    if (PositiveDiagonalOddConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<PositiveDiagonalOddConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("PositiveDiagonalOddConstraint does not support this puzzle");
     }
     break;
   case ConstraintType::EXACT_NEGATIVE_DIAGONAL:
