@@ -15,18 +15,15 @@ public:
   };
 
   constexpr static bool supportsPuzzle() {
-    return puzzle.rows % 3 == 0 && puzzle.columns % 3 == 0 && puzzle.digits.size() == 9;
+    constexpr auto boxSize = 3;
+    return puzzle.rows % boxSize == 0 && puzzle.columns % boxSize == 0 && puzzle.digits.size() == 9;
   }
 
   constexpr static Option primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
-    constexpr auto totalCount = static_cast<uint32_t>(puzzle.rows) * static_cast<uint32_t>(puzzle.columns);
-    constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / 3;
-    if constexpr (totalCount > 0) {
-      const auto boxId = (column / 3 + boxesVerticalCount * (row / 3));
-      return Option{
-          static_cast<OptionId>((boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount)};
-    }
-    return {};
+    constexpr auto boxSize = 3;
+    constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / boxSize;
+    const auto boxId = (column / boxSize + boxesVerticalCount * (row / boxSize));
+    return Option{static_cast<OptionId>(boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
   constexpr static Option

@@ -10,7 +10,8 @@ public:
   constexpr ExactColumnConstraint()
       : Constraint<ExactColumnConstraint<puzzle>, puzzle>(
             ConstraintType::EXACT_COLUMN, "Column", "Columns contain all the digits exactly once.") {
-    static_assert(ConstraintConcept<ExactColumnConstraint, puzzle>, "CellConstraint does not satisfy ConstraintConcept");
+    static_assert(ConstraintConcept<ExactColumnConstraint, puzzle>,
+                  "CellConstraint does not satisfy ConstraintConcept");
   };
 
   constexpr static bool supportsPuzzle() {
@@ -18,12 +19,7 @@ public:
   }
 
   constexpr static Option primaryOption([[maybe_unused]] uint32_t row, uint32_t column, uint32_t digit) {
-    constexpr auto totalCount = static_cast<uint32_t>(puzzle.columns) * static_cast<uint32_t>(puzzle.digits.size());
-    if constexpr (totalCount > 0) {
-      return Option{
-          static_cast<OptionId>((column * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount)};
-    }
-    return {};
+    return Option{static_cast<OptionId>((column * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)))};
   }
 
   constexpr static Option

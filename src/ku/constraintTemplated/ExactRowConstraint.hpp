@@ -19,12 +19,7 @@ public:
   }
 
   constexpr static Option primaryOption(uint32_t row, [[maybe_unused]] uint32_t column, uint32_t digit) {
-    constexpr auto totalCount = static_cast<uint32_t>(puzzle.rows) * static_cast<uint32_t>(puzzle.digits.size());
-    if constexpr (totalCount > 0) {
-      return Option{
-          static_cast<OptionId>((row * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1)) % totalCount)};
-    }
-    return {};
+    return Option{static_cast<OptionId>(row * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
   constexpr static Option
