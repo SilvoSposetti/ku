@@ -28,6 +28,7 @@ unit_test_sources = files(
   'constraints/SudokuCellTest.cpp',
   'constraints/SudokuColumnTest.cpp',
   'constraints/SudokuRowTest.cpp',
+  'constraintTemplated/AsteriskSudokuConstraintTest.cpp',
   'constraintTemplated/ConstraintTest.cpp',
   'constraintTemplated/CellConstraintTest.cpp',
   'constraintTemplated/Disjoint3x3BoxesSudokuConstraintTest.cpp',

@@ -4,8 +4,6 @@
 #include "Constraint.hpp"
 #include "ConstraintConcept.hpp"
 
-#include <ranges>
-
 template <PuzzleIntrinsics puzzle>
 struct Disjoint3x3BoxesSudokuConstraint : public Constraint<Disjoint3x3BoxesSudokuConstraint<puzzle>, puzzle> {
 public:

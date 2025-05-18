@@ -1,4 +1,5 @@
 
+#include "AsteriskSudokuConstraint.hpp"
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"
 #include "Disjoint3x3BoxesSudokuConstraint.hpp"
@@ -96,6 +97,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<Disjoint3x3BoxesSudokuConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("Disjoint3x3BoxesSudokuConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::ASTERISK:
+    if (AsteriskSudokuConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<AsteriskSudokuConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("AsteriskSudokuConstraint does not support this puzzle");
     }
     break;
   default:
