@@ -36,6 +36,7 @@ unit_test_sources = files(
   'constraintTemplated/ExactPositiveDiagonalConstraintTest.cpp',
   'constraintTemplated/ExactRowConstraintTest.cpp',
   'constraintTemplated/HyperSudokuConstraintTest.cpp',
+  'constraintTemplated/PositiveDiagonalEvenConstraintTest.cpp',
   'drawing/DrawingUtilitiesTest.cpp',
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',
