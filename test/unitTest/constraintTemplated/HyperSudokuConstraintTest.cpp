@@ -22,10 +22,10 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions(
+        checkConstraintOptions<intriniscs, 1, 0>(
             HyperSudokuConstraint<intriniscs>(),
             36,
-            std::vector<Option>{
+            std::vector<Option<1>>{
                 {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},
                 {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},
                 {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},   {},

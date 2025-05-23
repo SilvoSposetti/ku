@@ -164,7 +164,7 @@ public:
       for (const auto& constraint : constraints) {
         if (constraint->getPrimaryItemsAmount() > 0 && constraint->getPrimaryOptions().has_value()) {
           const auto& basePrimaryId = idOffsets[constraintId].first;
-          const auto& primaryItems = constraint->getPrimaryOptions().value();
+          const auto primaryItems = constraint->getPrimaryOptions().value();
           for (const auto& primaryItemId : primaryItems[globalOptionId]) {
             option.emplace_back(basePrimaryId + primaryItemId);
           }
@@ -175,7 +175,7 @@ public:
       for (const auto& constraint : constraints) {
         if (constraint->getSecondaryItemsAmount() > 0 && constraint->getSecondaryOptions().has_value()) {
           const auto baseSecondaryId = idOffsets[constraintId].second;
-          const auto& secondaryItems = constraint->getSecondaryOptions().value();
+          const auto secondaryItems = constraint->getSecondaryOptions().value();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
             const auto itemId = secondaryItemId + baseSecondaryId;
             option.emplace_back(itemId);

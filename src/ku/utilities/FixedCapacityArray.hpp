@@ -1,9 +1,10 @@
 #pragma once
+#include <algorithm>
 #include <array>
 #include <concepts>
-#include <stdexcept>
 #include <limits>
-#include <algorithm>
+#include <span>
+#include <stdexcept>
 
 /** A fixed-size unmodifiable array with some maximum capacity and an internal smaller size.
  * Used as an Option returned by Constraints
@@ -87,7 +88,7 @@ public:
    * @return The element.
    */
   constexpr const T& operator[](std::size_t index) const {
-    if(index > std::numeric_limits<T>::max()){
+    if (index > std::numeric_limits<T>::max()) {
       throw std::out_of_range("Accessing index too large for internal size");
     }
     if (index >= size() || index >= capacity()) {
@@ -110,6 +111,13 @@ public:
     return data.begin() + count;
   }
 
+  /** Creates a span over the valid elements of the array, up to its size.
+   * @return A span over the elemnts of the array
+   */
+  constexpr std::span<const T> asSpan() const {
+    return std::span<const T>(data.begin(), static_cast<std::size_t>(count));
+  }
+
 private:
   /** Helper to initialize the internal data from an initialzier list.
    * @param initializerList The initializer list.
@@ -129,7 +137,7 @@ private:
 private:
   /** The amount of valid elements.
    */
-  T count = 0;
+  T count = std::numeric_limits<T>::min();
 
   /** The data.
    */

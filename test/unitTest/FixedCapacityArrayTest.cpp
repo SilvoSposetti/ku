@@ -88,6 +88,19 @@ TEST_SUITE("FixedCapacityArray") {
         CHECK_THROWS_AS(array[index], std::out_of_range);
       }
     }
+
+    SUBCASE("As span") {
+
+      constexpr FixedCapacityArray<T, capacity> array{2, 3, 4};
+      const auto span = array.asSpan();
+      CHECK_EQ(span.size(), 3);
+      CHECK_EQ(span.size(), array.size());
+      CHECK_EQ(span[0], 2);
+      CHECK_EQ(span[1], 3);
+      CHECK_EQ(span[2], 4);
+      CHECK_EQ(span.front(), 2);
+      CHECK_EQ(span.back(), 4);
+    }
   }
 
   TEST_CASE_TEMPLATE_INVOKE(usage, uint8_t);

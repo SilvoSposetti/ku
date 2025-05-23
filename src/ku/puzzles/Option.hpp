@@ -3,4 +3,5 @@
 #include "../utilities/FixedCapacityArray.hpp"
 #include "OptionId.hpp"
 
-using Option = FixedCapacityArray<OptionId, 1>;
+template <OptionId N>
+using Option = FixedCapacityArray<OptionId, N>;

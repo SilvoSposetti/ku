@@ -28,34 +28,34 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("2x2x2") {
         constexpr auto intriniscs = PuzzleIntrinsics<{2, 2, 2}>();
-        checkConstraintOptions(ExactPositiveDiagonalConstraint<intriniscs>(),
-                               2,
-                               std::vector<Option>{{}, {}, {0}, {1}, {0}, {1}, {}, {}},
-                               0,
-                               {});
+        checkConstraintOptions<intriniscs, 1, 0>(ExactPositiveDiagonalConstraint<intriniscs>(),
+                                                 2,
+                                                 std::vector<Option<1>>{{}, {}, {0}, {1}, {0}, {1}, {}, {}},
+                                                 0,
+                                                 {});
       }
       SUBCASE("5x5x5") {
         constexpr auto intriniscs = PuzzleIntrinsics<{5, 5, 5}>{};
-        checkConstraintOptions(
+        checkConstraintOptions<intriniscs, 1, 0>(
             ExactPositiveDiagonalConstraint<intriniscs>(),
             5,
-            std::vector<Option>{{}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                {}, {}, {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                {}, {}, {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                {}, {}, {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {}, {}, {},
-                                {}, {}, {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {}, {}, {},
-                                {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {}, {}, {},
-                                {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}},
+            std::vector<Option<1>>{{}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
+                                    {}, {}, {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
+                                    {}, {}, {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {}, {}, {},
+                                    {}, {}, {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {}, {}, {},
+                                    {}, {}, {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {}, {}, {},
+                                    {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {}, {}, {},
+                                    {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}},
             0,
             {});
       }
 
       SUBCASE("9x9x9") {
         constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions(
+        checkConstraintOptions<intriniscs, 1, 0>(
             ExactPositiveDiagonalConstraint<intriniscs>(),
             9,
-            std::vector<Option>{
+            std::vector<Option<1>>{
                 {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                 {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                 {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
