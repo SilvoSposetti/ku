@@ -95,7 +95,7 @@ private:
     std::vector<OptionId> set; // std::vector because function is constexpr
     // First, flatten the whole option list
     for (const auto& option : options.value()) {
-      set.insert(set.end(), option.begin(), option.end());
+      std::copy(option.begin(), option.end(), std::back_inserter(set));
     }
     // Sort and remove duplicates
     std::ranges::sort(set);
