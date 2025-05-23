@@ -5,12 +5,14 @@
 #include "../puzzles/PuzzleIntrinsics.hpp"
 #include "ConstraintInterface.hpp"
 
+#include <algorithm>
 #include <string_view>
 #include <vector>
 
 /** Base class of all constraints.
- * Serves as the base class of the Curiously Recurring Template Pattern (CRTP) and its derived classes are named
- * ConcreteConstraint.
+ * Serves as the base class for the Curiously Recurring Template Pattern (CRTP). Its derived classes are all the
+ * constraint and represented here under the name ConcreteConstraint.
+ *
  */
 template <typename ConcreteConstraint,
           PuzzleIntrinsics puzzle,
@@ -59,53 +61,61 @@ public:
   }
 
 private:
-  template <std::size_t size>
-  static constexpr std::optional<OptionsList<puzzle, size>> createOptions(auto optionFunction) {
-    auto options = OptionsList<puzzle, size>();
-    size_t counter = 0;
-    auto atLeastOneOptionNonEmpty = false;
-    for (const auto& [row, column, digit] : puzzle.allPossibilities) {
-      options[counter] =
-          optionFunction(static_cast<uint32_t>(row), static_cast<uint32_t>(column), static_cast<uint32_t>(digit));
-      if (!options[counter].empty()) {
-        atLeastOneOptionNonEmpty = true;
-      }
-      counter++;
-    };
-    if (atLeastOneOptionNonEmpty) {
+  /** Creates the options (primary or secondary) according to the given optionFunction.
+   * If all the options are empty, returns an empty optional
+   * @tparam maxOptionSize The maximum size for each of the options in the list.
+   * @param optionFunction The static constexpr function used to create a single option
+   * @raturn If any of the options is defined, the list of all the options
+   */
+  template <std::size_t maxOptionSize>
+  static constexpr std::optional<OptionsList<puzzle, maxOptionSize>> createOptions(const auto& optionFunction) {
+    auto options = OptionsList<puzzle, maxOptionSize>();
+    std::ranges::transform(puzzle.allPossibilities, options.begin(), [&](const Cell& cell) {
+      return optionFunction(static_cast<uint32_t>(cell.rowIndex),
+                            static_cast<uint32_t>(cell.columnIndex),
+                            static_cast<uint32_t>(cell.digit));
+    });
+    if (std::ranges::any_of(options, [](const auto& option) { return !option.empty(); })) {
       return options;
     }
     return std::nullopt;
   }
 
-  template <std::size_t size>
-  static constexpr std::size_t countUniqueElementsInOptions(const std::optional<OptionsList<puzzle, size>> options) {
+  /** Counts the coverage of an option list. That is, how many unique optionIds are found.
+   * @tparam maxOptionSize The maximum size for each of the options in the list.
+   * @param options An optional list of options.
+   * @return Either the amount of unique OptionIds found, or the largest one. Which one is bigger.
+   */
+  template <std::size_t maxOptionSize>
+  static constexpr std::size_t
+  countUniqueElementsInOptions(const std::optional<OptionsList<puzzle, maxOptionSize>>& options) {
     if (!options) {
       return 0;
     }
-    auto maxId = std::numeric_limits<OptionId>::min();
-    std::vector<OptionId> set;
+    std::vector<OptionId> set; // std::vector because function is constexpr
+    // First, flatten the whole option list
     for (const auto& option : options.value()) {
-      for (const auto& element : option) {
-        if (std::ranges::find(set, element) == set.end()) {
-          set.push_back(element);
-          maxId = std::max(maxId, element);
-        }
-      }
+      set.insert(set.end(), option.begin(), option.end());
     }
-    maxId = std::max(static_cast<OptionId>(0), maxId);
-    return std::max(set.size(), static_cast<std::size_t>(maxId));
+    // Sort and remove duplicates
+    std::ranges::sort(set);
+    set.erase(std::ranges::unique(set).begin(), set.end());
+    // Return size of set or its maximum element
+    const auto maxOptionId = static_cast<std::size_t>(std::ranges::max(set));
+    return std::max(maxOptionId, set.size());
   }
 
-  template <std::size_t size>
-  std::optional<OptionsSpan<puzzle>> getOptions(const std::optional<OptionsList<puzzle, size>>& optionsList) const {
+  /** Counts the coverage of an option list. That is, how many unique optionIds are found.
+   * @tparam maxOptionSize The maximum size for each of the options in the list.
+   * @param options An optional list of options.
+   * @return A list of spans referencing data of the individual options provided in the list
+   */
+  template <std::size_t maxOptionSize>
+  std::optional<OptionsSpan<puzzle>>
+  getOptions(const std::optional<OptionsList<puzzle, maxOptionSize>>& optionsList) const {
     if (optionsList.has_value()) {
       OptionsSpan<puzzle> result;
-      std::size_t index = 0;
-      for (const auto& option : optionsList.value()) {
-        result[index] = option.asSpan();
-        index++;
-      }
+      std::ranges::transform(optionsList.value(), result.begin(), [&](const auto& option) { return option.asSpan(); });
       return result;
     }
     return {};
@@ -125,7 +135,6 @@ public:
   /** The primary options
    */
   const std::optional<OptionsList<puzzle, maxPrimaryOptionSize>> primaryOptions;
-
   /** The amount of items covered by the primary options
    */
   const std::size_t primaryItemsAmount = 0;
@@ -133,7 +142,6 @@ public:
   /** The secondary options
    */
   const std::optional<OptionsList<puzzle, maxSecondaryOptionSize>> secondaryOptions;
-
   /** The amount of items covered by the secondary options
    */
   const std::size_t secondaryItemsAmount = 0;
