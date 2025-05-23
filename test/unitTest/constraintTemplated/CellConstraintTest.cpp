@@ -31,9 +31,9 @@ TEST_SUITE("Constraints") {
 
     SUBCASE("Explicit Options") {
       SUBCASE("4x5x6") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{3, 4, 5}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            CellConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{3, 4, 5}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            CellConstraint<intrinsics>(),
             12,
             std::vector<Option<1>>{
                 {0}, {0}, {0}, {0}, {0}, {1},  {1},  {1},  {1},  {1},  {2},  {2},  {2},  {2},  {2},
@@ -46,9 +46,9 @@ TEST_SUITE("Constraints") {
       }
 
       SUBCASE("9x9x9") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            CellConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            CellConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{
                 {0},  {0},  {0},  {0},  {0},  {0},  {0},  {0},  {0},  {1},  {1},  {1},  {1},  {1},  {1},  {1},  {1},

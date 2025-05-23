@@ -27,9 +27,9 @@ TEST_SUITE("Constraints") {
 
     SUBCASE("Explicit Options") {
       SUBCASE("4x4x4") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{4, 4, 4}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            ExactColumnConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{4, 4, 4}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            ExactColumnConstraint<intrinsics>(),
             16,
             std::vector<Option<1>>{
                 {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15},
@@ -42,9 +42,9 @@ TEST_SUITE("Constraints") {
       }
 
       SUBCASE("9x9x9") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            ExactColumnConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            ExactColumnConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{
                 {0},  {1},  {2},  {3},  {4},  {5},  {6},  {7},  {8},  {9},  {10}, {11}, {12}, {13}, {14}, {15}, {16},

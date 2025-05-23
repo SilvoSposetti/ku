@@ -21,9 +21,9 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
 
       SUBCASE("9x9x9") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            AsteriskSudokuConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            AsteriskSudokuConstraint<intrinsics>(),
             9,
             std::vector<Option<1>>{
                 {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},

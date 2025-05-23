@@ -26,13 +26,13 @@ TEST_SUITE("Constraints") {
 
     SUBCASE("Explicit Options") {
       SUBCASE("2x2x0") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{2, 2, 0}>();
-        checkConstraintOptions<intriniscs, 1, 0>(PositiveDiagonalEvenConstraint<intriniscs>(), 0, {}, 0, {});
+        constexpr auto intrinsics = PuzzleIntrinsics<{2, 2, 0}>();
+        checkConstraintOptions<intrinsics, 1, 0>(PositiveDiagonalEvenConstraint<intrinsics>(), 0, {}, 0, {});
       }
 
       SUBCASE("2x2x2") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{2, 2, 2}>();
-        checkConstraintOptions<intriniscs, 1, 0>(PositiveDiagonalEvenConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{2, 2, 2}>();
+        checkConstraintOptions<intrinsics, 1, 0>(PositiveDiagonalEvenConstraint<intrinsics>(),
                                                  2,
                                                  std::vector<Option<1>>{
                                                      {},
@@ -49,9 +49,9 @@ TEST_SUITE("Constraints") {
       }
 
       SUBCASE("5x5x7") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{5, 5, 7}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            PositiveDiagonalEvenConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{5, 5, 7}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            PositiveDiagonalEvenConstraint<intrinsics>(),
             5,
             std::vector<Option<1>>{
                 {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},  {}, {},
@@ -68,9 +68,9 @@ TEST_SUITE("Constraints") {
       }
 
       SUBCASE("9x9x9") {
-        constexpr auto intriniscs = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intriniscs, 1, 0>(
-            PositiveDiagonalEvenConstraint<intriniscs>(),
+        constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
+        checkConstraintOptions<intrinsics, 1, 0>(
+            PositiveDiagonalEvenConstraint<intrinsics>(),
             9,
             std::vector<Option<1>>{
                 {}, {},  {}, {},  {}, {},  {}, {},  {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
