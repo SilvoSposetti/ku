@@ -1,11 +1,14 @@
 
 #include "constraintTemplated/ConstraintInterface.hpp"
+#include "puzzles/Option.hpp"
 
 #include <doctest.h>
+#include <ranges>
 #include <unordered_set>
 #include <vector>
 
 /** Simple check for the basic members of the constraints.
+ * @tparam Constraint The constraint type
  */
 template <typename Constraint>
 void memberChecks() {
@@ -57,6 +60,47 @@ void checkOptions(const auto& options, int32_t itemsAmount) {
     }                                                                                                                  \
   }
 
+/** Compares actual and expected options together
+ * @tparam intrinsics The puzzle intrinsics for which the options were built
+ * @tparam maxOptionSize The capacity of the expected Options
+ * @param actualItemsAmount The computed items amount
+ * @param actualOptions The computed options
+ * @param expectedCoverage The expected coverage
+ * @param expectedOptions The expected options
+ */
+template <PuzzleIntrinsics intrinsics, std::size_t maxOptionSize>
+void checkExpectedOptions(std::size_t actualItemsAmount,
+                          const auto& actualOptions,
+                          uint32_t expectedCoverage,
+                          const std::vector<Option<maxOptionSize>>& expectedOptions) {
+  if (expectedCoverage == 0) {
+    CHECK_EQ(actualItemsAmount, 0);
+    CHECK(!actualOptions.has_value());
+  } else {
+    REQUIRE(!expectedOptions.empty());
+    REQUIRE(actualOptions.has_value());
+    // There is one option given for every possibility in the puzzle
+    CHECK_EQ(expectedOptions.size(), intrinsics.allPossibilities.size());
+    // The coverage is what is expected
+    CHECK_EQ(actualItemsAmount, expectedCoverage);
+    // The options are exactly the ones expected
+    {
+      // The options expected and computed have the same size
+      REQUIRE_EQ(actualOptions.value().size(), expectedOptions.size());
+      // ALl the options are the same
+      for (const auto& [actual, expected] : std::views::zip(actualOptions.value(), expectedOptions)) {
+        // The options have the same size
+        REQUIRE_EQ(actual.size(), expected.size());
+        REQUIRE_LE(actual.size(), expected.capacity());
+        // ALl the elements inside the options are the same
+        for (const auto& [actualElement, expectedElement] : std::views::zip(actual, expected)) {
+          CHECK_EQ(actualElement, expectedElement);
+        }
+      }
+    }
+  }
+}
+
 /** Helper to confirm that the constraint reproduces an explicit set of options.
  * @param constraint The constraint
  * @param expectedPrimaryItemsCoverage The expected primary items coverage
@@ -70,55 +114,21 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
                             const std::vector<Option<N>>& expectedPrimaryOptions,
                             uint32_t expectedSecondaryItemsCoverage,
                             const std::vector<Option<M>>& expectedSecondaryOptions) {
-
   // Primary items
   SUBCASE("Primary Items") {
-    if (expectedPrimaryItemsCoverage == 0) {
-      CHECK_EQ(constraint.getPrimaryItemsAmount(), 0);
-      CHECK(!constraint.getPrimaryOptions().has_value());
-    } else {
-      REQUIRE(!expectedPrimaryOptions.empty());
-      REQUIRE(constraint.getPrimaryOptions().has_value());
-      CHECK_EQ(expectedPrimaryOptions.size(), intrinsics.allPossibilities.size());
-      CHECK_EQ(constraint.getPrimaryItemsAmount(), expectedPrimaryItemsCoverage);
-      const auto array = constraint.getPrimaryOptions().value();
-      REQUIRE_EQ(array.size(), expectedPrimaryOptions.size());
-      std::size_t i = 0;
-      for (const auto& option : array) {
-        const auto& expectedOption = expectedPrimaryOptions[i];
-        REQUIRE_EQ(option.size(), expectedOption.size());
-        std::size_t j = 0;
-        for (const auto& element : option) {
-          CHECK_EQ(expectedOption[j], element);
-          j++;
-        }
-        i++;
-      }
-    }
-  }
-  // Primary items
+    checkExpectedOptions<intrinsics, N>(constraint.getPrimaryItemsAmount(),
+                                        constraint.getPrimaryOptions(),
+                                        expectedPrimaryItemsCoverage,
+                                        expectedPrimaryOptions);
+    checkOptions(constraint.getPrimaryOptions(), constraint.getPrimaryItemsAmount());
+  };
+
+  // Secondary items
   SUBCASE("Secondary Items") {
-    if (expectedSecondaryItemsCoverage == 0) {
-      CHECK_EQ(constraint.getSecondaryItemsAmount(), 0);
-      CHECK(!constraint.getSecondaryOptions().has_value());
-    } else {
-      REQUIRE(!expectedSecondaryOptions.empty());
-      REQUIRE(constraint.getSecondaryOptions().has_value());
-      CHECK_EQ(expectedSecondaryOptions.size(), intrinsics.allPossibilities.size());
-      CHECK_EQ(constraint.getSecondaryItemsAmount(), expectedSecondaryItemsCoverage);
-      const auto array = constraint.getSecondaryOptions().value();
-      REQUIRE_EQ(array.size(), expectedSecondaryOptions.size());
-      std::size_t i = 0;
-      for (const auto& option : array) {
-        const auto& expectedOption = expectedSecondaryOptions[i];
-        REQUIRE_EQ(option.size(), expectedOption.size());
-        std::size_t j = 0;
-        for (const auto& element : option) {
-          CHECK_EQ(expectedOption[j], element);
-          j++;
-        }
-        i++;
-      }
-    }
+    checkExpectedOptions<intrinsics, M>(constraint.getSecondaryItemsAmount(),
+                                        constraint.getSecondaryOptions(),
+                                        expectedSecondaryItemsCoverage,
+                                        expectedSecondaryOptions);
+    checkOptions(constraint.getSecondaryOptions(), constraint.getSecondaryItemsAmount());
   }
 }
