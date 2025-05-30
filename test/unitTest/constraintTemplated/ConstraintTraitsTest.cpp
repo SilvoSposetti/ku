@@ -3,15 +3,18 @@
 
 #include <doctest.h>
 
+struct ExampleConstraint {};
+
+template <>
+struct ConstraintTraits<ExampleConstraint> {
+  static constexpr std::size_t primarySize = 7;
+  static constexpr std::size_t secondarySize = 13;
+};
+
 TEST_CASE("Constraint Traits") {
 
   SUBCASE("Construction and constexpr") {
-    constexpr auto traits1 = ConstraintTraits(0, 0);
-    CHECK_EQ(traits1.primarySize, 0);
-    CHECK_EQ(traits1.secondarySize, 0);
-
-    constexpr auto traits2 = ConstraintTraits(7, 9);
-    CHECK_EQ(traits2.primarySize, 7);
-    CHECK_EQ(traits2.secondarySize, 9);
+    CHECK_EQ(ConstraintTraits<ExampleConstraint>::primarySize, 7);
+    CHECK_EQ(ConstraintTraits<ExampleConstraint>::secondarySize, 13);
   }
 }

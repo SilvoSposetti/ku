@@ -1,43 +1,28 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
-namespace CellConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace CellConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(CellConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct CellConstraint : public Constraint<CellConstraint<puzzle>,
-                                          puzzle,
-                                          CellConstraintOptionSizes::primary,
-                                          CellConstraintOptionSizes::secondary> {
+struct CellConstraint : public Constraint<CellConstraint<puzzle>, puzzle> {
 public:
   constexpr CellConstraint()
-      : Constraint<CellConstraint<puzzle>,
-                   puzzle,
-                   CellConstraintOptionSizes::primary,
-                   CellConstraintOptionSizes::secondary>(
-            ConstraintType::CELL, "Cell", "Each cell contains a single digit.") {
-    static_assert(ConstraintConcept<CellConstraint,
-                                    puzzle,
-                                    CellConstraintOptionSizes::primary,
-                                    CellConstraintOptionSizes::secondary>,
-                  "CellConstraint does not satisfy ConstraintConcept");
+      : Constraint<CellConstraint<puzzle>, puzzle>(ConstraintType::CELL, "Cell", "Each cell contains a single digit.") {
+    CONSTRAINT_CONCEPT_ASSERT(CellConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return true;
   }
 
-  constexpr static Option<CellConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<CellConstraint>::primarySize>
   primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {static_cast<OptionId>(row * static_cast<uint32_t>(puzzle.columns) + column)};
   }
 
-  constexpr static Option<CellConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<CellConstraint>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

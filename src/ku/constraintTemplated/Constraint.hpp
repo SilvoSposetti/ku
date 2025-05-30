@@ -4,6 +4,7 @@
 #include "../puzzles/OptionsList.hpp"
 #include "../puzzles/PuzzleIntrinsics.hpp"
 #include "ConstraintInterface.hpp"
+#include "ConstraintTraits.hpp"
 
 #include <algorithm>
 #include <string_view>
@@ -14,10 +15,7 @@
  * constraint and represented here under the name ConcreteConstraint.
  *
  */
-template <typename ConcreteConstraint,
-          PuzzleIntrinsics puzzle,
-          std::size_t maxPrimaryOptionSize,
-          std::size_t maxSecondaryOptionSize>
+template <typename ConcreteConstraint, PuzzleIntrinsics puzzle>
 struct Constraint : public ConstraintInterface<puzzle> {
 
   /** Constructor
@@ -29,10 +27,14 @@ struct Constraint : public ConstraintInterface<puzzle> {
       : type(type)
       , name(name)
       , description(description)
-      , primaryOptions(createOptions<maxPrimaryOptionSize>(ConcreteConstraint::primaryOption))
-      , primaryItemsAmount(countUniqueElementsInOptions<maxPrimaryOptionSize>(primaryOptions))
-      , secondaryOptions(createOptions<maxSecondaryOptionSize>(ConcreteConstraint::secondaryOption))
-      , secondaryItemsAmount(countUniqueElementsInOptions<maxSecondaryOptionSize>(secondaryOptions)) {};
+      , primaryOptions(
+            createOptions<ConstraintTraits<ConcreteConstraint>::primarySize>(ConcreteConstraint::primaryOption))
+      , primaryItemsAmount(
+            countUniqueElementsInOptions<ConstraintTraits<ConcreteConstraint>::primarySize>(primaryOptions))
+      , secondaryOptions(
+            createOptions<ConstraintTraits<ConcreteConstraint>::secondarySize>(ConcreteConstraint::secondaryOption))
+      , secondaryItemsAmount(
+            countUniqueElementsInOptions<ConstraintTraits<ConcreteConstraint>::secondarySize>(secondaryOptions)) {};
 
 public:
   virtual ConstraintType getType() const override {
@@ -49,7 +51,7 @@ public:
   }
 
   virtual const std::optional<OptionsSpan<puzzle>> getPrimaryOptions() const override {
-    return getOptions<maxPrimaryOptionSize>(primaryOptions);
+    return getOptions<ConstraintTraits<ConcreteConstraint>::primarySize>(primaryOptions);
   }
 
   virtual size_t getSecondaryItemsAmount() const override {
@@ -57,7 +59,7 @@ public:
   }
 
   virtual const std::optional<OptionsSpan<puzzle>> getSecondaryOptions() const override {
-    return getOptions<maxSecondaryOptionSize>(secondaryOptions);
+    return getOptions<ConstraintTraits<ConcreteConstraint>::secondarySize>(secondaryOptions);
   }
 
 private:
@@ -134,14 +136,14 @@ public:
 
   /** The primary options
    */
-  const std::optional<OptionsList<puzzle, maxPrimaryOptionSize>> primaryOptions;
+  const std::optional<OptionsList<puzzle, ConstraintTraits<ConcreteConstraint>::primarySize>> primaryOptions;
   /** The amount of items covered by the primary options
    */
   const std::size_t primaryItemsAmount = 0;
 
   /** The secondary options
    */
-  const std::optional<OptionsList<puzzle, maxSecondaryOptionSize>> secondaryOptions;
+  const std::optional<OptionsList<puzzle, ConstraintTraits<ConcreteConstraint>::secondarySize>> secondaryOptions;
   /** The amount of items covered by the secondary options
    */
   const std::size_t secondaryItemsAmount = 0;

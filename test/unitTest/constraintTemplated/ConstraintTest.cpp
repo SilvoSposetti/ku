@@ -2,45 +2,32 @@
 #include "constraintTemplated/Constraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
-#include "constraintTemplated/ConstraintConcept.hpp"
+#include "constraintTemplated/ConstraintMacros.hpp"
 #include "utilities/IdPacking.hpp"
 
 #include <doctest.h>
 
-namespace ExampleConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 1;
-} // namespace ExampleConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(ExampleConstraint, 1, 1);
 
 template <PuzzleIntrinsics puzzle>
-struct ExampleConstraint : public Constraint<ExampleConstraint<puzzle>,
-                                             puzzle,
-                                             ExampleConstraintOptionSizes::primary,
-                                             ExampleConstraintOptionSizes::secondary> {
+struct ExampleConstraint : public Constraint<ExampleConstraint<puzzle>, puzzle> {
 public:
   constexpr ExampleConstraint()
-      : Constraint<ExampleConstraint<puzzle>,
-                   puzzle,
-                   ExampleConstraintOptionSizes::primary,
-                   ExampleConstraintOptionSizes::secondary>(
-            ConstraintType::NONE, "Name", "Description") {
-    static_assert(ConstraintConcept<ExampleConstraint,
-                                    puzzle,
-                                    ExampleConstraintOptionSizes::primary,
-                                    ExampleConstraintOptionSizes::secondary>,
-                  "CellConstraint does not satisfy ConstraintConcept");
+      : Constraint<ExampleConstraint<puzzle>, puzzle>(ConstraintType::NONE, "Name", "Description") {
+    CONSTRAINT_CONCEPT_ASSERT(ExampleConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return true;
   }
 
-  constexpr static Option<ExampleConstraintOptionSizes::primary> primaryOption(Index row, Index column, Digit digit) {
+  constexpr static Option<ConstraintTraits<ExampleConstraint>::primarySize>
+  primaryOption(Index row, Index column, Digit digit) {
     return Option<1>{static_cast<OptionId>(
         IdPacking::packId(row, column, digit - 1, puzzle.rows, puzzle.columns, puzzle.digits.size()))};
   }
 
-  constexpr static Option<ExampleConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<ExampleConstraint>::secondarySize>
   secondaryOption(Index row, Index column, Digit digit) {
     constexpr auto total = static_cast<uint32_t>(puzzle.rows * puzzle.columns * puzzle.digits.size());
     return {static_cast<OptionId>(

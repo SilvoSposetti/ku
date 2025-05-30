@@ -1,40 +1,25 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
-namespace NegativeDiagonalEvenConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace NegativeDiagonalEvenConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(NegativeDiagonalEvenConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct NegativeDiagonalEvenConstraint : public Constraint<NegativeDiagonalEvenConstraint<puzzle>,
-                                                          puzzle,
-                                                          NegativeDiagonalEvenConstraintOptionSizes::primary,
-                                                          NegativeDiagonalEvenConstraintOptionSizes::secondary> {
+struct NegativeDiagonalEvenConstraint : public Constraint<NegativeDiagonalEvenConstraint<puzzle>, puzzle> {
 public:
   constexpr NegativeDiagonalEvenConstraint()
-      : Constraint<NegativeDiagonalEvenConstraint<puzzle>,
-                   puzzle,
-                   NegativeDiagonalEvenConstraintOptionSizes::primary,
-                   NegativeDiagonalEvenConstraintOptionSizes::secondary>(
-            ConstraintType::NEGATIVE_DIAGONAL_EVEN,
-            "Negative-Diagonal-Even",
-            "The negative diagonal contains only even digits.") {
-    static_assert(ConstraintConcept<NegativeDiagonalEvenConstraint,
-                                    puzzle,
-                                    NegativeDiagonalEvenConstraintOptionSizes::primary,
-                                    NegativeDiagonalEvenConstraintOptionSizes::secondary>,
-                  "NegativeDiagonalEvenConstraint does not satisfy ConstraintConcept");
+      : Constraint<NegativeDiagonalEvenConstraint<puzzle>, puzzle>(ConstraintType::NEGATIVE_DIAGONAL_EVEN,
+                                                                   "Negative-Diagonal-Even",
+                                                                   "The negative diagonal contains only even digits.") {
+    CONSTRAINT_CONCEPT_ASSERT(NegativeDiagonalEvenConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return puzzle.isSquare();
   }
 
-  constexpr static Option<NegativeDiagonalEvenConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<NegativeDiagonalEvenConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnNegativeDiagonal(row, column) && Digits::isEven(digit)) {
@@ -44,7 +29,7 @@ public:
     return {};
   }
 
-  constexpr static Option<NegativeDiagonalEvenConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<NegativeDiagonalEvenConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

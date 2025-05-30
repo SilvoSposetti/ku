@@ -1,40 +1,26 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
-namespace ExactNegativeDiagonalConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace ExactNegativeDiagonalConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(ExactNegativeDiagonalConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct ExactNegativeDiagonalConstraint : public Constraint<ExactNegativeDiagonalConstraint<puzzle>,
-                                                           puzzle,
-                                                           ExactNegativeDiagonalConstraintOptionSizes::primary,
-                                                           ExactNegativeDiagonalConstraintOptionSizes::secondary> {
+struct ExactNegativeDiagonalConstraint : public Constraint<ExactNegativeDiagonalConstraint<puzzle>, puzzle> {
 public:
   constexpr ExactNegativeDiagonalConstraint()
-      : Constraint<ExactNegativeDiagonalConstraint<puzzle>,
-                   puzzle,
-                   ExactNegativeDiagonalConstraintOptionSizes::primary,
-                   ExactNegativeDiagonalConstraintOptionSizes::secondary>(
+      : Constraint<ExactNegativeDiagonalConstraint<puzzle>, puzzle>(
             ConstraintType::EXACT_NEGATIVE_DIAGONAL,
             "Exact-Negative-Diagonal",
             "The negative diagonal contains all digits exactly once.") {
-    static_assert(ConstraintConcept<ExactNegativeDiagonalConstraint,
-                                    puzzle,
-                                    ExactNegativeDiagonalConstraintOptionSizes::primary,
-                                    ExactNegativeDiagonalConstraintOptionSizes::secondary>,
-                  "ExactNegativeDiagonalConstraint does not satisfy ConstraintConcept");
+    CONSTRAINT_CONCEPT_ASSERT(ExactNegativeDiagonalConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return puzzle.isSquare() && puzzle.rows == puzzle.digits.size();
   }
 
-  constexpr static Option<ExactNegativeDiagonalConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<ExactNegativeDiagonalConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnNegativeDiagonal(row, column)) {
@@ -44,7 +30,7 @@ public:
     return {};
   }
 
-  constexpr static Option<ExactNegativeDiagonalConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<ExactNegativeDiagonalConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

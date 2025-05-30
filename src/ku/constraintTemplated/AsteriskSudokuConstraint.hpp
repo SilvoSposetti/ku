@@ -1,40 +1,26 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
-namespace AsteriskSudokuConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace AsteriskSudokuConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(AsteriskSudokuConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct AsteriskSudokuConstraint : public Constraint<AsteriskSudokuConstraint<puzzle>,
-                                                    puzzle,
-                                                    AsteriskSudokuConstraintOptionSizes::primary,
-                                                    AsteriskSudokuConstraintOptionSizes::secondary> {
+struct AsteriskSudokuConstraint : public Constraint<AsteriskSudokuConstraint<puzzle>, puzzle> {
 public:
   constexpr AsteriskSudokuConstraint()
-      : Constraint<AsteriskSudokuConstraint<puzzle>,
-                   puzzle,
-                   AsteriskSudokuConstraintOptionSizes::primary,
-                   AsteriskSudokuConstraintOptionSizes::secondary>(
+      : Constraint<AsteriskSudokuConstraint<puzzle>, puzzle>(
             ConstraintType::ASTERISK,
             "Asterisk",
             "The nine cells forming an asterisk contain all the digits exactly once.") {
-    static_assert(ConstraintConcept<AsteriskSudokuConstraint,
-                                    puzzle,
-                                    AsteriskSudokuConstraintOptionSizes::primary,
-                                    AsteriskSudokuConstraintOptionSizes::secondary>,
-                  "AsteriskSudokuConstraint does not satisfy ConstraintConcepFt");
+    CONSTRAINT_CONCEPT_ASSERT(AsteriskSudokuConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return puzzle.isSudoku();
   }
 
-  constexpr static Option<AsteriskSudokuConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<AsteriskSudokuConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr std::array<std::pair<Index, Index>, 9> cells = {
         std::make_pair(1, 4), {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
@@ -44,7 +30,7 @@ public:
     return {};
   }
 
-  constexpr static Option<AsteriskSudokuConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<AsteriskSudokuConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

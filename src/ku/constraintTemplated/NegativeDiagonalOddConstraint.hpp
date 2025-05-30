@@ -1,40 +1,25 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
-namespace NegativeDiagonalOddConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace NegativeDiagonalOddConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(NegativeDiagonalOddConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct NegativeDiagonalOddConstraint : public Constraint<NegativeDiagonalOddConstraint<puzzle>,
-                                                         puzzle,
-                                                         NegativeDiagonalOddConstraintOptionSizes::primary,
-                                                         NegativeDiagonalOddConstraintOptionSizes::secondary> {
+struct NegativeDiagonalOddConstraint : public Constraint<NegativeDiagonalOddConstraint<puzzle>, puzzle> {
 public:
   constexpr NegativeDiagonalOddConstraint()
-      : Constraint<NegativeDiagonalOddConstraint<puzzle>,
-                   puzzle,
-                   NegativeDiagonalOddConstraintOptionSizes::primary,
-                   NegativeDiagonalOddConstraintOptionSizes::secondary>(
-            ConstraintType::NEGATIVE_DIAGONAL_ODD,
-            "Negative-Diagonal-Odd",
-            "The negative diagonal contains only odd digits.") {
-    static_assert(ConstraintConcept<NegativeDiagonalOddConstraint,
-                                    puzzle,
-                                    NegativeDiagonalOddConstraintOptionSizes::primary,
-                                    NegativeDiagonalOddConstraintOptionSizes::secondary>,
-                  "NegativeDiagonalOddConstraint does not satisfy ConstraintConcept");
+      : Constraint<NegativeDiagonalOddConstraint<puzzle>, puzzle>(ConstraintType::NEGATIVE_DIAGONAL_ODD,
+                                                                  "Negative-Diagonal-Odd",
+                                                                  "The negative diagonal contains only odd digits.") {
+    CONSTRAINT_CONCEPT_ASSERT(NegativeDiagonalOddConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return puzzle.isSquare();
   }
 
-  constexpr static Option<NegativeDiagonalOddConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<NegativeDiagonalOddConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnNegativeDiagonal(row, column) && Digits::isOdd(digit)) {
@@ -44,7 +29,7 @@ public:
     return {};
   }
 
-  constexpr static Option<NegativeDiagonalOddConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<NegativeDiagonalOddConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

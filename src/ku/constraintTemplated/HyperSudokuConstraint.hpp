@@ -1,40 +1,26 @@
 #pragma once
 
-#include "../constraints/ConstraintType.hpp"
 #include "Constraint.hpp"
-#include "ConstraintConcept.hpp"
+#include "ConstraintMacros.hpp"
 
 #include <ranges>
 
-namespace HyperSudokuConstraintOptionSizes {
-static constexpr std::size_t primary = 1;
-static constexpr std::size_t secondary = 0;
-} // namespace HyperSudokuConstraintOptionSizes
+GENERATE_CONSTRAINT_TRAITS(HyperSudokuConstraint, 1, 0);
 
 template <PuzzleIntrinsics puzzle>
-struct HyperSudokuConstraint : public Constraint<HyperSudokuConstraint<puzzle>,
-                                                 puzzle,
-                                                 HyperSudokuConstraintOptionSizes::primary,
-                                                 HyperSudokuConstraintOptionSizes::secondary> {
+struct HyperSudokuConstraint : public Constraint<HyperSudokuConstraint<puzzle>, puzzle> {
 public:
   constexpr HyperSudokuConstraint()
-      : Constraint<HyperSudokuConstraint<puzzle>,
-                   puzzle,
-                   HyperSudokuConstraintOptionSizes::primary,
-                   HyperSudokuConstraintOptionSizes::secondary>(
+      : Constraint<HyperSudokuConstraint<puzzle>, puzzle>(
             ConstraintType::HYPER_SUDOKU, "Hyper-Sudoku", "Four 3x3 boxes contain all the digits exactly once.") {
-    static_assert(ConstraintConcept<HyperSudokuConstraint,
-                                    puzzle,
-                                    HyperSudokuConstraintOptionSizes::primary,
-                                    HyperSudokuConstraintOptionSizes::secondary>,
-                  "HyperSudokuConstraint does not satisfy ConstraintConcept");
+    CONSTRAINT_CONCEPT_ASSERT(HyperSudokuConstraint, puzzle);
   };
 
   constexpr static bool supportsPuzzle() {
     return puzzle.isSudoku();
   }
 
-  constexpr static Option<HyperSudokuConstraintOptionSizes::primary>
+  constexpr static Option<ConstraintTraits<HyperSudokuConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr std::array<std::pair<Index, Index>, 4> topLeftCorners = {
         std::make_pair(1, 1), std::make_pair(1, 5), std::make_pair(5, 1), std::make_pair(5, 5)};
@@ -47,7 +33,7 @@ public:
     return {};
   }
 
-  constexpr static Option<HyperSudokuConstraintOptionSizes::secondary>
+  constexpr static Option<ConstraintTraits<HyperSudokuConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }
