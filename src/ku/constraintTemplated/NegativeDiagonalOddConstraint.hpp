@@ -16,7 +16,7 @@ public:
   };
 
   constexpr static bool supportsPuzzle() {
-    return puzzle.isSquare();
+    return puzzle.isSquare() && puzzle.hasOddDigits();
   }
 
   constexpr static Option<ConstraintTraits<NegativeDiagonalOddConstraint<puzzle>>::primarySize>

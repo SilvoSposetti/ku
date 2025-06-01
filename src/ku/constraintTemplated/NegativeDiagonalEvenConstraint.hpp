@@ -16,7 +16,7 @@ public:
   };
 
   constexpr static bool supportsPuzzle() {
-    return puzzle.isSquare();
+    return puzzle.isSquare() && puzzle.hasEvenDigits();
   }
 
   constexpr static Option<ConstraintTraits<NegativeDiagonalEvenConstraint<puzzle>>::primarySize>

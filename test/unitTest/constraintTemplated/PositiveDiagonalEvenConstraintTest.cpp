@@ -14,14 +14,19 @@ TEST_SUITE("Constraints") {
     }
 
     SUBCASE("Implicit Option Coverage") {
-      // Cases with zero
-      GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 0, 0, 0);
-      // Regular cases
-      GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 1, 1, 1);
       GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 2, 2, 5);
       GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 3, 3, 3);
       GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 7, 7, 4);
       GENERATE_SUBCASE(PositiveDiagonalEvenConstraint, 8, 8, 2);
+    }
+
+    SUBCASE("Not Supported") {
+      // No even digits
+      CHECK(!PositiveDiagonalEvenConstraint<PuzzleIntrinsics<{5, 5, 0}>{}>().supportsPuzzle());
+      CHECK(!PositiveDiagonalEvenConstraint<PuzzleIntrinsics<{5, 5, 1}>{}>().supportsPuzzle());
+      // Not square
+      CHECK(!PositiveDiagonalEvenConstraint<PuzzleIntrinsics<{1, 3, 5}>{}>().supportsPuzzle());
+      CHECK(!PositiveDiagonalEvenConstraint<PuzzleIntrinsics<{6, 4, 5}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {

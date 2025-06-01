@@ -14,14 +14,19 @@ TEST_SUITE("Constraints") {
     }
 
     SUBCASE("Implicit Option Coverage") {
-      // Cases with zero
-      GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 0, 0, 0);
-      // Regular cases
       GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 1, 1, 1);
       GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 2, 2, 5);
       GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 3, 3, 3);
       GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 7, 7, 4);
       GENERATE_SUBCASE(NegativeDiagonalOddConstraint, 8, 8, 2);
+    }
+
+    SUBCASE("Not supported") {
+      // No odd digits
+      CHECK(!NegativeDiagonalOddConstraint<PuzzleIntrinsics<{5, 5, 0}>{}>().supportsPuzzle());
+      // Not square
+      CHECK(!NegativeDiagonalOddConstraint<PuzzleIntrinsics<{5, 4, 5}>{}>().supportsPuzzle());
+      CHECK(!NegativeDiagonalOddConstraint<PuzzleIntrinsics<{1, 7, 5}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {
