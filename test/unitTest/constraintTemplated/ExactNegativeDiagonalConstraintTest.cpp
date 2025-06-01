@@ -22,7 +22,15 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(ExactNegativeDiagonalConstraint, 3, 3, 3);
       GENERATE_SUBCASE(ExactNegativeDiagonalConstraint, 7, 7, 7);
       GENERATE_SUBCASE(ExactNegativeDiagonalConstraint, 8, 8, 8);
-      GENERATE_SUBCASE(ExactNegativeDiagonalConstraint, 15, 15, 15);
+      GENERATE_SUBCASE(ExactNegativeDiagonalConstraint, 13, 13, 13);
+    }
+
+    SUBCASE("Not supported") {
+      // Digits don't match with size
+      CHECK(!ExactNegativeDiagonalConstraint<PuzzleIntrinsics<{5, 5, 4}>{}>().supportsPuzzle());
+      // Not square
+      CHECK(!ExactNegativeDiagonalConstraint<PuzzleIntrinsics<{5, 4, 5}>{}>().supportsPuzzle());
+      CHECK(!ExactNegativeDiagonalConstraint<PuzzleIntrinsics<{4, 5, 5}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {

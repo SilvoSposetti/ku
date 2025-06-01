@@ -22,7 +22,15 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(ExactPositiveDiagonalConstraint, 3, 3, 3);
       GENERATE_SUBCASE(ExactPositiveDiagonalConstraint, 7, 7, 7);
       GENERATE_SUBCASE(ExactPositiveDiagonalConstraint, 8, 8, 8);
-      GENERATE_SUBCASE(ExactPositiveDiagonalConstraint, 15, 15, 15);
+      GENERATE_SUBCASE(ExactPositiveDiagonalConstraint, 13, 13, 13);
+    }
+
+    SUBCASE("Not supported") {
+      // Digits don't match with size
+      CHECK(!ExactPositiveDiagonalConstraint<PuzzleIntrinsics<{5, 5, 4}>{}>().supportsPuzzle());
+      // Not square
+      CHECK(!ExactPositiveDiagonalConstraint<PuzzleIntrinsics<{5, 4, 5}>{}>().supportsPuzzle());
+      CHECK(!ExactPositiveDiagonalConstraint<PuzzleIntrinsics<{4, 5, 5}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {
@@ -40,12 +48,12 @@ TEST_SUITE("Constraints") {
             ExactPositiveDiagonalConstraint<intrinsics>(),
             5,
             std::vector<Option<1>>{{}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                    {}, {}, {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                    {}, {}, {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {}, {}, {},
-                                    {}, {}, {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {}, {}, {},
-                                    {}, {}, {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {}, {}, {},
-                                    {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {}, {}, {},
-                                    {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}},
+                                   {}, {}, {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {},  {},  {}, {}, {},
+                                   {}, {}, {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {},  {},  {}, {}, {},
+                                   {}, {}, {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {},  {},  {}, {}, {},
+                                   {}, {}, {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {},  {},  {}, {}, {},
+                                   {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {0}, {1}, {2}, {3}, {4}, {}, {}, {},
+                                   {}, {}, {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {},  {}, {}},
             0,
             {});
       }

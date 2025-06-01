@@ -25,6 +25,13 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(ExactColumnConstraint, 5, 12, 5);
     }
 
+    SUBCASE("Not supported") {
+      // Rows don't match with digits
+      CHECK(!ExactColumnConstraint<PuzzleIntrinsics<{8, 5, 5}>{}>().supportsPuzzle());
+      CHECK(!ExactColumnConstraint<PuzzleIntrinsics<{7, 7, 6}>{}>().supportsPuzzle());
+      CHECK(!ExactColumnConstraint<PuzzleIntrinsics<{1, 5, 0}>{}>().supportsPuzzle());
+    }
+
     SUBCASE("Explicit Options") {
       SUBCASE("4x4x4") {
         constexpr auto intrinsics = PuzzleIntrinsics<{4, 4, 4}>{};

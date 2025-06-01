@@ -29,6 +29,10 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(CellConstraint, 12, 1, 3);
     }
 
+    SUBCASE("Not Supported") {
+      // Always supported
+    }
+
     SUBCASE("Explicit Options") {
       SUBCASE("4x5x6") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 4, 5}>{};

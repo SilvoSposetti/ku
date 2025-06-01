@@ -18,8 +18,16 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(HyperSudokuConstraint, 9, 9, 9);
     }
 
-    SUBCASE("Explicit Options") {
+    SUBCASE("Not supported") {
+      // Not 9 rows
+      CHECK(!HyperSudokuConstraint<PuzzleIntrinsics<{5, 9, 9}>{}>().supportsPuzzle());
+      // Not 9 columns
+      CHECK(!HyperSudokuConstraint<PuzzleIntrinsics<{9, 12, 9}>{}>().supportsPuzzle());
+      // Not 9 digits
+      CHECK(!HyperSudokuConstraint<PuzzleIntrinsics<{9, 9, 8}>{}>().supportsPuzzle());
+    }
 
+    SUBCASE("Explicit Options") {
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
         checkConstraintOptions<intrinsics, 1, 0>(

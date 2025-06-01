@@ -25,6 +25,18 @@ TEST_SUITE("Constraints") {
       GENERATE_SUBCASE(Exact3x3BoxesConstraint, 15, 6, 9);
     }
 
+    SUBCASE("Not supported") {
+      // Rows are not a multiple of 3
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{2, 3, 9}>{}>().supportsPuzzle());
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{11, 3, 9}>{}>().supportsPuzzle());
+      // Columns are not a multiple of 3
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{6, 4, 9}>{}>().supportsPuzzle());
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{6, 7, 9}>{}>().supportsPuzzle());
+      // Digits are not exactly 9
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{6, 3, 8}>{}>().supportsPuzzle());
+      CHECK(!Exact3x3BoxesConstraint<PuzzleIntrinsics<{6, 3, 10}>{}>().supportsPuzzle());
+    }
+
     SUBCASE("Explicit Options") {
       SUBCASE("3x3x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 3, 9}>{};
