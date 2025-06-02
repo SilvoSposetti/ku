@@ -14,12 +14,12 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(Exact3x3BoxesConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     constexpr auto boxSize = 3;
     return puzzle.rows % boxSize == 0 && puzzle.columns % boxSize == 0 && puzzle.digits.size() == 9;
   }
 
-  constexpr static Option<ConstraintTraits<Exact3x3BoxesConstraint<puzzle>>::primarySize>
+  static constexpr Option<ConstraintTraits<Exact3x3BoxesConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr auto boxSize = 3;
     constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / boxSize;
@@ -27,7 +27,7 @@ public:
     return {static_cast<OptionId>(boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
-  constexpr static Option<ConstraintTraits<Exact3x3BoxesConstraint<puzzle>>::secondarySize>
+  static constexpr Option<ConstraintTraits<Exact3x3BoxesConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

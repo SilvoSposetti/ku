@@ -16,11 +16,11 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(Disjoint3x3BoxesSudokuConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return puzzle.isSudoku();
   }
 
-  constexpr static Option<ConstraintTraits<Disjoint3x3BoxesSudokuConstraint<puzzle>>::primarySize>
+  static constexpr Option<ConstraintTraits<Disjoint3x3BoxesSudokuConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     constexpr auto boxSize = 3;
     constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / boxSize;
@@ -28,7 +28,7 @@ public:
     return {static_cast<OptionId>(idInBox * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
-  constexpr static Option<ConstraintTraits<Disjoint3x3BoxesSudokuConstraint<puzzle>>::secondarySize>
+  static constexpr Option<ConstraintTraits<Disjoint3x3BoxesSudokuConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

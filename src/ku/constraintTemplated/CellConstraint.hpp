@@ -13,16 +13,16 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(CellConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return true;
   }
 
-  constexpr static Option<ConstraintTraits<CellConstraint>::primarySize>
+  static constexpr Option<ConstraintTraits<CellConstraint>::primarySize>
   primaryOption(uint32_t row, uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {static_cast<OptionId>(row * static_cast<uint32_t>(puzzle.columns) + column)};
   }
 
-  constexpr static Option<ConstraintTraits<CellConstraint>::secondarySize>
+  static constexpr Option<ConstraintTraits<CellConstraint>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

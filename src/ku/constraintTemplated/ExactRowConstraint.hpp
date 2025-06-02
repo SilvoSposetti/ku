@@ -14,16 +14,16 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(ExactRowConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return puzzle.columns == puzzle.digits.size();
   }
 
-  constexpr static Option<ConstraintTraits<ExactRowConstraint<puzzle>>::primarySize>
+  static constexpr Option<ConstraintTraits<ExactRowConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, [[maybe_unused]] uint32_t column, uint32_t digit) {
     return {static_cast<OptionId>(row * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
-  constexpr static Option<ConstraintTraits<ExactRowConstraint<puzzle>>::secondarySize>
+  static constexpr Option<ConstraintTraits<ExactRowConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

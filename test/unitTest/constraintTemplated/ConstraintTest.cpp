@@ -17,17 +17,17 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(ExampleConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return true;
   }
 
-  constexpr static Option<ConstraintTraits<ExampleConstraint>::primarySize>
+  static constexpr Option<ConstraintTraits<ExampleConstraint>::primarySize>
   primaryOption(Index row, Index column, Digit digit) {
     return Option<1>{static_cast<OptionId>(
         IdPacking::packId(row, column, digit - 1, puzzle.rows, puzzle.columns, puzzle.digits.size()))};
   }
 
-  constexpr static Option<ConstraintTraits<ExampleConstraint>::secondarySize>
+  static constexpr Option<ConstraintTraits<ExampleConstraint>::secondarySize>
   secondaryOption(Index row, Index column, Digit digit) {
     constexpr auto total = static_cast<uint32_t>(puzzle.rows * puzzle.columns * puzzle.digits.size());
     return {static_cast<OptionId>(

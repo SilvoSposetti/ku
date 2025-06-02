@@ -16,11 +16,11 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(ExactPositiveDiagonalConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return puzzle.isSquare() && puzzle.rows == puzzle.digits.size();
   }
 
-  constexpr static Option<ConstraintTraits<ExactPositiveDiagonalConstraint<puzzle>>::primarySize>
+  static constexpr Option<ConstraintTraits<ExactPositiveDiagonalConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnPositiveDiagonal(row, column)) {
@@ -30,7 +30,7 @@ public:
     return {};
   }
 
-  constexpr static Option<ConstraintTraits<ExactPositiveDiagonalConstraint<puzzle>>::secondarySize>
+  static constexpr Option<ConstraintTraits<ExactPositiveDiagonalConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }

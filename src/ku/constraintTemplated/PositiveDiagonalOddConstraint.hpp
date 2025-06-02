@@ -15,11 +15,11 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(PositiveDiagonalOddConstraint, puzzle);
   };
 
-  constexpr static bool supportsPuzzle() {
+  static constexpr bool supportsPuzzle() {
     return puzzle.isSquare() && puzzle.hasOddDigits();
   }
 
-  constexpr static Option<ConstraintTraits<PositiveDiagonalOddConstraint<puzzle>>::primarySize>
+  static constexpr Option<ConstraintTraits<PositiveDiagonalOddConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     if constexpr (puzzle.columns > 0) {
       if (puzzle.isOnPositiveDiagonal(row, column) && Digits::isOdd(digit)) {
@@ -29,7 +29,7 @@ public:
     return {};
   }
 
-  constexpr static Option<ConstraintTraits<PositiveDiagonalOddConstraint<puzzle>>::secondarySize>
+  static constexpr Option<ConstraintTraits<PositiveDiagonalOddConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }
