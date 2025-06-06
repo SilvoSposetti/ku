@@ -6,6 +6,7 @@ unit_test_sources = files(
   'FixedCapacityArrayTest.cpp',
   'IdPackingTest.cpp',
   'main.cpp',
+  'MathUtilitiesTest.cpp',
   'RandomGeneratorTest.cpp',
   'SudokuTest.cpp',
   'TemporaryDirectoryTest.cpp',
