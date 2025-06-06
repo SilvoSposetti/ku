@@ -33,17 +33,16 @@ public:
         std::make_pair(1, 0), {1, -1}, {0, -1}, {-1, -1}};
     std::array<OptionId, count * 2> option = std::array<OptionId, count * 2>();
 
-    uint32_t neighborId = 0;
-    std::ranges::transform(patternOffsets, option.begin(), [&]([[maybe_unused]] const auto& offset) -> OptionId {
-      const auto cellIdOptional = puzzle.computeCellId(row, column);
-      if (cellIdOptional.has_value()) {
-        return static_cast<OptionId>((cellIdOptional.value() * count + neighborId++) * puzzle.digits.size() +
-                                     (digit - 1));
+    // Set this cell 4 times, the times that other cells will find it in their pattern
+    const auto cellId = puzzle.computeCellId(row, column);
+    if (cellId.has_value()) {
+      for (std::size_t i = 0; i < count; i++) {
+        option[i] = static_cast<OptionId>(cellId.value() * count + i) * puzzle.digits.size() + (digit - 1);
       }
-      return OptionId(0);
-    });
+    }
 
-    neighborId = 0;
+    // Set the four cells constructed from the pattern for the current one
+    std::size_t neighborId = 0;
     std::ranges::transform(patternOffsets, option.begin() + count, [&](const auto& offset) -> OptionId {
       const auto location = puzzle.computeNeighborTorus(row, column, offset.first, offset.second);
       const auto neighborIdOptional = puzzle.computeCellId(location.first, location.second);
@@ -55,6 +54,6 @@ public:
     });
 
     std::ranges::sort(option);
-    return {option[0], option[1], option[2], option[3], option[4], option[5], option[6], option[7]};
+    return Option<ConstraintTraits<AntiKingTorusConstraint<puzzle>>::secondarySize>::fromArray(option);
   }
 };

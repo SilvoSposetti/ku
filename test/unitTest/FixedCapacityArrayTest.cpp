@@ -101,6 +101,31 @@ TEST_SUITE("FixedCapacityArray") {
       CHECK_EQ(span.front(), 2);
       CHECK_EQ(span.back(), 4);
     }
+
+    SUBCASE("From array") {
+      SUBCASE("Constexpr array") {
+        constexpr auto stdArray = std::array<T, capacity>{0, 1, 3, 4, 7};
+        constexpr auto array = FixedCapacityArray<T, capacity>::fromArray(stdArray);
+        CHECK_EQ(array[0], 0);
+        CHECK_EQ(array[1], 1);
+        CHECK_EQ(array[2], 3);
+        CHECK_EQ(array[3], 4);
+        CHECK_EQ(array[4], 7);
+      }
+
+      SUBCASE("Array with modified members") {
+        auto stdArray = std::array<T, capacity>();
+        stdArray[0] = 1;
+        stdArray[3] = 9;
+        stdArray[4] = 12;
+        const auto array = FixedCapacityArray<T, capacity>::fromArray(stdArray);
+        CHECK_EQ(array[0], 1);
+        CHECK_EQ(array[1], 0);
+        CHECK_EQ(array[2], 0);
+        CHECK_EQ(array[3], 9);
+        CHECK_EQ(array[4], 12);
+      }
+    }
   }
 
   TEST_CASE_TEMPLATE_INVOKE(usage, uint8_t);
