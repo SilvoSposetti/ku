@@ -153,6 +153,12 @@ public:
       }
     }
 
+    auto optionsSpan = std::vector<std::pair<std::optional<OptionsSpan<PuzzleIntrinsics<puzzleSpace>{}>>,
+                                             std::optional<OptionsSpan<PuzzleIntrinsics<puzzleSpace>{}>>>>();
+    for (const auto& constraint : constraints) {
+      optionsSpan.emplace_back(constraint->getPrimaryOptions(), constraint->getSecondaryOptions());
+    }
+
     std::vector<std::vector<XccElement>> options;
     options.reserve(possibilities.size());
     for (const auto& [i, j, possibleDigit] : possibilities) {
@@ -162,9 +168,9 @@ public:
       // TODO: reserve the "correct" size for option vector
       int32_t constraintId = 0;
       for (const auto& constraint : constraints) {
-        if (constraint->getPrimaryItemsAmount() > 0 && constraint->getPrimaryOptions().has_value()) {
+        if (constraint->getPrimaryItemsAmount() > 0 && optionsSpan[constraintId].first.has_value()) {
           const auto& basePrimaryId = idOffsets[constraintId].first;
-          const auto primaryItems = constraint->getPrimaryOptions().value();
+          const auto primaryItems = optionsSpan[constraintId].first.value();
           for (const auto& primaryItemId : primaryItems[globalOptionId]) {
             option.emplace_back(basePrimaryId + primaryItemId);
           }
@@ -173,9 +179,9 @@ public:
       }
       constraintId = 0;
       for (const auto& constraint : constraints) {
-        if (constraint->getSecondaryItemsAmount() > 0 && constraint->getSecondaryOptions().has_value()) {
+        if (constraint->getSecondaryItemsAmount() > 0 && optionsSpan[constraintId].second.has_value()) {
           const auto baseSecondaryId = idOffsets[constraintId].second;
-          const auto secondaryItems = constraint->getSecondaryOptions().value();
+          const auto secondaryItems = optionsSpan[constraintId].second.value();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
             const auto itemId = secondaryItemId + baseSecondaryId;
             option.emplace_back(itemId);
