@@ -166,6 +166,34 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     CHECK(PuzzleIntrinsics<{0, 0, 56}>{}.hasOddDigits());
   }
 
+  TEST_CASE("Compute Cell ID") {
+    // Not a valid cell
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.computeCellId(0, 0), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.computeCellId(3, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.computeCellId(12, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.computeCellId(5, 8), std::nullopt);
+    // Valid cells
+    constexpr auto puzzle = PuzzleIntrinsics<{3, 3, 1}>();
+    CHECK_EQ(puzzle.computeCellId(0, 0), 0);
+    CHECK_EQ(puzzle.computeCellId(0, 1), 1);
+    CHECK_EQ(puzzle.computeCellId(0, 2), 2);
+    CHECK_EQ(puzzle.computeCellId(1, 0), 3);
+    CHECK_EQ(puzzle.computeCellId(1, 1), 4);
+    CHECK_EQ(puzzle.computeCellId(2, 2), 8);
+  }
+
+  TEST_CASE("Compute Neighbor Torus") {
+    constexpr auto puzzle = PuzzleIntrinsics<{5, 5, 0}>();
+    // regular
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 1, 1), std::make_pair(1, 1));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 3, 4), std::make_pair(3, 4));
+    // Wrapping around
+    CHECK_EQ(puzzle.computeNeighborTorus(3, 3, -2, -1), std::make_pair(1, 2));
+    CHECK_EQ(puzzle.computeNeighborTorus(3, 4, -2, -1), std::make_pair(1, 3));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 7, -1), std::make_pair(2, 4));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, -5, 9), std::make_pair(0, 4));
+  }
+
   TEST_CASE_TEMPLATE_DEFINE("Compile-time construction", T, test_id) {
 
     constexpr T puzzle;

@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../utilities/ArrayUtilities.hpp"
+#include "../utilities/MathUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
 #include "Grid.hpp"
+#include "OptionId.hpp"
 #include "Possibilities.hpp"
 #include "PuzzleSpace.hpp"
 
@@ -121,6 +123,36 @@ public:
    */
   constexpr bool hasOddDigits() const {
     return std::ranges::any_of(digits, [](const auto& digit) { return Digits::isOdd(digit); });
+  }
+
+  /** Computes the ID of a cell. IDs start at 0 from the top-left, and increment for each cell in row major order.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return If the location provided is valid, its cell ID.
+   */
+  constexpr std::optional<OptionId> computeCellId(Index rowIndex, Index columnIndex) const {
+    if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
+      return {};
+    }
+    return static_cast<OptionId>(rowIndex) * columns + columnIndex;
+  }
+
+  /** Computes the ID of a cell. IDs start at 0 from the top-left, and increment for each cell in row major order.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return If the location provided is valid, its cell ID.
+   */
+  constexpr std::pair<Index, Index>
+  computeNeighborTorus(Index rowIndex, Index columnIndex, int32_t offsetRow, int32_t offsetColumn) const {
+    if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
+      return {};
+    }
+
+    return std::make_pair(
+        static_cast<OptionId>(
+            MathUtilities::modulo(static_cast<int32_t>(rowIndex) + offsetRow, static_cast<int32_t>(rows))),
+        static_cast<OptionId>(MathUtilities::modulo(static_cast<int32_t>(columnIndex) + offsetColumn,
+                                                    static_cast<int32_t>(columns))));
   }
 
 private:
