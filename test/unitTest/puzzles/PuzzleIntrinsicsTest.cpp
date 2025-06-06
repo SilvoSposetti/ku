@@ -185,13 +185,13 @@ TEST_SUITE("Puzzle Intrinsiscs") {
   TEST_CASE("Compute Neighbor Torus") {
     constexpr auto puzzle = PuzzleIntrinsics<{5, 5, 0}>();
     // regular
-    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 1, 1), std::make_pair(1, 1));
-    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 3, 4), std::make_pair(3, 4));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 1, 1), std::make_pair(static_cast<Index>(1), static_cast<Index>(1)));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 3, 4), std::make_pair(static_cast<Index>(3), static_cast<Index>(4)));
     // Wrapping around
-    CHECK_EQ(puzzle.computeNeighborTorus(3, 3, -2, -1), std::make_pair(1, 2));
-    CHECK_EQ(puzzle.computeNeighborTorus(3, 4, -2, -1), std::make_pair(1, 3));
-    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 7, -1), std::make_pair(2, 4));
-    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, -5, 9), std::make_pair(0, 4));
+    CHECK_EQ(puzzle.computeNeighborTorus(3, 3, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(2)));
+    CHECK_EQ(puzzle.computeNeighborTorus(3, 4, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(3)));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 7, -1), std::make_pair(static_cast<Index>(2), static_cast<Index>(4)));
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 0, -5, 9), std::make_pair(static_cast<Index>(0), static_cast<Index>(4)));
   }
 
   TEST_CASE_TEMPLATE_DEFINE("Compile-time construction", T, test_id) {
