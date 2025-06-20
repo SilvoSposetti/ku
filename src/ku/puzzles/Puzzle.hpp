@@ -169,10 +169,9 @@ public:
       int32_t constraintId = 0;
       for (const auto& constraint : constraints) {
         if (constraint->getPrimaryItemsAmount() > 0 && optionsSpan[constraintId].first.has_value()) {
-          const auto& basePrimaryId = idOffsets[constraintId].first;
-          const auto primaryItems = optionsSpan[constraintId].first.value();
+          const auto& primaryItems = optionsSpan[constraintId].first.value();
           for (const auto& primaryItemId : primaryItems[globalOptionId]) {
-            option.emplace_back(basePrimaryId + primaryItemId);
+            option.emplace_back(idOffsets[constraintId].first + primaryItemId);
           }
         }
         constraintId++;
@@ -180,10 +179,9 @@ public:
       constraintId = 0;
       for (const auto& constraint : constraints) {
         if (constraint->getSecondaryItemsAmount() > 0 && optionsSpan[constraintId].second.has_value()) {
-          const auto baseSecondaryId = idOffsets[constraintId].second;
-          const auto secondaryItems = optionsSpan[constraintId].second.value();
+          const auto& secondaryItems = optionsSpan[constraintId].second.value();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
-            const auto itemId = secondaryItemId + baseSecondaryId;
+            const auto itemId = idOffsets[constraintId].second + secondaryItemId;
             option.emplace_back(itemId);
           }
         }
