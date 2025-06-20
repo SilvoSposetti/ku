@@ -165,7 +165,7 @@ public:
       const int32_t globalOptionId = IdPacking::packId(
           i, j, possibleDigit - 1, puzzleSpace.rowsCount, puzzleSpace.columnsCount, puzzleSpace.digitsCount);
       std::vector<XccElement> option;
-      // TODO: reserve the "correct" size for option vector
+      option.reserve(computeOptionSize(optionsSpan, globalOptionId));
       int32_t constraintId = 0;
       for (const auto& constraint : constraints) {
         if (constraint->getPrimaryItemsAmount() > 0 && optionsSpan[constraintId].first.has_value()) {
@@ -181,8 +181,7 @@ public:
         if (constraint->getSecondaryItemsAmount() > 0 && optionsSpan[constraintId].second.has_value()) {
           const auto& secondaryItems = optionsSpan[constraintId].second.value();
           for (const auto& secondaryItemId : secondaryItems[globalOptionId]) {
-            const auto itemId = idOffsets[constraintId].second + secondaryItemId;
-            option.emplace_back(itemId);
+            option.emplace_back(idOffsets[constraintId].second + secondaryItemId);
           }
         }
         constraintId++;
@@ -259,6 +258,24 @@ private:
       }
     }
     return result;
+  }
+
+  /** Helper to compute the size of a specific option given the spans and its ID
+   * @param optionSpan The option spans
+   * @param optionId The ID of the option
+   * @return The total size of the option at the given ID
+   */
+  static std::size_t computeOptionSize(const auto& optionSpan, std::size_t optionId) {
+    std::size_t count = 0;
+    for (const auto& span : optionSpan) {
+      if (span.first.has_value()) {
+        count += span.first.value()[optionId].size();
+      }
+      if (span.second.has_value()) {
+        count += span.second.value()[optionId].size();
+      }
+    }
+    return count;
   }
 
 public:
