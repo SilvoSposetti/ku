@@ -1,7 +1,9 @@
 #include "utilities/FixedCapacityArray.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <doctest.h>
+#include <ranges>
 #include <vector>
 
 TEST_SUITE("FixedCapacityArray") {
@@ -72,13 +74,20 @@ TEST_SUITE("FixedCapacityArray") {
       }
     }
 
-    SUBCASE("Can use range-based for loop") {
+    SUBCASE("Const iterators") {
       constexpr FixedCapacityArray<T, capacity> array{0, 1, 2, 3};
       std::vector<T> elements;
-      for (const auto& element : array) {
+      for (const auto& element : array) { // Can be used in const range-based for loops
         elements.push_back(element + 1);
       }
       CHECK_EQ(elements, std::vector<T>{1, 2, 3, 4});
+    }
+
+    SUBCASE("Non-const iterators") {
+      auto array = FixedCapacityArray<T, capacity>{3, 5, 1, 4};
+      std::ranges::sort(array); // Can be used in non-const functions that modify the internal elements
+      constexpr auto expected = FixedCapacityArray<T, capacity>{1, 3, 4, 5};
+      CHECK_EQ(array, expected);
     }
 
     SUBCASE("Accessing index too large for internal size type") {
@@ -100,31 +109,6 @@ TEST_SUITE("FixedCapacityArray") {
       CHECK_EQ(span[2], 4);
       CHECK_EQ(span.front(), 2);
       CHECK_EQ(span.back(), 4);
-    }
-
-    SUBCASE("From array") {
-      SUBCASE("Constexpr array") {
-        constexpr auto stdArray = std::array<T, capacity>{0, 1, 3, 4, 7};
-        constexpr auto array = FixedCapacityArray<T, capacity>::fromArray(stdArray);
-        CHECK_EQ(array[0], 0);
-        CHECK_EQ(array[1], 1);
-        CHECK_EQ(array[2], 3);
-        CHECK_EQ(array[3], 4);
-        CHECK_EQ(array[4], 7);
-      }
-
-      SUBCASE("Array with modified members") {
-        auto stdArray = std::array<T, capacity>();
-        stdArray[0] = 1;
-        stdArray[3] = 9;
-        stdArray[4] = 12;
-        const auto array = FixedCapacityArray<T, capacity>::fromArray(stdArray);
-        CHECK_EQ(array[0], 1);
-        CHECK_EQ(array[1], 0);
-        CHECK_EQ(array[2], 0);
-        CHECK_EQ(array[3], 9);
-        CHECK_EQ(array[4], 12);
-      }
     }
 
     SUBCASE("Modify elements") {

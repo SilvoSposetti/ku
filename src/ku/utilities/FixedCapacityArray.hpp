@@ -47,14 +47,6 @@ public:
     return *this;
   }
 
-  /** Construct a FixedCapacityArray from an std::array
-   * @param array The array
-   * @return The constructed FixedCapacityArray
-   */
-  static constexpr FixedCapacityArray fromArray(const std::array<T, N>& array) {
-    return fromArrayImplementation(array, std::make_index_sequence<N>{});
-  }
-
   /** operator== implementation. Elements in the array after size() are ignored.
    * @param other The other instance.
    * @return whether the two FixecCapacityArrays are equal up to the elements that they contain.
@@ -114,17 +106,31 @@ public:
     return const_cast<T&>(std::as_const(*this)[index]);
   }
 
-  /** Retrieves an iterator to the first element.
+  /** Retrieves a const iterator to the first element.
    * @return An iterator to the first element.
    */
   constexpr std::array<T, N>::const_iterator begin() const noexcept {
     return data.begin();
   }
 
-  /** Retrieves an iterator to the last element. The one at size() - 1.
+  /** Retrieves a const iterator to the last element. The one at size() - 1.
    * @return An iterator to the last element.
    */
   constexpr std::array<T, N>::const_iterator end() const noexcept {
+    return data.begin() + count;
+  }
+
+  /** Retrieves an iterator to the first element.
+   * @return An iterator to the first element.
+   */
+  constexpr std::array<T, N>::iterator begin() noexcept {
+    return data.begin();
+  }
+
+  /** Retrieves an iterator to the last element. The one at size() - 1.
+   * @return An iterator to the last element.
+   */
+  constexpr std::array<T, N>::iterator end() noexcept {
     return data.begin() + count;
   }
 
@@ -157,19 +163,6 @@ private:
       std::ranges::copy(initializerList, data.begin());
     }
     return data;
-  }
-
-  /** Helper function that unpacks an std::array into an initializer list
-   * @tparam index The index
-   * @param array The array
-   * @param indexSequence The index sequence
-   * @return The constructed FixedCapacityArray
-   */
-  template <std::size_t... index>
-  static constexpr FixedCapacityArray
-  fromArrayImplementation(const std::array<T, N>& array,
-                          [[maybe_unused]] const std::index_sequence<index...>& indexSequence) {
-    return FixedCapacityArray{{array[index]...}};
   }
 
 private:
