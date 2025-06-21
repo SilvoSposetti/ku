@@ -42,13 +42,15 @@ public:
     }
 
     // Set the four cells constructed from the pattern for the current one
-    std::size_t neighborId = 0;
+    std::size_t id = 0;
     for (const auto& offset : patternOffsets) {
       const auto location = puzzle.computeNeighborTorus(row, column, offset.first, offset.second);
-      const auto neighborIdOptional = puzzle.computeCellId(location.first, location.second);
-      if (neighborIdOptional.has_value()) {
-        option.pushBack(static_cast<OptionId>(
-            (neighborIdOptional.value() * count + neighborId++) * puzzle.digits.size() + (digit - 1)));
+      if (location.has_value()) {
+        const auto neighborId = puzzle.computeCellId(location.value().first, location.value().second);
+        if (neighborId.has_value()) {
+          option.pushBack(
+              static_cast<OptionId>((neighborId.value() * count + id++) * puzzle.digits.size() + (digit - 1)));
+        }
       }
     }
 

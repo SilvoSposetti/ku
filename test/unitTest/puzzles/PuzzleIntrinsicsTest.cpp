@@ -182,11 +182,34 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     CHECK_EQ(puzzle.computeCellId(2, 2), 8);
   }
 
+  TEST_CASE("Compute Neighbor") {
+    constexpr auto puzzle = PuzzleIntrinsics<{5, 5, 0}>();
+    // regular
+    CHECK_EQ(puzzle.computeNeighbor(0, 0, 1, 1), std::make_pair(static_cast<Index>(1), static_cast<Index>(1)));
+    CHECK_EQ(puzzle.computeNeighbor(0, 0, 3, 4), std::make_pair(static_cast<Index>(3), static_cast<Index>(4)));
+    CHECK_EQ(puzzle.computeNeighbor(3, 3, -1, -2), std::make_pair(static_cast<Index>(2), static_cast<Index>(1)));
+    // Invalid reference cell
+    CHECK_EQ(puzzle.computeNeighbor(9, 0, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, 12, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, -5, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(-1, 0, 1, 1), std::nullopt);
+    // Neighbor outside the puzzle is invalid
+    CHECK_EQ(puzzle.computeNeighbor(3, 3, 5, -1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(3, 4, -2, -9), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, 0, 7, -1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, 0, -5, 9), std::nullopt);
+  }
+
   TEST_CASE("Compute Neighbor Torus") {
     constexpr auto puzzle = PuzzleIntrinsics<{5, 5, 0}>();
     // regular
     CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 1, 1), std::make_pair(static_cast<Index>(1), static_cast<Index>(1)));
     CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 3, 4), std::make_pair(static_cast<Index>(3), static_cast<Index>(4)));
+    // Invalid reference cell
+    CHECK_EQ(puzzle.computeNeighbor(9, 0, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, 12, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(0, -5, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighbor(-1, 0, 1, 1), std::nullopt);
     // Wrapping around
     CHECK_EQ(puzzle.computeNeighborTorus(3, 3, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(2)));
     CHECK_EQ(puzzle.computeNeighborTorus(3, 4, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(3)));

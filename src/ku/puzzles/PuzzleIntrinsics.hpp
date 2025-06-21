@@ -137,22 +137,39 @@ public:
     return static_cast<OptionId>(rowIndex) * columns + columnIndex;
   }
 
-  /** Computes the ID of a cell. IDs start at 0 from the top-left, and increment for each cell in row major order.
+  /** Finds the neighbor of a cell according to a reference cell and an offset from it.
    * @param rowIndex The row index
    * @param columnIndex The column index
-   * @return If the location provided is valid, its cell ID.
+   * @return If the reference cell and its computer neighbor are valid, then the computed neighbor.
    */
-  constexpr std::pair<Index, Index>
-  computeNeighborTorus(Index rowIndex, Index columnIndex, int32_t offsetRow, int32_t offsetColumn) const {
+  constexpr std::optional<std::pair<Index, Index>>
+  computeNeighbor(Index rowIndex, Index columnIndex, int32_t rowOffset, int32_t columnOffset) const {
     if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
       return {};
     }
+    const auto newRow = static_cast<Index>(static_cast<int32_t>(rowIndex) + rowOffset);
+    const auto newColumn = static_cast<Index>(static_cast<int32_t>(columnIndex) + columnOffset);
+    if (!isValidRowIndex(newRow) || !isValidColumnIndex(newColumn)) {
+      return {};
+    }
+    return std::make_pair(newRow, newColumn);
+  }
 
-    return std::make_pair(
-        static_cast<OptionId>(
-            MathUtilities::modulo(static_cast<int32_t>(rowIndex) + offsetRow, static_cast<int32_t>(rows))),
-        static_cast<OptionId>(MathUtilities::modulo(static_cast<int32_t>(columnIndex) + offsetColumn,
-                                                    static_cast<int32_t>(columns))));
+  /** Finds the neighbor of a cell according to a reference cell and an offset from it. The neighbor can be found by
+   * wrapping around the edges of the puzzle.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return If the reference cell is valid, then the computed neighbor.
+   */
+  constexpr std::optional<std::pair<Index, Index>>
+  computeNeighborTorus(Index rowIndex, Index columnIndex, int32_t rowOffset, int32_t columnOffset) const {
+    if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
+      return {};
+    }
+    return std::make_pair(static_cast<Index>(MathUtilities::modulo(static_cast<int32_t>(rowIndex) + rowOffset,
+                                                                   static_cast<int32_t>(rows))),
+                          static_cast<Index>(MathUtilities::modulo(static_cast<int32_t>(columnIndex) + columnOffset,
+                                                                   static_cast<int32_t>(columns))));
   }
 
 private:
