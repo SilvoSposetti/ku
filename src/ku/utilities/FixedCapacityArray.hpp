@@ -5,6 +5,7 @@
 #include <limits>
 #include <span>
 #include <stdexcept>
+#include <utility>
 
 /** A fixed-size unmodifiable array with some maximum capacity and an internal smaller size.
  * Used as an Option returned by Constraints
@@ -92,7 +93,7 @@ public:
   }
 
   /** Access an element at a certain index.
-   * Throws is an element is accessed outside capacity, or outside size()
+   * Throws is an element is accessed outside capacity(), or outside size()
    * @return The element.
    */
   constexpr const T& operator[](std::size_t index) const {
@@ -103,6 +104,14 @@ public:
       throw std::out_of_range("Accessing index outside size");
     }
     return data[index];
+  }
+
+  /** Returns a modifiable element at a certain index.
+   * Throws is an element is accessed outside capacity(), or outside size()
+   * @return A reference to the element
+   */
+  constexpr T& operator[](std::size_t index) {
+    return const_cast<T&>(std::as_const(*this)[index]);
   }
 
   /** Retrieves an iterator to the first element.
@@ -124,6 +133,14 @@ public:
    */
   constexpr std::span<const T> asSpan() const {
     return std::span<const T>(data.begin(), static_cast<std::size_t>(count));
+  }
+
+  constexpr void pushBack(const T& value) {
+    if (size() == capacity()) {
+      throw std::out_of_range("Not enough available capacity");
+    }
+    data[size()] = value;
+    ++count;
   }
 
 private:

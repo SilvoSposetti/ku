@@ -126,6 +126,56 @@ TEST_SUITE("FixedCapacityArray") {
         CHECK_EQ(array[4], 12);
       }
     }
+
+    SUBCASE("Modify elements") {
+      auto array = FixedCapacityArray<T, capacity>{0, 1, 2};
+      const auto modifyElement = [&](std::size_t index, T value) { array[index] = value; };
+
+      SUBCASE("Inside range") {
+        CHECK_EQ(array[0], 0);
+        modifyElement(0, 1);
+        CHECK_EQ(array[0], 1);
+
+        CHECK_EQ(array[1], 1);
+        modifyElement(1, 0);
+        CHECK_EQ(array[1], 0);
+
+        CHECK_EQ(array[2], 2);
+        modifyElement(2, 5);
+        CHECK_EQ(array[2], 5);
+      }
+
+      SUBCASE("Outside size") {
+        CHECK(array.capacity() > array.size());
+        for (std::size_t i = array.size(); i < array.capacity(); i++) {
+          CHECK_THROWS_AS(modifyElement(i, 0), std::out_of_range);
+        }
+      }
+
+      SUBCASE("Outside capacity") {
+        for (std::size_t i = array.capacity(); i < array.capacity() + 5; i++)
+          CHECK_THROWS_AS(modifyElement(i, 0), std::out_of_range);
+      }
+    }
+
+    SUBCASE("Push Back") {
+      auto array = FixedCapacityArray<T, capacity>{};
+      CHECK_EQ(array.size(), 0);
+      CHECK_EQ(array.capacity(), capacity);
+      CHECK_THROWS_AS(array[0], std::out_of_range);
+
+      CHECK(array.capacity() > 0);
+      for (std::size_t i = 0; i < array.capacity(); i++) {
+        array.pushBack(0);
+        CHECK_EQ(array.size(), i + 1);
+        CHECK_EQ(array.capacity(), capacity);
+        CHECK_EQ(array[i], 0);
+        CHECK_THROWS_AS(array[i + 1], std::out_of_range);
+      }
+
+      CHECK_EQ(array.size(), array.capacity());
+      CHECK_THROWS_AS(array.pushBack(0), std::out_of_range);
+    }
   }
 
   TEST_CASE_TEMPLATE_INVOKE(usage, uint8_t);
