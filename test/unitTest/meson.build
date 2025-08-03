@@ -45,6 +45,7 @@ unit_test_sources = files(
   'constraintTemplated/NegativeDiagonalOddConstraintTest.cpp',
   'constraintTemplated/PositiveDiagonalEvenConstraintTest.cpp',
   'constraintTemplated/PositiveDiagonalOddConstraintTest.cpp',
+  'constraintTemplated/utilities/NeighborPatternUtilitiesTest.cpp',
   'drawing/DrawingUtilitiesTest.cpp',
   'drawing/SvgDocumentTest.cpp',
   'drawing/SvgSquigglyLineTest.cpp',
