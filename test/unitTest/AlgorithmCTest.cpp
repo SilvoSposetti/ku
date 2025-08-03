@@ -35,7 +35,7 @@ void check(const std::vector<ProblemData>& problemsData, const std::vector<std::
         // Check that every solution found was expected
         CHECK_EQ(allSolutionsFound.size(), expectedSolutions.size());
         for (const auto& solutionFound : allSolutionsFound) {
-          CHECK(std::count(expectedSolutions.begin(), expectedSolutions.end(), solutionFound) == 1);
+          CHECK_EQ(std::count(expectedSolutions.begin(), expectedSolutions.end(), solutionFound), 1);
         }
       }
 
@@ -48,7 +48,7 @@ void check(const std::vector<ProblemData>& problemsData, const std::vector<std::
           CHECK(!oneSolutionOptional.has_value());
         } else {
           CHECK(oneSolutionOptional.has_value());
-          CHECK(std::count(expectedSolutions.begin(), expectedSolutions.end(), oneSolutionOptional.value()) == 1);
+          CHECK_EQ(std::count(expectedSolutions.begin(), expectedSolutions.end(), oneSolutionOptional.value()), 1);
         }
       }
     }
@@ -74,7 +74,7 @@ TEST_CASE("Algorithm C") {
       auto structure = DancingCellsStructure(primaryItemsCount, secondaryItemsCount, options);
       CHECK(AlgorithmC::hasUniqueSolution(structure, seed));
       const auto allSolutions = AlgorithmC::findAllSolutions(structure, seed);
-      CHECK(allSolutions.size() == 1);
+      CHECK_EQ(allSolutions.size(), 1);
       CHECK_EQ(*allSolutions.begin(), solution);
       const auto oneSolutionOptional = AlgorithmC::findOneSolution(structure, seed);
       CHECK(oneSolutionOptional.has_value());

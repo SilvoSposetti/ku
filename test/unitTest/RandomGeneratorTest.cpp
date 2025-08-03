@@ -64,7 +64,7 @@ TEST_CASE("Random Generator") {
           set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
           set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
-      CHECK(set1 == set2);
+      CHECK_EQ(set1, set2);
     }
   }
 
@@ -123,7 +123,7 @@ TEST_CASE("Random Generator") {
           set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
           set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
-      CHECK(set1 == set2);
+      CHECK_EQ(set1, set2);
     }
   }
 
@@ -154,9 +154,9 @@ TEST_CASE("Random Generator") {
       Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues, 0);
       Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues, 0);
 
-      CHECK(sudoku1.getSolution() == sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() == sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() == sudoku2.getField());
+      CHECK_EQ(sudoku1.getSolution(), sudoku2.getSolution());
+      CHECK_EQ(sudoku1.getGivenMask(), sudoku2.getGivenMask());
+      CHECK_EQ(sudoku1.getField(), sudoku2.getField());
     }
   }
 }

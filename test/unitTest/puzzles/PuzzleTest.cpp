@@ -6,13 +6,13 @@
  */
 TEST_CASE("Puzzle") {
 
-  // SUBCASE("Construction") {
-  // const auto seed = 0;
-  //   const auto name = std::string("Test");
-  //   const auto puzzle = Puzzle<{1, 1, 1}>(name, {}, ConstraintType::NONE, seed);
-  //   CHECK(puzzle.seed == seed);
-  //   CHECK(puzzle.name == name);
-  // }
+  SUBCASE("Construction") {
+    const auto seed = 0;
+    const auto name = std::string("Test");
+    const auto puzzle = Puzzle<{1, 1, 1}>(name, {}, ConstraintType::NONE, seed);
+    CHECK_EQ(puzzle.seed, seed);
+    CHECK_EQ(puzzle.name, name);
+  }
 
   SUBCASE("Grid Initialization With No Clues") {
     const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
@@ -30,7 +30,7 @@ TEST_CASE("Puzzle") {
     };
     const auto puzzle = Puzzle<{9, 9, 9}>("Test", clues, ConstraintType::NONE, {});
     for (const auto& cell : clues) {
-      CHECK(puzzle.startingGrid[cell.rowIndex][cell.columnIndex] == cell.digit);
+      CHECK_EQ(puzzle.startingGrid[cell.rowIndex][cell.columnIndex], cell.digit);
     }
   }
 

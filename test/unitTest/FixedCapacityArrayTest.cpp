@@ -15,15 +15,15 @@ TEST_SUITE("FixedCapacityArray") {
       SUBCASE("Non-Zero Capacity") {
         constexpr FixedCapacityArray<T, capacity> array;
         CHECK(array.empty());
-        CHECK(array.size() == 0);
-        CHECK(array.capacity() == capacity);
+        CHECK_EQ(array.size(), 0);
+        CHECK_EQ(array.capacity(), capacity);
       }
 
       SUBCASE("Zero Capacity") {
         constexpr FixedCapacityArray<T, 0> array;
         CHECK(array.empty());
-        CHECK(array.size() == 0);
-        CHECK(array.capacity() == 0);
+        CHECK_EQ(array.size(), 0);
+        CHECK_EQ(array.capacity(), 0);
       }
     }
 
