@@ -30,15 +30,12 @@ public:
   secondaryOption(uint32_t row, uint32_t column, uint32_t digit) {
     return NeighborPatternUtilities::computeNeighborPatternTorusOption<
         puzzle,
-        patternSize,
+        pattern.size(),
         ConstraintTraits<AntiKingTorusConstraint<puzzle>>::secondarySize>(row, column, digit, pattern);
   }
 
 private:
-  /// The size of the pattern
-  static constexpr std::size_t patternSize = 4;
-
   /// The pattern used to generate the options
-  static constexpr std::array<std::pair<int32_t, int32_t>, patternSize> pattern = {
+  static constexpr std::array<std::pair<int32_t, int32_t>, 4> pattern = {
       std::make_pair(1, 0), {1, -1}, {0, -1}, {-1, -1}};
 };

@@ -1,3 +1,4 @@
+#pragma once
 
 #include "constraintTemplated/ConstraintInterface.hpp"
 #include "puzzles/Option.hpp"

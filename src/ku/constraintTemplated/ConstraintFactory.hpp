@@ -1,5 +1,6 @@
 
 #include "AntiKingTorusConstraint.hpp"
+#include "AntiKnightTorusConstraint.hpp"
 #include "AsteriskSudokuConstraint.hpp"
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"
@@ -112,6 +113,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<AntiKingTorusConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("AntiKingTorusConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::ANTI_KNIGHT_TORUS:
+    if (AntiKnightTorusConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<AntiKnightTorusConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("AntiKnightTorusConstraint does not support this puzzle");
     }
     break;
   default:
