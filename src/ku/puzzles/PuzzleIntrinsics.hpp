@@ -137,6 +137,41 @@ public:
     return static_cast<OptionId>(rowIndex) * columns + columnIndex;
   }
 
+  /** Finds the next cell in row-major order.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return If valid, the next cell in row-major order.
+   */
+  constexpr std::optional<std::pair<Index, Index>> nextCellInRowMajorOrder(Index rowIndex, Index columnIndex) const {
+    if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
+      return {};
+    }
+    if (columnIndex + 1 < columns) { // Next column in the same row
+      return std::make_pair(rowIndex, columnIndex + 1);
+    } else if (rowIndex + 1 < rows) { // Move to the first column of the next row
+      return std::make_pair(rowIndex + 1, 0);
+    }
+    return {}; // Already at the last cell
+  }
+
+  /** Finds the previous cell in row-major order.
+   * @param rowIndex The row index
+   * @param columnIndex The column index
+   * @return If valid, the previous cell in row-major order.
+   */
+  constexpr std::optional<std::pair<Index, Index>> previousCellInRowMajorOrder(Index rowIndex,
+                                                                               Index columnIndex) const {
+    if (!isValidRowIndex(rowIndex) || !isValidColumnIndex(columnIndex)) {
+      return {};
+    }
+    if (columnIndex > 0) { // Previous column in the same row
+      return std::make_pair(rowIndex, columnIndex - 1);
+    } else if (rowIndex > 0) { // Move to the last column of the previous row
+      return std::make_pair(rowIndex - 1, columns - 1);
+    }
+    return {}; // Already at the first cell
+  }
+
   /** Finds the neighbor of a cell according to a reference cell and an offset from it.
    * @param rowIndex The row index
    * @param columnIndex The column index

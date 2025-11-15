@@ -182,6 +182,47 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     CHECK_EQ(puzzle.computeCellId(2, 2), 8);
   }
 
+  TEST_CASE("Next Cell In Row Major Order") {
+    // Next cell is not valid
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.nextCellInRowMajorOrder(0, 0), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.nextCellInRowMajorOrder(3, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.nextCellInRowMajorOrder(12, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.nextCellInRowMajorOrder(8, 6), std::nullopt);
+
+    // Next cell is valid
+    constexpr auto puzzle = PuzzleIntrinsics<{3, 3, 1}>();
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(0, 0), std::make_pair(0, 1));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(0, 1), std::make_pair(0, 2));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(0, 2), std::make_pair(1, 0));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(1, 0), std::make_pair(1, 1));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(1, 1), std::make_pair(1, 2));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(1, 2), std::make_pair(2, 0));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(2, 0), std::make_pair(2, 1));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(2, 1), std::make_pair(2, 2));
+    CHECK_EQ(puzzle.nextCellInRowMajorOrder(2, 2), std::nullopt);
+  }
+
+  TEST_CASE("Previous Cell In Row Major Order") {
+    // Next cell is not valid
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.previousCellInRowMajorOrder(0, 0), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{0, 0, 0}>{}.previousCellInRowMajorOrder(3, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.previousCellInRowMajorOrder(12, 4), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.previousCellInRowMajorOrder(8, 7), std::nullopt);
+    CHECK_EQ(PuzzleIntrinsics<{9, 7, 0}>{}.previousCellInRowMajorOrder(9, 0), std::nullopt);
+
+    // Next cell is valid
+    constexpr auto puzzle = PuzzleIntrinsics<{3, 3, 1}>();
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(0, 0), std::nullopt);
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(0, 1), std::make_pair(0, 0));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(0, 2), std::make_pair(0, 1));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(1, 0), std::make_pair(0, 2));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(1, 1), std::make_pair(1, 0));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(1, 2), std::make_pair(1, 1));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(2, 0), std::make_pair(1, 2));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(2, 1), std::make_pair(2, 0));
+    CHECK_EQ(puzzle.previousCellInRowMajorOrder(2, 2), std::make_pair(2, 1));
+  }
+
   TEST_CASE("Compute Neighbor") {
     constexpr auto puzzle = PuzzleIntrinsics<{5, 5, 0}>();
     // regular

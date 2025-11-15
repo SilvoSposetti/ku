@@ -29,14 +29,15 @@ public:
 
   static constexpr Option<ConstraintTraits<AntiKnightTorusConstraint<puzzle>>::secondarySize>
   secondaryOption(uint32_t row, uint32_t column, uint32_t digit) {
-    return NeighborPatternUtilities::computeNeighborPatternTorusOption<
+    return NeighborPatternUtilities::computePatternOption<
         puzzle,
         pattern.size(),
-        ConstraintTraits<AntiKnightTorusConstraint<puzzle>>::secondarySize>(row, column, digit, pattern);
+        ConstraintTraits<AntiKnightTorusConstraint<puzzle>>::secondarySize,
+        true>(row, column, digit, pattern);
   }
 
 private:
   /// The pattern used to generate the options
-  static constexpr std::array<std::pair<int32_t, int32_t>, 4> pattern = {
-      std::make_pair(2, 1), {1, 2}, {-1, 2}, {-2, 1}};
+  static constexpr std::array<std::pair<int32_t, int32_t>, 8> pattern = {
+      std::make_pair(2, -1), {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}};
 };

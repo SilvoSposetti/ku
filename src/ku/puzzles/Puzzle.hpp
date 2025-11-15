@@ -226,7 +226,7 @@ private:
    * @return The list of constructed constraints
    */
   std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>
-  createConstraints(const ConstraintType constraintTypes) const {
+      createConstraints(const ConstraintType constraintTypes) const {
     std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraintList;
 
     // CellConstraint constraint is always present

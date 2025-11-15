@@ -95,7 +95,7 @@ void checkExpectedOptions(std::size_t actualItemsAmount,
         REQUIRE_LE(actual.size(), expected.capacity());
         // ALl the elements inside the options are the same
         for (const auto& [actualElement, expectedElement] : std::views::zip(actual, expected)) {
-          CHECK_EQ(actualElement, expectedElement);
+          REQUIRE_EQ(actualElement, expectedElement);
         }
       }
     }
