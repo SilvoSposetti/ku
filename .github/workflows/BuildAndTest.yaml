@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Setup compiler
-        uses: aminya/setup-cpp@v1
+        uses: aminya/setup-cpp@v1.7.2
         with:
           compiler: gcc
 
