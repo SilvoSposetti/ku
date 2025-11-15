@@ -297,7 +297,8 @@ computePatternOptionNonTorus(uint32_t rowIndex,
           if (otherNeighborOptional.has_value()) {
             backwardId++;
             const auto& otherNeighbor = otherNeighborOptional.value();
-            if (otherNeighbor == std::make_pair(rowIndex, columnIndex)) {
+            if (otherNeighbor ==
+                std::make_pair(static_cast<std::int32_t>(rowIndex), static_cast<std::int32_t>(columnIndex))) {
               break;
             }
           }
