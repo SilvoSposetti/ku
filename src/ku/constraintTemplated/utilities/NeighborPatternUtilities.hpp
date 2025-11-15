@@ -341,7 +341,7 @@ constexpr Option<optionSize> computePatternOption(uint32_t rowIndex,
         rowIndex, columnIndex, digit, pattern, forwardPattern);
   }
   // Sort the option before returning it
-  std::ranges::sort(option);
+  std::sort(option.begin(), option.end());
   return option;
 }
 
