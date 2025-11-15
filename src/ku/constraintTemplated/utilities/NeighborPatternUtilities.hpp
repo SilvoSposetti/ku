@@ -324,6 +324,7 @@ computePatternOptionNonTorus(uint32_t rowIndex,
  * @return The option for the given inputs
  */
 template <PuzzleIntrinsics puzzle, std::size_t patternSize, std::size_t optionSize, bool isTorus>
+  requires SizeNonZeroAndEvenConcept<patternSize>
 constexpr Option<optionSize> computePatternOption(uint32_t rowIndex,
                                                   uint32_t columnIndex,
                                                   uint32_t digit,

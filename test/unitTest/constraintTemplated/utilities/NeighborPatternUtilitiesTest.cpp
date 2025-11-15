@@ -47,10 +47,10 @@ constexpr void check(const std::array<std::pair<int32_t, int32_t>, patternSize>&
 
   std::size_t torusOptionIndex = 0;
   for (const auto& [rowIndex, columnIndex, digit] : puzzle.allPossibilities) {
-    const auto computedNonTorusOption =
+    const auto computedTorusOption =
         NeighborPatternUtilities::computePatternOption<puzzle, patternSize, optionSize, true>(
             rowIndex, columnIndex, digit, pattern);
-    CHECK_EQ(computedNonTorusOption, expectedTorusOptions.at(torusOptionIndex));
+    CHECK_EQ(computedTorusOption, expectedTorusOptions.at(torusOptionIndex));
     torusOptionIndex++;
   }
 }
