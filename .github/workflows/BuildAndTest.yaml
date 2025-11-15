@@ -9,11 +9,10 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Setup GCC (latest)
+      - name: Setup compiler
         uses: aminya/setup-cpp@v1
         with:
           compiler: gcc
-          version: latest
 
       - name: Download and cache meson and its dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
