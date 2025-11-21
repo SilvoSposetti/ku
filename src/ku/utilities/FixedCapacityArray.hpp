@@ -141,12 +141,21 @@ public:
     return std::span<const T>(data.begin(), static_cast<std::size_t>(count));
   }
 
+  /** Adds a value at the end of the array. Throws if the array is at full capacity.
+   * @param value The value to add at the end of the array.
+   */
   constexpr void pushBack(const T& value) {
     if (size() == capacity()) {
       throw std::out_of_range("Not enough available capacity");
     }
     data[size()] = value;
     ++count;
+  }
+
+  /** Sorts the contents in place using bubble sort.
+   */
+  constexpr void sort() {
+    std::sort(data.begin(), data.begin() + size());
   }
 
 private:

@@ -160,6 +160,24 @@ TEST_SUITE("FixedCapacityArray") {
       CHECK_EQ(array.size(), array.capacity());
       CHECK_THROWS_AS(array.pushBack(0), std::out_of_range);
     }
+
+    SUBCASE("Sort") {
+      auto array1 = FixedCapacityArray<T, capacity>{0, 3, 2, 1, 4};
+      auto array2 = FixedCapacityArray<T, capacity>{4, 3, 2, 1, 0};
+      auto array3 = FixedCapacityArray<T, capacity>{4, 1, 2, 3, 0};
+      auto array4 = FixedCapacityArray<T, capacity>{1, 0, 2, 4, 3};
+      auto sorted = FixedCapacityArray<T, capacity>{0, 1, 2, 3, 4};
+
+      array1.sort();
+      array2.sort();
+      array3.sort();
+      array4.sort();
+
+      CHECK_EQ(array1, sorted);
+      CHECK_EQ(array2, sorted);
+      CHECK_EQ(array3, sorted);
+      CHECK_EQ(array4, sorted);
+    }
   }
 
   TEST_CASE_TEMPLATE_INVOKE(usage, uint8_t);
