@@ -152,10 +152,14 @@ public:
     ++count;
   }
 
-  /** Sorts the contents in place using bubble sort.
+  /** Sorts the contents in place.
    */
   constexpr void sort() {
-    std::sort(data.begin(), data.begin() + size());
+    auto copy = data;
+    std::ranges::sort(copy.begin(), copy.begin() + size());
+    for (std::size_t i = 0; i < size(); i++) {
+      data[i] = copy[i];
+    }
   }
 
 private:
@@ -181,5 +185,5 @@ private:
 
   /** The data.
    */
-  std::array<T, N> data;
+  std::array<T, N> data = std::array<T, N>{};
 };
