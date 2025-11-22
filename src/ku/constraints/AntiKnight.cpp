@@ -9,7 +9,7 @@
 
 AntiKnight::AntiKnight()
     : AbstractConstraint(
-          ConstraintType::ANTI_KNIGHT, "Anti-Knight", "A digit cannot appear at a knight's move away from itself.")
+          ConstraintType::KNIGHT_PATTERN, "Anti-Knight", "A digit cannot appear at a knight's move away from itself.")
     , dashVector(ConstraintUtilities::createDashVector({{2, -1}, {2, 1}, {1, 2}, {-1, 2}}, false)) {}
 
 std::unique_ptr<SvgGroup> AntiKnight::getSvgGroup(const DrawingOptions& options) const {

@@ -3,6 +3,9 @@
 #include <array>
 #include <cstdint>
 
+/** A collection of patterns, listing all neighbor offsets O (rowOffset, columnOffset) that are defined from a central
+ * cell X (0, 0).
+ */
 namespace Patterns {
 /** Moore pattern.
  * O O O

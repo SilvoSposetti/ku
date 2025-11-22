@@ -8,7 +8,7 @@
 #include <cmath>
 
 AntiKingTorus::AntiKingTorus()
-    : AbstractConstraint(ConstraintType::ANTI_KING_TORUS,
+    : AbstractConstraint(ConstraintType::KING_TORUS_PATTERN,
                          "Anti-King-Torus",
                          "A digit cannot appear at a king's move away from itself. This restriction also wraps around "
                          "the edges of the board.")

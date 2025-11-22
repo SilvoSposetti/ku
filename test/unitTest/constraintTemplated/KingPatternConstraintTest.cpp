@@ -1,5 +1,5 @@
 
-#include "constraintTemplated/AntiKingConstraint.hpp"
+#include "constraintTemplated/KingPatternConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
 
@@ -7,28 +7,28 @@
 
 TEST_SUITE("Constraints") {
 
-  TEST_CASE("AntiKingConstraint") {
+  TEST_CASE("KingPatternConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<AntiKingConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      memberChecks<KingPatternConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
-      GENERATE_SUBCASE(AntiKingConstraint, 9, 9, 9);
-      GENERATE_SUBCASE(AntiKingConstraint, 3, 2, 12);
-      GENERATE_SUBCASE(AntiKingConstraint, 7, 1, 9);
+      GENERATE_SUBCASE(KingPatternConstraint, 9, 9, 9);
+      GENERATE_SUBCASE(KingPatternConstraint, 3, 2, 12);
+      GENERATE_SUBCASE(KingPatternConstraint, 7, 1, 9);
     }
 
     SUBCASE("Not supported") {
       // Less than 9 digits
-      CHECK(!AntiKingConstraint<PuzzleIntrinsics<{5, 9, 8}>{}>().supportsPuzzle());
-      CHECK(!AntiKingConstraint<PuzzleIntrinsics<{1, 3, 2}>{}>().supportsPuzzle());
+      CHECK(!KingPatternConstraint<PuzzleIntrinsics<{5, 9, 8}>{}>().supportsPuzzle());
+      CHECK(!KingPatternConstraint<PuzzleIntrinsics<{1, 3, 2}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {
       SUBCASE("3x2x12") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 2, 12}>{};
-        checkConstraintOptions<intrinsics, 0, 8>(AntiKingConstraint<intrinsics>(),
+        checkConstraintOptions<intrinsics, 0, 8>(KingPatternConstraint<intrinsics>(),
                                                  0,
                                                  {},
                                                  132,
@@ -110,7 +110,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("4x3x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{4, 3, 9}>{};
-        checkConstraintOptions<intrinsics, 0, 8>(AntiKingConstraint<intrinsics>(),
+        checkConstraintOptions<intrinsics, 0, 8>(KingPatternConstraint<intrinsics>(),
                                                  0,
                                                  {},
                                                  261,
@@ -228,7 +228,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 0, 8>(AntiKingConstraint<intrinsics>(),
+        checkConstraintOptions<intrinsics, 0, 8>(KingPatternConstraint<intrinsics>(),
                                                  0,
                                                  {},
                                                  2448,

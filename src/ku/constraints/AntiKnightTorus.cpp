@@ -8,7 +8,7 @@
 #include <cmath>
 
 AntiKnightTorus::AntiKnightTorus()
-    : AbstractConstraint(ConstraintType::ANTI_KNIGHT_TORUS,
+    : AbstractConstraint(ConstraintType::KNIGHT_TORUS_PATTERN,
                          "Anti-Knight-Torus",
                          "A digit cannot appear at a knight's move away from itself. This restriction also wraps "
                          "around the edges of the board.")

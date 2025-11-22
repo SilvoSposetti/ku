@@ -1,5 +1,5 @@
 
-#include "constraintTemplated/AntiKingTorusConstraint.hpp"
+#include "constraintTemplated/KingTorusPatternConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
 
@@ -7,29 +7,29 @@
 
 TEST_SUITE("Constraints") {
 
-  TEST_CASE("AntiKingTorusConstraint") {
+  TEST_CASE("KingTorusPatternConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<AntiKingTorusConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      memberChecks<KingTorusPatternConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
-      GENERATE_SUBCASE(AntiKingTorusConstraint, 9, 9, 9);
-      GENERATE_SUBCASE(AntiKingTorusConstraint, 3, 2, 12);
-      GENERATE_SUBCASE(AntiKingTorusConstraint, 7, 1, 9);
+      GENERATE_SUBCASE(KingTorusPatternConstraint, 9, 9, 9);
+      GENERATE_SUBCASE(KingTorusPatternConstraint, 3, 2, 12);
+      GENERATE_SUBCASE(KingTorusPatternConstraint, 7, 1, 9);
     }
 
     SUBCASE("Not supported") {
       // Less than 9 digits
-      CHECK(!AntiKingTorusConstraint<PuzzleIntrinsics<{5, 9, 8}>{}>().supportsPuzzle());
-      CHECK(!AntiKingTorusConstraint<PuzzleIntrinsics<{1, 3, 2}>{}>().supportsPuzzle());
+      CHECK(!KingTorusPatternConstraint<PuzzleIntrinsics<{5, 9, 8}>{}>().supportsPuzzle());
+      CHECK(!KingTorusPatternConstraint<PuzzleIntrinsics<{1, 3, 2}>{}>().supportsPuzzle());
     }
 
     SUBCASE("Explicit Options") {
       SUBCASE("3x2x12") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 2, 12}>{};
         checkConstraintOptions<intrinsics, 0, 8>(
-            AntiKingTorusConstraint<intrinsics>(),
+            KingTorusPatternConstraint<intrinsics>(),
             0,
             {},
             288,
@@ -76,7 +76,7 @@ TEST_SUITE("Constraints") {
       SUBCASE("4x3x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{4, 3, 9}>{};
         checkConstraintOptions<intrinsics, 0, 8>(
-            AntiKingTorusConstraint<intrinsics>(),
+            KingTorusPatternConstraint<intrinsics>(),
             0,
             {},
             432,
@@ -140,7 +140,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 0, 8>(AntiKingTorusConstraint<intrinsics>(),
+        checkConstraintOptions<intrinsics, 0, 8>(KingTorusPatternConstraint<intrinsics>(),
                                                  0,
                                                  {},
                                                  2916,

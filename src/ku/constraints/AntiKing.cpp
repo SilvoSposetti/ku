@@ -8,7 +8,7 @@
 
 AntiKing::AntiKing()
     : AbstractConstraint(
-          ConstraintType::ANTI_KING, "Anti-King", "A digit cannot appear at a king's move away from itself.")
+          ConstraintType::KING_PATTERN, "Anti-King", "A digit cannot appear at a king's move away from itself.")
     , dashVector(ConstraintUtilities::createDashVector({{1, -1}, {1, 0}, {1, 1}, {0, 1}}, false)) {}
 
 std::unique_ptr<SvgGroup> AntiKing::getSvgGroup(const DrawingOptions& options) const {

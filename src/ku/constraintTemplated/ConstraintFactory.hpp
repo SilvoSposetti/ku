@@ -1,7 +1,4 @@
 
-#include "AntiKingConstraint.hpp"
-#include "AntiKingTorusConstraint.hpp"
-#include "AntiKnightTorusConstraint.hpp"
 #include "AsteriskSudokuConstraint.hpp"
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"
@@ -12,6 +9,9 @@
 #include "ExactPositiveDiagonalConstraint.hpp"
 #include "ExactRowConstraint.hpp"
 #include "HyperSudokuConstraint.hpp"
+#include "KingPatternConstraint.hpp"
+#include "KingTorusPatternConstraint.hpp"
+#include "KnightTorusPatternConstraint.hpp"
 #include "NegativeDiagonalEvenConstraint.hpp"
 #include "NegativeDiagonalOddConstraint.hpp"
 #include "PositiveDiagonalEvenConstraint.hpp"
@@ -109,25 +109,25 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       throw std::runtime_error("AsteriskSudokuConstraint does not support this puzzle");
     }
     break;
-  case ConstraintType::ANTI_KING_TORUS:
-    if (AntiKingTorusConstraint<intrinsics>::supportsPuzzle()) {
-      return std::make_unique<AntiKingTorusConstraint<intrinsics>>();
+  case ConstraintType::KING_TORUS_PATTERN:
+    if (KingTorusPatternConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<KingTorusPatternConstraint<intrinsics>>();
     } else {
-      throw std::runtime_error("AntiKingTorusConstraint does not support this puzzle");
+      throw std::runtime_error("KingTorusPatternConstraint does not support this puzzle");
     }
     break;
-  case ConstraintType::ANTI_KNIGHT_TORUS:
-    if (AntiKnightTorusConstraint<intrinsics>::supportsPuzzle()) {
-      return std::make_unique<AntiKnightTorusConstraint<intrinsics>>();
+  case ConstraintType::KNIGHT_TORUS_PATTERN:
+    if (KnightTorusPatternConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<KnightTorusPatternConstraint<intrinsics>>();
     } else {
-      throw std::runtime_error("AntiKnightTorusConstraint does not support this puzzle");
+      throw std::runtime_error("KnightTorusPatternConstraint does not support this puzzle");
     }
     break;
-  case ConstraintType::ANTI_KING:
-    if (AntiKingConstraint<intrinsics>::supportsPuzzle()) {
-      return std::make_unique<AntiKingConstraint<intrinsics>>();
+  case ConstraintType::KING_PATTERN:
+    if (KingPatternConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<KingPatternConstraint<intrinsics>>();
     } else {
-      throw std::runtime_error("AntiKingConstraint does not support this puzzle");
+      throw std::runtime_error("KingPatternConstraint does not support this puzzle");
     }
     break;
   default:

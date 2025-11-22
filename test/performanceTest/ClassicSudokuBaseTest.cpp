@@ -50,22 +50,22 @@ TEST_SUITE("Classic Sudoku Base") {
   }
 
   TEST_CASE("Classic Sudoku Base: Anti King") {
-    const auto board = generateBoard(ConstraintType::ANTI_KING);
+    const auto board = generateBoard(ConstraintType::KING_PATTERN);
     CHECK(board != Sudo::emptyField());
   }
 
   TEST_CASE("Classic Sudoku Base: Anti King Torus") {
-    const auto board = generateBoard(ConstraintType::ANTI_KING_TORUS);
+    const auto board = generateBoard(ConstraintType::KING_TORUS_PATTERN);
     CHECK(board != Sudo::emptyField());
   }
 
   TEST_CASE("Classic Sudoku Base: Anti Knight") {
-    const auto board = generateBoard(ConstraintType::ANTI_KNIGHT);
+    const auto board = generateBoard(ConstraintType::KNIGHT_PATTERN);
     CHECK(board != Sudo::emptyField());
   }
 
   TEST_CASE("Classic Sudoku Base: Anti Knight Torus") {
-    const auto board = generateBoard(ConstraintType::ANTI_KNIGHT_TORUS);
+    const auto board = generateBoard(ConstraintType::KNIGHT_TORUS_PATTERN);
     CHECK(board != Sudo::emptyField());
   }
 

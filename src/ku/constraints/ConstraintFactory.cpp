@@ -51,16 +51,16 @@ std::unique_ptr<AbstractConstraint> ConstraintFactory::makeConstraint(Constraint
   case ConstraintType::NEGATIVE_DIAGONAL_ODD:
     constraint = std::make_unique<NegativeDiagonalOdd>();
     break;
-  case ConstraintType::ANTI_KING:
+  case ConstraintType::KING_PATTERN:
     constraint = std::make_unique<AntiKing>();
     break;
-  case ConstraintType::ANTI_KING_TORUS:
+  case ConstraintType::KING_TORUS_PATTERN:
     constraint = std::make_unique<AntiKingTorus>();
     break;
-  case ConstraintType::ANTI_KNIGHT:
+  case ConstraintType::KNIGHT_PATTERN:
     constraint = std::make_unique<AntiKnight>();
     break;
-  case ConstraintType::ANTI_KNIGHT_TORUS:
+  case ConstraintType::KNIGHT_TORUS_PATTERN:
     constraint = std::make_unique<AntiKnightTorus>();
     break;
   case ConstraintType::DISJOINT_BOXES:
