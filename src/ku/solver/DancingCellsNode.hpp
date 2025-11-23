@@ -1,8 +1,8 @@
 #pragma once
 #include "XccElement.hpp"
 
-#include <cstdint>
 #include <compare>
+#include <cstdint>
 
 /** Struct of data stored in the NODE array of the DancingCellsStructure.
  */

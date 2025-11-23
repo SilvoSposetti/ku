@@ -295,10 +295,10 @@ public:
 
   /// A 2D matrix of the grid, intialized with invalid digits
   const Grid<puzzleSpace> startingGrid = {};
-  
+
   /// The data structure required for solving the puzzle
   const DancingCellsStructure structure;
-  
+
   /// The solution to the puzzle
   const Grid<puzzleSpace> solution = {};
 };
