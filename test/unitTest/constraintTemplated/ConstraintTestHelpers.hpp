@@ -81,7 +81,7 @@ void checkExpectedOptions(std::size_t actualItemsAmount,
     REQUIRE(!expectedOptions.empty());
     REQUIRE(actualOptions.has_value());
     // There is one option given for every possibility in the puzzle
-    CHECK_EQ(expectedOptions.size(), intrinsics.allPossibilities.size());
+    CHECK_EQ(expectedOptions.size(), intrinsics.allPossibilities().size());
     // The coverage is what is expected
     CHECK_EQ(actualItemsAmount, expectedCoverage);
     // The options are exactly the ones expected
