@@ -51,7 +51,7 @@ void checkOptions(const auto& options, int32_t itemsAmount) {
  */
 #define GENERATE_SUBCASE(constraintName, rows, columns, digits)                                                        \
   SUBCASE(#rows "x" #columns "x" #digits) {                                                                            \
-    constexpr auto constraint = constraintName<PuzzleIntrinsics<{rows, columns, digits}>{}>();                         \
+    const auto constraint = constraintName<PuzzleIntrinsics<{rows, columns, digits}>{}>();                             \
     CHECK(constraint.supportsPuzzle());                                                                                \
     SUBCASE("PrimaryItems") {                                                                                          \
       checkOptions(constraint.getPrimaryOptions(), constraint.getPrimaryItemsAmount());                                \
