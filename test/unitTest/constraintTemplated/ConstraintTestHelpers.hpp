@@ -13,7 +13,7 @@
  */
 template <typename Constraint>
 void memberChecks() {
-  constexpr auto constraint = Constraint();
+  const auto constraint = Constraint{};
   CHECK_NE(constraint.type, ConstraintType::NONE);
   CHECK(!constraint.name.empty());
   CHECK(!constraint.description.empty());
