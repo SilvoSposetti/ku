@@ -56,7 +56,7 @@ public:
       }
       return true;
     };
-    auto filteredView = this->allPossibilities | std::ranges::views::filter(filter);
+    auto filteredView = this->allPossibilities() | std::ranges::views::filter(filter);
     return std::vector<Cell>(filteredView.begin(), filteredView.end());
   };
 

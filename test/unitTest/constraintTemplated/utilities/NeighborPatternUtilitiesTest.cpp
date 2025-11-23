@@ -18,8 +18,8 @@ template <PuzzleIntrinsics puzzle, std::size_t patternSize, OptionId optionSize>
 constexpr void check(const std::array<std::pair<int32_t, int32_t>, patternSize>& pattern,
                      const std::array<std::pair<int32_t, int32_t>, patternSize / 2>& expectedForwardPattern,
                      const std::array<std::size_t, puzzle.rows * puzzle.columns>& expectedUniqueNeighbors,
-                     const std::array<Option<optionSize>, puzzle.allPossibilities.size()>& expectedNonTorusOptions,
-                     const std::array<Option<optionSize>, puzzle.allPossibilities.size()>& expectedTorusOptions) {
+                     const std::array<Option<optionSize>, puzzle.allPossibilities().size()>& expectedNonTorusOptions,
+                     const std::array<Option<optionSize>, puzzle.allPossibilities().size()>& expectedTorusOptions) {
 
   CHECK(NeighborPatternUtilities::isValidPattern(pattern));
 
@@ -37,7 +37,7 @@ constexpr void check(const std::array<std::pair<int32_t, int32_t>, patternSize>&
   }
 
   std::size_t nonTorusOptionIndex = 0;
-  for (const auto& [rowIndex, columnIndex, digit] : puzzle.allPossibilities) {
+  for (const auto& [rowIndex, columnIndex, digit] : puzzle.allPossibilities()) {
     const auto computedNonTorusOption =
         NeighborPatternUtilities::computePatternOption<puzzle, patternSize, optionSize, false>(
             rowIndex, columnIndex, digit, pattern);
@@ -46,7 +46,7 @@ constexpr void check(const std::array<std::pair<int32_t, int32_t>, patternSize>&
   }
 
   std::size_t torusOptionIndex = 0;
-  for (const auto& [rowIndex, columnIndex, digit] : puzzle.allPossibilities) {
+  for (const auto& [rowIndex, columnIndex, digit] : puzzle.allPossibilities()) {
     const auto computedTorusOption =
         NeighborPatternUtilities::computePatternOption<puzzle, patternSize, optionSize, true>(
             rowIndex, columnIndex, digit, pattern);
@@ -64,7 +64,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
           std::array<std::pair<int32_t, int32_t>, 2>{std::make_pair(0, -1), {0, 1}},
           std::array<std::pair<int32_t, int32_t>, 1>{std::make_pair(0, 1)},
           std::array<std::size_t, 12>{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9},
-          std::array<Option<2>, puzzle.allPossibilities.size()>{
+          std::array<Option<2>, puzzle.allPossibilities().size()>{
               Option<2>{0}, {1},      {2},      {3},      {4},      {5},      {6},      {7},      {8},      {0, 9},
               {1, 10},      {2, 11},  {3, 12},  {4, 13},  {5, 14},  {6, 15},  {7, 16},  {8, 17},  {9, 18},  {10, 19},
               {11, 20},     {12, 21}, {13, 22}, {14, 23}, {15, 24}, {16, 25}, {17, 26}, {18},     {19},     {20},
@@ -77,7 +77,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               {63, 72},     {64, 73}, {65, 74}, {66, 75}, {67, 76}, {68, 77}, {69, 78}, {70, 79}, {71, 80}, {72},
               {73},         {74},     {75},     {76},     {77},     {78},     {79},     {80},
           },
-          std::array<Option<2>, puzzle.allPossibilities.size()>{
+          std::array<Option<2>, puzzle.allPossibilities().size()>{
               Option<2>{0, 9}, {1, 10},   {2, 11},   {3, 12},   {4, 13},   {5, 14},   {6, 15},   {7, 16},   {8, 17},
               {9, 18},         {10, 19},  {11, 20},  {12, 21},  {13, 22},  {14, 23},  {15, 24},  {16, 25},  {17, 26},
               {18, 27},        {19, 28},  {20, 29},  {21, 30},  {22, 31},  {23, 32},  {24, 33},  {25, 34},  {26, 35},
@@ -97,7 +97,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
       check<puzzle, 4>(std::array<std::pair<int32_t, int32_t>, 4>{std::make_pair(0, -1), {0, 1}, {1, 0}, {-1, 0}},
                        std::array<std::pair<int32_t, int32_t>, 2>{std::make_pair(0, 1), {1, 0}},
                        std::array<std::size_t, 12>{0, 2, 4, 6, 7, 9, 11, 13, 14, 15, 16, 17},
-                       std::array<Option<4>, puzzle.allPossibilities.size()>{
+                       std::array<Option<4>, puzzle.allPossibilities().size()>{
                            Option<4>{0, 9},
                            {1, 10},
                            {2, 11},
@@ -207,7 +207,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
                            {124, 151},
                            {125, 152},
                        },
-                       std::array<Option<4>, puzzle.allPossibilities.size()>{
+                       std::array<Option<4>, puzzle.allPossibilities().size()>{
                            Option<4>{0, 9, 18, 81}, {1, 10, 19, 82},      {2, 11, 20, 83},      {3, 12, 21, 84},
                            {4, 13, 22, 85},         {5, 14, 23, 86},      {6, 15, 24, 87},      {7, 16, 25, 88},
                            {8, 17, 26, 89},         {18, 27, 36, 99},     {19, 28, 37, 100},    {20, 29, 38, 101},
@@ -244,7 +244,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               std::make_pair(1, 0), {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}},
           std::array<std::pair<int32_t, int32_t>, 4>{std::make_pair(0, 1), {1, 1}, {1, 0}, {1, -1}},
           std::array<std::size_t, 12>{0, 3, 7, 11, 13, 16, 20, 24, 26, 27, 28, 29},
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9, 18},
               {1, 10, 19},
               {2, 11, 20},
@@ -354,7 +354,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               {196, 223, 259},
               {197, 224, 260},
           },
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9, 18, 27, 36, 162, 189, 279}, {1, 10, 19, 28, 37, 163, 190, 280},
               {2, 11, 20, 29, 38, 164, 191, 281},         {3, 12, 21, 30, 39, 165, 192, 282},
               {4, 13, 22, 31, 40, 166, 193, 283},         {5, 14, 23, 32, 41, 167, 194, 284},
@@ -418,7 +418,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               std::make_pair(2, -1), {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}},
           std::array<std::pair<int32_t, int32_t>, 4>{std::make_pair(1, 2), {2, 1}, {2, -1}, {1, -2}},
           std::array<std::size_t, 12>{0, 2, 5, 8, 10, 11, 12, 13, 14, 14, 14, 14},
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9}, {1, 10},       {2, 11},       {3, 12},       {4, 13},       {5, 14},       {6, 15},
               {7, 16},         {8, 17},       {18, 27, 36},  {19, 28, 37},  {20, 29, 38},  {21, 30, 39},  {22, 31, 40},
               {23, 32, 41},    {24, 33, 42},  {25, 34, 43},  {26, 35, 44},  {45, 54, 63},  {46, 55, 64},  {47, 56, 65},
@@ -436,7 +436,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               {35, 80, 98},    {45, 99},      {46, 100},     {47, 101},     {48, 102},     {49, 103},     {50, 104},
               {51, 105},       {52, 106},     {53, 107},
           },
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9, 18, 27, 216, 243, 333, 414}, {1, 10, 19, 28, 217, 244, 334, 415},
               {2, 11, 20, 29, 218, 245, 335, 416},         {3, 12, 21, 30, 219, 246, 336, 417},
               {4, 13, 22, 31, 220, 247, 337, 418},         {5, 14, 23, 32, 221, 248, 338, 419},
@@ -498,7 +498,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
       check<puzzle, 4>(std::array<std::pair<int32_t, int32_t>, 4>{std::make_pair(0, -1), {0, 1}, {1, 0}, {-1, 0}},
                        std::array<std::pair<int32_t, int32_t>, 2>{std::make_pair(0, 1), {1, 0}},
                        std::array<std::size_t, 12>{0, 2, 4, 6, 7, 9, 11, 13, 14, 15, 16, 17},
-                       std::array<Option<4>, puzzle.allPossibilities.size()>{
+                       std::array<Option<4>, puzzle.allPossibilities().size()>{
                            Option<4>{0, 9},
                            {1, 10},
                            {2, 11},
@@ -608,7 +608,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
                            {124, 151},
                            {125, 152},
                        },
-                       std::array<Option<4>, puzzle.allPossibilities.size()>{
+                       std::array<Option<4>, puzzle.allPossibilities().size()>{
                            Option<4>{0, 9, 18, 81}, {1, 10, 19, 82},      {2, 11, 20, 83},      {3, 12, 21, 84},
                            {4, 13, 22, 85},         {5, 14, 23, 86},      {6, 15, 24, 87},      {7, 16, 25, 88},
                            {8, 17, 26, 89},         {18, 27, 36, 99},     {19, 28, 37, 100},    {20, 29, 38, 101},
@@ -645,7 +645,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               std::make_pair(1, -1), {2, -2}, {-1, -1}, {-2, -2}, {-1, 1}, {-2, 2}, {1, 1}, {2, 2}},
           std::array<std::pair<int32_t, int32_t>, 4>{std::make_pair(1, 1), {2, 2}, {1, -1}, {2, -2}},
           std::array<std::size_t, 12>{0, 2, 5, 8, 10, 11, 13, 15, 16, 16, 16, 16},
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9},
               {1, 10},
               {2, 11},
@@ -755,7 +755,7 @@ TEST_CASE("Neighbor Pattern Utilities") {
               {34, 124},
               {35, 125},
           },
-          std::array<Option<8>, puzzle.allPossibilities.size()>{
+          std::array<Option<8>, puzzle.allPossibilities().size()>{
               Option<8>{0, 9, 18, 27, 180, 270, 369, 387}, {1, 10, 19, 28, 181, 271, 370, 388},
               {2, 11, 20, 29, 182, 272, 371, 389},         {3, 12, 21, 30, 183, 273, 372, 390},
               {4, 13, 22, 31, 184, 274, 373, 391},         {5, 14, 23, 32, 185, 275, 374, 392},

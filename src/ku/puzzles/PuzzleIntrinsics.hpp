@@ -28,9 +28,8 @@ public:
       , rowIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.rowsCount>(0))
       , columnIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.columnsCount>(0))
       , digits(Digits::createDigits<puzzleSpace.digitsCount>())
-      , emptyGrid(
-            ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit))
-      , allPossibilities(createPossibilities(rowIndices, columnIndices, digits)) {};
+      , emptyGrid(ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(
+            Digits::invalidDigit)) {};
 
   /** Checks if a row index is valid for the puzzle
    * @param rowIndex The index to check
@@ -207,27 +206,23 @@ public:
                                                                    static_cast<int32_t>(columns))));
   }
 
-private:
-  /** Constructs an array with an ordered set of possibilities covering all cells
+  /** Constructs an array with the canonical ordering of all the possibilities in the puzzle space
    * @param rowIndices All the valid row indices, ordered.
    * @param columnIndices All the valid column indices, ordered.
    * @param digits All the digits, ordered.
-   * @return From the top-left cell going right and then going down line by line, the ordered set of all possibilities
-   * for every cell.
+   * @return  The ordered set of all possibilities for every cell in row-major order.
    */
-  constexpr Possibilities<puzzleSpace> createPossibilities(std::array<Index, puzzleSpace.rowsCount> rowIndices,
-                                                           std::array<Index, puzzleSpace.columnsCount> columnIndices,
-                                                           std::array<Digit, puzzleSpace.digitsCount> digits) {
+  constexpr Possibilities<puzzleSpace> allPossibilities() const {
     auto array = Possibilities<puzzleSpace>();
-    std::size_t i = 0;
+    std::size_t index = 0;
     // First order priority: the rows
     for (const auto& rowIndex : rowIndices) {
       // Second order priority: the columns
       for (const auto& columnIndex : columnIndices) {
         // Last order priority: the digits
         for (const auto& digit : digits) {
-          array[i] = Cell(rowIndex, columnIndex, digit);
-          i++;
+          array[index] = Cell(rowIndex, columnIndex, digit);
+          index++;
         }
       }
     }
@@ -257,8 +252,4 @@ public:
   /** A 2D matrix of the empty grid, with only invalid digits
    */
   const Grid<puzzleSpace> emptyGrid;
-
-  /** The canonical ordering of all the possibilities in the puzzle space
-   */
-  const Possibilities<puzzleSpace> allPossibilities;
 };

@@ -80,13 +80,15 @@ TEST_CASE("Puzzle") {
   SUBCASE("Possibilities") {
     SUBCASE("No clues") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
-      const auto allPossibilities = std::vector<Cell>(puzzle.allPossibilities.begin(), puzzle.allPossibilities.end());
+      const auto allPoissibilitiesArray = puzzle.allPossibilities();
+      const auto allPossibilities = std::vector<Cell>(allPoissibilitiesArray.begin(), allPoissibilitiesArray.end());
       const auto possibilities = puzzle.possibilities;
       CHECK_EQ(allPossibilities, possibilities);
     }
     SUBCASE("Valid clues") {
       const auto puzzle = Puzzle<{2, 2, 3}>("Test", {{0, 1, 2}, {0, 0, 3}}, ConstraintType::NONE, {});
-      const auto allPossibilities = std::vector<Cell>(puzzle.allPossibilities.begin(), puzzle.allPossibilities.end());
+      const auto allPoissibilitiesArray = puzzle.allPossibilities();
+      const auto allPossibilities = std::vector<Cell>(allPoissibilitiesArray.begin(), allPoissibilitiesArray.end());
       const auto possibilities = puzzle.possibilities;
       CHECK_EQ(possibilities.size(), 8); // Two given digits reduce the possibilities by (digitsCount - 1) twice.
       CHECK(allPossibilities.size() >= possibilities.size());

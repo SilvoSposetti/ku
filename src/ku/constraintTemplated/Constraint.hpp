@@ -72,7 +72,7 @@ private:
   template <std::size_t maxOptionSize>
   static constexpr std::optional<OptionsList<puzzle, maxOptionSize>> createOptions(const auto& optionFunction) {
     auto options = OptionsList<puzzle, maxOptionSize>();
-    std::ranges::transform(puzzle.allPossibilities, options.begin(), [&](const Cell& cell) {
+    std::ranges::transform(puzzle.allPossibilities(), options.begin(), [&](const Cell& cell) {
       return optionFunction(static_cast<uint32_t>(cell.rowIndex),
                             static_cast<uint32_t>(cell.columnIndex),
                             static_cast<uint32_t>(cell.digit));
