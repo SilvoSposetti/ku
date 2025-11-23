@@ -10,7 +10,6 @@ compilerFlags = [
   '-Werror', # Treats warning as errors
   '-Wall', # Enables all the warnings about constructions that some users consider questionable
   '-Wextra', # Enables some extra warning flags that are not enabled by -Wall
-  '-fconstexpr-ops-limit=100000000', # Increase number of allowed operations during constexpr evaluation to 1e8. Default is33'554'432
 ]
 
 # Add Defines
