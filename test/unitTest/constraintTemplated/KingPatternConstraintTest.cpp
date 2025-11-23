@@ -1,4 +1,3 @@
-
 #include "constraintTemplated/KingPatternConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

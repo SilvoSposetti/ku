@@ -11,6 +11,7 @@
 #include "HyperSudokuConstraint.hpp"
 #include "KingPatternConstraint.hpp"
 #include "KingTorusPatternConstraint.hpp"
+#include "KnightPatternConstraint.hpp"
 #include "KnightTorusPatternConstraint.hpp"
 #include "NegativeDiagonalEvenConstraint.hpp"
 #include "NegativeDiagonalOddConstraint.hpp"
@@ -128,6 +129,13 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
       return std::make_unique<KingPatternConstraint<intrinsics>>();
     } else {
       throw std::runtime_error("KingPatternConstraint does not support this puzzle");
+    }
+    break;
+  case ConstraintType::KNIGHT_PATTERN:
+    if (KnightPatternConstraint<intrinsics>::supportsPuzzle()) {
+      return std::make_unique<KnightPatternConstraint<intrinsics>>();
+    } else {
+      throw std::runtime_error("KnightPatternConstraint does not support this puzzle");
     }
     break;
   default:
