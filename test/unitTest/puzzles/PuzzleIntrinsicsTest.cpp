@@ -306,8 +306,8 @@ TEST_SUITE("Puzzle Intrinsiscs") {
 
     SUBCASE("Grid") {
       // The correct amount of rows appear in the grid
-      CHECK_EQ(puzzle.emptyGrid.size(), puzzle.rows);
-      for (const auto& row : puzzle.emptyGrid) {
+      CHECK_EQ(puzzle.emptyGrid().size(), puzzle.rows);
+      for (const auto& row : puzzle.emptyGrid()) {
         // All rows have the correct size
         CHECK_EQ(row.size(), puzzle.columns);
         // All values in the rows are initialized with the invalid digit

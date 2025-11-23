@@ -27,9 +27,7 @@ public:
       , columns(puzzleSpace.columnsCount)
       , rowIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.rowsCount>(0))
       , columnIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.columnsCount>(0))
-      , digits(Digits::createDigits<puzzleSpace.digitsCount>())
-      , emptyGrid(ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(
-            Digits::invalidDigit)) {};
+      , digits(Digits::createDigits<puzzleSpace.digitsCount>()) {};
 
   /** Checks if a row index is valid for the puzzle
    * @param rowIndex The index to check
@@ -229,6 +227,13 @@ public:
     return array;
   }
 
+  /** Constructs a 2D matrix of the empty grid containing only invalid digits.
+  @return The puzzle grid, with only invalid digits.
+  */
+  constexpr Grid<puzzleSpace> emptyGrid() const {
+    return ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit);
+  };
+
 public:
   /** The amount of rows in the puzzle grid
    */
@@ -248,8 +253,4 @@ public:
   /** The ordered set of valid digits
    */
   const std::array<Digit, puzzleSpace.digitsCount> digits;
-
-  /** A 2D matrix of the empty grid, with only invalid digits
-   */
-  const Grid<puzzleSpace> emptyGrid;
 };

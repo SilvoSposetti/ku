@@ -38,8 +38,7 @@ public:
       , solution(solve()) {};
 
   Grid<puzzleSpace> initializeGrid() const {
-    auto grid =
-        ArrayUtilities::create2DArray<Digit, puzzleSpace.columnsCount, puzzleSpace.rowsCount>(Digits::invalidDigit);
+    auto grid = this->emptyGrid();
     for (const auto& cell : givenCells) {
       grid[cell.rowIndex][cell.columnIndex] = cell.digit;
     }
@@ -291,12 +290,15 @@ public:
   /// The cells with given values
   const std::unordered_set<Cell> givenCells;
 
+  /// The list of available possiblities taking into account cells with given values
   const std::vector<Cell> possibilities;
 
   /// A 2D matrix of the grid, intialized with invalid digits
-  Grid<puzzleSpace> startingGrid = this->emptyGrid;
-
+  const Grid<puzzleSpace> startingGrid = {};
+  
+  /// The data structure required for solving the puzzle
   const DancingCellsStructure structure;
-
-  Grid<puzzleSpace> solution = this->emptyGrid;
+  
+  /// The solution to the puzzle
+  const Grid<puzzleSpace> solution = {};
 };
