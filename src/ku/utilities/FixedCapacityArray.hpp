@@ -155,16 +155,18 @@ public:
   /** Sorts the contents in place using bubble sort
    */
   constexpr void sort() {
-    for (T i = 0; i < size() - 1; ++i) {
-      auto swapped = false;
-      for (T j = 0; j < size() - i - 1; ++j) {
-        if (data[j] > data[j + 1]) {
-          std::swap(data[j], data[j + 1]);
-          swapped = true;
+    if (size() > 1) {
+      for (T i = 0; i < size() - 1; ++i) {
+        auto swapped = false;
+        for (T j = 0; j < size() - i - 1; ++j) {
+          if (data[j] > data[j + 1]) {
+            std::swap(data[j], data[j + 1]);
+            swapped = true;
+          }
         }
+        if (!swapped)
+          break;
       }
-      if (!swapped)
-        break;
     }
   }
 
