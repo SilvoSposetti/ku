@@ -12,7 +12,8 @@ template <PuzzleSpace puzzleSpace>
 std::unique_ptr<SvgDocument>
 create(const std::string& name,
        const DrawingOptionsTemplated<puzzleSpace>& options,
-       const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& grid,
+       const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& startingGrid,
+       const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& solution,
        const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>& constraints) {
   auto document = std::make_unique<SvgDocument>(name, options.width, options.totalHeight, options.margin);
 
@@ -23,7 +24,7 @@ create(const std::string& name,
   {
 
     size_t givenDigitsCount = 0;
-    for (const auto& row : grid) {
+    for (const auto& row : startingGrid) {
       givenDigitsCount += std::ranges::count_if(row, [&](const auto& element) { return Digits::isValid(element); });
     }
 
@@ -63,13 +64,14 @@ create(const std::string& name,
     auto givenDigitsGroup = std::make_unique<SvgGroup>("Given Digits", "black", std::nullopt, std::nullopt);
     auto otherDigitsGroup = std::make_unique<SvgGroup>("Other Digits", "black", std::nullopt, std::nullopt);
     int32_t i = 0;
-    for (const auto& row : grid) {
+    for (const auto& row : solution) {
       int32_t j = 0;
       for (const auto& digit : row) {
         const double x = (j + 0.5) * options.cellSize;
         const double y = (i + 0.5) * options.cellSize;
-        const std::string digitString = std::to_string(digit);
-        if (Digits::isValid(digit)) {
+        const std::string digitString = std::format("{}", digit);
+        const auto isGiven = Digits::isValid(startingGrid[i][j]);
+        if (isGiven) {
           givenDigitsGroup->add(std::make_unique<SvgText>(
               x, y, digitString, options.givenDigitsFontSize, TextAnchor::Middle, TextBaseline::Central));
         } else {

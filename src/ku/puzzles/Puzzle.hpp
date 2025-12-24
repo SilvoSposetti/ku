@@ -114,7 +114,7 @@ public:
    */
   bool exportToSvg(const std::filesystem::path& location) const {
     const auto options = DrawingOptionsTemplated<puzzleSpace>(1000, 150, constraints.size());
-    const auto document = PuzzleDrawing::create<puzzleSpace>(name, options, startingGrid, constraints);
+    const auto document = PuzzleDrawing::create<puzzleSpace>(name, options, startingGrid, solution, constraints);
     return document->writeToFile(location);
   };
 

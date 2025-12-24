@@ -29,7 +29,7 @@ struct DrawingOptionsTemplated {
       , infoHeight(infoLineHeight * (constraintsCount - 1))
       , infoBaseHeight(height + margin + titleFontSize * 1.5 + infoLineHeight)
       , totalHeight(infoBaseHeight + infoHeight)
-      , thinLine(size / 800.0)
+      , thinLine(titleFontSize / 25.0)
       , mediumLine(thinLine * 3)
       , thickLine(mediumLine * 2) {}
 
