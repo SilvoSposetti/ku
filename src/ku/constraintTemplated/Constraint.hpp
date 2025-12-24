@@ -37,29 +37,42 @@ struct Constraint : public ConstraintInterface<puzzle> {
             countUniqueElementsInOptions<ConstraintTraits<ConcreteConstraint>::secondarySize>(secondaryOptions)) {};
 
 public:
+  /** @see ConstraintInterface::getType() */
   virtual ConstraintType getType() const override {
     return type;
   }
+  /** @see ConstraintInterface::getName() */
   virtual std::string getName() const override {
     return std::string(name);
   }
+  /** @see ConstraintInterface::getDescription() */
   virtual std::string getDescription() const override {
     return std::string(description);
   }
+  /** @see ConstraintInterface::getPrimaryItemsAmount() */
   virtual size_t getPrimaryItemsAmount() const override {
     return primaryItemsAmount;
   }
 
+  /** @see ConstraintInterface::getPrimaryOptions() */
   virtual const std::optional<OptionsSpan<puzzle>> getPrimaryOptions() const override {
     return getOptions<ConstraintTraits<ConcreteConstraint>::primarySize>(primaryOptions);
   }
 
+  /** @see ConstraintInterface::getSecondaryItemsAmount() */
   virtual size_t getSecondaryItemsAmount() const override {
     return secondaryItemsAmount;
   }
 
+  /** @see ConstraintInterface::getSecondaryOptions() */
   virtual const std::optional<OptionsSpan<puzzle>> getSecondaryOptions() const override {
     return getOptions<ConstraintTraits<ConcreteConstraint>::secondarySize>(secondaryOptions);
+  }
+
+  /** @see ConstraintInterface::getSvgGroup() */
+  virtual std::unique_ptr<SvgGroup>
+  getSvgGroup([[maybe_unused]] const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+    return std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   }
 
 private:

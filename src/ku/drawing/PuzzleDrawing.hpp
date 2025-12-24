@@ -1,18 +1,20 @@
 #pragma once
-#include "../constraints/AbstractConstraint.hpp"
+#include "../constraintTemplated/ConstraintInterface.hpp"
 #include "../puzzles/Digits.hpp"
-#include "DrawingOptions.hpp"
+#include "DrawingOptionsTemplated.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
 #include "SvgText.hpp"
+
 namespace PuzzleDrawing {
 
-template <uint8_t rowsCount, uint8_t columnsCount>
-std::unique_ptr<SvgDocument> create(const std::string& name,
-                                    const DrawingOptions& options,
-                                    const std::array<std::array<Digit, columnsCount>, rowsCount>& grid,
-                                    const std::vector<std::unique_ptr<AbstractConstraint>>& constraints) {
-  auto document = std::make_unique<SvgDocument>(name, options.size, options.totalHeight, options.margin);
+template <PuzzleSpace puzzleSpace>
+std::unique_ptr<SvgDocument>
+create(const std::string& name,
+       const DrawingOptionsTemplated<puzzleSpace>& options,
+       const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& grid,
+       const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>& constraints) {
+  auto document = std::make_unique<SvgDocument>(name, options.width, options.totalHeight, options.margin);
 
   // Background
   document->addBackground("white");
@@ -29,9 +31,11 @@ std::unique_ptr<SvgDocument> create(const std::string& name,
         std::make_unique<SvgGroup>("Title And Descriptions", "black", std::nullopt, std::nullopt);
     titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
         0, options.titleBaseHeight, name, options.titleFontSize, TextAnchor::Start, TextBaseline::Bottom));
+    const auto totalDigits = static_cast<int32_t>(puzzleSpace.rowsCount) * puzzleSpace.columnsCount;
+
     const std::string infoDescription =
-        std::to_string(givenDigitsCount) + " (-" + std::to_string(Sudo::TOTAL_DIGITS - givenDigitsCount) + ")";
-    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+        std::to_string(givenDigitsCount) + " (-" + std::to_string(totalDigits - givenDigitsCount) + ")";
+    titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.width,
                                                              options.titleBaseHeight,
                                                              infoDescription,
                                                              options.infoFontSize,
@@ -43,7 +47,7 @@ std::unique_ptr<SvgDocument> create(const std::string& name,
       const std::string constraintName = constraint->getName();
       titleAndDescriptionsGroup->add(std::make_unique<SvgText>(
           0, infoHeight, constraintName, options.infoFontSize, TextAnchor::Start, TextBaseline::Bottom));
-      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.size,
+      titleAndDescriptionsGroup->add(std::make_unique<SvgText>(options.width,
                                                                infoHeight,
                                                                constraint->getDescription(),
                                                                options.infoFontSize,

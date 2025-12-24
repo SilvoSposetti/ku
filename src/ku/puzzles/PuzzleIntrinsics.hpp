@@ -29,6 +29,13 @@ public:
       , columnIndices(ArrayUtilities::createIotaArray<Index, puzzleSpace.columnsCount>(0))
       , digits(Digits::createDigits<puzzleSpace.digitsCount>()) {};
 
+  /** Retrieves the PuzzleSpace
+   * @return The PuzzleSpace
+   */
+  static constexpr PuzzleSpace getPuzzleSpace() {
+    return puzzleSpace;
+  }
+
   /** Checks if a row index is valid for the puzzle
    * @param rowIndex The index to check
    * @return Whether the index is valid

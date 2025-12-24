@@ -2,7 +2,6 @@
 
 #include "../constraintTemplated/ConstraintFactory.hpp"
 #include "../drawing/DataStructureDrawing.hpp"
-#include "../drawing/DrawingOptions.hpp"
 #include "../drawing/PuzzleDrawing.hpp"
 #include "../solver/AlgorithmC.hpp"
 #include "../solver/DancingCellsStructure.hpp"
@@ -114,9 +113,8 @@ public:
    * @return whether storing was successufl
    */
   bool exportToSvg(const std::filesystem::path& location) const {
-    const auto options = DrawingOptions(1000, 150, constraints.size());
-    const auto document = PuzzleDrawing::create<puzzleSpace.rowsCount, puzzleSpace.columnsCount>(
-        name, options, startingGrid, constraints);
+    const auto options = DrawingOptionsTemplated<puzzleSpace>(1000, 150, constraints.size());
+    const auto document = PuzzleDrawing::create<puzzleSpace>(name, options, startingGrid, constraints);
     return document->writeToFile(location);
   };
 
