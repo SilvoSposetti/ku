@@ -22,7 +22,7 @@ struct DrawingOptionsTemplated {
       , height(cellSize * puzzleSpace.rowsCount)
       , givenDigitsFontSize(cellSize * 0.618)
       , nonGivenDigitsFontSize(givenDigitsFontSize / 5.0)
-      , titleFontSize(width / 30)
+      , titleFontSize(width / 45)
       , titleBaseHeight(height + margin + titleFontSize)
       , infoFontSize(titleFontSize / 1.5)
       , infoLineHeight(infoFontSize * 1.5)

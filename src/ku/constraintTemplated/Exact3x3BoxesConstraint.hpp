@@ -15,21 +15,14 @@ public:
     CONSTRAINT_CONCEPT_ASSERT(Exact3x3BoxesConstraint, puzzle);
   };
 
-  /** Retrieves the box size
-   * @return The box size
-   */
-  static constexpr std::size_t boxSize() {
-    return 3;
-  }
-
   static constexpr bool supportsPuzzle() {
-    return puzzle.rows % boxSize() == 0 && puzzle.columns % boxSize() == 0 && puzzle.digits.size() == 9;
+    return puzzle.rows % boxSize == 0 && puzzle.columns % boxSize == 0 && puzzle.digits.size() == 9;
   }
 
   static constexpr Option<ConstraintTraits<Exact3x3BoxesConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
-    constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / boxSize();
-    const auto boxId = (column / boxSize() + boxesVerticalCount * (row / boxSize()));
+    constexpr auto boxesVerticalCount = static_cast<uint32_t>(puzzle.columns) / boxSize;
+    const auto boxId = (column / boxSize + boxesVerticalCount * (row / boxSize));
     return {static_cast<OptionId>(boxId * static_cast<uint32_t>(puzzle.digits.size()) + (digit - 1))};
   }
 
@@ -40,8 +33,8 @@ public:
 
   virtual std::unique_ptr<SvgGroup>
   getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
-    const auto boxesRows = puzzle.rows / boxSize();
-    const auto boxesColumns = puzzle.columns / boxSize();
+    const auto boxesRows = puzzle.rows / boxSize;
+    const auto boxesColumns = puzzle.columns / boxSize;
     const double boxLength = options.width / boxesColumns;
 
     auto group = std::make_unique<SvgGroup>(this->getName(), "transparent", "black", options.mediumLine);
@@ -53,4 +46,8 @@ public:
     }
     return group;
   }
+
+private:
+  /// The size of the boxes
+  static constexpr std::size_t boxSize = 3;
 };

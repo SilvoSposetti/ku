@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../drawing/SvgRect.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
 
@@ -22,8 +23,6 @@ public:
 
   static constexpr Option<ConstraintTraits<AsteriskSudokuConstraint<puzzle>>::primarySize>
   primaryOption(uint32_t row, uint32_t column, uint32_t digit) {
-    constexpr std::array<std::pair<Index, Index>, 9> cells = {
-        std::make_pair(1, 4), {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
     if (std::ranges::any_of(cells, [&](const auto& pair) { return pair.first == row && pair.second == column; })) {
       return {static_cast<OptionId>(digit - 1)};
     }
@@ -34,4 +33,20 @@ public:
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
   }
+
+  virtual std::unique_ptr<SvgGroup>
+  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+    auto group = std::make_unique<SvgGroup>(this->getName(), "transparent", "black", options.mediumLine);
+    for (const auto& [i, j] : cells) {
+      const double topLeftX = i * options.cellSize;
+      const double topLeftY = j * options.cellSize;
+      group->add(std::make_unique<SvgRect>(topLeftX, topLeftY, options.cellSize, options.cellSize));
+    }
+    return group;
+  }
+
+private:
+  /// The cells that are part of the asterisk pattern
+  inline static constexpr std::array<std::pair<Index, Index>, 9> cells = {
+      std::make_pair(1, 4), {2, 2}, {2, 6}, {4, 1}, {4, 4}, {4, 7}, {6, 2}, {6, 6}, {7, 4}};
 };

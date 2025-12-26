@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../drawing/SvgLine.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
 
@@ -33,5 +34,12 @@ public:
   static constexpr Option<ConstraintTraits<ExactNegativeDiagonalConstraint<puzzle>>::secondarySize>
   secondaryOption([[maybe_unused]] uint32_t row, [[maybe_unused]] uint32_t column, [[maybe_unused]] uint32_t digit) {
     return {};
+  }
+
+  virtual std::unique_ptr<SvgGroup>
+  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+    auto group = std::make_unique<SvgGroup>(this->getName(), std::nullopt, "black", options.thinLine);
+    group->add(std::make_unique<SvgLine>(0, 0, options.width, options.height));
+    return group;
   }
 };
