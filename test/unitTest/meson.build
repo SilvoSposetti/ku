@@ -8,7 +8,6 @@ unit_test_sources = files(
   'main.cpp',
   'MathUtilitiesTest.cpp',
   'RandomGeneratorTest.cpp',
-  'SudokuTest.cpp',
   'TemporaryDirectoryTest.cpp',
   'TimerTest.cpp',
   'constraints/AntiKingTest.cpp',
@@ -58,4 +57,5 @@ unit_test_sources = files(
   'puzzles/PuzzleIntrinsicsTest.cpp',
   'puzzles/PuzzleSpaceTest.cpp',
   'puzzles/PuzzleTest.cpp',
+  'puzzleSamples/SudokuTest.cpp',
 )
