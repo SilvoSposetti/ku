@@ -22,40 +22,31 @@
 template <PuzzleSpace puzzleSpace>
 class Puzzle : public PuzzleIntrinsics<puzzleSpace> {
 public:
+  /** Constructor
+   * @param name The name of the puzzle.
+   * @param givenGrid The starting grid of the puzzle.
+   * @param constraintTypes The constraints to use when generating the puzzle.
+   * @param seed The seed for the random number generator used when generating the puzzle.
+   */
   constexpr Puzzle(const std::string& name,
-                   const std::unordered_set<Cell>& clues,
+                   const Grid<puzzleSpace>& givenGrid,
                    ConstraintType constraintTypes,
                    std::optional<int32_t> seed)
       : PuzzleIntrinsics<puzzleSpace>()
       , name(name)
-      , seed(seed)
+      , startingGrid(givenGrid)
       , constraints(createConstraints(constraintTypes))
-      , givenCells(getOnlyValidClues(clues))
+      , seed(seed)
       , possibilities(constructActualPossibilities())
-      , startingGrid(initializeGrid())
       , structure(createStructure())
       , solution(solve()) {};
 
-  Grid<puzzleSpace> initializeGrid() const {
-    auto grid = this->emptyGrid();
-    for (const auto& cell : givenCells) {
-      grid[cell.rowIndex][cell.columnIndex] = cell.digit;
-    }
-    return grid;
-  }
-
   std::vector<Cell> constructActualPossibilities() const {
     const auto filter = [&](const Cell& possibility) {
-      const auto found = std::ranges::find_if(
-          this->givenCells, [&](const Cell& givenCell) { return possibility.isAtSameSpot(givenCell); });
-      if (found != givenCells.end()) {
-        const auto givenCell = *found;
-        return possibility == givenCell;
-      }
-      return true;
+      const auto& startingGridDigit = startingGrid[possibility.rowIndex][possibility.columnIndex];
+      return !Digits::isValid(startingGridDigit) || startingGridDigit == possibility.digit;
     };
-    auto filteredView = this->allPossibilities() | std::ranges::views::filter(filter);
-    return std::vector<Cell>(filteredView.begin(), filteredView.end());
+    return this->allPossibilities() | std::ranges::views::filter(filter) | std::ranges::to<std::vector>();
   };
 
   /** Prints the puzzle grid to stdout
@@ -279,20 +270,17 @@ public:
   ///  The name of the puzzle
   const std::string name;
 
-  /// The seed for the random number generator
-  const std::optional<int32_t> seed;
+  /// A 2D matrix of the grid, intialized with invalid digits
+  const Grid<puzzleSpace> startingGrid = {};
 
   /// The list of constraint on the Puzzle
   const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>> constraints;
 
-  /// The cells with given values
-  const std::unordered_set<Cell> givenCells;
+  /// The seed for the random number generator
+  const std::optional<int32_t> seed;
 
   /// The list of available possiblities taking into account cells with given values
   const std::vector<Cell> possibilities;
-
-  /// A 2D matrix of the grid, intialized with invalid digits
-  const Grid<puzzleSpace> startingGrid = {};
 
   /// The data structure required for solving the puzzle
   const DancingCellsStructure structure;

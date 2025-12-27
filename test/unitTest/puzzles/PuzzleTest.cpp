@@ -15,23 +15,21 @@ TEST_CASE("Puzzle") {
   }
 
   SUBCASE("Grid Initialization With No Clues") {
-    const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
+    const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::SUDOKU_ROW, {});
     for (const auto& row : puzzle.startingGrid) {
       CHECK(std::ranges::all_of(row, [&](const auto& element) { return element == Digits::invalidDigit; }));
     }
   }
 
   SUBCASE("Grid Initialization With Clues") {
-    const auto clues = std::unordered_set{
-        Cell(0, 0, 1),
-        Cell(0, 1, 2),
-        Cell(0, 2, 3),
-        Cell(1, 0, 4),
-    };
-    const auto puzzle = Puzzle<{9, 9, 9}>("Test", clues, ConstraintType::NONE, {});
-    for (const auto& cell : clues) {
-      CHECK_EQ(puzzle.startingGrid[cell.rowIndex][cell.columnIndex], cell.digit);
-    }
+    constexpr auto puzzleSpace = PuzzleSpace{3, 3, 3};
+    const auto startingGrid = Grid<puzzleSpace>{{
+        {1, 0, 1},
+        {3, 0, 0},
+        {0, 2, 0},
+    }};
+    const auto puzzle = Puzzle<puzzleSpace>("Test", startingGrid, ConstraintType::NONE, {});
+    CHECK_EQ(puzzle.startingGrid, startingGrid);
   }
 
   SUBCASE("Constraint construction") {
@@ -43,40 +41,6 @@ TEST_CASE("Puzzle") {
     }
   }
 
-  SUBCASE("Clues handling") {
-    SUBCASE("No clues") {
-      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-    SUBCASE("Valid clues") {
-      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 1, 2}, {2, 3, 3}}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {{0, 1, 2}, {2, 3, 3}};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-    SUBCASE("Invalid row") {
-      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{15, 1, 2}}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-    SUBCASE("Invalid column") {
-      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 15, 2}}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-    SUBCASE("Invalid digit") {
-      const auto puzzle = Puzzle<{9, 9, 9}>("Test", {{0, 1, 15}}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-    SUBCASE("Some clues invalid") {
-      const auto puzzle = Puzzle<{9, 9, 9}>(
-          "Test", {{0, 1, 2}, {5, 5, 5}, {1, 3, 10}, {0, 1, 2}, {12, 0, 1}}, ConstraintType::NONE, {});
-      std::unordered_set<Cell> expected = {{0, 1, 2}, {5, 5, 5}, {0, 1, 2}};
-      CHECK_EQ(puzzle.givenCells, expected);
-    }
-  }
-
   SUBCASE("Possibilities") {
     SUBCASE("No clues") {
       const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, ConstraintType::NONE, {});
@@ -85,13 +49,19 @@ TEST_CASE("Puzzle") {
       const auto possibilities = puzzle.possibilities;
       CHECK_EQ(allPossibilities, possibilities);
     }
+
     SUBCASE("Valid clues") {
-      const auto puzzle = Puzzle<{2, 2, 3}>("Test", {{0, 1, 2}, {0, 0, 3}}, ConstraintType::NONE, {});
+      constexpr auto puzzleSpace = PuzzleSpace{2, 2, 3};
+      const auto startingGrid = Grid<puzzleSpace>{{
+          {0, 2},
+          {3, 0},
+      }};
+      const auto puzzle = Puzzle<puzzleSpace>("Test", startingGrid, ConstraintType::NONE, {});
       const auto allPoissibilitiesArray = puzzle.allPossibilities();
       const auto allPossibilities = std::vector<Cell>(allPoissibilitiesArray.begin(), allPoissibilitiesArray.end());
       const auto possibilities = puzzle.possibilities;
-      CHECK_EQ(possibilities.size(), 8); // Two given digits reduce the possibilities by (digitsCount - 1) twice.
-      CHECK(allPossibilities.size() >= possibilities.size());
+      CHECK_EQ(allPossibilities.size(), 12);
+      CHECK_EQ(possibilities.size(), 8); // Two given digits reduce the possibilities by ((digitsCount - 1) = 2) twice.
     }
   }
 
