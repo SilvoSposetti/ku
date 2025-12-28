@@ -1,6 +1,5 @@
 #include "KuTestArguments.hpp"
 #include "puzzles/Puzzle.hpp"
-#include "solver/Solver.hpp"
 
 #include <doctest.h>
 

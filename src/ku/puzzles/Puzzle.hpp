@@ -180,7 +180,7 @@ public:
   }
 
   Grid<puzzleSpace> solve() {
-    auto solution = Grid<puzzleSpace>();
+    auto solution = Grid<puzzleSpace>{};
 
     auto structureCopy = structure;
     // Find a possible solution
