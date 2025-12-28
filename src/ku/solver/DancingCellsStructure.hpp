@@ -1,6 +1,4 @@
 #pragma once
-#include "../Sudo.hpp"
-#include "../constraints/AbstractConstraint.hpp"
 #include "DancingCellsNode.hpp"
 #include "OptionData.hpp"
 
@@ -18,13 +16,6 @@
  */
 struct DancingCellsStructure {
 public:
-  /** Constructor. Creates the structure given a board and a set of constraints.
-   * @param board The board
-   * @param constraints The set of constraints
-   */
-  DancingCellsStructure(const std::vector<std::vector<Sudo::Digit>>& board,
-                        const std::vector<std::unique_ptr<AbstractConstraint>>& constraints);
-
   /** Constructor
    * @param primaryItemsCount The amount of primary items (for n primary items: IDs: [0, 1, ..., n-1])
    * @param secondaryItemsCount The amount of secondary items (for m secondary items: IDs: [n, n+1, ..., n+m-1])
