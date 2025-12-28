@@ -1,81 +1,79 @@
 #include "KuTestArguments.hpp"
-#include "Sudoku.hpp"
 #include "constraints/ConstraintType.hpp"
-#include "solver/Solver.hpp"
+#include "puzzles/Puzzle.hpp"
 
 #include <doctest.h>
 
-static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
-  const auto constraints =
-      Sudoku::getConstraintsList(ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_COLUMN |
-                                 ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX | constraintType);
-  return Solver::createNewBoard(constraints, KuTestArguments::seed);
-};
-
 TEST_SUITE("Classic Sudoku Base") {
+  const auto sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_COLUMN |
+                                 ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_BOX;
+  constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
+  constexpr auto emptyGrid = Grid<sudokuSpace>{};
+
+  const auto check = []<PuzzleSpace space>(const std::string& name, ConstraintType constraints) {
+    const auto puzzle = Puzzle<sudokuSpace>(name, emptyGrid, constraints, KuTestArguments::seed);
+    CHECK_NE(puzzle.solution, emptyGrid);
+  };
 
   TEST_CASE("Classic Sudoku") {
-    const auto board = generateBoard(ConstraintType::NONE);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku", sudokuConstraints);
   }
 
   TEST_CASE("Classic Sudoku Base: Positive Diagonal") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Positive Diagonal",
+                                  sudokuConstraints | ConstraintType::POSITIVE_DIAGONAL);
   }
 
   TEST_CASE("Classic Sudoku Base: Positive Diagonal Even") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_EVEN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Positive Diagonal Even",
+                                  sudokuConstraints | ConstraintType::POSITIVE_DIAGONAL_EVEN);
   }
 
   TEST_CASE("Classic Sudoku Base: Positive Diagonal Odd") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_ODD);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Positive Diagonal Odd",
+                                  sudokuConstraints | ConstraintType::POSITIVE_DIAGONAL_ODD);
   }
 
   TEST_CASE("Classic Sudoku Base: Negative Diagonal") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Negative Diagonal",
+                                  sudokuConstraints | ConstraintType::NEGATIVE_DIAGONAL);
   }
 
   TEST_CASE("Classic Sudoku Base: Negative Diagonal Even") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_EVEN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Negative Diagonal Even",
+                                  sudokuConstraints | ConstraintType::NEGATIVE_DIAGONAL_EVEN);
   }
 
   TEST_CASE("Classic Sudoku Base: Negative Diagonal Odd") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_ODD);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Negative Diagonal Odd",
+                                  sudokuConstraints | ConstraintType::NEGATIVE_DIAGONAL_ODD);
   }
 
   TEST_CASE("Classic Sudoku Base: Anti King") {
-    const auto board = generateBoard(ConstraintType::KING_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Anti King", sudokuConstraints | ConstraintType::KING_PATTERN);
   }
 
   TEST_CASE("Classic Sudoku Base: Anti King Torus") {
-    const auto board = generateBoard(ConstraintType::KING_TORUS_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Anti King Torus",
+                                  sudokuConstraints | ConstraintType::KING_TORUS_PATTERN);
   }
 
   TEST_CASE("Classic Sudoku Base: Anti Knight") {
-    const auto board = generateBoard(ConstraintType::KNIGHT_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Anti Knight",
+                                  sudokuConstraints | ConstraintType::KNIGHT_PATTERN);
   }
 
   TEST_CASE("Classic Sudoku Base: Anti Knight Torus") {
-    const auto board = generateBoard(ConstraintType::KNIGHT_TORUS_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Anti Knight Torus",
+                                  sudokuConstraints | ConstraintType::KNIGHT_TORUS_PATTERN);
   }
 
   TEST_CASE("Classic Sudoku Base: Disjoint Boxes") {
-    const auto board = generateBoard(ConstraintType::DISJOINT_BOXES);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Disjoint Boxes",
+                                  sudokuConstraints | ConstraintType::DISJOINT_BOXES);
   }
 
   TEST_CASE("Classic Sudoku Base: Asterisk") {
-    const auto board = generateBoard(ConstraintType::ASTERISK);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Classic Sudoku Base: Asterisk", sudokuConstraints | ConstraintType::ASTERISK);
   }
 }

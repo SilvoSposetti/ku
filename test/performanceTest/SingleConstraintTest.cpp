@@ -1,93 +1,80 @@
 #include "KuTestArguments.hpp"
-#include "Sudoku.hpp"
+#include "puzzles/Puzzle.hpp"
 #include "solver/Solver.hpp"
 
 #include <doctest.h>
 
-static std::vector<std::vector<Sudo::Digit>> generateBoard(ConstraintType constraintType) {
-  const auto constraints = Sudoku::getConstraintsList(constraintType);
-  return Solver::createNewBoard(constraints, KuTestArguments::seed);
-};
-
 TEST_SUITE("Single Constraint") {
 
+  constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
+  constexpr auto emptyGrid = Grid<sudokuSpace>{};
+
+  const auto check = []<PuzzleSpace space>(const std::string& name, ConstraintType constraints) {
+    const auto puzzle = Puzzle<sudokuSpace>(name, emptyGrid, constraints, KuTestArguments::seed);
+    CHECK_NE(puzzle.solution, emptyGrid);
+  };
+
   TEST_CASE("Single Constraint: Sudoku Cell") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_CELL);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Sudoku Cell", ConstraintType::SUDOKU_CELL);
   }
 
   TEST_CASE("Single Constraint: Sudoku Row") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_ROW);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Sudoku Row", ConstraintType::EXACT_ROW);
   }
 
   TEST_CASE("Single Constraint: Sudoku Column") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_COLUMN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Sudoku Column", ConstraintType::EXACT_COLUMN);
   }
 
   TEST_CASE("Single Constraint: Sudoku Box") {
-    const auto board = generateBoard(ConstraintType::SUDOKU_BOX);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Sudoku Box", ConstraintType::EXACT_3x3_BOXES);
   }
 
   TEST_CASE("Single Constraint: Positive Diagonal") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Positive Diagonal", ConstraintType::POSITIVE_DIAGONAL);
   }
 
   TEST_CASE("Single Constraint: Positive Diagonal Even") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_EVEN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Positive Diagonal Even", ConstraintType::POSITIVE_DIAGONAL_EVEN);
   }
 
   TEST_CASE("Single Constraint: Positive Diagonal Odd") {
-    const auto board = generateBoard(ConstraintType::POSITIVE_DIAGONAL_ODD);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Positive Diagonal Odd", ConstraintType::POSITIVE_DIAGONAL_ODD);
   }
 
   TEST_CASE("Single Constraint: Negative Diagonal") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Negative Diagonal", ConstraintType::NEGATIVE_DIAGONAL);
   }
 
   TEST_CASE("Single Constraint: Negative Diagonal Even") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_EVEN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Negative Diagonal Even", ConstraintType::NEGATIVE_DIAGONAL_EVEN);
   }
 
   TEST_CASE("Single Constraint: Negative Diagonal Odd") {
-    const auto board = generateBoard(ConstraintType::NEGATIVE_DIAGONAL_ODD);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Negative Diagonal Odd", ConstraintType::NEGATIVE_DIAGONAL_ODD);
   }
 
   TEST_CASE("Single Constraint: Anti King") {
-    const auto board = generateBoard(ConstraintType::KING_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Anti King", ConstraintType::KING_PATTERN);
   }
 
   TEST_CASE("Single Constraint: Anti King Torus") {
-    const auto board = generateBoard(ConstraintType::KING_TORUS_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Anti King Torus", ConstraintType::KING_TORUS_PATTERN);
   }
 
   TEST_CASE("Single Constraint: Anti Knight") {
-    const auto board = generateBoard(ConstraintType::KNIGHT_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Anti Knight", ConstraintType::KNIGHT_PATTERN);
   }
 
   TEST_CASE("Single Constraint: Anti Knight Torus") {
-    const auto board = generateBoard(ConstraintType::KNIGHT_TORUS_PATTERN);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Anti Knight Torus", ConstraintType::KNIGHT_TORUS_PATTERN);
   }
 
   TEST_CASE("Single Constraint: Disjoint Boxes") {
-    const auto board = generateBoard(ConstraintType::DISJOINT_BOXES);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Disjoint Boxes", ConstraintType::DISJOINT_BOXES);
   }
 
   TEST_CASE("Single Constraint: Asterisk") {
-    const auto board = generateBoard(ConstraintType::ASTERISK);
-    CHECK(board != Sudo::emptyField());
+    check.operator()<sudokuSpace>("Single Constraint: Asterisk", ConstraintType::ASTERISK);
   }
 }
