@@ -59,7 +59,7 @@ DancingCellsStructure::DancingCellsStructure(const std::vector<std::vector<Sudo:
           // NODE-related logic begin
           int32_t previousSpacerIndex = lastNode; // Remember the spacer before this option in NODE;
           // NODE-related logic end
-          optionsData[optionId] = OptionData(boardI, boardJ, possibleDigit);
+          optionsData[optionId] = OptionData(boardI, boardJ, static_cast<Digit>(possibleDigit));
           for (const auto& constraint : constraints) {
             // Primary items
             const int32_t primaryItemsAmount = constraint->getPrimaryItemsAmount();

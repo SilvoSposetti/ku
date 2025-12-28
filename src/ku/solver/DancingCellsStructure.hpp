@@ -1,4 +1,5 @@
 #pragma once
+#include "../Sudo.hpp"
 #include "../constraints/AbstractConstraint.hpp"
 #include "DancingCellsNode.hpp"
 #include "OptionData.hpp"
