@@ -1,6 +1,6 @@
 #include "randomGenerator/RandomGenerator.hpp"
 
-#include "Sudoku.hpp"
+#include "puzzles/Puzzle.hpp"
 
 #include <algorithm>
 #include <doctest.h>
@@ -128,35 +128,27 @@ TEST_CASE("Random Generator") {
   }
 
   SUBCASE("Sudoku") {
-    constexpr auto sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
-                                                     ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
-    const int32_t clues = 40;
+    constexpr ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+    constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
 
     SUBCASE("Random Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues);
-
-      CHECK(sudoku1.getSolution() != sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() != sudoku2.getField());
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
     }
 
     SUBCASE("Different Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues, 1);
-
-      CHECK(sudoku1.getSolution() != sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() != sudoku2.getField());
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 1);
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
     }
 
     SUBCASE("Same Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues, 0);
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
 
-      CHECK_EQ(sudoku1.getSolution(), sudoku2.getSolution());
-      CHECK_EQ(sudoku1.getGivenMask(), sudoku2.getGivenMask());
-      CHECK_EQ(sudoku1.getField(), sudoku2.getField());
+      CHECK_EQ(sudoku1.solution, sudoku2.solution);
     }
   }
 }
