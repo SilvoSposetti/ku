@@ -1,6 +1,7 @@
 #pragma once
 #include "XccElement.hpp"
 
+#include <compare>
 #include <cstdint>
 
 /** Struct of data stored in the NODE array of the DancingCellsStructure.
@@ -8,7 +9,7 @@
 struct DancingCellsNode {
   /** Default comparison operator
    */
-  bool operator<=>(const DancingCellsNode& other) const = default;
+  auto operator<=>(const DancingCellsNode& other) const = default;
 
   /** The index of the first (reference) node of an item in the SET array for this node.
    * Remains constant througout an Algorithm C's run.

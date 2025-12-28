@@ -1,17 +1,17 @@
 #include "randomGenerator/RandomGenerator.hpp"
 
-#include "Sudoku.hpp"
+#include "puzzles/Puzzle.hpp"
 
 #include <algorithm>
 #include <doctest.h>
 #include <unordered_set>
 
 TEST_CASE("Random Generator") {
-  constexpr int32_t amount = 1000;
+  constexpr int32_t amount = 100;
 
   SUBCASE("Uniform integer") {
-    const int32_t minimum = -100.0f;
-    const int32_t maximum = 618.0f;
+    constexpr int32_t minimum = -100;
+    constexpr int32_t maximum = 618;
 
     SUBCASE("Random Seed") {
       RandomGenerator generator1;
@@ -24,9 +24,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -43,9 +43,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -61,10 +61,10 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformInteger(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
-      CHECK(set1 == set2);
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
+      CHECK_EQ(set1, set2);
     }
   }
 
@@ -83,9 +83,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -102,9 +102,9 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(set1 != set2);
     }
 
@@ -120,43 +120,35 @@ TEST_CASE("Random Generator") {
         set2.insert(generator2.uniformFloat(minimum, maximum));
       }
       CHECK(std::all_of(
-          set1.begin(), set1.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
+          set1.begin(), set1.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
       CHECK(std::all_of(
-          set2.begin(), set2.end(), [&](int32_t element) { return minimum <= element && element <= maximum; }));
-      CHECK(set1 == set2);
+          set2.begin(), set2.end(), [&](auto element) { return minimum <= element && element <= maximum; }));
+      CHECK_EQ(set1, set2);
     }
   }
 
   SUBCASE("Sudoku") {
-    const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+    constexpr ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
                                                  ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
-    const int32_t clues = 40;
+    constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
 
     SUBCASE("Random Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues);
-
-      CHECK(sudoku1.getSolution() != sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() != sudoku2.getField());
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
     }
 
     SUBCASE("Different Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues, 1);
-
-      CHECK(sudoku1.getSolution() != sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() != sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() != sudoku2.getField());
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 1);
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
     }
 
     SUBCASE("Same Seed") {
-      Sudoku sudoku1("Sudoku1", sudokuBaseConstraints, clues, 0);
-      Sudoku sudoku2("Sudoku2", sudokuBaseConstraints, clues, 0);
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
 
-      CHECK(sudoku1.getSolution() == sudoku2.getSolution());
-      CHECK(sudoku1.getGivenMask() == sudoku2.getGivenMask());
-      CHECK(sudoku1.getField() == sudoku2.getField());
+      CHECK_EQ(sudoku1.solution, sudoku2.solution);
     }
   }
 }

@@ -12,7 +12,7 @@ std::filesystem::path TemporaryDirectory::path() {
 }
 
 std::string TemporaryDirectory::generateRandomDirectoryName(RandomGenerator& randomGenerator) {
-  constexpr int32_t base = 1e9;
+  constexpr auto base = static_cast<int32_t>(1e9);
   // Use numeric name between 1'000'000'000 and 2'000'000'000
   // Which crucially, are below the maximum of uint32_t of 2'147'483'647
   // This essentially means there are ('base'+ 1) amount of names that can be picked at random
