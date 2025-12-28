@@ -31,10 +31,10 @@ enum class ConstraintType : uint64_t {
   EXACT_NEGATIVE_DIAGONAL = 1 << 7,
 };
 
-inline ConstraintType operator|(ConstraintType a, ConstraintType b) {
+inline constexpr ConstraintType operator|(ConstraintType a, ConstraintType b) {
   return static_cast<ConstraintType>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
 }
 
-inline ConstraintType operator&(ConstraintType a, ConstraintType b) {
+inline constexpr ConstraintType operator&(ConstraintType a, ConstraintType b) {
   return static_cast<ConstraintType>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b));
 }

@@ -4,7 +4,7 @@
 
 TEST_CASE("Puzzle") {
   SUBCASE("Sudoku") {
-    ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+    constexpr auto sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
                                        ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
     constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
 

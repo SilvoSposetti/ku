@@ -128,8 +128,8 @@ TEST_CASE("Random Generator") {
   }
 
   SUBCASE("Sudoku") {
-    const ConstraintType sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
-                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+    constexpr auto sudokuBaseConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+                                                     ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
     const int32_t clues = 40;
 
     SUBCASE("Random Seed") {

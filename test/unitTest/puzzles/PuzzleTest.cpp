@@ -33,11 +33,11 @@ TEST_CASE("Puzzle") {
   }
 
   SUBCASE("Constraint construction") {
-    const auto constraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW | ConstraintType::SUDOKU_COLUMN |
-                             ConstraintType::SUDOKU_BOX;
-    const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, constraints, {});
+    constexpr auto sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+                                       ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+    const auto puzzle = Puzzle<{9, 9, 9}>("Test", {}, sudokuConstraints, {});
     for (const auto& constraint : puzzle.constraints) {
-      CHECK(static_cast<bool>(constraints & constraint->getType()));
+      CHECK(static_cast<bool>(sudokuConstraints & constraint->getType()));
     }
   }
 
