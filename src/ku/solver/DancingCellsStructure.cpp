@@ -4,7 +4,6 @@
 #include <iostream>
 #include <limits>
 
-
 DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
                                              int32_t secondaryItemsCount,
                                              const std::vector<std::vector<XccElement>>& options) {

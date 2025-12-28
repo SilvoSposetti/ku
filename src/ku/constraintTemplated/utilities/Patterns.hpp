@@ -7,6 +7,7 @@
  * cell X (0, 0).
  */
 namespace Patterns {
+
 /** Moore pattern.
  * O O O
  * O X O
@@ -24,4 +25,5 @@ constexpr inline std::array<std::pair<int32_t, int32_t>, 8> Moore{
  */
 constexpr inline std::array<std::pair<int32_t, int32_t>, 8> Knight = {
     std::make_pair(2, -1), {1, -2}, {-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}};
+
 } // namespace Patterns

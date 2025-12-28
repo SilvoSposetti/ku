@@ -91,4 +91,5 @@ create(const std::string& name,
   }
   return document;
 };
+
 } // namespace PuzzleDrawing

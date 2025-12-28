@@ -4,8 +4,16 @@
 
 #include <optional>
 
-enum class TextAnchor { Start, Middle, End };
-enum class TextBaseline { Bottom, Central, Hanging };
+enum class TextAnchor {
+  Start,
+  Middle,
+  End,
+};
+enum class TextBaseline {
+  Bottom,
+  Central,
+  Hanging,
+};
 
 /** SVG Text
  */
