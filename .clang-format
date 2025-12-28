@@ -1,15 +1,21 @@
 ---
 BasedOnStyle: LLVM
-AlignTrailingComments: 'false'
+AlignConsecutiveAssignments:
+  PadOperators: false
+AlignConsecutiveDeclarations:
+  AlignFunctionDeclarations: false
+AlignTrailingComments:
+  Kind: Never
 AllowShortFunctionsOnASingleLine: Empty
-AlwaysBreakTemplateDeclarations: 'Yes'
-BinPackArguments: 'false'
-BinPackParameters: 'false'
+BinPackArguments: false
+BinPackParameters: false
 BreakConstructorInitializers: BeforeComma
-ColumnLimit: '120'
+BreakTemplateDeclarations: Yes
+ColumnLimit: 120
+EnumTrailingComma: Insert
 IncludeBlocks: Regroup
-IndentWidth: '2'
-Language: Cpp
+InsertNewlineAtEOF: true
+LineEnding: LF
+PackConstructorInitializers: Never
 PointerAlignment: Left
-
-...
+WrapNamespaceBodyWithEmptyLines: Always
