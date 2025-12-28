@@ -12,6 +12,7 @@
 #include "SvgText.hpp"
 
 namespace DataStructureDrawing {
+
 /** Creates an svg document graphically showing the exact cover matrix of the provided data structure
  * @param name The name of the document that is created
  * @param dataStructure The data structure constructed with the current constraints and field
@@ -188,4 +189,5 @@ create(const std::string& name,
 
   return document;
 };
+
 } // namespace DataStructureDrawing

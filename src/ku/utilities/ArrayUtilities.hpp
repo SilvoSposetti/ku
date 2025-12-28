@@ -49,4 +49,5 @@ static constexpr std::array<T, N> createIotaArray(const T& start) {
   std::ranges::iota(array, start);
   return array;
 }
+
 } // namespace ArrayUtilities

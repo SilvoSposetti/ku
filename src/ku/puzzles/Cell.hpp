@@ -47,6 +47,7 @@ public:
 
 // Specialize std::hash for Cell, E.g. for using in std::unordered_set
 namespace std {
+
 template <>
 struct hash<Cell> {
   size_t operator()(const Cell& cell) const {
@@ -57,4 +58,5 @@ struct hash<Cell> {
     return h1 ^ (h2 << 1) ^ (h3 << 2);
   }
 };
+
 } // namespace std
