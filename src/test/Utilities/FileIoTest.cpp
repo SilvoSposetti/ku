@@ -1,6 +1,6 @@
-#include "utilities/FileIo.hpp"
+#include "FileIo.hpp"
 
-#include "utilities/TemporaryDirectory.hpp"
+#include "TemporaryDirectory.hpp"
 
 #include <doctest.h>
 

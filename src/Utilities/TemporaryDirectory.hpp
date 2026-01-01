@@ -1,5 +1,5 @@
 #pragma once
-#include "../randomGenerator/RandomGenerator.hpp"
+#include "RandomGenerator.hpp"
 
 #include <filesystem>
 

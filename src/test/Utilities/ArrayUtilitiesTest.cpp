@@ -1,4 +1,4 @@
-#include "utilities/ArrayUtilities.hpp"
+#include "ArrayUtilities.hpp"
 
 #include <algorithm>
 #include <cstdint>

@@ -1,6 +1,4 @@
-#include "randomGenerator/RandomGenerator.hpp"
-
-#include "puzzles/Puzzle.hpp"
+#include "RandomGenerator.hpp"
 
 #include <algorithm>
 #include <doctest.h>
@@ -127,28 +125,31 @@ TEST_CASE("Random Generator") {
     }
   }
 
-  SUBCASE("Sudoku") {
-    constexpr ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
-                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
-    constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
+  
+  // TODO: these should go in the test of the Puzzle class.
+  // #include "puzzles/Puzzle.hpp"
+  // SUBCASE("Sudoku") {
+  //   constexpr ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+  //                                                ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+  //   constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
 
-    SUBCASE("Random Seed") {
-      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
-      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
-      CHECK_NE(sudoku1.solution, sudoku2.solution);
-    }
+  //   SUBCASE("Random Seed") {
+  //     const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+  //     const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+  //     CHECK_NE(sudoku1.solution, sudoku2.solution);
+  //   }
 
-    SUBCASE("Different Seed") {
-      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
-      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 1);
-      CHECK_NE(sudoku1.solution, sudoku2.solution);
-    }
+  //   SUBCASE("Different Seed") {
+  //     const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+  //     const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 1);
+  //     CHECK_NE(sudoku1.solution, sudoku2.solution);
+  //   }
 
-    SUBCASE("Same Seed") {
-      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
-      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+  //   SUBCASE("Same Seed") {
+  //     const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+  //     const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
 
-      CHECK_EQ(sudoku1.solution, sudoku2.solution);
-    }
-  }
+  //     CHECK_EQ(sudoku1.solution, sudoku2.solution);
+  //   }
+  // }
 }

@@ -1,4 +1,4 @@
-#include "utilities/FixedCapacityArray.hpp"
+#include "FixedCapacityArray.hpp"
 
 #include <algorithm>
 #include <cstdint>

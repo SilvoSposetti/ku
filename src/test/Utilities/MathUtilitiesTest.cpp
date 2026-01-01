@@ -1,4 +1,4 @@
-#include "utilities/MathUtilities.hpp"
+#include "MathUtilities.hpp"
 
 #include <doctest.h>
 
