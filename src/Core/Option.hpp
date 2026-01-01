@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utilities/FixedCapacityArray.hpp"
+#include "FixedCapacityArray.hpp"
 #include "OptionId.hpp"
 
 template <OptionId N>

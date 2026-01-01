@@ -1,4 +1,4 @@
-#include "puzzles/PuzzleIntrinsics.hpp"
+#include "PuzzleIntrinsics.hpp"
 
 #include <algorithm>
 #include <doctest.h>

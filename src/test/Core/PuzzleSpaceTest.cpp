@@ -1,4 +1,4 @@
-#include "puzzles/PuzzleSpace.hpp"
+#include "PuzzleSpace.hpp"
 
 #include <doctest.h>
 

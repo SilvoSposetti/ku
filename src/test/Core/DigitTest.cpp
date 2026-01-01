@@ -1,4 +1,4 @@
-#include "puzzles/Digits.hpp"
+#include "Digits.hpp"
 
 #include <algorithm>
 #include <doctest.h>

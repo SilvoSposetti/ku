@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../utilities/ArrayUtilities.hpp"
-#include "../utilities/MathUtilities.hpp"
+#include "ArrayUtilities.hpp"
+#include "MathUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
 #include "Grid.hpp"

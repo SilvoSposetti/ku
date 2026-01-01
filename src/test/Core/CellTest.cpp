@@ -1,4 +1,4 @@
-#include "puzzles/Cell.hpp"
+#include "Cell.hpp"
 
 #include <doctest.h>
 
