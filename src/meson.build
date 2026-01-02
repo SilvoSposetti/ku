@@ -2,12 +2,17 @@
 subdir('RandomGenerator')
 subdir('Utilities')
 subdir('Core')
+subdir('Drawing')
+subdir('Constraints')
 
 # Main library that aggregates other libraries
 ku_dependency = declare_dependency(
   dependencies : [
     random_generator_dependency,
     utilities_dependency,
+    core_dependency,
+    drawing_dependency,
+    constraints_dependency,
   ]
 )
 
@@ -15,6 +20,8 @@ ku_dependency = declare_dependency(
 subdir('test/Utilities')
 subdir('test/RandomGenerator')
 subdir('test/Core')
+subdir('test/Drawing')
+subdir('test/Constraints')
 
 # Sandbox executable
 subdir('Sandbox')

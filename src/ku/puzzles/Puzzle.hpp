@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../constraintTemplated/ConstraintFactory.hpp"
-#include "../drawing/DataStructureDrawing.hpp"
-#include "../drawing/PuzzleDrawing.hpp"
-#include "../solver/AlgorithmC.hpp"
-#include "../solver/DancingCellsStructure.hpp"
-#include "../utilities/IdPacking.hpp"
+#include "ConstraintFactory.hpp"
+#include "DataStructureDrawing.hpp"
+#include "PuzzleDrawing.hpp"
+#include "AlgorithmC.hpp"
+#include "DancingCellsStructure.hpp"
+#include "IdPacking.hpp"
 #include "PuzzleIntrinsics.hpp"
 
 #include <filesystem>
