@@ -5,6 +5,7 @@ subdir('Core')
 subdir('Solver')
 subdir('Drawing')
 subdir('Constraints')
+subdir('Puzzle')
 
 # Main library that aggregates other libraries
 ku_dependency = declare_dependency(
@@ -15,6 +16,7 @@ ku_dependency = declare_dependency(
     solver_dependency,
     drawing_dependency,
     constraints_dependency,
+    puzzle_dependency,
   ]
 )
 
@@ -25,6 +27,7 @@ subdir('test/Core')
 subdir('test/Solver')
 subdir('test/Drawing')
 subdir('test/Constraints')
+subdir('test/Puzzle')
 
 # Sandbox executable
 subdir('Sandbox')

@@ -1,9 +1,9 @@
 #pragma once
-#include "../ConstraintInterface.hpp"
+#include "ConstraintInterface.hpp"
 #include "PuzzleIntrinsics.hpp"
 #include "PuzzleSpace.hpp"
-#include "../solver/DancingCellsStructure.hpp"
-#include "../solver/ItemData.hpp"
+#include "DancingCellsStructure.hpp"
+#include "ItemData.hpp"
 #include "DrawingUtilities.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"

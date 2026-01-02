@@ -1,4 +1,4 @@
-#include "puzzles/Puzzle.hpp"
+#include "Puzzle.hpp"
 
 #include <doctest.h>
 

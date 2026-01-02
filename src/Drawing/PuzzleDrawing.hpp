@@ -1,6 +1,6 @@
 #pragma once
-#include "../ConstraintInterface.hpp"
-#include "../puzzles/Digits.hpp"
+#include "ConstraintInterface.hpp"
+#include "Digits.hpp"
 #include "DrawingOptionsTemplated.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
