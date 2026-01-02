@@ -20,14 +20,5 @@ ku_dependency = declare_dependency(
   ]
 )
 
-# Tests
-subdir('test/Utilities')
-subdir('test/RandomGenerator')
-subdir('test/Core')
-subdir('test/Solver')
-subdir('test/Drawing')
-subdir('test/Constraints')
-subdir('test/Puzzle')
-
 # Sandbox executable
 subdir('Sandbox')

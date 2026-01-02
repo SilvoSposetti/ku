@@ -21,3 +21,4 @@ doctest_project = subproject('doctest')
 doctest_dependency = doctest_project.get_variable('doctest_dep')
 
 subdir('src')
+subdir('test')
