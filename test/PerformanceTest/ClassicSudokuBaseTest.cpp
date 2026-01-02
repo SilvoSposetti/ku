@@ -1,6 +1,6 @@
+#include "ConstraintType.hpp"
 #include "KuTestArguments.hpp"
-#include "constraints/ConstraintType.hpp"
-#include "puzzles/Puzzle.hpp"
+#include "Puzzle.hpp"
 
 #include <doctest.h>
 

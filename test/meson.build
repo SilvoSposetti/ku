@@ -5,3 +5,5 @@ subdir('Solver')
 subdir('Drawing')
 subdir('Constraints')
 subdir('Puzzle')
+
+subdir('PerformanceTest')
