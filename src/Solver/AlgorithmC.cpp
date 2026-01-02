@@ -1,6 +1,6 @@
 #include "AlgorithmC.hpp"
 
-#include "../randomGenerator/RandomGenerator.hpp"
+#include "RandomGenerator.hpp"
 
 #include <limits>
 

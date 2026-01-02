@@ -1,5 +1,5 @@
 #pragma once
-#include "../puzzles/Digits.hpp"
+#include "Digits.hpp"
 
 /** Holds information about an option
  */

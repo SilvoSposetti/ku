@@ -1,6 +1,6 @@
 random_generator_library_name = 'RandomGenerator'
 random_generator_sources = [
-  'RandomGenerator.cpp'
+  'RandomGenerator.cpp',
 ]
 
 random_generator_library = static_library(random_generator_library_name,

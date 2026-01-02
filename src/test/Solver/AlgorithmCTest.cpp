@@ -1,6 +1,6 @@
-#include "solver/AlgorithmC.hpp"
+#include "AlgorithmC.hpp"
 
-#include "solver/DancingCellsStructure.hpp"
+#include "DancingCellsStructure.hpp"
 
 #include <algorithm>
 #include <doctest.h>
