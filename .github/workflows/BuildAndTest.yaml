@@ -65,9 +65,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: reports/*.xml
+          path: reports/**/*_report.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: reports/*_report.xml
+          files: reports/**/*_report.xml
