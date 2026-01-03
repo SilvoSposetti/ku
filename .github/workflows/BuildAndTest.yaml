@@ -50,6 +50,9 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
       - name: Download lib and executables
         uses: actions/download-artifact@v4
         with:
