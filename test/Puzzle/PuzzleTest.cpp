@@ -65,6 +65,31 @@ TEST_CASE("Puzzle") {
     }
   }
 
+  SUBCASE("Randomness") {
+    constexpr ConstraintType sudokuConstraints = ConstraintType::SUDOKU_CELL | ConstraintType::SUDOKU_ROW |
+                                                 ConstraintType::SUDOKU_COLUMN | ConstraintType::SUDOKU_BOX;
+    constexpr auto sudokuSpace = PuzzleSpace{9, 9, 9};
+
+    SUBCASE("Random Seed") {
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, {});
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku2", {}, sudokuConstraints, {});
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
+    }
+
+    SUBCASE("Different Seed") {
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku2", {}, sudokuConstraints, 1);
+      CHECK_NE(sudoku1.solution, sudoku2.solution);
+    }
+
+    SUBCASE("Same Seed") {
+      const auto sudoku1 = Puzzle<sudokuSpace>("Sudoku1", {}, sudokuConstraints, 0);
+      const auto sudoku2 = Puzzle<sudokuSpace>("Sudoku2", {}, sudokuConstraints, 0);
+
+      CHECK_EQ(sudoku1.solution, sudoku2.solution);
+    }
+  }
+
   // SUBCASE("Grid as text") {
   //   SUBCASE("1x1") {
   //     const auto puzzle = Puzzle<{1, 1, 9}>("1x1", {}, ConstraintType::NONE, {});
