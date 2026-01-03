@@ -37,11 +37,17 @@ jobs:
       - name: List all the files that will be archived
         run: ls -R out
 
-      - name: Archive package
+      - name: Archive test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
-          path: out
+          name: test-artifacts
+          path: out/tests
+
+      - name: Archive dependency graph
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-graph
+          path: out/dependency-graph
 
   run-unit-tests:
     name: Run Unit Tests
@@ -53,10 +59,13 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Download lib and executables
+      - name: Download test artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
+          name: test-artifacts
+
+      - name: Enable executable permissions on the just-downloaded tests
+        run: chmod +x ku-*/*
 
       - name: Run unit tests
         run: python3 scripts/RunUnitTests.py
@@ -65,9 +74,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: reports/**/*_report.xml
+          path: reports/*_report.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: reports/**/*_report.xml
+          files: reports/*_report.xml

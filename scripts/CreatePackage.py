@@ -22,8 +22,8 @@ def findAndCopyTestExecutables(tests_path, destination_directory):
     shutil.copy2(exe, destination_directory / exe.name)
 
 def createDependencyGraph(bin_directory, destination_directory):
-  dot_file = destination_directory / "DependencyGraph.dot"
-  svg_file = destination_directory / "DependencyGraph.svg"
+  dot_file = destination_directory / "ku.dot"
+  svg_file = destination_directory / "ku.svg"
   print(f"Creating dependency graph's dot file {dot_file}'")
   subprocess.run(f"ninja -C {bin_directory} -t graph > {dot_file}", shell=True, check=True)
   print(f"Creating dependency graph's svg file {svg_file}'")
@@ -36,13 +36,14 @@ def main():
 
   short_sha, commit_count, project_version = getMetadata(bin_directory);
 
-  destination_directory = destination_base_directory / f"ku-{project_version}.{commit_count}.{short_sha}"
-  print(f"Package Destination directory: {destination_directory}")
-  destination_directory.mkdir(parents=True, exist_ok=True)
+  tests_destination_directory = destination_base_directory / "tests" / f"ku-{project_version}.{commit_count}.{short_sha}"
+  print(f"Package Destination directory: {tests_destination_directory}")
+  tests_destination_directory.mkdir(parents=True, exist_ok=True)
+  findAndCopyTestExecutables(test_root, tests_destination_directory)
 
-  findAndCopyTestExecutables(test_root, destination_directory)
-
-  createDependencyGraph(bin_directory, destination_directory)
+  dependency_graph_destination_directory = destination_base_directory / "dependency-graph"
+  dependency_graph_destination_directory.mkdir(parents=True, exist_ok=True)
+  createDependencyGraph(bin_directory, dependency_graph_destination_directory)
 
 if __name__ == "__main__":
   main()
