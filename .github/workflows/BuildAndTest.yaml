@@ -20,6 +20,9 @@ jobs:
           packages: python3 python3-pip python3-setuptools python3-wheel meson ninja-build
           version: 1.0
 
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
       - name: Check out repository code
         uses: actions/checkout@v4
 
