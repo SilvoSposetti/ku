@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SvgCircle.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
+#include "SvgCircle.hpp"
 
 GENERATE_CONSTRAINT_TRAITS(Disjoint3x3BoxesSudokuConstraint, 1, 0);
 

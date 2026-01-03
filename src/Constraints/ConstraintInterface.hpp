@@ -1,9 +1,9 @@
 #pragma once
 #include "ConstraintType.hpp"
 #include "DrawingOptionsTemplated.hpp"
-#include "SvgGroup.hpp"
 #include "OptionsSpan.hpp"
 #include "PuzzleIntrinsics.hpp"
+#include "SvgGroup.hpp"
 
 #include <string>
 

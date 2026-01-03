@@ -1,13 +1,13 @@
 #include "SvgDocument.hpp"
 
 #include "DrawingUtilities.hpp"
+#include "FileIo.hpp"
 #include "SvgCircle.hpp"
 #include "SvgGroup.hpp"
 #include "SvgLine.hpp"
 #include "SvgPolyline.hpp"
 #include "SvgRect.hpp"
 #include "SvgText.hpp"
-#include "FileIo.hpp"
 #include "TemporaryDirectory.hpp"
 
 #include <doctest.h>

@@ -1,7 +1,7 @@
 #include "SvgDocument.hpp"
 
-#include "FileIo.hpp"
 #include "DrawingUtilities.hpp"
+#include "FileIo.hpp"
 #include "SvgRect.hpp"
 
 SvgDocument::SvgDocument(const std::string& name, double width, double height, double margin)

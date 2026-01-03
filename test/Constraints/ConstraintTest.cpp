@@ -1,8 +1,8 @@
 
 #include "Constraint.hpp"
 
-#include "ConstraintTestHelpers.hpp"
 #include "ConstraintMacros.hpp"
+#include "ConstraintTestHelpers.hpp"
 #include "IdPacking.hpp"
 
 #include <doctest.h>

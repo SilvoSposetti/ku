@@ -1,10 +1,10 @@
 #pragma once
 #include "ConstraintInterface.hpp"
+#include "DancingCellsStructure.hpp"
+#include "DrawingUtilities.hpp"
+#include "ItemData.hpp"
 #include "PuzzleIntrinsics.hpp"
 #include "PuzzleSpace.hpp"
-#include "DancingCellsStructure.hpp"
-#include "ItemData.hpp"
-#include "DrawingUtilities.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
 #include "SvgLine.hpp"

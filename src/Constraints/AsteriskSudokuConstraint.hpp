@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SvgRect.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
+#include "SvgRect.hpp"
 
 GENERATE_CONSTRAINT_TRAITS(AsteriskSudokuConstraint, 1, 0);
 

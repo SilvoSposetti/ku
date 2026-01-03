@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ArrayUtilities.hpp"
-#include "MathUtilities.hpp"
 #include "Cell.hpp"
 #include "Digits.hpp"
 #include "Grid.hpp"
+#include "MathUtilities.hpp"
 #include "OptionId.hpp"
 #include "Possibilities.hpp"
 #include "PuzzleSpace.hpp"

@@ -1,8 +1,8 @@
 #include "SvgSquigglyLine.hpp"
 
+#include "FileIo.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
-#include "FileIo.hpp"
 #include "TemporaryDirectory.hpp"
 
 #include <doctest.h>

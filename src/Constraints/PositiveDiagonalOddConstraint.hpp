@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SvgZigZagLine.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
+#include "SvgZigZagLine.hpp"
 
 GENERATE_CONSTRAINT_TRAITS(PositiveDiagonalOddConstraint, 1, 0);
 

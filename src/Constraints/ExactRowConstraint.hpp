@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SvgLine.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
+#include "SvgLine.hpp"
 
 GENERATE_CONSTRAINT_TRAITS(ExactRowConstraint, 1, 0);
 

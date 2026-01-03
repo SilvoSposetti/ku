@@ -1,10 +1,10 @@
 #pragma once
 
+#include "ConstraintInterface.hpp"
+#include "ConstraintTraits.hpp"
 #include "ConstraintType.hpp"
 #include "OptionsList.hpp"
 #include "PuzzleIntrinsics.hpp"
-#include "ConstraintInterface.hpp"
-#include "ConstraintTraits.hpp"
 
 #include <algorithm>
 #include <string_view>

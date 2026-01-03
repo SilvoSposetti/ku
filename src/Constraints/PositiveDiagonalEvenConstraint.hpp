@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SvgSquigglyLine.hpp"
 #include "Constraint.hpp"
 #include "ConstraintMacros.hpp"
+#include "SvgSquigglyLine.hpp"
 
 GENERATE_CONSTRAINT_TRAITS(PositiveDiagonalEvenConstraint, 1, 0);
 

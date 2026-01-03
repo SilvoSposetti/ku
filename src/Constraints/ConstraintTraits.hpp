@@ -1,7 +1,7 @@
 #pragma once
 
-#include "OptionId.hpp"
 #include "ConstraintTraitsConcept.hpp"
+#include "OptionId.hpp"
 
 /** The traits of a constraint. This class is used to externalize the specification of the maximum primary and secondary
  * option sizes out of a single constraint. This way, the definition of the sizes is well-known at compile-time in both
