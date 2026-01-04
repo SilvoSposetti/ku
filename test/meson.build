@@ -1,0 +1,9 @@
+subdir('Utilities')
+subdir('RandomGenerator')
+subdir('Core')
+subdir('Solver')
+subdir('Drawing')
+subdir('Constraints')
+subdir('Puzzle')
+
+subdir('PerformanceTest')

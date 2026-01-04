@@ -20,26 +20,34 @@ jobs:
           packages: python3 python3-pip python3-setuptools python3-wheel meson ninja-build
           version: 1.0
 
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
       - name: Check out repository code
         uses: actions/checkout@v4
 
       - name: Build using Meson
         run: |
           meson setup --buildtype=release bin/Release
-          cd bin/Release
-          meson compile --verbose
+          meson compile -C bin/Release --verbose
 
       - name: Package files that have been built
-        run: bash createPackage.sh
+        run: python3 scripts/CreatePackage.py
 
       - name: List all the files that will be archived
         run: ls -R out
 
-      - name: Archive package
+      - name: Archive test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: library-and-executables
-          path: out
+          name: test-artifacts
+          path: out/tests
+
+      - name: Archive dependency graph
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-graph
+          path: out/dependency-graph
 
   run-unit-tests:
     name: Run Unit Tests
@@ -48,23 +56,25 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Download lib and executables
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Download test artifacts
         uses: actions/download-artifact@v4
         with:
-          name: library-and-executables
+          name: test-artifacts
+
+      - name: Enable executable permissions on the just-downloaded tests
+        run: chmod +x ku-*/*
 
       - name: Run unit tests
-        run: |
-          mkdir reports
-          cd *ku-*
-          chmod +x ku_unit_test
-          ./ku_unit_test --success=true --reporters=junit --out=../reports/ku_unit_test_report.xml
+        run: python3 scripts/RunUnitTests.py
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: reports/*.xml
+          path: reports/*_report.xml
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
