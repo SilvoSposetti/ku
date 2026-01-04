@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgCircle::SvgCircle(double cx,
                      double cy,
                      double r,

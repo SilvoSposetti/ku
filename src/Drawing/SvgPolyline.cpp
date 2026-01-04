@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points,
                          bool closeLoop,
                          const std::optional<const std::string>& fill,

@@ -4,6 +4,8 @@
 #include "FileIo.hpp"
 #include "SvgRect.hpp"
 
+#include <format>
+
 SvgDocument::SvgDocument(const std::string& name, double width, double height, double margin)
     : SvgElement("svg", true)
     , name(name)

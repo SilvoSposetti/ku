@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgRect::SvgRect(double x,
                  double y,
                  double width,

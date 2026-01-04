@@ -3,6 +3,7 @@
 #include "DrawingUtilities.hpp"
 
 #include <cmath>
+#include <format>
 
 SvgSquigglyLine::SvgSquigglyLine(double x1,
                                  double y1,

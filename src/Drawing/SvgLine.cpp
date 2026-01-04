@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgLine::SvgLine(double x1,
                  double y1,
                  double x2,

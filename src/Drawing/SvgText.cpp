@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgText::SvgText(double x,
                  double y,
                  const std::string& text,

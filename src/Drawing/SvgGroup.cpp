@@ -2,6 +2,8 @@
 
 #include "DrawingUtilities.hpp"
 
+#include <format>
+
 SvgGroup::SvgGroup(const std::string& name,
                    const std::optional<const std::string>& fill,
                    const std::optional<const std::string>& stroke,
