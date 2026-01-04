@@ -2,7 +2,8 @@ core_test_name = core_library_name + 'Test'
 core_test_sources = [
   'main.cpp',
   'CellTest.cpp',
-  'DigitTest.cpp',
+  'ConstraintTypeTest.cpp',
+  'DigitsTest.cpp',
   'PuzzleIntrinsicsTest.cpp',
   'PuzzleSpaceTest.cpp',
 ]

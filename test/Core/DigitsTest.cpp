@@ -19,7 +19,7 @@ TEST_CASE("Digit") {
   }
 
   SUBCASE("Is Even") {
-    CHECK(!Digits::isValid(Digits::invalidDigit));
+    CHECK(!Digits::isEven(Digits::invalidDigit));
     CHECK(!Digits::isEven(1));
     CHECK(Digits::isEven(2));
     CHECK(!Digits::isEven(3));
@@ -29,7 +29,7 @@ TEST_CASE("Digit") {
   }
 
   SUBCASE("Is Odd") {
-    CHECK(!Digits::isValid(Digits::invalidDigit));
+    CHECK(!Digits::isOdd(Digits::invalidDigit));
     CHECK(Digits::isOdd(1));
     CHECK(!Digits::isOdd(2));
     CHECK(Digits::isOdd(3));
