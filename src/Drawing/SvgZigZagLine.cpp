@@ -1,6 +1,7 @@
 #include "SvgZigZagLine.hpp"
 
 #include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <cmath>
 #include <format>
@@ -69,7 +70,7 @@ std::string SvgZigZagLine::string() const {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

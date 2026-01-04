@@ -1,6 +1,6 @@
 #include "SvgCircle.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -24,9 +24,9 @@ SvgCircle::SvgCircle(double cx, double cy, double r)
 std::string SvgCircle::string() const {
   std::string result = std::format("<{} cx=\"{}\" cy=\"{}\" r=\"{}\"",
                                    tagName,
-                                   DrawingUtilities::number(cx),
-                                   DrawingUtilities::number(cy),
-                                   DrawingUtilities::number(r));
+                                   StringUtilities::number(cx),
+                                   StringUtilities::number(cy),
+                                   StringUtilities::number(r));
   if (fill) {
     result += std::format(" fill=\"{}\"", fill.value());
   }
@@ -34,7 +34,7 @@ std::string SvgCircle::string() const {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

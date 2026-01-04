@@ -27,6 +27,5 @@ TEST_CASE("Svg Element") {
   elementWithoutChildren.add(std::make_unique<SampleSvgElement>("child1", true));
   elementWithoutChildren.add(std::make_unique<SampleSvgElement>("child2", false));
   std::println("{}", elementWithoutChildren.string());
-  CHECK_EQ(elementWithoutChildren.string(),
-           "elementWithoutChildren, false, [0] () ");
+  CHECK_EQ(elementWithoutChildren.string(), "elementWithoutChildren, false, [0] () ");
 }

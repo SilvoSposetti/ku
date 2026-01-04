@@ -1,6 +1,7 @@
 utilities_library_name = 'Utilities'
 utilities_sources = [
   'FileIo.cpp',
+  'StringUtilities.cpp',
   'TemporaryDirectory.cpp',
   'Timer.cpp',
 ]

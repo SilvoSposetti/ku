@@ -1,6 +1,6 @@
 #include "SvgRect.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -26,10 +26,10 @@ SvgRect::SvgRect(double x, double y, double width, double height)
 std::string SvgRect::string() const {
   std::string result = std::format("<{} x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\"",
                                    tagName,
-                                   DrawingUtilities::number(x),
-                                   DrawingUtilities::number(y),
-                                   DrawingUtilities::number(width),
-                                   DrawingUtilities::number(height));
+                                   StringUtilities::number(x),
+                                   StringUtilities::number(y),
+                                   StringUtilities::number(width),
+                                   StringUtilities::number(height));
   if (fill) {
     result += std::format(" fill=\"{}\"", fill.value());
   }
@@ -37,7 +37,7 @@ std::string SvgRect::string() const {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

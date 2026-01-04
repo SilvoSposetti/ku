@@ -1,6 +1,6 @@
 #include "SvgDocument.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 #include "FileIo.hpp"
 #include "SvgRect.hpp"
 
@@ -17,10 +17,10 @@ std::string SvgDocument::string() const {
   const auto header = std::string{"<?xml version=\"1.0\"?>"};
   const auto metadata = std::string{"xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\""};
   const auto viewBox = std::format("viewBox=\"{} {} {} {}\"",
-                                   DrawingUtilities::number(-margin),
-                                   DrawingUtilities::number(-margin),
-                                   DrawingUtilities::number(width + 2 * margin),
-                                   DrawingUtilities::number(height + 2 * margin));
+                                   StringUtilities::number(-margin),
+                                   StringUtilities::number(-margin),
+                                   StringUtilities::number(width + 2 * margin),
+                                   StringUtilities::number(height + 2 * margin));
   const auto fontFamily = std::string{"font-family=\"Open Sans\""};
   std::string result = std::format("{}\n<{} {} {} {}>\n", header, tagName, metadata, viewBox, fontFamily);
 

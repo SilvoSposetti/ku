@@ -4,6 +4,7 @@ core_test_sources = [
   'CellTest.cpp',
   'ConstraintTypeTest.cpp',
   'DigitsTest.cpp',
+  'GridUtilitiesTest.cpp',
   'PuzzleIntrinsicsTest.cpp',
   'PuzzleSpaceTest.cpp',
 ]

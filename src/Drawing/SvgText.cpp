@@ -1,6 +1,6 @@
 #include "SvgText.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -32,9 +32,9 @@ SvgText::SvgText(double x,
 
 std::string SvgText::string() const {
   std::string result =
-      std::format("<{} x=\"{}\" y=\"{}\"", tagName, DrawingUtilities::number(x), DrawingUtilities::number(y));
+      std::format("<{} x=\"{}\" y=\"{}\"", tagName, StringUtilities::number(x), StringUtilities::number(y));
   if (fontSize) {
-    result += std::format(" font-size=\"{}\"", DrawingUtilities::number(fontSize.value()));
+    result += std::format(" font-size=\"{}\"", StringUtilities::number(fontSize.value()));
   }
   if (anchor) {
     std::string anchorText;
@@ -73,9 +73,9 @@ std::string SvgText::string() const {
   }
   if (rotationAngle) {
     result += std::format(" transform=\"rotate({}, {}, {})\"",
-                          DrawingUtilities::number(rotationAngle.value()),
-                          DrawingUtilities::number(x),
-                          DrawingUtilities::number(y));
+                          StringUtilities::number(rotationAngle.value()),
+                          StringUtilities::number(x),
+                          StringUtilities::number(y));
   }
   result += std::format(">{}</{}>", text, tagName);
   return result;

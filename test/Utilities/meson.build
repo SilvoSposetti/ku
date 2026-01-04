@@ -6,6 +6,7 @@ utilities_test_sources = [
   'FixedCapacityArrayTest.cpp',
   'IdPackingTest.cpp',
   'MathUtilitiesTest.cpp',
+  'StringUtilitiesTest.cpp',
   'TemporaryDirectoryTest.cpp',
   'TimerTest.cpp',
 ]

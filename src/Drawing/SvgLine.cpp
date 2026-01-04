@@ -1,6 +1,6 @@
 #include "SvgLine.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -24,15 +24,15 @@ SvgLine::SvgLine(double x1, double y1, double x2, double y2)
 std::string SvgLine::string() const {
   std::string result = std::format("<{} x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\"",
                                    tagName,
-                                   DrawingUtilities::number(x1),
-                                   DrawingUtilities::number(y1),
-                                   DrawingUtilities::number(x2),
-                                   DrawingUtilities::number(y2));
+                                   StringUtilities::number(x1),
+                                   StringUtilities::number(y1),
+                                   StringUtilities::number(x2),
+                                   StringUtilities::number(y2));
   if (stroke) {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

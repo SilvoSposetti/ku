@@ -1,6 +1,7 @@
 #include "SvgPolyline.hpp"
 
 #include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -45,7 +46,7 @@ std::string SvgPolyline::string() const {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

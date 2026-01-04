@@ -1,6 +1,6 @@
 #include "SvgGroup.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <format>
 
@@ -23,7 +23,7 @@ std::string SvgGroup::string() const {
     result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += ">\n";
   for (const auto& childElement : childElements) {
