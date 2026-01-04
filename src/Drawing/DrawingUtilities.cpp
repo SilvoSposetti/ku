@@ -4,8 +4,8 @@
 #include <format>
 
 std::string DrawingUtilities::number(double number) {
-  if (trunc(number) == number) {
-    return std::to_string(static_cast<int32_t>(number));
+  if (std::trunc(number) == number) {
+    return std::format("{}", static_cast<int32_t>(number));
   }
   // Format with the necessary precision
   std::string formatted = std::format("{:.3f}", number);
@@ -23,14 +23,12 @@ std::string DrawingUtilities::number(double number) {
 }
 
 std::string DrawingUtilities::padLeft(const std::string& input, char character, int32_t n) {
-  if (static_cast<size_t>(n) > input.size()) {
-    std::string output = input;
-    output.insert(0, n - input.size(), character);
-    return output;
+  if (input.size() < static_cast<size_t>(n)) {
+    return std::string(n - input.size(), character) + input;
   }
   return input;
 }
 
 std::string DrawingUtilities::getPointString(const std::pair<double, double>& point) {
-  return DrawingUtilities::number(point.first) + "," + DrawingUtilities::number(point.second);
+  return std::format("{},{}", number(point.first), number(point.second));
 }

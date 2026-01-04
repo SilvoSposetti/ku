@@ -13,23 +13,20 @@ SvgGroup::SvgGroup(const std::string& name,
     , strokeWidth(strokeWidth) {}
 
 std::string SvgGroup::string() const {
-  std::string result = "<" + tagName + " id=\"" + name + "\"";
+  std::string result = std::format("<{} id=\"{}\"", tagName, name);
   if (fill) {
-    result += " ";
-    result += "fill=\"" + fill.value() + "\"";
+    result += std::format(" fill=\"{}\"", fill.value());
   }
   if (stroke) {
-    result += " ";
-    result += "stroke=\"" + stroke.value() + "\"";
+    result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += " ";
-    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
+    result += std::format(" stroke-width=\"{}\"", DrawingUtilities::number(strokeWidth.value()));
   }
   result += ">\n";
   for (const auto& childElement : childElements) {
     result += childElement->string() + "\n";
   }
-  result += "</" + tagName + ">";
+  result += std::format("</{}>", tagName);
   return result;
 }

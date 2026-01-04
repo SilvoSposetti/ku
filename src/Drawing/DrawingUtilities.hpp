@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <format>
 
 /** Base class for any SVG element
  */

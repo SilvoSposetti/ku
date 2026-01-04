@@ -3,6 +3,7 @@ drawing_test_sources = [
   'main.cpp',
   'DrawingUtilitiesTest.cpp',
   'SvgDocumentTest.cpp',
+  'SvgElementTest.cpp',
   'SvgSquigglyLineTest.cpp',
   'SvgZigZagLineTest.cpp',
 ]

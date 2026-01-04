@@ -30,10 +30,9 @@ SvgText::SvgText(double x,
 
 std::string SvgText::string() const {
   std::string result =
-      "<" + tagName + " x=\"" + DrawingUtilities::number(x) + "\" y=\"" + DrawingUtilities::number(y) + "\"";
+      std::format("<{} x=\"{}\" y=\"{}\"", tagName, DrawingUtilities::number(x), DrawingUtilities::number(y));
   if (fontSize) {
-    result += " ";
-    result += "font-size=\"" + DrawingUtilities::number(fontSize.value()) + "\"";
+    result += std::format(" font-size=\"{}\"", DrawingUtilities::number(fontSize.value()));
   }
   if (anchor) {
     std::string anchorText;
@@ -49,8 +48,7 @@ std::string SvgText::string() const {
       anchorText = "end";
       break;
     }
-    result += " ";
-    result += "text-anchor=\"" + anchorText + "\"";
+    result += std::format(" text-anchor=\"{}\"", anchorText);
   }
   if (baseline) {
     std::string baselineText;
@@ -66,18 +64,17 @@ std::string SvgText::string() const {
       baselineText = "hanging";
       break;
     }
-    result += " ";
-    result += "alignment-baseline=\"" + baselineText + "\"";
+    result += std::format(" alignment-baseline=\"{}\"", baselineText);
   }
   if (fill) {
-    result += " ";
-    result += "fill=\"" + fill.value() + "\"";
+    result += std::format(" fill=\"{}\"", fill.value());
   }
   if (rotationAngle) {
-    result += " ";
-    result += "transform=\"rotate(" + DrawingUtilities::number(rotationAngle.value()) + ", " +
-              DrawingUtilities::number(x) + ", " + DrawingUtilities::number(y) + ")\"";
+    result += std::format(" transform=\"rotate({}, {}, {})\"",
+                          DrawingUtilities::number(rotationAngle.value()),
+                          DrawingUtilities::number(x),
+                          DrawingUtilities::number(y));
   }
-  result += ">" + text + "</" + tagName + ">";
+  result += std::format(">{}</{}>", text, tagName);
   return result;
 }
