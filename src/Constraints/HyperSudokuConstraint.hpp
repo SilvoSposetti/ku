@@ -37,8 +37,7 @@ public:
     return {};
   }
 
-  virtual std::unique_ptr<SvgGroup>
-  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions<puzzle.getPuzzleSpace()>& options) const override {
     auto group = std::make_unique<SvgGroup>(this->getName(), "transparent", "black", options.mediumLine);
     for (const auto& [i, j] : topLeftCorners) {
       const double topLeftX = i * options.cellSize;

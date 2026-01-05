@@ -7,14 +7,14 @@
 /** Options for drawing puzzles
  */
 template <PuzzleSpace puzzleSpace>
-struct DrawingOptionsTemplated {
+struct DrawingOptions {
 
   /** Constructor
    * @param size The core size of the puzzle
    * @param margin The margin around the puzzle
    * @param constraintsCount The amount of constraints in the puzzle
    */
-  DrawingOptionsTemplated(double size, double margin, int32_t constraintsCount)
+  DrawingOptions(double size, double margin, int32_t constraintsCount)
       : width(size)
       , margin(margin)
       , constraintsCount(constraintsCount)

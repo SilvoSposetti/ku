@@ -1,8 +1,8 @@
 #pragma once
 
-#include "StringUtilities.hpp"
 #include "Grid.hpp"
 #include "PuzzleIntrinsics.hpp"
+#include "StringUtilities.hpp"
 
 #include <string>
 #include <vector>

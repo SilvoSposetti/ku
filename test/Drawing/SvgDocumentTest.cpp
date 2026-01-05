@@ -1,7 +1,7 @@
 #include "SvgDocument.hpp"
 
-#include "StringUtilities.hpp"
 #include "FileIo.hpp"
+#include "StringUtilities.hpp"
 #include "SvgCircle.hpp"
 #include "SvgGroup.hpp"
 #include "SvgLine.hpp"

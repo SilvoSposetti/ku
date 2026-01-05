@@ -36,8 +36,7 @@ public:
     return {};
   }
 
-  virtual std::unique_ptr<SvgGroup>
-  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions<puzzle.getPuzzleSpace()>& options) const override {
     auto group = std::make_unique<SvgGroup>(this->getName(), std::nullopt, "black", options.thinLine);
     group->add(std::make_unique<SvgLine>(0, 0, options.width, options.height));
     return group;

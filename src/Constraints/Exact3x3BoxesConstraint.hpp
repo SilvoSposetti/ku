@@ -31,8 +31,7 @@ public:
     return {};
   }
 
-  virtual std::unique_ptr<SvgGroup>
-  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions<puzzle.getPuzzleSpace()>& options) const override {
     const auto boxesRows = puzzle.rows / boxSize;
     const auto boxesColumns = puzzle.columns / boxSize;
     const double boxLength = options.width / boxesColumns;

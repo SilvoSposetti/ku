@@ -71,7 +71,7 @@ public:
 
   /** @see ConstraintInterface::getSvgGroup() */
   virtual std::unique_ptr<SvgGroup>
-  getSvgGroup([[maybe_unused]] const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+  getSvgGroup([[maybe_unused]] const DrawingOptions<puzzle.getPuzzleSpace()>& options) const override {
     return std::make_unique<SvgGroup>(getName(), std::nullopt, std::nullopt, std::nullopt);
   }
 
