@@ -1,7 +1,8 @@
 #include "DancingCellsStructure.hpp"
 
 #include <algorithm>
-#include <iostream>
+#include <string>
+#include <stdexcept>
 #include <limits>
 
 DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
