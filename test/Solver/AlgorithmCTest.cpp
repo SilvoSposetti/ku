@@ -58,6 +58,15 @@ void check(const std::vector<ProblemData>& problemsData, const std::vector<std::
 TEST_CASE("Algorithm C") {
   const std::vector<std::optional<int32_t>> seeds = {std::nullopt, 0, 1, -566, 9845};
 
+  SUBCASE("Empty Structure") {
+    auto structure = DancingCellsStructure(0, 0, {});
+    for (const auto& seed : seeds) {
+      CHECK_EQ(AlgorithmC::hasUniqueSolution(structure, seed), std::nullopt);
+      CHECK(AlgorithmC::findAllSolutions(structure, seed).empty());
+      CHECK_EQ(AlgorithmC::findOneSolution(structure, seed), std::nullopt);
+    }
+  }
+
   SUBCASE("Single solution, primary and secondary items with colors") {
     const int32_t primaryItemsCount = 3; // p q r
     const int32_t secondaryItemsCount = 2; // x y

@@ -77,9 +77,9 @@ private:
   void finishInitialization(int32_t second, int32_t lastNode);
 
 public:
-  /** Utility to log the current data structure contents to standard output. Useful for debugging.
-   */
-  void print() const;
+  // /** Utility to log the current data structure contents to standard output. Useful for debugging.
+  //  */
+  // void print() const;
 
 public:
   /** ITEM contains all items in the domain. The value of ITEM[k] is an index x into SET, for which SET[x-1] (size) and
