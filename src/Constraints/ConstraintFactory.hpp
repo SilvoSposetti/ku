@@ -25,6 +25,7 @@ namespace ConstraintFactory {
 template <PuzzleIntrinsics intrinsics>
 std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType constraintType) {
   switch (constraintType) {
+  default:
   case ConstraintType::CELL:
     return std::make_unique<CellConstraint<intrinsics>>();
   case ConstraintType::EXACT_ROW:
@@ -137,11 +138,7 @@ std::unique_ptr<ConstraintInterface<intrinsics>> makeConstraint(ConstraintType c
     } else {
       throw std::runtime_error("KnightPatternConstraint does not support this puzzle");
     }
-    break;
-  default:
-    break;
   }
-  return std::make_unique<CellConstraint<intrinsics>>();
 }
 
 } // namespace ConstraintFactory
