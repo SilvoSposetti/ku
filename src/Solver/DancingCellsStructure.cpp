@@ -176,6 +176,7 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
   }
 }
 
+// #include <iostream>
 // void DancingCellsStructure::print() const {
 
 //   std::cout << "ITEM" << std::endl;

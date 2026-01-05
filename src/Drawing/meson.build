@@ -1,6 +1,5 @@
 drawing_library_name = 'Drawing'
 drawing_sources = [
-  'DrawingOptions.cpp',
   'DrawingUtilities.cpp',
   'SvgCircle.cpp',
   'SvgDocument.cpp',
