@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("ExactRowConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<ExactRowConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<ExactRowConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -35,7 +35,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("4x4x4") {
         constexpr auto intrinsics = PuzzleIntrinsics<{4, 4, 4}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             ExactRowConstraint<intrinsics>(),
             16,
             std::vector<Option<1>>{
@@ -50,7 +50,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             ExactRowConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{
@@ -100,6 +100,35 @@ TEST_SUITE("Constraints") {
             },
             0,
             {});
+      }
+    }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Row" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="1000" y2="0"/>
+<line x1="0" y1="111.111" x2="1000" y2="111.111"/>
+<line x1="0" y1="222.222" x2="1000" y2="222.222"/>
+<line x1="0" y1="333.333" x2="1000" y2="333.333"/>
+<line x1="0" y1="444.444" x2="1000" y2="444.444"/>
+<line x1="0" y1="555.556" x2="1000" y2="555.556"/>
+<line x1="0" y1="666.667" x2="1000" y2="666.667"/>
+<line x1="0" y1="777.778" x2="1000" y2="777.778"/>
+<line x1="0" y1="888.889" x2="1000" y2="888.889"/>
+<line x1="0" y1="1000" x2="1000" y2="1000"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactRowConstraint<PuzzleIntrinsics<space>{}>>(expected);
+      }
+
+      SUBCASE("1x4x3") {
+        constexpr auto space = PuzzleSpace{1, 4, 3};
+        const auto expected = R"(<g id="Row" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="1000" y2="0"/>
+<line x1="0" y1="250" x2="1000" y2="250"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactRowConstraint<PuzzleIntrinsics<space>{}>>(expected);
       }
     }
   }

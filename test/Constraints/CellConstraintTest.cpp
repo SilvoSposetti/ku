@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("CellConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<CellConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<CellConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -36,7 +36,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("4x5x6") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 4, 5}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             CellConstraint<intrinsics>(),
             12,
             std::vector<Option<1>>{
@@ -51,7 +51,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             CellConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{

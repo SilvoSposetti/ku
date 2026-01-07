@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("ExactColumnConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<ExactColumnConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<ExactColumnConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -35,7 +35,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("4x4x4") {
         constexpr auto intrinsics = PuzzleIntrinsics<{4, 4, 4}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             ExactColumnConstraint<intrinsics>(),
             16,
             std::vector<Option<1>>{
@@ -50,7 +50,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             ExactColumnConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{

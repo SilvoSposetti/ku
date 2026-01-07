@@ -8,6 +8,27 @@
 #include <unordered_set>
 #include <vector>
 
+/** Helper to generate SUBCASEs for a constraint and a puzzle space where the options are checked for the advertised
+ * coverage
+ * @param constraintName The class name of the constraint
+ * @param rows The amount of rows
+ * @param columns The amount of columns
+ * @param digits The amount of digits
+ */
+#define GENERATE_SUBCASE(constraintName, rows, columns, digits)                                                        \
+  SUBCASE(#rows "x" #columns "x" #digits) {                                                                            \
+    const auto constraint = constraintName<PuzzleIntrinsics<{rows, columns, digits}>{}>();                             \
+    CHECK(constraint.supportsPuzzle());                                                                                \
+    SUBCASE("PrimaryItems") {                                                                                          \
+      ConstraintTestHelpers::checkOptions(constraint.getPrimaryOptions(), constraint.getPrimaryItemsAmount());         \
+    }                                                                                                                  \
+    SUBCASE("Secondary items") {                                                                                       \
+      ConstraintTestHelpers::checkOptions(constraint.getSecondaryOptions(), constraint.getSecondaryItemsAmount());     \
+    }                                                                                                                  \
+  }
+
+namespace ConstraintTestHelpers {
+
 /** Simple check for the basic members of the constraints.
  * @tparam Constraint The constraint type
  */
@@ -41,25 +62,6 @@ void checkOptions(const auto& options, int32_t itemsAmount) {
     CHECK(std::ranges::all_of(set, [&](const auto element) { return expectedSet.contains(element); }));
   }
 }
-
-/** Helper to generate SUBCASEs for a constraint and a puzzle space where the options are checked for the advertised
- * coverage
- * @param constraintName The class name of the constraint
- * @param rows The amount of rows
- * @param columns The amount of columns
- * @param digits The amount of digits
- */
-#define GENERATE_SUBCASE(constraintName, rows, columns, digits)                                                        \
-  SUBCASE(#rows "x" #columns "x" #digits) {                                                                            \
-    const auto constraint = constraintName<PuzzleIntrinsics<{rows, columns, digits}>{}>();                             \
-    CHECK(constraint.supportsPuzzle());                                                                                \
-    SUBCASE("PrimaryItems") {                                                                                          \
-      checkOptions(constraint.getPrimaryOptions(), constraint.getPrimaryItemsAmount());                                \
-    }                                                                                                                  \
-    SUBCASE("Secondary items") {                                                                                       \
-      checkOptions(constraint.getSecondaryOptions(), constraint.getSecondaryItemsAmount());                            \
-    }                                                                                                                  \
-  }
 
 /** Compares actual and expected options together
  * @tparam intrinsics The puzzle intrinsics for which the options were built
@@ -103,6 +105,9 @@ void checkExpectedOptions(std::size_t actualItemsAmount,
 }
 
 /** Helper to confirm that the constraint reproduces an explicit set of options.
+ * @tparam intrinsics The puzzle intrinsics for which the options were built
+ * @tparam N The size of the expected primary options
+ * @tparam M The size of the expected secondary options
  * @param constraint The constraint
  * @param expectedPrimaryItemsCoverage The expected primary items coverage
  * @param expectedPrimaryOptions The expected primary options
@@ -133,3 +138,19 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
     checkOptions(constraint.getSecondaryOptions(), constraint.getSecondaryItemsAmount());
   }
 }
+
+/** Helper to check constraint svg generation
+ * @tparam space The puzzle space
+ * @param T The constraint type
+ * @param expectedSvgString The expected svg string for the constraint
+ */
+template <PuzzleSpace space, typename T>
+void checkConstraintSvg(const std::string& expectedSvgString) {
+  // Construct constraint
+  const T constraint = T();
+  const auto drawingOtions = DrawingOptions<space>(1);
+  const auto computedSvgString = constraint.getSvgGroup(drawingOtions)->string();
+  CHECK_EQ(computedSvgString, expectedSvgString);
+}
+
+} // namespace ConstraintTestHelpers

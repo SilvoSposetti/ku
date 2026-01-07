@@ -14,9 +14,9 @@ struct DrawingOptions {
    * @param margin The margin around the puzzle
    * @param constraintsCount The amount of constraints in the puzzle
    */
-  DrawingOptions(double size, double margin, int32_t constraintsCount)
-      : width(size)
-      , margin(margin)
+  DrawingOptions(int32_t constraintsCount)
+      : width(1000)
+      , margin(150)
       , constraintsCount(constraintsCount)
       , cellSize(width / puzzleSpace.columnsCount)
       , height(cellSize * puzzleSpace.rowsCount)

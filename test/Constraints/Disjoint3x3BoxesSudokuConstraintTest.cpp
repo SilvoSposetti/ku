@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("Disjoint3x3BoxesSudokuConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -30,7 +30,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             Disjoint3x3BoxesSudokuConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{

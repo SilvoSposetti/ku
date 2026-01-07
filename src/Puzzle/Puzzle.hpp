@@ -71,7 +71,7 @@ public:
    * @return whether storing was successufl
    */
   bool exportToSvg(const std::filesystem::path& location) const {
-    const auto options = DrawingOptions<puzzleSpace>(1000, 150, constraints.size());
+    const auto options = DrawingOptions<puzzleSpace>(constraints.size());
     const auto document = PuzzleDrawing::create<puzzleSpace>(name, options, startingGrid, solution, constraints);
     return document->writeToFile(location);
   };
