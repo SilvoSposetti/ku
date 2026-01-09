@@ -1,4 +1,3 @@
-
 #include "KingTorusPatternConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

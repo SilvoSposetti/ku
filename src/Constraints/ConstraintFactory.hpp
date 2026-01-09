@@ -1,4 +1,3 @@
-
 #include "AsteriskSudokuConstraint.hpp"
 #include "CellConstraint.hpp"
 #include "ConstraintInterface.hpp"

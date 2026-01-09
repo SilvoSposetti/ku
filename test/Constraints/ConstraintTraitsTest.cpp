@@ -1,4 +1,3 @@
-
 #include "ConstraintTraits.hpp"
 
 #include <doctest.h>

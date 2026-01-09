@@ -1,4 +1,3 @@
-
 #include "NegativeDiagonalEvenConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

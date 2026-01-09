@@ -1,4 +1,3 @@
-
 #include "HyperSudokuConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
@@ -93,8 +92,7 @@ TEST_SUITE("Constraints") {
 <rect x="555.556" y="111.111" width="333.333" height="333.333"/>
 <rect x="555.556" y="555.556" width="333.333" height="333.333"/>
 </g>)";
-        ConstraintTestHelpers::checkConstraintSvg<space, HyperSudokuConstraint<PuzzleIntrinsics<space>{}>>(
-            expected);
+        ConstraintTestHelpers::checkConstraintSvg<space, HyperSudokuConstraint<PuzzleIntrinsics<space>{}>>(expected);
       }
     }
   }

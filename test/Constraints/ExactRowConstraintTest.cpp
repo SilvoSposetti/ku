@@ -1,4 +1,3 @@
-
 #include "ExactRowConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

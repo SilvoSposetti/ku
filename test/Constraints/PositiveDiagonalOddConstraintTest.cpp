@@ -1,4 +1,3 @@
-
 #include "PositiveDiagonalOddConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

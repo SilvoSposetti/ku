@@ -1040,8 +1040,7 @@ TEST_SUITE("Constraints") {
 <line x1="852.315" y1="795.37" x2="925.463" y2="649.075"/>
 <line x1="852.315" y1="906.481" x2="925.463" y2="760.186"/>
 </g>)";
-        ConstraintTestHelpers::checkConstraintSvg<space, KnightPatternConstraint<PuzzleIntrinsics<space>{}>>(
-            expected);
+        ConstraintTestHelpers::checkConstraintSvg<space, KnightPatternConstraint<PuzzleIntrinsics<space>{}>>(expected);
       }
 
       SUBCASE("5x6x9") {
@@ -1110,8 +1109,7 @@ TEST_SUITE("Constraints") {
 <line x1="611.806" y1="693.055" x2="721.527" y2="473.612"/>
 <line x1="611.806" y1="859.721" x2="721.527" y2="640.279"/>
 </g>)";
-        ConstraintTestHelpers::checkConstraintSvg<space, KnightPatternConstraint<PuzzleIntrinsics<space>{}>>(
-            expected);
+        ConstraintTestHelpers::checkConstraintSvg<space, KnightPatternConstraint<PuzzleIntrinsics<space>{}>>(expected);
       }
     }
   }

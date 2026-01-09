@@ -1,4 +1,3 @@
-
 #include "KnightTorusPatternConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

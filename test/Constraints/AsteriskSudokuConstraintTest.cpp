@@ -1,4 +1,3 @@
-
 #include "AsteriskSudokuConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
