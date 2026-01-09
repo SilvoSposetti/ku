@@ -1,6 +1,5 @@
 constraints_test_name = constraints_library_name + 'Test'
-constraints_test_sources = [
-  'main.cpp',
+constraints_test_sources = files(
   'AsteriskSudokuConstraintTest.cpp',
   'CellConstraintTest.cpp',
   'ConstraintFactoryTest.cpp',
@@ -22,11 +21,16 @@ constraints_test_sources = [
   'NeighborPatternUtilitiesTest.cpp',
   'PositiveDiagonalEvenConstraintTest.cpp',
   'PositiveDiagonalOddConstraintTest.cpp',
-]
+  'main.cpp',
+)
 
-constraints_test = executable(constraints_test_name,
+constraints_test = executable(
+  constraints_test_name,
   cpp_args: compiler_options,
   sources: constraints_test_sources,
-  dependencies: [doctest_dependency, constraints_dependency]
+  dependencies: [
+    doctest_dependency,
+    constraints_dependency,
+  ],
 )
 test(constraints_test_name, constraints_test)

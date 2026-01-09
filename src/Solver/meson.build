@@ -1,17 +1,18 @@
 solver_library_name = 'Solver'
-solver_sources = [
+solver_sources = files(
   'AlgorithmC.cpp',
   'DancingCellsStructure.cpp',
   'ItemData.cpp',
   'OptionData.cpp',
   'XccElement.cpp',
-]
+)
 
 solver_dependencies = [
   core_dependency,
 ]
 
-solver_library = static_library(solver_library_name,
+solver_library = static_library(
+  solver_library_name,
   cpp_args: compiler_options,
   sources: solver_sources,
   dependencies: solver_dependencies,

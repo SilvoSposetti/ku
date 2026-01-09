@@ -9,7 +9,7 @@ subdir('Puzzle')
 
 # Main library that aggregates other libraries
 ku_dependency = declare_dependency(
-  dependencies : [
+  dependencies: [
     random_generator_dependency,
     utilities_dependency,
     core_dependency,
@@ -17,7 +17,7 @@ ku_dependency = declare_dependency(
     drawing_dependency,
     constraints_dependency,
     puzzle_dependency,
-  ]
+  ],
 )
 
 # Sandbox executable

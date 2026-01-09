@@ -19,7 +19,7 @@ compiler_options = [
 ]
 
 # Add defines
-add_project_arguments('-DOUT_DIR="' + meson.project_source_root() +'/out"', language : 'cpp')
+add_project_arguments('-DOUT_DIR="' + meson.project_source_root() + '/out"', language: 'cpp')
 
 # External dependencies
 subproject('doctest')

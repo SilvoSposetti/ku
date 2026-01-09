@@ -1,6 +1,8 @@
 executable(
   'ku_sandbox',
-  sources: ['main.cpp'],
+  sources: files('main.cpp'),
   cpp_args: compiler_options,
-  dependencies : [ku_dependency],
+  dependencies: [
+    ku_dependency,
+  ],
 )

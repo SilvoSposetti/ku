@@ -5,6 +5,6 @@ constraints_dependency = declare_dependency(
   dependencies: [
     core_dependency,
     drawing_dependency,
-  ]
+  ],
 )
 
