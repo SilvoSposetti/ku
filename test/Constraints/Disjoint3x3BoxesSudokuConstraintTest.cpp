@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("Disjoint3x3BoxesSudokuConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -30,7 +30,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             Disjoint3x3BoxesSudokuConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{
@@ -81,6 +81,99 @@ TEST_SUITE("Constraints") {
             0,
             {});
       }
+    }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Disjoint-Boxes" fill="transparent" stroke="black" stroke-width="0.889">
+<circle cx="13.889" cy="13.889" r="7.407"/>
+<circle cx="13.889" cy="166.667" r="7.407"/>
+<circle cx="13.889" cy="319.444" r="7.407"/>
+<circle cx="13.889" cy="347.222" r="7.407"/>
+<circle cx="13.889" cy="500" r="7.407"/>
+<circle cx="13.889" cy="652.778" r="7.407"/>
+<circle cx="13.889" cy="680.556" r="7.407"/>
+<circle cx="13.889" cy="833.333" r="7.407"/>
+<circle cx="13.889" cy="986.111" r="7.407"/>
+<circle cx="166.667" cy="13.889" r="7.407"/>
+<circle cx="166.667" cy="166.667" r="7.407"/>
+<circle cx="166.667" cy="319.444" r="7.407"/>
+<circle cx="166.667" cy="347.222" r="7.407"/>
+<circle cx="166.667" cy="500" r="7.407"/>
+<circle cx="166.667" cy="652.778" r="7.407"/>
+<circle cx="166.667" cy="680.556" r="7.407"/>
+<circle cx="166.667" cy="833.333" r="7.407"/>
+<circle cx="166.667" cy="986.111" r="7.407"/>
+<circle cx="319.444" cy="13.889" r="7.407"/>
+<circle cx="319.444" cy="166.667" r="7.407"/>
+<circle cx="319.444" cy="319.444" r="7.407"/>
+<circle cx="319.444" cy="347.222" r="7.407"/>
+<circle cx="319.444" cy="500" r="7.407"/>
+<circle cx="319.444" cy="652.778" r="7.407"/>
+<circle cx="319.444" cy="680.556" r="7.407"/>
+<circle cx="319.444" cy="833.333" r="7.407"/>
+<circle cx="319.444" cy="986.111" r="7.407"/>
+<circle cx="347.222" cy="13.889" r="7.407"/>
+<circle cx="347.222" cy="166.667" r="7.407"/>
+<circle cx="347.222" cy="319.444" r="7.407"/>
+<circle cx="347.222" cy="347.222" r="7.407"/>
+<circle cx="347.222" cy="500" r="7.407"/>
+<circle cx="347.222" cy="652.778" r="7.407"/>
+<circle cx="347.222" cy="680.556" r="7.407"/>
+<circle cx="347.222" cy="833.333" r="7.407"/>
+<circle cx="347.222" cy="986.111" r="7.407"/>
+<circle cx="500" cy="13.889" r="7.407"/>
+<circle cx="500" cy="166.667" r="7.407"/>
+<circle cx="500" cy="319.444" r="7.407"/>
+<circle cx="500" cy="347.222" r="7.407"/>
+<circle cx="500" cy="500" r="7.407"/>
+<circle cx="500" cy="652.778" r="7.407"/>
+<circle cx="500" cy="680.556" r="7.407"/>
+<circle cx="500" cy="833.333" r="7.407"/>
+<circle cx="500" cy="986.111" r="7.407"/>
+<circle cx="652.778" cy="13.889" r="7.407"/>
+<circle cx="652.778" cy="166.667" r="7.407"/>
+<circle cx="652.778" cy="319.444" r="7.407"/>
+<circle cx="652.778" cy="347.222" r="7.407"/>
+<circle cx="652.778" cy="500" r="7.407"/>
+<circle cx="652.778" cy="652.778" r="7.407"/>
+<circle cx="652.778" cy="680.556" r="7.407"/>
+<circle cx="652.778" cy="833.333" r="7.407"/>
+<circle cx="652.778" cy="986.111" r="7.407"/>
+<circle cx="680.556" cy="13.889" r="7.407"/>
+<circle cx="680.556" cy="166.667" r="7.407"/>
+<circle cx="680.556" cy="319.444" r="7.407"/>
+<circle cx="680.556" cy="347.222" r="7.407"/>
+<circle cx="680.556" cy="500" r="7.407"/>
+<circle cx="680.556" cy="652.778" r="7.407"/>
+<circle cx="680.556" cy="680.556" r="7.407"/>
+<circle cx="680.556" cy="833.333" r="7.407"/>
+<circle cx="680.556" cy="986.111" r="7.407"/>
+<circle cx="833.333" cy="13.889" r="7.407"/>
+<circle cx="833.333" cy="166.667" r="7.407"/>
+<circle cx="833.333" cy="319.444" r="7.407"/>
+<circle cx="833.333" cy="347.222" r="7.407"/>
+<circle cx="833.333" cy="500" r="7.407"/>
+<circle cx="833.333" cy="652.778" r="7.407"/>
+<circle cx="833.333" cy="680.556" r="7.407"/>
+<circle cx="833.333" cy="833.333" r="7.407"/>
+<circle cx="833.333" cy="986.111" r="7.407"/>
+<circle cx="986.111" cy="13.889" r="7.407"/>
+<circle cx="986.111" cy="166.667" r="7.407"/>
+<circle cx="986.111" cy="319.444" r="7.407"/>
+<circle cx="986.111" cy="347.222" r="7.407"/>
+<circle cx="986.111" cy="500" r="7.407"/>
+<circle cx="986.111" cy="652.778" r="7.407"/>
+<circle cx="986.111" cy="680.556" r="7.407"/>
+<circle cx="986.111" cy="833.333" r="7.407"/>
+<circle cx="986.111" cy="986.111" r="7.407"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
+      }
+
     }
   }
 }

@@ -3,6 +3,7 @@ constraints_test_sources = [
   'main.cpp',
   'AsteriskSudokuConstraintTest.cpp',
   'CellConstraintTest.cpp',
+  'ConstraintFactoryTest.cpp',
   'ConstraintTest.cpp',
   'ConstraintTraitsTest.cpp',
   'Disjoint3x3BoxesSudokuConstraintTest.cpp',

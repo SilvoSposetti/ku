@@ -1,10 +1,10 @@
 #pragma once
 #include "ConstraintInterface.hpp"
 #include "DancingCellsStructure.hpp"
-#include "DrawingUtilities.hpp"
 #include "ItemData.hpp"
 #include "PuzzleIntrinsics.hpp"
 #include "PuzzleSpace.hpp"
+#include "StringUtilities.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
 #include "SvgLine.hpp"
@@ -155,9 +155,9 @@ create(const std::string& name,
       int32_t counter = 0;
       for (const auto& itemData : itemsData) {
         const std::string itemName = itemData.constraintName + " " +
-                                     DrawingUtilities::padLeft(std::to_string(itemData.constraintItemId), '0', 4) +
-                                     " " + (itemData.isPrimary ? "P" : "S") + " " +
-                                     DrawingUtilities::padLeft(std::to_string(itemData.overallItemId), '0', 4);
+                                     StringUtilities::padLeft(std::to_string(itemData.constraintItemId), '0', 4) + " " +
+                                     (itemData.isPrimary ? "P" : "S") + " " +
+                                     StringUtilities::padLeft(std::to_string(itemData.overallItemId), '0', 4);
         double x = (static_cast<double>(counter) + 0.5) * cellSize;
         double y = cellSize * rowsCount;
         bottomTextGroup->add(std::make_unique<SvgText>(

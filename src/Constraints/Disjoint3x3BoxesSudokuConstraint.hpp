@@ -33,8 +33,7 @@ public:
     return {};
   }
 
-  virtual std::unique_ptr<SvgGroup>
-  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const override {
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions<puzzle.getPuzzleSpace()>& options) const override {
     auto group = std::make_unique<SvgGroup>(this->getName(), "transparent", "black", options.thinLine);
     const double circleRadius = options.cellSize / 15.0;
     const double squareOffset = (options.cellSize / 2.0) * 0.75;

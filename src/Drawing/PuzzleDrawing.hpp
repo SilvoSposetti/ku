@@ -1,7 +1,7 @@
 #pragma once
 #include "ConstraintInterface.hpp"
 #include "Digits.hpp"
-#include "DrawingOptionsTemplated.hpp"
+#include "DrawingOptions.hpp"
 #include "SvgDocument.hpp"
 #include "SvgGroup.hpp"
 #include "SvgText.hpp"
@@ -11,7 +11,7 @@ namespace PuzzleDrawing {
 template <PuzzleSpace puzzleSpace>
 std::unique_ptr<SvgDocument>
 create(const std::string& name,
-       const DrawingOptionsTemplated<puzzleSpace>& options,
+       const DrawingOptions<puzzleSpace>& options,
        const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& startingGrid,
        const std::array<std::array<Digit, puzzleSpace.columnsCount>, puzzleSpace.rowsCount>& solution,
        const std::vector<std::unique_ptr<ConstraintInterface<PuzzleIntrinsics<puzzleSpace>{}>>>& constraints) {

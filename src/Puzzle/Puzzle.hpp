@@ -4,6 +4,7 @@
 #include "ConstraintFactory.hpp"
 #include "DancingCellsStructure.hpp"
 #include "DataStructureDrawing.hpp"
+#include "GridUtilities.hpp"
 #include "IdPacking.hpp"
 #include "PuzzleDrawing.hpp"
 #include "PuzzleIntrinsics.hpp"
@@ -52,7 +53,7 @@ public:
   /** Prints the puzzle grid to stdout
    */
   void printGrid() const {
-    for (const auto& line : gridAsText(startingGrid)) {
+    for (const auto& line : GridUtilities::gridAsText<puzzleSpace>(startingGrid)) {
       std::puts(line.c_str());
     }
   };
@@ -60,51 +61,17 @@ public:
   /** Prints the puzzle grid to stdout
    */
   void printSolution() const {
-    for (const auto& line : gridAsText(solution)) {
+    for (const auto& line : GridUtilities::gridAsText<puzzleSpace>(solution)) {
       std::puts(line.c_str());
     }
   };
-
-  /** Constructs the puzzle grid as a list of text lines.
-   * @return The list of lines that represent the puzzle gird
-   */
-  std::vector<std::string> gridAsText(const Grid<puzzleSpace>& grid) const {
-    const auto createLine = [](const std::string& first,
-                               const std::string& blank,
-                               const std::string& last,
-                               const std::vector<std::string>& elements) {
-      auto line = first + blank;
-      for (const auto& element : elements) {
-        line += element + blank;
-      }
-      return line + last;
-    };
-
-    std::vector<std::string> lines;
-    for (const auto& rowIndex : this->rowIndices) {
-      if (rowIndex == this->rowIndices.front()) {
-        const auto elements = std::vector<std::string>(this->columns, "━");
-        lines.push_back(createLine("┏", "━", "┓", elements));
-      }
-      std::vector<std::string> digitStrings;
-      std::ranges::transform(grid[rowIndex], std::back_inserter(digitStrings), [](const auto& digit) {
-        return Digits::isValid(digit) ? std::to_string(digit) : "◌";
-      });
-      lines.push_back(createLine("┃", " ", "┃", digitStrings));
-      if (rowIndex == this->rowIndices.back()) {
-        const auto elements = std::vector<std::string>(this->columns, "━");
-        lines.push_back(createLine("┗", "━", "┛", elements));
-      }
-    }
-    return lines;
-  }
 
   /** Generates and stores the puzzle board to an SVG file in the provided directory
    * @param location Where the file should be stored
    * @return whether storing was successufl
    */
   bool exportToSvg(const std::filesystem::path& location) const {
-    const auto options = DrawingOptionsTemplated<puzzleSpace>(1000, 150, constraints.size());
+    const auto options = DrawingOptions<puzzleSpace>(constraints.size());
     const auto document = PuzzleDrawing::create<puzzleSpace>(name, options, startingGrid, solution, constraints);
     return document->writeToFile(location);
   };

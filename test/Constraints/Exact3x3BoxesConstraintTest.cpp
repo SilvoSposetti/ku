@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("Exact3x3BoxesConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<Exact3x3BoxesConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<Exact3x3BoxesConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -40,7 +40,7 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("3x3x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 3, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             Exact3x3BoxesConstraint<intrinsics>(),
             9,
             std::vector<Option<1>>{
@@ -54,7 +54,7 @@ TEST_SUITE("Constraints") {
       }
       SUBCASE("3x12x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{3, 12, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             Exact3x3BoxesConstraint<intrinsics>(),
             36,
             std::vector<Option<1>>{
@@ -85,7 +85,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             Exact3x3BoxesConstraint<intrinsics>(),
             81,
             std::vector<Option<1>>{
@@ -135,6 +135,42 @@ TEST_SUITE("Constraints") {
             },
             0,
             {});
+      }
+    }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Exact 3x3 Box" fill="transparent" stroke="black" stroke-width="2.667">
+<rect x="0" y="0" width="333.333" height="333.333"/>
+<rect x="333.333" y="0" width="333.333" height="333.333"/>
+<rect x="666.667" y="0" width="333.333" height="333.333"/>
+<rect x="0" y="333.333" width="333.333" height="333.333"/>
+<rect x="333.333" y="333.333" width="333.333" height="333.333"/>
+<rect x="666.667" y="333.333" width="333.333" height="333.333"/>
+<rect x="0" y="666.667" width="333.333" height="333.333"/>
+<rect x="333.333" y="666.667" width="333.333" height="333.333"/>
+<rect x="666.667" y="666.667" width="333.333" height="333.333"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, Exact3x3BoxesConstraint<PuzzleIntrinsics<space>{}>>(expected);
+      }
+
+      SUBCASE("15x6x9") {
+        constexpr auto space = PuzzleSpace{15, 6, 9};
+        const auto expected = R"(<g id="Exact 3x3 Box" fill="transparent" stroke="black" stroke-width="2.667">
+<rect x="0" y="0" width="500" height="500"/>
+<rect x="500" y="0" width="500" height="500"/>
+<rect x="0" y="500" width="500" height="500"/>
+<rect x="500" y="500" width="500" height="500"/>
+<rect x="0" y="1000" width="500" height="500"/>
+<rect x="500" y="1000" width="500" height="500"/>
+<rect x="0" y="1500" width="500" height="500"/>
+<rect x="500" y="1500" width="500" height="500"/>
+<rect x="0" y="2000" width="500" height="500"/>
+<rect x="500" y="2000" width="500" height="500"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, Exact3x3BoxesConstraint<PuzzleIntrinsics<space>{}>>(expected);
       }
     }
   }

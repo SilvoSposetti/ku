@@ -43,9 +43,10 @@ TEST_CASE("Base Constraint") {
   CHECK_EQ(constraint.type, ConstraintType::NONE);
   CHECK_EQ(constraint.name, "Name");
   CHECK_EQ(constraint.description, "Description");
-  checkConstraintOptions<puzzleIntrinsics, 1, 1>(constraint,
-                                                 8,
-                                                 std::vector<Option<1>>{{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}},
-                                                 8,
-                                                 std::vector<Option<1>>{{7}, {6}, {5}, {4}, {3}, {2}, {1}, {0}});
+  ConstraintTestHelpers::checkConstraintOptions<puzzleIntrinsics, 1, 1>(
+      constraint,
+      8,
+      std::vector<Option<1>>{{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}},
+      8,
+      std::vector<Option<1>>{{7}, {6}, {5}, {4}, {3}, {2}, {1}, {0}});
 }

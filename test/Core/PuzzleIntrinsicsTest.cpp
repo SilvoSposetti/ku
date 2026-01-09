@@ -247,10 +247,10 @@ TEST_SUITE("Puzzle Intrinsiscs") {
     CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 1, 1), std::make_pair(static_cast<Index>(1), static_cast<Index>(1)));
     CHECK_EQ(puzzle.computeNeighborTorus(0, 0, 3, 4), std::make_pair(static_cast<Index>(3), static_cast<Index>(4)));
     // Invalid reference cell
-    CHECK_EQ(puzzle.computeNeighbor(9, 0, 1, 1), std::nullopt);
-    CHECK_EQ(puzzle.computeNeighbor(0, 12, 1, 1), std::nullopt);
-    CHECK_EQ(puzzle.computeNeighbor(0, -5, 1, 1), std::nullopt);
-    CHECK_EQ(puzzle.computeNeighbor(-1, 0, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighborTorus(9, 0, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighborTorus(0, 12, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighborTorus(0, -5, 1, 1), std::nullopt);
+    CHECK_EQ(puzzle.computeNeighborTorus(-1, 0, 1, 1), std::nullopt);
     // Wrapping around
     CHECK_EQ(puzzle.computeNeighborTorus(3, 3, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(2)));
     CHECK_EQ(puzzle.computeNeighborTorus(3, 4, -2, -1), std::make_pair(static_cast<Index>(1), static_cast<Index>(3)));

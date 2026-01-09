@@ -15,13 +15,13 @@ struct PuzzleSpace {
 
   /** The amount of rows available in the puzzle grid
    */
-  Index rowsCount = 0;
+  const Index rowsCount = 0;
 
   /** The amount of columns available in the puzzle grid
    */
-  Index columnsCount = 0;
+  const Index columnsCount = 0;
 
   /** The amount of digits that each cell in the puzzle can have
    */
-  Digit digitsCount = 0;
+  const Digit digitsCount = 0;
 };

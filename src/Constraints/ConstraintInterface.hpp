@@ -1,6 +1,6 @@
 #pragma once
 #include "ConstraintType.hpp"
-#include "DrawingOptionsTemplated.hpp"
+#include "DrawingOptions.hpp"
 #include "OptionsSpan.hpp"
 #include "PuzzleIntrinsics.hpp"
 #include "SvgGroup.hpp"
@@ -54,6 +54,5 @@ struct ConstraintInterface {
    * @param options The drawing options
    * @return The SvgGroup
    */
-  virtual std::unique_ptr<SvgGroup>
-  getSvgGroup(const DrawingOptionsTemplated<puzzle.getPuzzleSpace()>& options) const = 0;
+  virtual std::unique_ptr<SvgGroup> getSvgGroup(const DrawingOptions<puzzle.getPuzzleSpace()>& options) const = 0;
 };

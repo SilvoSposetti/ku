@@ -10,7 +10,7 @@ TEST_SUITE("Constraints") {
   TEST_CASE("PositiveDiagonalOddConstraint") {
 
     SUBCASE("Members") {
-      memberChecks<PositiveDiagonalOddConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
+      ConstraintTestHelpers::memberChecks<PositiveDiagonalOddConstraint<PuzzleIntrinsics<{0, 0, 0}>{}>>();
     }
 
     SUBCASE("Implicit Option Coverage") {
@@ -32,30 +32,31 @@ TEST_SUITE("Constraints") {
     SUBCASE("Explicit Options") {
       SUBCASE("2x2x0") {
         constexpr auto intrinsics = PuzzleIntrinsics<{2, 2, 0}>();
-        checkConstraintOptions<intrinsics, 1, 0>(PositiveDiagonalOddConstraint<intrinsics>(), 0, {}, 0, {});
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
+            PositiveDiagonalOddConstraint<intrinsics>(), 0, {}, 0, {});
       }
 
       SUBCASE("2x2x2") {
         constexpr auto intrinsics = PuzzleIntrinsics<{2, 2, 2}>();
-        checkConstraintOptions<intrinsics, 1, 0>(PositiveDiagonalOddConstraint<intrinsics>(),
-                                                 2,
-                                                 std::vector<Option<1>>{
-                                                     {},
-                                                     {},
-                                                     {0},
-                                                     {},
-                                                     {1},
-                                                     {},
-                                                     {},
-                                                     {},
-                                                 },
-                                                 0,
-                                                 {});
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(PositiveDiagonalOddConstraint<intrinsics>(),
+                                                                        2,
+                                                                        std::vector<Option<1>>{
+                                                                            {},
+                                                                            {},
+                                                                            {0},
+                                                                            {},
+                                                                            {1},
+                                                                            {},
+                                                                            {},
+                                                                            {},
+                                                                        },
+                                                                        0,
+                                                                        {});
       }
 
       SUBCASE("5x5x7") {
         constexpr auto intrinsics = PuzzleIntrinsics<{5, 5, 7}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             PositiveDiagonalOddConstraint<intrinsics>(),
             5,
             std::vector<Option<1>>{
@@ -74,7 +75,7 @@ TEST_SUITE("Constraints") {
 
       SUBCASE("9x9x9") {
         constexpr auto intrinsics = PuzzleIntrinsics<{9, 9, 9}>{};
-        checkConstraintOptions<intrinsics, 1, 0>(
+        ConstraintTestHelpers::checkConstraintOptions<intrinsics, 1, 0>(
             PositiveDiagonalOddConstraint<intrinsics>(),
             9,
             std::vector<Option<1>>{
@@ -112,6 +113,27 @@ TEST_SUITE("Constraints") {
             },
             0,
             {});
+      }
+    }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Positive-Diagonal-Odd" stroke="black" stroke-width="0.889">
+<path d="M 0,1000 L 0.794,992.92 L 14.954,991.332 L 16.542,977.172 L 30.702,975.584 L 32.29,961.424 L 46.45,959.836 L 48.038,945.676 L 62.198,944.088 L 63.786,929.928 L 77.946,928.34 L 79.534,914.18 L 93.694,912.592 L 95.283,898.432 L 109.442,896.843 L 111.031,882.684 L 125.19,881.095 L 126.779,866.936 L 140.938,865.347 L 142.527,851.188 L 156.686,849.599 L 158.275,835.44 L 172.434,833.851 L 174.023,819.692 L 188.182,818.103 L 189.771,803.944 L 203.93,802.355 L 205.519,788.196 L 219.678,786.607 L 221.267,772.448 L 235.426,770.859 L 237.015,756.7 L 251.174,755.111 L 252.763,740.952 L 266.922,739.363 L 268.511,725.204 L 282.67,723.615 L 284.259,709.456 L 298.418,707.867 L 300.007,693.708 L 314.166,692.119 L 315.755,677.96 L 329.914,676.371 L 331.503,662.212 L 345.662,660.623 L 347.251,646.464 L 361.41,644.875 L 362.999,630.716 L 377.158,629.127 L 378.747,614.968 L 392.906,613.379 L 394.495,599.22 L 408.655,597.631 L 410.243,583.471 L 424.403,581.883 L 425.991,567.723 L 440.151,566.135 L 441.739,551.975 L 455.899,550.387 L 457.487,536.227 L 471.647,534.639 L 473.235,520.479 L 487.395,518.891 L 488.983,504.731 L 503.143,503.143 L 504.731,488.983 L 518.891,487.395 L 520.479,473.235 L 534.639,471.647 L 536.227,457.487 L 550.387,455.899 L 551.975,441.739 L 566.135,440.151 L 567.723,425.991 L 581.883,424.403 L 583.471,410.243 L 597.631,408.655 L 599.22,394.495 L 613.379,392.906 L 614.968,378.747 L 629.127,377.158 L 630.716,362.999 L 644.875,361.41 L 646.464,347.251 L 660.623,345.662 L 662.212,331.503 L 676.371,329.914 L 677.96,315.755 L 692.119,314.166 L 693.708,300.007 L 707.867,298.418 L 709.456,284.259 L 723.615,282.67 L 725.204,268.511 L 739.363,266.922 L 740.952,252.763 L 755.111,251.174 L 756.7,237.015 L 770.859,235.426 L 772.448,221.267 L 786.607,219.678 L 788.196,205.519 L 802.355,203.93 L 803.944,189.771 L 818.103,188.182 L 819.692,174.023 L 833.851,172.434 L 835.44,158.275 L 849.599,156.686 L 851.188,142.527 L 865.347,140.938 L 866.936,126.779 L 881.095,125.19 L 882.684,111.031 L 896.843,109.442 L 898.432,95.283 L 912.592,93.694 L 914.18,79.534 L 928.34,77.946 L 929.928,63.786 L 944.088,62.198 L 945.676,48.038 L 959.836,46.45 L 961.424,32.29 L 975.584,30.702 L 977.172,16.542 L 991.332,14.954 L 992.92,0.794 L 1000,0" fill="transparent"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, PositiveDiagonalOddConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
+      }
+
+      SUBCASE("3x3x3") {
+        constexpr auto space = PuzzleSpace{3, 3, 3};
+        const auto expected = R"(<g id="Positive-Diagonal-Odd" stroke="black" stroke-width="0.889">
+<path d="M 0,1000 L 2.477,978.667 L 45.142,973.714 L 50.096,931.048 L 92.761,926.095 L 97.715,883.429 L 140.38,878.476 L 145.334,835.81 L 188,830.857 L 192.953,788.191 L 235.619,783.238 L 240.572,740.572 L 283.238,735.619 L 288.191,692.953 L 330.857,688 L 335.81,645.334 L 378.476,640.38 L 383.429,597.715 L 426.095,592.761 L 431.048,550.096 L 473.714,545.142 L 478.667,502.477 L 521.333,497.523 L 526.286,454.858 L 568.952,449.904 L 573.905,407.239 L 616.571,402.285 L 621.524,359.62 L 664.19,354.666 L 669.143,312 L 711.809,307.047 L 716.762,264.381 L 759.428,259.428 L 764.381,216.762 L 807.047,211.809 L 812,169.143 L 854.666,164.19 L 859.62,121.524 L 902.285,116.571 L 907.239,73.905 L 949.904,68.952 L 954.858,26.286 L 997.523,21.333 L 1000,0" fill="transparent"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, PositiveDiagonalOddConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
       }
     }
   }

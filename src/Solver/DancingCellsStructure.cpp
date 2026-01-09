@@ -1,8 +1,9 @@
 #include "DancingCellsStructure.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
+#include <stdexcept>
+#include <string>
 
 DancingCellsStructure::DancingCellsStructure(int32_t primaryItemsCount,
                                              int32_t secondaryItemsCount,
@@ -44,7 +45,9 @@ void DancingCellsStructure::checkOptions(const std::vector<std::vector<XccElemen
                                          int32_t primaryItemsCount,
                                          int32_t itemsCount) {
 
-  if (primaryItemsCount <= 0 || options.empty()) {
+  const bool noPrimaryItems = primaryItemsCount <= 0;
+  const bool noOptions = options.empty();
+  if (noPrimaryItems ^ noOptions) {
     throw std::runtime_error(std::string("No primary items or options provided"));
   }
 
@@ -173,44 +176,45 @@ void DancingCellsStructure::finishInitialization(int32_t second, int32_t lastNod
   }
 }
 
-void DancingCellsStructure::print() const {
+// #include <iostream>
+// void DancingCellsStructure::print() const {
 
-  std::cout << "ITEM" << std::endl;
-  for (const auto& i : ITEM) {
-    std::cout << i << ", ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
+//   std::cout << "ITEM" << std::endl;
+//   for (const auto& i : ITEM) {
+//     std::cout << i << ", ";
+//   }
+//   std::cout << std::endl;
+//   std::cout << std::endl;
 
-  std::cout << "SET" << std::endl;
-  int32_t i = 0;
-  for (const auto& element : SET) {
-    std::cout << i << " - " << element << std::endl;
-    i++;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
+//   std::cout << "SET" << std::endl;
+//   int32_t i = 0;
+//   for (const auto& element : SET) {
+//     std::cout << i << " - " << element << std::endl;
+//     i++;
+//   }
+//   std::cout << std::endl;
+//   std::cout << std::endl;
 
-  std::cout << "NODE" << std::endl;
-  int32_t nodeIndex = 0;
-  for (const auto& element : NODE) {
-    if (element.item <= 0) {
-      std::cout << " " << std::endl;
-    }
-    std::cout << nodeIndex << " - \titem:" << element.item << "\tlocation:" << element.location
-              << "\tcolor:" << element.color << "" << std::endl;
-    if (element.item <= 0) {
-      std::cout << " " << std::endl;
-    }
-    nodeIndex++;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
+//   std::cout << "NODE" << std::endl;
+//   int32_t nodeIndex = 0;
+//   for (const auto& element : NODE) {
+//     if (element.item <= 0) {
+//       std::cout << " " << std::endl;
+//     }
+//     std::cout << nodeIndex << " - \titem:" << element.item << "\tlocation:" << element.location
+//               << "\tcolor:" << element.color << "" << std::endl;
+//     if (element.item <= 0) {
+//       std::cout << " " << std::endl;
+//     }
+//     nodeIndex++;
+//   }
+//   std::cout << std::endl;
+//   std::cout << std::endl;
 
-  std::cout << "optionsMap" << std::endl;
-  for (size_t i = 0; i < nodeOptionIndices.size(); i++) {
-    std::cout << "nodeIndex: " << i << "\t - optionIndex: " << nodeOptionIndices[i] << std::endl;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-}
+//   std::cout << "optionsMap" << std::endl;
+//   for (size_t i = 0; i < nodeOptionIndices.size(); i++) {
+//     std::cout << "nodeIndex: " << i << "\t - optionIndex: " << nodeOptionIndices[i] << std::endl;
+//   }
+//   std::cout << std::endl;
+//   std::cout << std::endl;
+// }

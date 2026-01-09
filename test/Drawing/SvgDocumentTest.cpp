@@ -1,7 +1,7 @@
 #include "SvgDocument.hpp"
 
-#include "DrawingUtilities.hpp"
 #include "FileIo.hpp"
+#include "StringUtilities.hpp"
 #include "SvgCircle.hpp"
 #include "SvgGroup.hpp"
 #include "SvgLine.hpp"
@@ -137,7 +137,7 @@ TEST_SUITE("Drawing") {
         const auto angle = j * angleIncrement;
         document.add(std::make_unique<SvgText>(rightCenter,
                                                centerHeight,
-                                               DrawingUtilities::number(angle) + "deg",
+                                               StringUtilities::number(angle) + "deg",
                                                fontSize / 3,
                                                anchor,
                                                baseline,

@@ -69,14 +69,50 @@ TEST_CASE("Dancing Cells Structure") {
                                          }));
     }
 
+    SUBCASE("Options are not sorted") {
+      CHECK_THROWS(DancingCellsStructure(6, // Primary items
+                                         0, // Secondary items
+                                         {
+                                             /*{1, 0, 1, 0, 0, 0},*/ {0, 2},
+                                             /*{1, 1, 0, 1, 0, 0},*/ {0, 1, 3},
+                                             /*{0, 1, 1, 0, 1, 0},*/ {1, 4, 2}, // This option is not sorted
+                                             /*{0, 0, 1, 1, 0, 1},*/ {2, 3, 4},
+                                             /*{0, 0, 0, 0, 0, 0},*/ {},
+                                             /*{1, 1, 0, 0, 0, 1},*/ {0, 1, 5},
+                                         }));
+    }
+
     SUBCASE("Primary or secondary items outside of valid range") {
-      // Primary item id outside of the valid range
-      CHECK_THROWS(DancingCellsStructure(2, 2, {{2, 0}}));
-      // Secondary item id outside of the valid range
+      CHECK_THROWS(
+          DancingCellsStructure(6, // Primary items
+                                0, // Secondary items
+                                {
+                                    /*{1, 0, 1, 0, 0, 0},*/ {0, 2},
+                                    /*{1, 1, 0, 1, 0, 0},*/ {0, 1, 3},
+                                    /*{0, 1, 1, 0, 1, 0},*/ {1, 2, 4},
+                                    /*{0, 0, 1, 1, 0, 1},*/ {2, 3, 6}, // Primary item id 6 is outside the valid range
+                                    /*{0, 0, 0, 0, 0, 0},*/ {},
+                                    /*{1, 1, 0, 0, 0, 1},*/ {0, 1, 5},
+                                }));
+      CHECK_THROWS(
+          DancingCellsStructure(3, // Primary items
+                                3, // Secondary items
+                                {
+                                    /*{1, 0, 1, 0, 0, 0},*/ {0, 2},
+                                    /*{1, 1, 0, 1, 0, 0},*/ {0, 1, 3},
+                                    /*{0, 1, 1, 0, 1, 0},*/ {1, 2, 4},
+                                    /*{0, 0, 1, 1, 0, 1},*/ {2, 3, 6}, // Secondary item id 6 is outside the valid range
+                                    /*{0, 0, 0, 0, 0, 0},*/ {},
+                                    /*{1, 1, 0, 0, 0, 1},*/ {0, 1, 5},
+                                }));
+
       CHECK_THROWS(DancingCellsStructure(2, 2, {{0, 0}}));
     }
 
     SUBCASE("Valid") {
+      // Empty structure
+      CHECK_NOTHROW(DancingCellsStructure(0, 0, {}));
+
       // All items could be covered
       CHECK_NOTHROW(DancingCellsStructure(6, // Primary items
                                           0, // Secondary items

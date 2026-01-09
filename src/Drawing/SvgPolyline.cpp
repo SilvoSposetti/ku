@@ -1,6 +1,9 @@
 #include "SvgPolyline.hpp"
 
 #include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
+
+#include <format>
 
 SvgPolyline::SvgPolyline(const std::vector<std::pair<double, double>>& points,
                          bool closeLoop,
@@ -21,7 +24,7 @@ std::string SvgPolyline::string() const {
 
   std::string polylineString;
   for (const auto& point : points) {
-    polylineString += DrawingUtilities::number(point.first) + "," + DrawingUtilities::number(point.second);
+    polylineString += DrawingUtilities::getPointString(point);
     if (&point != &points.back()) {
       polylineString += " ";
     }
@@ -29,24 +32,21 @@ std::string SvgPolyline::string() const {
 
   if (closeLoop && !points.empty()) {
     const auto& firstPoint = points.front();
-    polylineString +=
-        " " + DrawingUtilities::number(firstPoint.first) + "," + DrawingUtilities::number(firstPoint.second);
+    polylineString += " " + DrawingUtilities::getPointString(firstPoint);
   }
 
   // Switch to polygon element if polyline needs to be closed
   const std::string name = closeLoop ? "polygon" : tagName;
-  std::string result = "<" + name + " points=\"" + polylineString + "\"";
+
+  std::string result = std::format("<{} points=\"{}\"", name, polylineString);
   if (fill) {
-    result += " ";
-    result += "fill=\"" + fill.value() + "\"";
+    result += std::format(" fill=\"{}\"", fill.value());
   }
   if (stroke) {
-    result += " ";
-    result += "stroke=\"" + stroke.value() + "\"";
+    result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += " ";
-    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

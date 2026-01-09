@@ -1,8 +1,10 @@
 #include "SvgZigZagLine.hpp"
 
 #include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
 
 #include <cmath>
+#include <format>
 
 SvgZigZagLine::SvgZigZagLine(double x1,
                              double y1,
@@ -47,33 +49,28 @@ std::string SvgZigZagLine::string() const {
     };
 
     // First point
-    zigZagLineString = "M " + DrawingUtilities::getPointString({x1, y1});
+    zigZagLineString = std::format("M {}", DrawingUtilities::getPointString({x1, y1}));
 
     // Second point
     double side = 1;
-    zigZagLineString += " L " + DrawingUtilities::getPointString(computePoint(1, side));
+    zigZagLineString += std::format(" L {}", DrawingUtilities::getPointString(computePoint(1, side)));
     side = -side;
 
     // All other point segments
     for (int32_t i = 1; i < segmentsAmount; i++) {
-      zigZagLineString += " L " + DrawingUtilities::getPointString(computePoint(i + 1, side));
+      zigZagLineString += std::format(" L {}", DrawingUtilities::getPointString(computePoint(i + 1, side)));
       side = -side;
     }
     // Add last point
-    zigZagLineString += " L " + DrawingUtilities::getPointString({x2, y2});
+    zigZagLineString += std::format(" L {}", DrawingUtilities::getPointString({x2, y2}));
   }
 
-  // Switch to polygon element if polyline needs to be closed
-  std::string result = "<" + tagName + " d=\"" + zigZagLineString + "\"";
-  result += " ";
-  result += "fill=\"transparent\"";
+  std::string result = std::format("<{} d=\"{}\" fill=\"transparent\"", tagName, zigZagLineString);
   if (stroke) {
-    result += " ";
-    result += "stroke=\"" + stroke.value() + "\"";
+    result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += " ";
-    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;

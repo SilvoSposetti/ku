@@ -27,4 +27,23 @@ TEST_CASE("Cell") {
     CHECK_FALSE(cell.isAtSameSpot(Cell(1, 1, 2)));
     CHECK_FALSE(cell.isAtSameSpot(Cell(3, 3, 2)));
   }
+
+  SUBCASE("Sortable") {
+    constexpr auto sorted = std::array<Cell, 5>{{
+        {0, 0, 1},
+        {0, 0, 2},
+        {0, 3, 1},
+        {2, 0, 1},
+        {2, 1, 2},
+    }};
+    auto list = std::array<Cell, 5>{{
+        sorted[1],
+        sorted[4],
+        sorted[0],
+        sorted[2],
+        sorted[3],
+    }};
+    std::ranges::sort(list);
+    CHECK_EQ(list, sorted);
+  }
 }

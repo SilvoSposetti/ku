@@ -1,8 +1,10 @@
 #include "SvgDocument.hpp"
 
-#include "DrawingUtilities.hpp"
 #include "FileIo.hpp"
+#include "StringUtilities.hpp"
 #include "SvgRect.hpp"
+
+#include <format>
 
 SvgDocument::SvgDocument(const std::string& name, double width, double height, double margin)
     : SvgElement("svg", true)
@@ -12,21 +14,21 @@ SvgDocument::SvgDocument(const std::string& name, double width, double height, d
     , margin(margin) {}
 
 std::string SvgDocument::string() const {
-  std::string result = "<?xml version=\"1.0\"?>\n";
-  result += "<" + tagName;
-  result += " ";
-  result += "xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\"";
-  result += " ";
-  result += "viewBox=\"" + DrawingUtilities::number(-margin) + " " + DrawingUtilities::number(-margin) + " " +
-            DrawingUtilities::number(width + 2 * margin) + " " + DrawingUtilities::number(height + 2 * margin) +
-            "\" font-family=\"Open Sans\"";
-  result += ">\n";
+  const auto header = std::string{"<?xml version=\"1.0\"?>"};
+  const auto metadata = std::string{"xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\""};
+  const auto viewBox = std::format("viewBox=\"{} {} {} {}\"",
+                                   StringUtilities::number(-margin),
+                                   StringUtilities::number(-margin),
+                                   StringUtilities::number(width + 2 * margin),
+                                   StringUtilities::number(height + 2 * margin));
+  const auto fontFamily = std::string{"font-family=\"Open Sans\""};
+  std::string result = std::format("{}\n<{} {} {} {}>\n", header, tagName, metadata, viewBox, fontFamily);
 
   for (const auto& childElement : childElements) {
-    result += childElement->string() + "\n";
+    result += std::format("{}\n", childElement->string());
   }
 
-  result += "</" + tagName + ">";
+  result += std::format("</{}>", tagName);
   return result;
 }
 

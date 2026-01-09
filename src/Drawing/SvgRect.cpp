@@ -1,6 +1,8 @@
 #include "SvgRect.hpp"
 
-#include "DrawingUtilities.hpp"
+#include "StringUtilities.hpp"
+
+#include <format>
 
 SvgRect::SvgRect(double x,
                  double y,
@@ -22,20 +24,20 @@ SvgRect::SvgRect(double x, double y, double width, double height)
     : SvgRect(x, y, width, height, std::nullopt, std::nullopt, std::nullopt) {}
 
 std::string SvgRect::string() const {
-  std::string result = "<" + tagName + " x=\"" + DrawingUtilities::number(x) + "\" y=\"" + DrawingUtilities::number(y) +
-                       "\" width=\"" + DrawingUtilities::number(width) + "\" height=\"" +
-                       DrawingUtilities::number(height) + "\"";
+  std::string result = std::format("<{} x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\"",
+                                   tagName,
+                                   StringUtilities::number(x),
+                                   StringUtilities::number(y),
+                                   StringUtilities::number(width),
+                                   StringUtilities::number(height));
   if (fill) {
-    result += " ";
-    result += "fill=\"" + fill.value() + "\"";
+    result += std::format(" fill=\"{}\"", fill.value());
   }
   if (stroke) {
-    result += " ";
-    result += "stroke=\"" + stroke.value() + "\"";
+    result += std::format(" stroke=\"{}\"", stroke.value());
   }
   if (strokeWidth) {
-    result += " ";
-    result += "stroke-width=\"" + DrawingUtilities::number(strokeWidth.value()) + "\"";
+    result += std::format(" stroke-width=\"{}\"", StringUtilities::number(strokeWidth.value()));
   }
   result += "/>";
   return result;
