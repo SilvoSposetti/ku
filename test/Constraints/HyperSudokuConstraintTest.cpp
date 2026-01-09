@@ -82,5 +82,20 @@ TEST_SUITE("Constraints") {
             {});
       }
     }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Hyper-Sudoku" fill="transparent" stroke="black" stroke-width="2.667">
+<rect x="111.111" y="111.111" width="333.333" height="333.333"/>
+<rect x="111.111" y="555.556" width="333.333" height="333.333"/>
+<rect x="555.556" y="111.111" width="333.333" height="333.333"/>
+<rect x="555.556" y="555.556" width="333.333" height="333.333"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, HyperSudokuConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
+      }
+    }
   }
 }

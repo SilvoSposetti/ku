@@ -106,5 +106,26 @@ TEST_SUITE("Constraints") {
             {});
       }
     }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Exact-Negative-Diagonal" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="1000" y2="1000"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactNegativeDiagonalConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
+      }
+
+      SUBCASE("3x3x3") {
+        constexpr auto space = PuzzleSpace{3, 3, 3};
+        const auto expected = R"(<g id="Exact-Negative-Diagonal" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="1000" y2="1000"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactNegativeDiagonalConstraint<PuzzleIntrinsics<space>{}>>(
+            expected);
+      }
+    }
   }
 }

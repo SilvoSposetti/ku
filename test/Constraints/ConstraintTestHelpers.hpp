@@ -146,10 +146,8 @@ void checkConstraintOptions(const ConstraintInterface<intrinsics>& constraint,
  */
 template <PuzzleSpace space, typename T>
 void checkConstraintSvg(const std::string& expectedSvgString) {
-  // Construct constraint
-  const T constraint = T();
   const auto drawingOtions = DrawingOptions<space>(1);
-  const auto computedSvgString = constraint.getSvgGroup(drawingOtions)->string();
+  const auto computedSvgString = T().getSvgGroup(drawingOtions)->string();
   CHECK_EQ(computedSvgString, expectedSvgString);
 }
 

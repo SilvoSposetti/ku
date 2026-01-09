@@ -102,5 +102,35 @@ TEST_SUITE("Constraints") {
             {});
       }
     }
+
+    SUBCASE("Drawing") {
+
+      SUBCASE("9x9x9") {
+        constexpr auto space = PuzzleSpace{9, 9, 9};
+        const auto expected = R"(<g id="Column" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="0" y2="1000"/>
+<line x1="111.111" y1="0" x2="111.111" y2="1000"/>
+<line x1="222.222" y1="0" x2="222.222" y2="1000"/>
+<line x1="333.333" y1="0" x2="333.333" y2="1000"/>
+<line x1="444.444" y1="0" x2="444.444" y2="1000"/>
+<line x1="555.556" y1="0" x2="555.556" y2="1000"/>
+<line x1="666.667" y1="0" x2="666.667" y2="1000"/>
+<line x1="777.778" y1="0" x2="777.778" y2="1000"/>
+<line x1="888.889" y1="0" x2="888.889" y2="1000"/>
+<line x1="1000" y1="0" x2="1000" y2="1000"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactColumnConstraint<PuzzleIntrinsics<space>{}>>(expected);
+      }
+
+      SUBCASE("4x2x3") {
+        constexpr auto space = PuzzleSpace{4, 2, 3};
+        const auto expected = R"(<g id="Column" stroke="black" stroke-width="0.889">
+<line x1="0" y1="0" x2="0" y2="2000"/>
+<line x1="500" y1="0" x2="500" y2="2000"/>
+<line x1="1000" y1="0" x2="1000" y2="2000"/>
+</g>)";
+        ConstraintTestHelpers::checkConstraintSvg<space, ExactColumnConstraint<PuzzleIntrinsics<space>{}>>(expected);
+      }
+    }
   }
 }
