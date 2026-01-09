@@ -1,4 +1,3 @@
-
 #include "ExactColumnConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

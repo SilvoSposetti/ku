@@ -1,4 +1,3 @@
-
 #include "Constraint.hpp"
 
 #include "ConstraintMacros.hpp"

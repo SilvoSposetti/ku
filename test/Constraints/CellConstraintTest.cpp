@@ -1,4 +1,3 @@
-
 #include "CellConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"

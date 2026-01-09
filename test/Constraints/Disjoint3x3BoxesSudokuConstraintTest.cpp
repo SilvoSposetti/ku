@@ -1,4 +1,3 @@
-
 #include "Disjoint3x3BoxesSudokuConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
@@ -173,7 +172,6 @@ TEST_SUITE("Constraints") {
         ConstraintTestHelpers::checkConstraintSvg<space, Disjoint3x3BoxesSudokuConstraint<PuzzleIntrinsics<space>{}>>(
             expected);
       }
-
     }
   }
 }

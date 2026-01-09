@@ -1,4 +1,3 @@
-
 #include "Exact3x3BoxesConstraint.hpp"
 
 #include "ConstraintTestHelpers.hpp"
