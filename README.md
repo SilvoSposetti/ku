@@ -1,66 +1,79 @@
 # ku
-A fast and lightweight C++ project to generate, solve, and export Sudoku puzzles with varying constraints.
+A C++ library to generate, solve, and export grid-like puzzles of numbers with varying constraints.
 
-![BuildAndTest Status](https://img.shields.io/github/actions/workflow/status/SilvoSposetti/ku/BuildAndTest.yaml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/SilvoSposetti/ku/BuildAndTest.yaml?branch=main&style=for-the-badge&logo=GitHub)
 
 ## Description
-The library handles any supported constraint through the following steps:
-1. Constraints are reduced from a Sudoku problem to an _Exact Covering with Colors_ problem (XCC).
-2. The resulting problem is fed into an XCC solver heavily inspired by Donald Knuth's [SSXCC](https://cs.stanford.edu/~knuth/programs/ssxcc.w) program.
-3. The solutions to the XCC problem found, if any, are then reduced back to a Sudoku solution.
+The library handles supported puzzle constraints as follows:
+1. Constraints are reduced from a puzzle problem to an _Exact Covering with Colors_ (XCC) problem.
+2. The resulting problem is fed into an XCC solver originally described by [Donald E. Knuth](https://www-cs-faculty.stanford.edu/~knuth/) on his website ([original source](https://cs.stanford.edu/~knuth/programs/ssxcc.w)) and adapted here to C++. Also instrumental was his early-access draft publication of [Pre-Fascicle 7A](https://www-cs-faculty.stanford.edu/~knuth/fasc7a.ps.gz): section 7.2.2.3, see `Dancing cells`.
+3. If any solutions to the XCC problem are found, they are reduced back to a solution of the original puzzle problem.
 
-The XCC problem may be built with both primary and secondary items, depending on the constraints provided by the Sudoku problem, for which the following applies:
+The XCC problem is constructed with `primary` and `secondary` items for which the following applies:
 - `Primary` items must be covered __exactly__ once.
 - `Secondary` items must be covered __at most__ once.
-  - Secondary items can have a `color` assigned to them. These colored items are allowed to be covered by one or more options, as long as the colors are compatible.
+  - Secondary items inside an option may have a `color` assigned to them.
+    Colored items are allowed to be covered by more than one option as long as the color they describe is the same.
 
-Generated Sudokus can be exported to svg, where each constraint provides its own way of being drawn on the board.
-The matrix-likedata structure used by Algorithm C can also be exported to an svg file for visual debugging.
+Generated puzzles may be printed to standard output or exported as SVG.
+A visual representation of the matrix-like data structure fed to the solver can also be exported to SVG for visual debugging.
 
-The project consists of:
-- The `libku` library, used by the following executables
-- A `ku_sandbox` executable, useful for experimenting
-- A `ku_unit_test` executable
-- A `ku_performance_test` executable (generated only for Release builds)
+The project consists of several small libraries combined to produce:
+- A `ku_sandbox` executable, useful for experimenting.
+- A set of `*Test` executables, one for each internal library.
+- A `PerformanceTest` executable, generated only for optimized (`release`) builds.
 
 ### Available Constraints
-These are the classic sudoku constraints that are supported:
-- `Sudoku Cell`
-- `Sudoku Row`
-- `Sudoku Column`
-- `Sudoku Box`
+Basic constraints that can be used to generate or solve classic Sudoku:
+- `Cell`
+- `Exact Row`
+- `Exact Column`
+- `Exact 3x3 Boxes`
 
-The following are the non-classic constraints supported:
-- `Anti-King`
-- `Anti-King (Torus)`
-- `Anti-Knight`
-- `Anti-Knight (Torus)`
+Additional constraints:
 - `Asterisk`
 - `Disjoint Boxes`
+- `Exact Negative Diagonal`
+- `Exact Positive Diagonal`
 - `Hyper Sudoku`
-- `Negative Diagonal`
+- `King Pattern`
+- `King Torus Pattern`
+- `Knight Pattern`
+- `Knight Torus Pattern`
 - `Negative Diagonal Even`
 - `Negative Diagonal Odd`
-- `Positive Diagonal`
 - `Positive Diagonal Even`
 - `Positive Diagonal Odd`
 
 ## Getting Started
+This project has been developed and tested on Linux using GCC 14+.
+Other platforms and compilers may work, but they are not officially supported.
+
 - The build system used by the project is [Meson](https://mesonbuild.com/), download and install it on your system.
+  Meson will also retrieve `doctest` for you.
 - Make sure you have a `C++23`-capable compiler.
 
-The `/bin` directory is gitignored, the easiest way to generate a `Debug` build is to run the following in the root of the repository:
+- The `/bin` directory is gitignored.
+  After cloning, the easiest way to generate a `debug` build is:
+  ```bash
+  meson setup bin/Debug
+  meson compile -C bin/Debug
+  ```
+  And for a `release` build:
+  ```bash
+  meson setup --buildtype=release bin/Release
+  meson compile -C bin/Release
+  ```
 
-```
-meson setup bin/Debug
-meson compile -C bin/Debug
-```
-Or, for a `Release` build:
-```
-meson setup --buildtype=release bin/Release
-meson compile -C bin/Release
-```
+## Dependencies
 
-### Dependencies
-- [Meson](https://mesonbuild.com/) `1.4.1+`
-- [doctest](https://github.com/doctest/doctest) `2.4.11+`
+### Build requirements
+- [Meson](https://mesonbuild.com/) `>=1.3.2`: Build system used to configure and compile the project.
+- [Ninja](https://ninja-build.org/): Backend build tool used by Meson.
+
+### Testing
+- [doctest](https://github.com/doctest/doctest) `2.4.12`: Used as development dependency for unit testing and performance testing.
+
+## License
+This project is licensed under `GPL-3.0`. See `LICENSE.md` for details.
+
