@@ -76,4 +76,3 @@ Other platforms and compilers may work, but they are not officially supported.
 
 ## License
 This project is licensed under `GPL-3.0`. See `LICENSE.md` for details.
-
